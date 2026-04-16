@@ -1,0 +1,826 @@
+Byggnad;Hustyp;Antal;FD1 Förekommer Asbest;FD1Mattor;FD1Branddörrar;FD1Brandisolering;FD1Rör;FD1Övrigt;FD1ÖvrigtText;FD2 Förekommer Freon i byggnaden;FD2IByggnaden;FD2IVVSSystemet;FD3 PCB-Inventering utförd;FD3IngetPCBFunnet;FD3 Resultat PCB;FD3iFog;FD3iGolv;FD3iIsolerrutor;FD3iLysrörskondensatorer;FD3iAnnat;FD4 Koppar i tappvattensystem;FD4 Rostfritt i tappvattensystem;FD4 Plast i tappvattensystem;FD4 Galvat i tappvattensystem;FD4 Annat material i tappvattensystem;FD4 Annat material text;FD4VetEj;FD5 Byggnadsdelar med koppar;FD5Koppartak;FD5Portar;FD5Stuprör;FD5Hängrännor;FD6ImpregneratVirke;FD7Oljetank;FD7OmJaIByggnaden;FD7OmJaUtomhus;FD7OmJaNedgrävd;FD7OmJaArDenIBruk;FD7OmJaAldrigBes;FD7OmJaBesMedAnmText;FD7OmJaBesUtanAnm;FD8Oljeavskiljare;FD8OmJa;FD9Tandläkarmottagning;FD9OmJaIBruk;FD9OmJaAvloppsror;FD10Tjära;FD11TjäraSomFuktspärr;FD13 Avloppsrör-Gjutjärn;FD13 Avloppsrör-PVC;FD13 Avloppsrör-Plast;FD13 Avloppsrör-Gjutjärn med blyfog;FD13 Avloppsrör Annat material;FD13 Avloppsrör Annat material Text;FD14 Förekommer Blå lättbetong
+SH1001;S;1;Ja;Nej;Nej;Nej;Ja;Ja;eternitskivor finns på vindsvåningen;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;Ja;;;Ja;BesiktigadUtanAnmärkningDatum;;2002;Nej;;Nej;;;Ja;Nej;;Ja;;Ja;;;Nej
+SH1002;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;Ja;Ja;;;;;Nej
+SH1003;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH1004;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH1005;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Ja;Nej;Nej;;;Ja;VetInte;Ja;;;;;;Vet inte
+SH1006;S;1;Ja;Ja;Nej;Nej;Nej;Ja;Fasad och tak är eternit;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;Ja;;;Ja;PBF;PBF;PBF;Nej;;Nej;;;Ja;Ja;;;;Ja;;;Nej
+SH1007;S;1;Ja;Nej;Troligen;Nej;Nej;Troligen;Eternitklädd dörr till pannrum;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;PBF;;;Nej;Ja;Ja;;;;;;Nej
+SH1008;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;;;;Ja;;;Nej
+SH1009;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;;Ja;Ja;;;Nej
+SH1010;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;Ja;Ja;;;;;Nej
+SH1011;S;1;Ja;Troligen;Nej;Nej;Troligen;Nej;;Ja;;Ja;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Ja;Ja;;;Nej;BesiktigadUtanAnmärkningDatum;;2006;Nej;;Nej;;;Ja;Ja;Ja;;;;;;Nej
+SH1012;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;Kakelfixen är misstänksam?;Nej;;;PBF;;PCB i golv;;Ja;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;Ja;;;Nej;PBF;PBF;PBF;Nej;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH1013;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;Ja;;;;;;Nej
+SH1014;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;Ja;Ja;;;;;Nej
+SH1015;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;Ja;;Ja;;;;Nej
+SH1016;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;;Ja;Keramik, med cementfog.;Nej
+SH1017;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;Ja;Ja;;;;;Nej
+SH1018;S;1;Ja;Troligen;Nej;Nej;Troligen;Nej;;Ja;Ja;;Nej;;PCB i lysrör;;;;Ja;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;;;Ja;;;;Vet inte
+SH1019;S;1;Ja;Nej;Nej;Nej;Nej;Ja;vent.kanaler;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;Ja;;;Ja;BesiktigadUtanAnmärkningDatum;;PBF;Nej;;Nej;;;Ja;Nej;Ja;;;;;;Nej
+SH1020;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH1021;S;1;Ja;Troligen;Nej;Nej;Troligen;Nej;bild 10, 11, 13, 14;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;Ja;;;;;;Nej
+SH1022;S;1;Ja;Ja;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;Ja;;;;;;Nej
+SH1023;S;1;Ja;Troligen;Nej;Nej;Troligen;Nej;Eternit i tak i källarplan;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;Ja;Ja;;;;;Nej
+SH1024;S;1;Ja;Troligen;Nej;Nej;Troligen;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;;Ja;;Ja;;;Nej
+SH1025;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Ja;;;;Ja;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;Ja;Ja;;;;;Nej
+SH1026;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;;PCB i golv;;Ja;;;;Ja;;;Ja;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;Ja;;;Nej
+SH1027;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;Ja;;Ja;;;;Nej
+SH1028;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;PBF;Ja;;Ja;;;;Nej
+SH1029;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;bild 20;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;Ja;;;Ja;Ja;bild 21 - 22;Nej
+SH1030;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;PBF;;PCB i golv;;Ja;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH1031;S;1;Ja;Nej;Nej;Nej;Nej;Troligen;eternit ventkanaler;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;Ja;Ja;;;;;Nej
+SH1032;S;1;Ja;Ja;Nej;Nej;Ja;Nej;;Nej;;;Nej;;PCB i golv;;Ja;;;;Ja;;;Ja;;;;PBF;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;Ja;;;;;;ja, konstaterat
+SH1033;S;1;Ja;Troligen;Troligen;Troligen;Troligen;Troligen;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;Ja;Ja;;;;;Nej
+SH1034;S;1;Ja;Nej;Nej;Nej;Ja;Ja;Eternitrör;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Ja;;;;Ja;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;;Ja;;Ja;;;Nej
+SH1035;S;1;Ja;Nej;Nej;Nej;Ja;Ja;PBF;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Ja;Ja;;;;;;Nej
+SH1036;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i annat;;;;;Ja;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Nej;;Ja;;Ja;;;Nej
+SH1037;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Ja;Ja;;;;;;Vet inte
+SH1038;S;1;Ja;Nej;Nej;Nej;Ja;Ja;skivor, rör;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;Ja;;;;;;Nej
+SH1039;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;Ja;;;;;;Nej
+SH1040;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i golv;;Ja;;;;Ja;;;;;;;Ja;;;Ja;Ja;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Ja;;;Ja;;;;Nej
+SH1041;S;1;Ja;Troligen;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;Ja;;;;;;ja, konstaterat
+SH1042;S;1;Ja;Nej;Nej;Nej;Nej;Ja;I innertak källare;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Nej;Ja;Ja;;;;;Nej
+SH1043;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH1044;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Ja;Ja;;Ja;;Nej;Ja;Ja;;;Nej;PBF;PBF;PBF;Nej;;Nej;;;Ja;VetInte;;;;Ja;;;Vet inte
+SH1045;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i golv;;Ja;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;;;;Ja;;;Nej
+SH1046;S;1;Ja;Nej;Nej;Nej;Nej;Ja;skiva vid bastuaggregat ;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;;Ja;;Ja;;;Nej
+SH1047;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;Ja;;Ja;;;;Nej
+SH1048;S;1;Ja;Troligen;Nej;Nej;Troligen;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;Ja;;;;;;Nej
+SH1049;S;1;Ja;Nej;Nej;Nej;Troligen;Ja;Eternit I tak I pannrum;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Ja;;Ja;;Nej;DenÄrAldrigBesiktigad;;;Nej;;Nej;;;Ja;Nej;;;;;Ja;Keramikrör;Vet inte
+SH1050;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH1051;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;PBF;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;Ja;Ja;;;;;Nej
+SH1052;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;Nej;;;Ja;Ja;;;Vet inte
+SH1053;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;;Ja;;Ja;BesiktigadUtanAnmärkningDatum;;2006;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH1054;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;PBF;Nej;;;;;;;;Nej;;Nej;;;Nej;Ja;Ja;;;;;;Nej
+SH1055;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH1056;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH1057;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i lysrör;;;;Ja;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;Ja;;;;;Troligt
+SH1058;S;1;Ja;Nej;Nej;Nej;Ja;Nej;Eternitfasad bakom tilläggsisoleringen;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;;;Ja;;;Nej
+SH1059;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;Ja;Betongrör;Nej
+SH1060;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;Ja;;;;;;Nej
+SH1061;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH1062;S;1;Ja;Nej;Nej;Nej;Troligen;Ja;Eternitfasad;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;;Ja;;;;Nej
+SH1063;S;1;Ja;Troligen;Nej;Nej;Ja;Nej;Självdragskanaler av eternit;Nej;;;Nej;;PCB i lysrör;;;;Ja;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;;;;Ja;;;Vet inte
+SH1064;S;1;Ja;Nej;Nej;Nej;Nej;Ja;Eternitplattor på fasaden;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;;Ja;;Ja;Cementrör;Nej
+SH1065;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;Kakelfix + hela yttertakets tätskikt är ETERNIT.;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;Ja;Ja;;;;;Nej
+SH1066;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH1067;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Ja;Ja;;;Ja;DenÄrAldrigBesiktigad;;;Nej;;Nej;;;Ja;VetInte;Ja;;;;;;Nej
+SH1068;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;Ja;;;Ja;BesiktigadMedAnmärkningDatum;2006;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH1069;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH1070;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i lysrör;;;;Ja;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH1071;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;PBF;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;Ja;Ja;;;;;Nej
+SH1072;S;1;Ja;Nej;Nej;Ja;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;Ja;Ja;;Ja;;;Nej
+SH1073;S;1;Ja;Troligen;Nej;Nej;Troligen;Nej;;PBF;PBF;PBF;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;PBF;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;Ja;;Ja;;;;Vet inte
+SH1074;S;1;Ja;Nej;Nej;Nej;Nej;Troligen;Tak i pannrum;Nej;;;PBF;;Saknas uppgift;;;;;;Ja;Ja;;;;;;Nej;;;;;Nej;Ja;Ja;;;Ja;BesiktigadUtanAnmärkningDatum;;2006;Nej;;Nej;;;Ja;Nej;Ja;Ja;;;;;Nej
+SH1075;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH1076;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;Ja;;;Nej
+SH1077;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;Ja;Ja;;;;;Nej
+SH1078;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i isolerrutor;;;Ja;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;Ja;;;;;;Troligt
+SH1079;S;1;Ja;Troligen;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Ja;;;;Ja;;;Nej
+SH1080;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;;;Ja;Finns inget avlopp;Nej
+SH1081;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH1082;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;Ja;Ja;;;;;Nej
+SH1083;S;1;Ja;Troligen;Nej;Nej;Ja;Ja;Ventilationskanaler, tak undercentral;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;Ja;Ja;;;;;Nej
+SH1084;S;1;Ja;Troligen;Nej;Nej;Ja;Ja;eternitkanal för vent+imkanal, trol. i klaffventil;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Ja;;;Ja;;Ja;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;;;;Ja;;;Vet inte
+SH1085;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;Ja;;;;;;Nej
+SH1086;S;1;Ja;Troligen;Nej;Nej;Troligen;Ja;skivor;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Ja;;;;Ja;;;Nej
+SH1087;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH1088;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;Ja;;;ja, konstaterat
+SH1089;S;1;Ja;Nej;Nej;Nej;Nej;Ja;Eternitfasad;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Ja;;Ja;;;;;Vet inte
+SH1090;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;Ja;;;;;;ja, konstaterat
+SH1091;S;1;Ja;Nej;Nej;Nej;Ja;Nej;se bilder;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Ja;Ja;Ja;;;;;Vet inte
+SH1092;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;Ja;Ja;;;;;Nej
+SH1093;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;Ja;;Ja;;;;Nej
+SH1094;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Ja;Ja;Ja;;;Nej;DenÄrAldrigBesiktigad;;;PBF;;Nej;;;Ja;VetInte;;;;Ja;;;Nej
+SH1095;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Nej;Ja;Ja;;;;;ja, konstaterat
+SH1096;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH1097;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH1098;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;;Ja;;;;Nej
+SH1099;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;Ja;Ja;;;;;Nej
+SH1100;S;1;Ja;Troligen;Nej;Nej;Troligen;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Ja;Nej;Nej;VetInte;VetInte;Ja;;;;;;Nej
+SH1101;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Nej;Ja;;;;;;Nej
+SH1102;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Ja;;Ja;;Nej;DenÄrAldrigBesiktigad;;;Nej;;Nej;;;Ja;VetInte;;;;Ja;;;Vet inte
+SH1103;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;;;Ja;;;;Nej
+SH1104;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;Ja;Ja;;;;;Nej
+SH1105;S;1;Ja;Troligen;Nej;Nej;Troligen;Nej;;Ja;Ja;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;Ja;Ja;;;;;Nej
+SH1106;S;1;Ja;Troligen;Nej;Troligen;Nej;Nej;Eternittak 285 m2;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;Ja;;;;;;Nej
+SH1107;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;Ja;;;Nej
+SH1108;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH1109;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH1110;S;1;Ja;Ja;Nej;Nej;Ja;Ja;Vinylplattor i kök;Ja;Ja;;Nej;Ja;Inget PCB funnet;;;;;;;;;Ja;;;;Nej;;;;;Nej;Ja;Ja;;;Ja;BesiktigadMedAnmärkningDatum;2006;;Nej;;Nej;;;Ja;Nej;Ja;;;;;;Troligt
+SH1111;S;1;Ja;Ja;Nej;Ja;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Ja;;;Ja;Ja;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Ja;;Ja;Ja;Ja;;;Nej
+SH1112;S;1;Ja;Nej;Nej;Nej;Ja;Ja;Ventilationskanaler i eternit.;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Ja;Ja;;;Nej;DenÄrAldrigBesiktigad;;;Nej;;Nej;;;Ja;Ja;Ja;Ja;;;;;Nej
+SH1113;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;;;Ja;;;;Nej
+SH1114;S;1;Ja;Troligen;Nej;Nej;Troligen;Nej;Möjligtvis i rörböjar.;Nej;;;Nej;;PCB i lysrör;;;;Ja;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;Ja;;;Ja;;;ja, konstaterat
+SH1115;S;1;Ja;Nej;Nej;Nej;Ja;Nej;Eternitkanaler bild 6 och bild 7;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Ja;;;;Ja;;;Nej
+SH1116;S;1;Ja;Nej;Troligen;Nej;Troligen;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;Ja;;;Ja;BesiktigadUtanAnmärkningDatum;;2000;Nej;;Nej;;;Ja;Ja;Ja;Ja;;;;;Vet inte
+SH1117;S;1;Ja;Nej;Nej;Ja;Nej;Ja;Fasad;Nej;;;Nej;;PCB i annat;;;;;Ja;Ja;;;;;;;Ja;;;Ja;Ja;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;Ja;Ja;;;;;Nej
+SH1118;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;Ja;;;;;;Vet inte
+SH1119;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;;Ja;Ja;;;Nej
+SH1120;S;1;Ja;Nej;Nej;Nej;Ja;Nej;Eternitrör bild 13;Nej;;;Nej;;PCB i lysrör;;;;Ja;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;Ja;;;;;;ja, konstaterat
+SH1121;S;1;Ja;Troligen;Nej;Nej;Troligen;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;;;;;;;Vet ej;Ja;Ja;;Ja;Ja;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Nej;PBF;PBF;PBF;PBF;PBF;;Nej
+SH1122;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;Ja;;Ja;;;;Nej
+SH1123;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;;Ja;;;;Nej
+SH1124;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;Ja;Ja;;;;;Nej
+SH1125;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;Ja;;;Ja;PBF;PBF;PBF;Nej;;Nej;;;VetInte;VetInte;Ja;;;;;;ja, konstaterat
+SH1126;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;Ja;;;;;;Vet inte
+SH1127;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;Ja;;;;;;Nej
+SH1128;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;Ja;;;Nej
+SH1129;S;1;Ja;Ja;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;Ja;;;Ja;BesiktigadUtanAnmärkningDatum;;2006;PBF;;Nej;;;Nej;Ja;Ja;;;;;;ja, konstaterat
+SH1130;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Nej;Ja;Ja;;;;;Nej
+SH1131;S;1;Ja;Nej;Nej;Nej;Nej;Ja;PBF;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;Ja;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;Nej;Ja;Ja;;;;;Nej
+SH1132;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;PBF;Ja;;;;;;Nej
+SH1133;S;1;Ja;Ja;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Ja;;;Ja;Ja;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;VetInte;Ja;;;;;;Nej
+SH1134;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;Ja;;Ja;;;;Nej
+SH1135;S;1;Ja;Nej;Nej;Nej;Nej;Ja;elementrör;Nej;;;Nej;;PCB i isolerrutor;;;Ja;;;Ja;;;Ja;;;;Nej;;;;;Nej;Ja;;Ja;;Ja;BesiktigadUtanAnmärkningDatum;;2000;Nej;;Nej;;;VetInte;Ja;Ja;;Ja;;;;ja, konstaterat
+SH1136;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i isolerrutor;;;Ja;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Ja;Ja;Ja;;;;;Nej
+SH1137;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Ja;;Ja;;Nej;DenÄrAldrigBesiktigad;;;Nej;;Nej;;;Ja;Ja;Ja;;Ja;;;;Nej
+SH1138;S;1;Ja;Troligen;Nej;Nej;Ja;Nej;;Nej;;;Nej;;PCB i lysrör;;;;Ja;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;;;Ja;;;Nej
+SH1139;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH1140;S;1;Ja;Nej;Nej;Nej;Troligen;Ja;Väggskivor;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;Ja;Ja;;;;;Vet inte
+SH1141;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH1142;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;Ja;;;;;;ja, konstaterat
+SH1143;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH1144;S;1;Ja;Troligen;Nej;Nej;Ja;Nej;;Nej;;;Ja;;PCB i fogar;Ja;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;Ja;Ja;;;;;ja, konstaterat
+SH1145;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH1146;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;Ja;;;;;;Nej
+SH1147;S;1;Ja;Nej;Nej;Nej;Nej;Ja;Takplattor i källare;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;Nej;;Ja;;Ja;;;Nej
+SH1148;S;1;Ja;Troligen;Nej;Nej;Troligen;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;Ja;Ja;;;;;Vet inte
+SH1149;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;Eternittak i pannrum;Ja;Ja;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;Ja;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;;;Ja;;;Vet inte
+SH1150;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Ja;;Ja;Ja;;PCB i golv;;Ja;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH1151;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH1152;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;;Ja;;Ja;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;Ja;;;;;;Nej
+SH1153;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;Ja;järn/stål;;Nej;;;;;Nej;Ja;Ja;;;Nej;BesiktigadUtanAnmärkningDatum;;1976;Nej;;Nej;;;Ja;Nej;Ja;Ja;;;;;Nej
+SH1154;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;PCB i lysrör;;;;Ja;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;Ja;Ja;;;;;Nej
+SH1155;S;1;Ja;Troligen;Nej;Nej;Troligen;Nej;;Ja;PBF;PBF;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;Ja;;;Nej;DenÄrAldrigBesiktigad;;;Nej;;Nej;;;Ja;Nej;;;;Ja;;;Vet inte
+SH1156;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i annat;;;;;Ja;;;;;;;Vet ej;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;Ja;Ja;;;;;Nej
+SH1157;S;1;Ja;Troligen;Nej;Nej;Ja;Nej;;Nej;;;Nej;;PCB i fogar;Ja;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;Ja;;;;;;ja, konstaterat
+SH1158;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;;Ja;Ja;;;Nej
+SH1159;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;;Ja;;;ja, konstaterat
+SH1160;S;1;Ja;Troligen;Nej;Nej;Troligen;Nej;;Nej;;;PBF;;PCB i golv;;Ja;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;;Ja;;Nej;BesiktigadUtanAnmärkningDatum;;PBF;Nej;;Nej;;;VetInte;Ja;Ja;;;;;;Nej
+SH1161;S;1;Ja;Nej;Nej;Ja;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;VetInte;Ja;;;;;;Nej
+SH1162;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;;;Ja;;;;Nej
+SH1163;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;;Ja;;;;Nej
+SH1164;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;PBF;;;;;Nej;Ja;Ja;;;Ja;BesiktigadUtanAnmärkningDatum;;2005;Nej;;Nej;;;Ja;Nej;Ja;;;;;;Nej
+SH1165;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH1166;S;1;Ja;Troligen;Nej;Nej;Ja;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Ja;PBF;PBF;PBF;PBF;Nej;Ja;Ja;;;Ja;DenÄrAldrigBesiktigad;;;Nej;;Nej;;;Ja;VetInte;Ja;Ja;;;;;Nej
+SH1167;S;1;Ja;Nej;Nej;Nej;Ja;Nej;eternitskivor källare;Nej;;;Nej;;PCB i lysrör;;;;Ja;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;Ja;;;Nej
+SH1168;S;1;Ja;Ja;Nej;Nej;Ja;Nej;;Ja;;Ja;Nej;;PCB i annat;;;;;Ja;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;Ja;;Ja;;Ja;;;Vet inte
+SH2001;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;Ja;;;;;;Vet inte
+SH2002;S;1;Ja;Ja;Nej;Nej;Ja;Ja;ventilationstrumma;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;;Ja;;Ja;;;Troligt
+SH2003;S;1;Ja;Nej;Nej;Nej;Nej;Ja;Eternitkanaler i ventilation;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;Ja;;;;;;Nej;;;;;Nej;Ja;;;Ja;Nej;PBF;PBF;PBF;Nej;;Nej;;;PBF;Ja;Ja;Ja;;;;;Nej
+SH2004;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH2005;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Ja;;;Ja;Ja;Nej;Ja;Ja;;;Ja;BesiktigadUtanAnmärkningDatum;;2007;Nej;;Nej;;;Ja;Nej;Ja;;;;;;ja, konstaterat
+SH2006;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Vet inte
+SH2007;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH2008;S;1;Ja;Nej;Nej;Nej;Nej;Troligen;Enl tekn beskrivn finns eternit.;Nej;;;Nej;;PCB i golv;;Ja;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;;Ja;;;;;Nej
+SH2009;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i annat;;;;;Ja;Ja;;;;;;;PBF;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH2010;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;Ja;;;;;Nej
+SH2011;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;PCB i lysrör;;;;Ja;;Ja;;;;;;;Nej;;;;;Ja;Ja;Ja;;;Ja;BesiktigadUtanAnmärkningDatum;;PBF;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH2012;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i fogar;Ja;;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;Ja;;;Nej;DenÄrAldrigBesiktigad;;;Nej;;Nej;;;Nej;VetInte;Ja;;;;;;Nej
+SH2013;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH2014;S;1;Ja;Nej;Nej;Nej;Nej;Ja;Eternitkanaler i ventilationssystem;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;Ja;;Ja;;;;Vet inte
+SH2015;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;;Ja;;Ja;PBF;PBF;PBF;Nej;;Nej;;;Ja;Ja;;Ja;;;;;Nej
+SH2016;S;1;Ja;Nej;Nej;Nej;Ja;Nej;eternitskivor ;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Ja;;;Ja;Ja;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;Ja;;Ja;;;;Nej
+SH2017;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;VetInte;;Ja;;;;;Nej
+SH2018;S;1;Ja;Troligen;Nej;Nej;Troligen;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Ja;Ja;;;;Nej;Ja;Ja;;;Nej;DenÄrAldrigBesiktigad;;;Nej;;Nej;;;Ja;VetInte;;Ja;;;;;Vet inte
+SH2019;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;Ja;;;;Nej
+SH2020;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Ja;Ja;;;;;;Vet inte
+SH2021;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;;Ja;;;;Vet inte
+SH2022;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH2023;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH2024;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;;Nej;;;PBF;;PCB i fogar;Ja;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;Ja;;;;;;Troligt
+SH2025;S;1;Ja;Nej;Nej;Nej;Nej;Ja;Ventilationskanaler;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;Ja;Ja;;;;;Nej
+SH2026;S;1;Ja;Nej;Nej;Nej;Nej;Ja;Tak, gammalt yttertak är inbyggt;Ja;;Ja;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;Ja;;;;;;Troligt
+SH2027;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Ja;Nej;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH2028;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH2029;S;1;Ja;Troligen;Nej;Nej;Troligen;Troligen;Troligen I några fasadskivor;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;;;Ja;Nej;BesiktigadUtanAnmärkningDatum;;2005;Nej;;Nej;;;VetInte;VetInte;Ja;;;Ja;;;ja, konstaterat
+SH2030;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;Ja;;;;;;Nej
+SH2031;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Nej;;Ja;Ja;;;;ja, konstaterat
+SH2032;S;1;Ja;Nej;Nej;Nej;Nej;Ja;fasad eternit;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH2033;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH2034;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH2035;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;;PCB i isolerrutor;;;Ja;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;;;;Ja;;;Vet inte
+SH2036;S;1;Ja;Nej;Nej;Nej;Nej;Ja;Inner- och yttertak;Ja;;Ja;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;Ja;Ja;;;;;Nej
+SH2037;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH2038;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;"Bild 7 och teknisk beskrivning ""kanaler eternite""";Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Nej;;Ja;;Ja;Ja;bild 6 och 8;ja, konstaterat
+SH2039;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;Ja;;;;;;Nej
+SH2040;S;1;Ja;Nej;Nej;Nej;Nej;Ja;eternit, internit i yttertak och blindbotten;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;;;Vet inte
+SH2041;S;1;Ja;Nej;Nej;Nej;Nej;Troligen;eternitskivor i fasad under fönster;Nej;;;Nej;;PCB i isolerrutor;;;Ja;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH2042;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH2043;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;Ja;;;Ja;BesiktigadUtanAnmärkningDatum;;2006;Nej;;Nej;;;Ja;Nej;Ja;;;;;;Nej
+SH2044;S;1;Ja;Ja;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;Ja;;;Ja;DenÄrAldrigBesiktigad;;;Ja;Ja;Nej;;;Ja;Ja;Ja;;;;;;Nej
+SH2045;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Vet inte
+SH2046;S;1;Ja;Troligen;Nej;Nej;Troligen;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;PBF;Ja;Ja;;;;;;Troligt
+SH2047;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH2048;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Ja;;;Ja;Ja;Ja;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;;Ja;Ja;;;ja, konstaterat
+SH2049;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;;Ja;;;;;Nej
+SH2050;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;PBF;PBF;PBF;PBF;PBF;;Nej
+SH2051;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;;Ja;;Ja;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;Ja;Ja;;;;;Troligt
+SH2052;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH2053;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH2054;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH2055;S;1;Ja;Nej;Nej;Nej;Ja;Ja;PBF;Ja;;Ja;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;;;;Vet inte
+SH2056;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;Ja;Ja;;;;;Vet inte
+SH2057;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH2058;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;;Nej;;;Nej;;PCB i fogar och isolerrutor;Ja;;Ja;;;Ja;;;;;;;Nej;;;;;Nej;Ja;;;Ja;Nej;PBF;PBF;PBF;Nej;;Ja;Ja;Nej;Ja;VetInte;Ja;Ja;;;;;Vet inte
+SH2059;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Ja;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH2060;S;1;Ja;Nej;Nej;Troligen;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Ja;;Ja;;;;;Nej
+SH2061;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Nej;Ja;;;;;;Nej
+SH2062;S;1;Ja;Nej;Nej;Nej;Nej;Ja;Korrigerade takskivor och invändiga släta skivor ;Nej;;;Nej;;PCB i fogar;Ja;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;;;Ja;vet ej;Vet inte
+SH2063;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH2064;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;Ja;;;Ja;BesiktigadUtanAnmärkningDatum;;2007;Nej;;Nej;;;VetInte;VetInte;Ja;;;;;;ja, konstaterat
+SH2065;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;;;Vet inte
+SH2066;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH2067;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;Ja;;;;;;Nej
+SH2068;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;Ja;;;;;;Nej
+SH2069;S;1;Ja;Nej;Nej;Nej;Ja;Ja;vent.kanaler, vinden;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;Ja;;;;;;Vet inte
+SH2070;S;1;Ja;Troligen;Nej;Nej;Ja;Nej;;Nej;;;Nej;;PCB i fogar, golv och annat;Ja;Ja;;;Ja;Ja;;;Ja;;;;Nej;;;;;Nej;Ja;Ja;;;Nej;DenÄrAldrigBesiktigad;;;Nej;;Nej;;;VetInte;Ja;Ja;;;;;;Vet inte
+SH2071;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;Ja;Ja;;;;;Nej
+SH2072;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i lysrör;;;;Ja;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;Ja;;;;;Nej
+SH2073;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;Ja;;;;;;Nej
+SH2074;S;1;Ja;Nej;Nej;Nej;Nej;Ja;Internitskiva i yttervägg;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;Ja;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;Ja;vet ej;Nej
+SH2075;S;1;Ja;Nej;Ja;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;Ja;;;Ja;BesiktigadUtanAnmärkningDatum;;2006;Nej;;Nej;;;Ja;Nej;Ja;Ja;;;;;Vet inte
+SH2076;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH2077;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Nej;Ja;;;;;;Vet inte
+SH2078;S;1;Ja;Troligen;Nej;Nej;Nej;Ja;Självdragskanaler av eternit;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;VetInte;;;Ja;;;;Nej
+SH2079;S;1;Ja;Nej;Nej;Nej;Nej;Ja;luftkanaler;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Ja;;;Ja;Ja;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;VetInte;;;;Ja;;;ja, konstaterat
+SH2080;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i annat;;;;;Ja;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;Ja;;;;;Nej
+SH2081;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;;Nej;;;Nej;;PCB i fogar;Ja;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;;;Ja;okänt;Nej
+SH2082;S;1;Ja;Troligen;Nej;Troligen;Troligen;Nej;;Nej;;;Nej;;PCB i fogar;Ja;;;;;Ja;;;;;;;Ja;;;Ja;Ja;Nej;Ja;Ja;;;Ja;BesiktigadUtanAnmärkningDatum;;2006;Nej;;Nej;;;Ja;VetInte;Ja;;;;;;Vet inte
+SH2083;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;Kakelfix från -73;Nej;;;Nej;;PCB i golv;;Ja;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Ja;;Ja;;;;;Nej
+SH2084;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH2085;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;;Ja;;;;;Nej
+SH2086;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH2087;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;PBF;PBF;PBF;PBF;PBF;PBF;PBF;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH2088;S;1;Ja;Nej;Nej;Nej;Nej;Ja;Tak, ytskikt;Nej;;;Nej;;PCB i lysrör;;;;Ja;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;ja, konstaterat
+SH2089;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i golv;;Ja;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH2090;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;;Ja;;;;Nej
+SH2091;S;1;Ja;Nej;Nej;Nej;Nej;Ja;Övre del av fasad har eternit.;Nej;;;Nej;;PCB i golv;;Ja;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH2092;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH2093;S;1;Ja;Nej;Nej;Nej;Nej;Ja;fasad eternit;Nej;;;Nej;;PCB i fogar och isolerrutor;Ja;;Ja;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH2094;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Ja;PBF;PBF;PBF;PBF;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;Ja;;;;;;Troligt
+SH2095;S;1;Ja;Nej;Nej;Nej;Nej;Ja;Eternitskivor I pannrum;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;Ja;Ja;;;;;Vet inte
+SH2096;S;1;Ja;Nej;Nej;Nej;Nej;Ja;takskivor;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH2097;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;VetInte;;;Ja;;;;Vet inte
+SH2098;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH2099;S;1;Ja;Troligen;Nej;Nej;Nej;Troligen;I fasad enligt teknisk beskrivning.;Nej;;;Nej;;PCB i isolerrutor;;;Ja;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Vet inte
+SH2100;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH2101;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;Ja;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH2102;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;;Nej;;;Nej;;PCB i lysrör;;;;Ja;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Ja;Ja;Ja;;;;;Vet inte
+SH2103;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;i källaren;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH2104;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;;Ja;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH2105;S;1;Ja;Nej;Nej;Nej;Ja;Troligen;;PBF;PBF;PBF;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;PBF;;;;;PBF;Nej;;;;;;;;PBF;;Nej;;;PBF;PBF;;;Ja;Ja;;;Troligt
+SH2106;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH2107;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH2108;S;1;Ja;Nej;Nej;Nej;Troligen;Troligen;Ritningar visar bl.a. på eternitkanaler.;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Ja;PBF;PBF;PBF;PBF;Nej;Ja;Ja;;;Ja;PBF;PBF;PBF;Nej;;Nej;;;VetInte;VetInte;;;;Ja;;;Vet inte
+SH2109;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Ja;;;Ja;Ja;Nej;Ja;Ja;;;Nej;DenÄrAldrigBesiktigad;;;Nej;;Nej;;;Ja;Ja;Ja;Ja;;;;;Nej
+SH2110;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Ja;;Ja;;Ja;BesiktigadUtanAnmärkningDatum;;2005;Nej;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH2111;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;PBF;;Nej;;;Ja;Nej;;Ja;;;;;Vet inte
+SH2112;S;1;Ja;Troligen;Troligen;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Ja;;Ja;Ja;Ja;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;Ja;;Ja;;;;Vet inte
+SH2113;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH2114;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH2115;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;PBF;;;Ja;;;;Nej
+SH2116;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;PBF;;Ja;;;;;Nej
+SH2117;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;självdragskanaler i eternit;Nej;;;Nej;;PCB i lysrör;;;;Ja;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;;Ja;;;Vet inte
+SH2118;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;Ja;;;Nej;BesiktigadUtanAnmärkningDatum;;2006;Nej;;Nej;;;Ja;Nej;Ja;Ja;;;;;Nej
+SH2119;S;1;Ja;Nej;Nej;Nej;Nej;Troligen;I skivor under fönster;Nej;;;Ja;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;Ja;;;;;;Vet inte
+SH2120;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;;Ja;;;;Nej
+SH2121;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i isolerrutor;;;Ja;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;ja, konstaterat
+SH2122;S;1;Ja;Nej;Nej;Nej;Nej;Ja;i  tak samt takbotten;PBF;PBF;PBF;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;;;Vet inte
+SH2123;S;1;Ja;Troligen;Nej;Nej;Ja;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;;Ja;;;Ja;Höganäs, keramik;Nej
+SH2124;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;Ja;;Ja;;;;Nej
+SH2125;S;1;Ja;Troligen;Troligen;Troligen;Ja;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;;;Ja;vet ej;ja, konstaterat
+SH2126;S;1;Ja;Nej;Nej;Nej;Nej;Ja;eternittak ;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;Ja;;;;;;Nej
+SH2127;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;;Ja;;;;Nej
+SH2128;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i fogar;Ja;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;PBF;;Nej;;;VetInte;Nej;;Ja;;;;;Vet inte
+SH2129;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;bild 12 och 13;Nej;;;Nej;;PCB i fogar;Ja;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Nej;;Ja;;;;;Troligt
+SH2130;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;PBF;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH2131;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;Ja;Ja;;;;;Nej
+SH2132;S;1;Ja;Troligen;Nej;Nej;Troligen;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;Ja;Ja;;;;;Vet inte
+SH2133;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH2134;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;ev självdragskanaler, m a p årtal;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;Ja;;;;;;Vet inte
+SH2135;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;PBF;;PCB i golv och isolerrutor;;Ja;Ja;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;;Ja;;;;;Nej
+SH2136;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;;;ja, konstaterat
+SH2137;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;Ja;;;;;;Nej
+SH2138;S;1;Ja;Nej;Nej;Nej;Ja;Nej;Självdragskanaler av eternit finns;Nej;;;Nej;;PCB i lysrör;;;;Ja;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;;;;Ja;;;Vet inte
+SH2139;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;Ja;;Ja;;;;Vet inte
+SH2140;S;1;Ja;Troligen;Nej;Nej;Troligen;Nej;;Nej;;;Nej;;PCB i fogar;Ja;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;Ja;;;;;;Nej
+SH2141;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;Ja;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH2142;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;Ja;;;;;;Nej
+SH2143;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH2144;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;Ja;Ja;;;;;ja, konstaterat
+SH2145;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH2146;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i fogar;Ja;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH2147;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;Ja;;;;;;Troligt
+SH2148;S;1;Ja;Nej;Nej;Nej;Nej;Troligen;rör isolering vattenledning;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;PBF;;Nej;;;VetInte;Nej;;;Ja;;;;Vet inte
+SH2149;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;Ja;;;;;;Nej
+SH2150;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i annat;;;;;Ja;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;;Ja;;;;;Troligt
+SH2151;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;;Ja;;;;;Nej
+SH2152;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Ja;;Ja;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Vet inte
+SH2153;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;Ja;;Ja;;;;Nej
+SH2154;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i fogar;Ja;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Vet inte
+SH2155;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Ja;;PCB i fogar;Ja;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;PBF;PBF;PBF;PBF;PBF;;Nej
+SH2156;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Ja;;;Ja;Ja;PBF;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;ja, konstaterat
+SH2157;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i isolerrutor;;;Ja;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH2158;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;;Ja;Ja;;Nej;;PCB i fogar och golv;Ja;Ja;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;;;Ja;;;;Vet inte
+SH2159;S;1;Ja;Troligen;Nej;Troligen;Nej;Nej;;Nej;;;Nej;;PCB i fogar, isolerrutor, lysrörskondensatorer och annat;Ja;;Ja;Ja;Ja;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;;;Ja;;;Vet inte
+SH2160;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;VetInte;;Ja;;;;;Nej
+SH2161;S;1;Ja;Ja;Nej;Nej;Ja;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;Ja;;;Nej;BesiktigadUtanAnmärkningDatum;;2005;Nej;;Nej;;;Nej;Nej;;Ja;;;Ja;Cementrör;ja, konstaterat
+SH2162;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Vet inte
+SH2163;S;1;Ja;Nej;Nej;Nej;Troligen;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Ja;Ja;;;;;;ja, konstaterat
+SH2164;S;1;Ja;Nej;Nej;Nej;Ja;Ja;Eternite kanaler enligt tekn. och bild 25, 26;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;Ja;;;;;;ja, konstaterat
+SH2165;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Ja;PBF;PBF;PBF;PBF;Ja;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH2166;S;1;Ja;Nej;Nej;Nej;Ja;Nej;;Nej;;;Nej;;PCB i fogar;Ja;;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;;Ja;;Ja;BesiktigadUtanAnmärkningDatum;;2007;Nej;;Nej;;;Ja;Nej;Ja;;;;;;Nej
+SH2167;S;1;Ja;Nej;Nej;Nej;Nej;Ja;Underlagstak, blindbotten fasad av eternit.;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;Ja;;;;;;Nej
+SH2168;S;1;Ja;Nej;Nej;Nej;Nej;Troligen;Mattlim;Ja;;Ja;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;PBF;;;Ja;;;;ja, konstaterat
+SH2169;S;1;Ja;Troligen;Nej;Nej;Troligen;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;Ja;;;Ja;BesiktigadUtanAnmärkningDatum;;2006;Nej;;Nej;;;Nej;Nej;;;Ja;;;;ja, konstaterat
+SH2170;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Vet inte
+SH2171;S;1;Ja;Troligen;Nej;Nej;Troligen;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;;;;Ja;Ja;se bild 10 -12;Vet inte
+SH2172;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;Ja;;;;;;Nej
+SH2173;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH2174;S;1;Ja;Nej;Nej;Nej;Nej;Ja;takbeläggning;Nej;;;PBF;;PCB i fogar;Ja;;;;;Ja;;;Ja;;;;Ja;;Ja;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;Ja;;;;;;Vet inte
+SH2175;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3001;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i isolerrutor;;;Ja;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3002;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3003;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3004;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3005;S;1;Ja;Nej;Nej;Nej;Nej;Ja;Eternit  runt grundsockel;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Ja;;Ja;;;;;Nej
+SH3006;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3007;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;Ja;Ja;;;;Nej
+SH3008;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;;Nej;;;PBF;;PCB i fogar och golv;Ja;Ja;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;Ja;;;Nej;DenÄrAldrigBesiktigad;;;Ja;Nej;Nej;;;Ja;Ja;;Ja;;;;;Nej
+SH3009;S;1;Ja;Nej;Nej;Nej;Nej;Ja;Plastmatta undersida;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3010;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Ja;;PCB i isolerrutor och lysrör;;;Ja;Ja;;Ja;;;;;;;Nej;;;;;Nej;Ja;Ja;;;Nej;DenÄrAldrigBesiktigad;;;Ja;Nej;PBF;;;Ja;Nej;;Ja;;;;;Nej
+SH3011;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Ja;;PCB i fogar;Ja;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3012;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;;Ja;;;;;Nej
+SH3013;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3014;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3015;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3016;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3017;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;PBF;Nej;;Ja;;;;;Nej
+SH3018;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;PBF;;Ja;;;;;Nej
+SH3019;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3020;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3021;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3022;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3023;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3024;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3025;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;VetInte;;Ja;;;;;Nej
+SH3026;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;VetInte;;Ja;;;;;Nej
+SH3027;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3028;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3029;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3030;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Ja;Nej;Nej;VetInte;VetInte;;Ja;;;;;Nej
+SH3031;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;Ja;;;Nej;DenÄrAldrigBesiktigad;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Vet inte
+SH3032;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3033;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;Ja;;;;;Nej
+SH3034;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;Ja;;;;;Nej
+SH3035;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3036;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3037;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH3038;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;Ja;;;;Nej
+SH3039;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;PBF;;Nej;;;VetInte;Nej;;;Ja;;;;Nej
+SH3040;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3041;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;Nej;PBF;PBF;PBF;PBF;PBF;;Nej
+SH3042;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3043;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3044;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3045;S;1;Ja;Nej;Nej;Nej;Nej;Ja;Taket;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;;;Ja;;;;Nej
+SH3046;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3047;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH3048;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;Ja;;;;PBF
+SH3049;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3050;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3051;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3052;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3053;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3054;S;1;Ja;Nej;Nej;Nej;Nej;Ja;i taket;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;PBF;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;Ja;Ja;;;;;Vet inte
+SH3055;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;;Ja;;;;Nej
+SH3056;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i fogar;Ja;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;;Ja;;;;Nej
+SH3057;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3058;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;;Ja;;;;Nej
+SH3059;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;Ja;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;PBF;;Ja;Ja;;;;Vet inte
+SH3060;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3061;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3062;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3063;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3064;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH3065;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3066;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;PBF;Nej;;Ja;;;;;Nej
+SH3067;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3068;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i isolerrutor;;;Ja;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3069;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;Ja;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3070;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH3071;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i isolerrutor och lysrör;;;Ja;Ja;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;ja, konstaterat
+SH3072;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Ja;;Ja;Nej;;PCB i fogar;Ja;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3073;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i golv;;Ja;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH3074;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;Ja;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;Ja;;;;;;Nej
+SH3075;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;Ja;Förmodligen;Vet inte
+SH3076;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;PBF;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3077;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3078;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Ja;Ja;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3079;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;PBF;PBF;PBF;PBF;PBF;PBF;PBF;PBF;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3080;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3081;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;PBF;PBF;PBF;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;PBF;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;Ja;;;;;Nej
+SH3082;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3083;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i lysrör;;;;Ja;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3084;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i golv;;Ja;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH3085;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3086;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3087;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3088;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH3089;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i lysrör;;;;Ja;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;PBF;;Nej;;;Ja;Nej;;Ja;;;;;Vet inte
+SH3090;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3091;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;Ja;;;;;Nej
+SH3092;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3093;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;Ja;Ja;;;;;Vet inte
+SH3094;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;Vet ej;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;PBF;;Ja;;;;;Nej
+SH3095;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;PCB i fogar;Ja;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;Ja;Ja;;;;Nej
+SH3096;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3097;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3098;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i fogar;Ja;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;PBF;;Nej;;;VetInte;Nej;;;Ja;;;;Vet inte
+SH3099;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3100;S;1;Ja;Nej;Nej;Nej;Nej;Ja;Eternittak utvändigt och internit invändigt vind;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3101;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i lysrör;;;;Ja;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;Ja;;;;;Nej
+SH3102;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;Ja;;Ja;;;;Nej
+SH3103;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;Ja;;;;Nej
+SH3104;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3105;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i golv;;Ja;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH3106;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3107;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3108;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;;Ja;;Ja;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3109;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3110;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3111;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;Ja;Ja;Ja;;;;Vet inte
+SH3112;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3113;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;Ja;;;;Nej
+SH3114;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;PBF
+SH3115;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH3116;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i annat;;;;;Ja;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3117;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;Nej;Ja;Ja;;;;;Nej
+SH3118;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;PCB i lysrör;;;;Ja;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH3119;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3120;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;Ja;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3121;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Ja;;PCB i golv och isolerrutor;;Ja;Ja;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH3122;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3123;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH3124;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;Ja;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;Ja;Ja;;;;Nej
+SH3125;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3126;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;Ja;;;;;Nej
+SH3127;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3128;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;Ja;;;;;Nej
+SH3129;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i lysrör;;;;Ja;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH3130;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Ja;Ja;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;;;Ja;;;;Nej
+SH3131;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;;Ja;;;;;Nej
+SH3132;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Ja;;PCB i isolerrutor;;;Ja;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3133;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3134;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3135;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i isolerrutor;;;Ja;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3136;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH3137;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3138;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;;Ja;;;;;Nej
+SH3139;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3140;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH3141;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3142;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3143;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;;;;;Ja;Prisolrör;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3144;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;Ja;Ja;;;;;Nej
+SH3145;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Ja;Ja;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3146;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3147;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;Nej;;Ja;;;;;Nej
+SH3148;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH3149;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Ja;Ja;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Ja;;;Ja;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;Ja;;;;;Nej
+SH3150;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3151;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;Nej;;Ja;;;;;Nej
+SH3152;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;Ja;Ja;;;;Nej
+SH3153;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Vet inte
+SH3154;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;Ja;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3155;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3156;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3157;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Ja;Ja;;;Ja;BesiktigadMedAnmärkningDatum;2007;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3158;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;;Ja;;;;Nej
+SH3159;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3160;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3161;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH3162;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;Ja;;;;;Nej
+SH3163;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i isolerrutor;;;Ja;;;;;;;Ja;PEX;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH3164;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH3165;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Vet inte
+SH3166;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;Nej;;Ja;;;;;Nej
+SH3167;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;PBF;;Ja;;;;;Nej
+SH3168;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;PBF;PBF;;Ja;;;;;Nej
+SH4001;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4002;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;PBF;;Nej;;;Ja;Nej;;Ja;Ja;;;;Nej
+SH4003;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4004;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4005;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4006;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4007;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4008;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;PBF;PBF;PBF;PBF;PBF;PBF;PBF;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4009;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4010;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4011;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4012;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH4013;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4014;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;PBF;Nej;;Ja;;;;;Nej
+SH4015;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH4016;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4017;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;Ja;;;;Nej
+SH4018;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4019;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i golv;;Ja;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4020;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4021;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4022;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4023;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4024;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4025;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4026;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;PBF;PBF;PBF;PBF;PBF;PBF;PBF;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4027;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4028;S;2;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4029;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4030;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Ja;;Ja;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4031;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH4032;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4033;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH4034;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4035;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;VetInte;;Ja;;;;;Nej
+SH4036;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Ja;;Ja;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4037;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Ja;PBF;PBF;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4038;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH4039;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i isolerrutor;;;Ja;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;;Ja;;;;Nej
+SH4040;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4041;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;Ja;;;;Nej
+SH4042;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4043;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4044;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH4045;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4046;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;PBF;PBF;;Ja;;;;;Nej
+SH4047;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Ja;Ja;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;Ja;Ja;Ja;Ja;;;Nej
+SH4048;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4049;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH4050;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4051;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4052;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4053;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Ja;Ja;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4054;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH4055;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Ja;Ja;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4056;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;Ja;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH4057;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4058;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;;;Ja;vet ej;Nej
+SH4059;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4060;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4061;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4062;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4063;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;Ja;;;;Vet inte
+SH4064;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4065;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4066;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4067;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;PBF;PBF;PBF;PBF;;Saknas uppgift;;;;;;PBF;PBF;PBF;PBF;PBF;PBF;PBF;PBF;;;;;PBF;PBF;;;;;;;;PBF;;PBF;;;PBF;PBF;PBF;PBF;PBF;PBF;PBF;;PBF
+SH4068;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4069;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH4070;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4071;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i lysrör;;;;Ja;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4072;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4073;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4074;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4075;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4076;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;VetInte;PBF;PBF;PBF;PBF;PBF;;Nej
+SH4077;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH4078;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4079;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4080;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4081;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH4082;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Ja;;;Ja;;;;Nej
+SH4083;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;Ja;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;Ja;;Ja;;;;Nej
+SH4084;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Ja;Nej;;Ja;Ja;;;;Nej
+SH4085;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH4086;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4087;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i lysrör;;;;Ja;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Ja;Ja;;Ja;;;;;Nej
+SH4088;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4089;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;PCB i fogar;Ja;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4090;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4091;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4092;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4093;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Ja;Ja;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH4094;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4095;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4096;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;VetInte;;Ja;;;;;Nej
+SH4097;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4098;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;VetInte;;Ja;;;;;Nej
+SH4099;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;Nej;;Ja;;;;;Nej
+SH4100;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH4101;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4102;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4103;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4104;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4105;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4106;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4107;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH4108;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Ja;Nej;;Ja;;;;;Nej
+SH4109;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4110;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4111;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4112;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4113;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;;;Ja;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH4114;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4115;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4116;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4117;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH4118;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH4119;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH4120;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4121;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4122;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;PBF;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4123;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4124;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4126;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;PBF;;Ja;;;;;Nej
+SH4127;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4128;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH4129;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4130;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4131;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH4132;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH4133;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4134;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH4135;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Ja;Ja;;Nej;;Saknas uppgift;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;VetInte;;;Ja;;;;Nej
+SH4136;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4137;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Ja;;Ja;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4138;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4139;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Ja;Ja;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4140;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;VetInte;;Ja;;;;;Nej
+SH4141;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;PBF;;Ja;;;;;Nej
+SH4142;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4143;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4144;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH4145;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4146;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH4147;S;1;Ja;Troligen;Nej;Nej;Nej;Nej;;Nej;;;PBF;;PCB i golv;;Ja;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH4148;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Ja;Ja;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;Nej;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH4149;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH4150;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;Ja;;;;;;Nej;;;;;Ja;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4151;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4152;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH4153;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4154;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH4155;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;Ja;;;;;Nej
+SH4156;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH4157;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH5001;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;PBF;PBF;PBF;PBF;;Saknas uppgift;;;;;;PBF;PBF;PBF;PBF;PBF;PBF;PBF;PBF;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH5002;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5003;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5004;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5005;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5006;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5007;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5008;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5009;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5010;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5011;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5012;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;Ja;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH5013;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5014;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5015;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5016;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5017;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5018;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;PBF;PBF;PBF;PBF;PBF;PBF;PBF;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH5019;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;VetInte;;;Ja;;;;Nej
+SH5020;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5021;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5022;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5023;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;PBF;PBF;PBF;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5024;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5025;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5026;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5027;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5028;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5029;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5030;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;VetInte;;Ja;;;;;Nej
+SH5031;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Ja;;Ja;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5032;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH5033;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5034;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH5035;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Ja;;Ja;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Ja;Ja;;Ja;Ja;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5036;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH5037;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;Ja;;;;;;Nej;;;;;Nej;PBF;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH5038;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH5039;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5040;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5041;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;Ja;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5042;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5043;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5044;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;Nej;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5045;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;PBF;Nej;;Ja;;;;;Nej
+SH5046;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;PBF;PBF;PBF;PBF;;Saknas uppgift;;;;;;PBF;PBF;PBF;PBF;PBF;PBF;PBF;PBF;;;;;PBF;PBF;;;;;;;;PBF;;PBF;;;PBF;PBF;PBF;PBF;PBF;PBF;PBF;;PBF
+SH5047;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH5048;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5049;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH5050;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;Ja;Prisolrör;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5051;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5052;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;;Ja;;;;Nej
+SH5053;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;PBF;;Ja;;;;;Nej
+SH5054;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5055;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5056;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5057;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5058;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5059;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;PBF;PBF;;;Ja;;;;Nej
+SH5060;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5061;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;PBF;PBF;;Ja;;;;;Nej
+SH5062;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5063;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5064;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5065;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Ja;;Ja;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5066;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5067;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH5068;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH5069;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH5070;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Ja;;Ja;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5071;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5072;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH5073;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;PBF;PBF;PBF;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;PBF;PBF;;Ja;;;;;Nej
+SH5074;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5075;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5076;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH5077;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5078;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5079;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5080;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5081;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5082;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5083;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;Ja;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;PBF;PBF;;Ja;;;;;Nej
+SH5084;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Ja;PBF;PBF;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5085;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;PBF;PBF;PBF;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5086;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;;;;;;;Vet ej;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5087;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5088;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5089;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5090;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;PBF;;;Nej;Nej;;;Ja;;;;Nej
+SH5091;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5092;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5093;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;;;;;;;Vet ej;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;VetInte;;;Ja;;;;Nej
+SH5094;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5095;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;;;Ja;PP;Nej
+SH5096;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;Ja;;;;Nej
+SH5097;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5098;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Ja;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5099;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5100;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH5101;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5102;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5103;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5104;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5105;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5106;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;Ja;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH5107;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5108;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5109;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;;Ja;;;;ja, konstaterat
+SH5110;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5111;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Ja;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5112;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5113;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5114;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5115;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5116;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5117;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5118;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5119;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5120;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5121;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5122;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH5123;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5124;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5125;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;Ja;;;;;Nej
+SH5126;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;PBF;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5127;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5128;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5129;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5130;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5131;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5132;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5133;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5134;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5135;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;;Ja;;;;Nej
+SH5136;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;VetInte;;;Ja;;;;Nej
+SH5137;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH5138;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5139;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH5140;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5141;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;Ja;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5142;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;PBF;;Nej;;;VetInte;VetInte;;Ja;;;;;Nej
+SH5143;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;Ja;;Ja;;;;Nej
+SH5144;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5145;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5146;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;;;;Ja;Ja;lite koppar;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5147;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5148;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;Ja;;;;Nej
+SH5149;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;PBF;Nej;;Ja;;;;;Nej
+SH5150;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5151;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5152;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5153;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;;;;;;;Vet ej;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;PBF;PBF;;Ja;;;;;Nej
+SH5154;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;;;Ja;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;VetInte;Nej;;Ja;;;;;Nej
+SH5155;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5156;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;Ja;;;;;Nej
+SH5157;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;;Saknas uppgift;;;;;;Ja;;;;;;;Nej;;;;;Ja;Nej;;;;;;;;Nej;;Nej;;;Nej;Nej;;;Ja;;;;Nej
+SH5158;S;1;Nej;Nej;Nej;Nej;Nej;Nej;;Nej;;;Nej;Ja;Inget PCB funnet;;;;;;Ja;;;;;;;Nej;;;;;Nej;Nej;;;;;;;;Nej;;Nej;;;Nej;PBF;;;Ja;;;;Nej

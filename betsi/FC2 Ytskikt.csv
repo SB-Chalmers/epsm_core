@@ -1,0 +1,80 @@
+Byggnad;Hustyp;Ytskikt åtgärd;FC2 Ytskikt annat vad;FC2 Ytskikt orsak till åtgärd;FC2 Ytskikt lgh;FC2 Ytskikt kvm;FC2 Ytskikt styck;FC2 Ytskikt timmar;FC2 Ytskikt tid för åtgärd;FC2 Ytskikt år för upptäckt;FC2 Ytskikt antal foton;FC2 Ytskikt foto fr_o_m_;FC2 Ytskikt foto t_o_m_;FC2 Kostnad åtgärd ytskikt;id
+SH1007;S;11 - Nya ytskikt tak och väggar invändigt, m²;källare;5 - Lossnande delar ;;54;;;Snarast;2007;2;1;2;5508;12
+SH1010;S;11 - Nya ytskikt tak och väggar invändigt, m²;;8 - Slitage och åverkan;;35;;;Längre fram;;;;;3570;80
+SH1013;S;18 - Torkning vattenskada;;Fuktskada pga vattenskada;;;1;;Inom 1-3 år;;;;;5000;177
+SH1013;S;4 - Byte cementmosaikgolv, klinkergolv, naturstensgolv, m²;;Fuktskada pga vattenskada;;20;;;Inom 1-3 år;;;;;31500;37
+SH1029;S;11 - Nya ytskikt tak och väggar invändigt, m²;;4 - Kraftig utseendeförändring (missfärgning);;224;;;Längre fram;2007;1;18;19;22848;86
+SH1035;S;13 - Byte köksinredning + renovering;;8 - Slitage och åverkan;;;1;;Inom 1-3 år;;;;;50000;11
+SH1055;S;9 - Byte av plastmattor/linoleum/textilgolv/laminat, m²;byte golv;8 - Slitage och åverkan;;22;;;Inom 1-3 år;;;;;10010;36
+SH1058;S;11 - Nya ytskikt tak och väggar invändigt, m²;Renovera ovanvåning;8 - Slitage och åverkan;;151;;;Inom 1-3 år;;;;;15402;34
+SH1063;S;11 - Nya ytskikt tak och väggar invändigt, m²;Uppfräschningar av ytskikt i källaren;8 - Slitage och åverkan;;30;;;Inom 1-3 år;2007;;;;3060;75
+SH1071;S;11 - Nya ytskikt tak och väggar invändigt, m²;Helrenovering;8 - Slitage och åverkan;;407;;;Inom 1-3 år;;;;;41514;2
+SH1077;S;11 - Nya ytskikt tak och väggar invändigt, m²;Generellt slitage-underhåll;8 - Slitage och åverkan;;360;;;Längre fram;2007;;;;36720;62
+SH1079;S;11 - Nya ytskikt tak och väggar invändigt, m²;Generellt alla ytskikt invändigt behöver förnyas;8 - Slitage och åverkan;;479;;;Inom 1-3 år;;;;;48858;51
+SH1080;S;11 - Nya ytskikt tak och väggar invändigt, m²;;8 - Slitage och åverkan;;205;;;Inom 1-3 år;;;;;20910;35
+SH1081;S;11 - Nya ytskikt tak och väggar invändigt, m²;;8 - Slitage och åverkan;;550;;;Inom 1-3 år;;;;;56100;1
+SH1086;S;13 - Byte köksinredning + renovering;;8 - Slitage och åverkan;;;1;;Inom 1-3 år;;;;;50000;18
+SH1125;S;11 - Nya ytskikt tak och väggar invändigt, m²;;8 - Slitage och åverkan;;360;;;Inom 1-3 år;;;;;36720;3
+SH1129;S;13 - Byte köksinredning + renovering;målning, nytt kök 200.000kr;8 - Slitage och åverkan;;;1;;Inom 1-3 år;;;;;200000;9
+SH1151;S;9 - Byte av plastmattor/linoleum/textilgolv/laminat, m²;;8 - Slitage och åverkan;;40;;;Snarast;2007;;;;18200;17
+SH1157;S;9 - Byte av plastmattor/linoleum/textilgolv/laminat, m²;;8 - Slitage och åverkan;;40;;;Inom 1-3 år;;;;;18200;87
+SH2025;S;9 - Byte av plastmattor/linoleum/textilgolv/laminat, m²;Byte av golv i kök.;8 - Slitage och åverkan;;20;;;Inom 1-3 år;;;;;9100;81
+SH2043;S;11 - Nya ytskikt tak och väggar invändigt, m²;allt;8 - Slitage och åverkan;;432;;;Inom 1-3 år;;;;;44064;5
+SH2053;S;13 - Byte köksinredning + renovering;Nya köksinredning;8 - Slitage och åverkan;;;1;;Inom 1-3 år;2007;;;;50000;63
+SH2060;S;11 - Nya ytskikt tak och väggar invändigt, m²;;8 - Slitage och åverkan;;425;;;Inom 1-3 år;;;;;43350;4
+SH2065;S;11 - Nya ytskikt tak och väggar invändigt, m²;Hela bostaden;8 - Slitage och åverkan;;479;;;Längre fram;;;;;48858;70
+SH2067;S;13 - Byte köksinredning + renovering;Modernisering;8 - Slitage och åverkan;;;1;;Inom 1-3 år;2006;;;;50000;28
+SH2071;S;13 - Byte köksinredning + renovering;byte köksinredning;8 - Slitage och åverkan;;;1;;Inom 1-3 år;;;;;50000;13
+SH2109;S;13b - Nya vitvaror i kök;Kök: Nya vitvaror ;8 - Slitage och åverkan;;;1;;Snarast;;;;;22990;40
+SH2119;S;6 - Byte trägolv, m²;;8 - Slitage och åverkan;;80;;;Inom 1-3 år;2007;;;;48000;29
+SH2123;S;14 - Byte innerdörrar;Byte innerdörrar;8 - Slitage och åverkan;;;3;;Snarast;2007;;;;12720;64
+SH2126;S;11 - Nya ytskikt tak och väggar invändigt, m²;;8 - Slitage och åverkan;;100;;;Inom 1-3 år;2007;1;13;;10200;19
+SH2141;S;13 - Byte köksinredning + renovering;Köksrenovering;8 - Slitage och åverkan;;;1;;Snarast;;;;;50000;72
+SH2156;S;11 - Nya ytskikt tak och väggar invändigt, m²;;8 - Slitage och åverkan;;842;;;Inom 1-3 år;;;;;85884;6
+SH2164;S;11 - Nya ytskikt tak och väggar invändigt, m²;;7 - Sprickor;;85;;;Inom 1-3 år;2007;4;12;16;8670;76
+SH3008;S;11 - Nya ytskikt tak och väggar invändigt, m²;Nya ytskikt - kök;8 - Slitage och åverkan;;42;;;Snarast;;;;;4284;43
+SH3008;S;13 - Byte köksinredning + renovering;Ny köksinredning komplett.;8 - Slitage och åverkan;;;1;;Snarast;;;;;50000;42
+SH3008;S;13b - Nya vitvaror i kök;Köket: Ny ugn, häll, köksfläkt;8 - Slitage och åverkan;;;1;;Inom 1-3 år;;;;;22990;44
+SH3021;S;11 - Nya ytskikt tak och väggar invändigt, m²;;8 - Slitage och åverkan;;565;;;Längre fram;2007;;;;57630;82
+SH3053;S;13 - Byte köksinredning + renovering;Renovering av kök;8 - Slitage och åverkan;;10;1;;Inom 1-3 år;;;;;50000;30
+SH3086;S;13b - Nya vitvaror i kök;byte vitvaror;8 - Slitage och åverkan;;;1;;Inom 1-3 år;;;;;22990;14
+SH3088;S;11 - Nya ytskikt tak och väggar invändigt, m²;;8 - Slitage och åverkan;;250;;;Inom 1-3 år;2006;;;;25500;78
+SH3118;S;11 - Nya ytskikt tak och väggar invändigt, m²;;8 - Slitage och åverkan;1;750;;;Längre fram;2007;;;;76500;77
+SH3133;S;11 - Nya ytskikt tak och väggar invändigt, m²;;8 - Slitage och åverkan;;230;;;Längre fram;;;;;23460;83
+SH3135;S;6 - Byte trägolv, m²;;8 - Slitage och åverkan;;80;;;Inom 1-3 år;;;;;48000;23
+SH3140;S;17 - Lagning och målning trappa trä, styck;;8 - Slitage och åverkan;;;1;;Inom 1-3 år;;;;;10176;32
+SH3142;S;13 - Byte köksinredning + renovering;;8 - Slitage och åverkan;;;1;;Längre fram;;;;;50000;38
+SH3146;S;13 - Byte köksinredning + renovering;;8 - Slitage och åverkan;;;1;;Inom 1-3 år;;;;;50000;88
+SH3151;S;13 - Byte köksinredning + renovering;;8 - Slitage och åverkan;;;1;;Inom 1-3 år;;;;;50000;15
+SH3157;S;11 - Nya ytskikt tak och väggar invändigt, m²;Underhåll tvättstuga + golv;8 - Slitage och åverkan;;30;;;Inom 1-3 år;;;;;3060;46
+SH3161;S;17 - Lagning och målning trappa trä, styck;och tapetsera om;8 - Slitage och åverkan;;;1;;Snarast;;;;;10176;22
+SH4003;S;12 - Mögelsanering tak och väggar invändigt, m²;;Fuktskada klimat;;9;;;Snarast;;;;;3060;175
+SH4017;S;13 - Byte köksinredning + renovering;;8 - Slitage och åverkan;;;1;;Snarast;2007;;;;50000;92
+SH4018;S;13b - Nya vitvaror i kök;Utbyte av vitvaror;8 - Slitage och åverkan;;;1;;Längre fram;;;;;22990;56
+SH4020;S;6 - Byte trägolv, m²;nya golv;8 - Slitage och åverkan;;84;;;Inom 1-3 år;;;;;50400;39
+SH4025;S;13 - Byte köksinredning + renovering;Köksrenovering;8 - Slitage och åverkan;;;1;;Längre fram;;;;;50000;25
+SH4032;S;13 - Byte köksinredning + renovering;;8 - Slitage och åverkan;;;1;;Inom 1-3 år;;;;;50000;85
+SH4037;S;6 - Byte trägolv, m²;Bygga om sovrum, nya ytskikt;8 - Slitage och åverkan;;13;;;Inom 1-3 år;;;;;7800;26
+SH4038;S;13 - Byte köksinredning + renovering;ORSAK underhåll;8 - Slitage och åverkan;;;1;;Inom 1-3 år;2004;;;;50000;66
+SH4038;S;6 - Byte trägolv, m²;nytt parkettgolv ö.v. ORSAK underhåll;8 - Slitage och åverkan;;80;;;Inom 1-3 år;2004;;;;48000;65
+SH4043;S;11 - Nya ytskikt tak och väggar invändigt, m²;;8 - Slitage och åverkan;;50;;;Inom 1-3 år;;;;;5100;84
+SH4070;S;13 - Byte köksinredning + renovering;;8 - Slitage och åverkan;;;1;;Inom 1-3 år;2007;;;;50000;89
+SH4089;S;11 - Nya ytskikt tak och väggar invändigt, m²;renovering 2 st sovrum - underhåll;8 - Slitage och åverkan;;84;;;Inom 1-3 år;;;;;8568;10
+SH4091;S;11 - Nya ytskikt tak och väggar invändigt, m²;;8 - Slitage och åverkan;;288;;;Inom 1-3 år;;;;;29376;20
+SH4094;S;11 - Nya ytskikt tak och väggar invändigt, m²;ommålning;8 - Slitage och åverkan;1;450;;;Inom 1-3 år;;;;;45900;16
+SH4095;S;11 - Nya ytskikt tak och väggar invändigt, m²;ommålning av köket;8 - Slitage och åverkan;;42;;;Inom 1-3 år;;;;;4284;24
+SH4110;S;11 - Nya ytskikt tak och väggar invändigt, m²;;8 - Slitage och åverkan;;450;;;Inom 1-3 år;;;;;45900;7
+SH4114;S;11 - Nya ytskikt tak och väggar invändigt, m²;;8 - Slitage och åverkan;1;400;;;Inom 1-3 år;2007;;;;40800;79
+SH4131;S;13 - Byte köksinredning + renovering;På sikt utbyte av kök;8 - Slitage och åverkan;;;1;;Längre fram;;;;;50000;47
+SH4138;S;13 - Byte köksinredning + renovering;renovering av kök;8 - Slitage och åverkan;;;1;;Inom 1-3 år;2007;;;;50000;31
+SH4147;S;13 - Byte köksinredning + renovering;NB: Kök nya snickerier;8 - Slitage och åverkan;;;1;;Inom 1-3 år;;;;;50000;54
+SH4147;S;13b - Nya vitvaror i kök;Totalt utbyte:Nya vitvaror ;8 - Slitage och åverkan;;;1;;Inom 1-3 år;;;;;22990;55
+SH4149;S;8 - Reparation trägolv, m²;;8 - Slitage och åverkan;;20;;;Inom 1-3 år;2007;1;;5;3880;91
+SH4149;S;9 - Byte av plastmattor/linoleum/textilgolv/laminat, m²;Trasiga golvmattor;5 - Lossnande delar ;;106;;;Snarast;2006;5;5;9;48230;90
+SH4151;S;12 - Mögelsanering tak och väggar invändigt, m²;åtgärda fukt utslag på innertak i sovrum -;Fuktskada pga vattenskada;;12;;;Snarast;;1;;;4080;155
+SH4151;S;18 - Torkning vattenskada;åtgärda fukt utslag på innertak i sovrum -;Fuktskada pga vattenskada;;;1;;Snarast;;;;;5000;180
+SH5042;S;4 - Byte cementmosaikgolv, klinkergolv, naturstensgolv, m²;Omläggning av klinker ;5 - Lossnande delar ;;90;;;Inom 1-3 år;2005;;;;141750;27
+SH5077;S;11 - Nya ytskikt tak och väggar invändigt, m²;Ommålning / Tapetsering;8 - Slitage och åverkan;;440;;;Inom 1-3 år;;;;;44880;45
+SH5081;S;13b - Nya vitvaror i kök;Nya vitvaror;8 - Slitage och åverkan;;;1;;Inom 1-3 år;;;;;22990;60
+SH5081;S;9 - Byte av plastmattor/linoleum/textilgolv/laminat, m²;Nya golvytskikt;8 - Slitage och åverkan;;80;;;Inom 1-3 år;;;;;36400;59
+SH5146;S;11 - Nya ytskikt tak och väggar invändigt, m²;;8 - Slitage och åverkan;;479;;40;Inom 1-3 år;2007;18;6;23;48858;58

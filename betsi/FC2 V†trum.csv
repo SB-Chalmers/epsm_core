@@ -1,0 +1,128 @@
+Byggnad;Hustyp;FC2 Våtrum åtgärd;FC2 Våtrum annat vad;FC2 Våtrum orsak till åtgärd;FC2 Våtrum kvm;FC2 Våtrum styck;FC2 Våtrum timmar;FC2 Våtrum tid för åtgärd;FC2 Våtrum år för upptäckt;FC2 Våtrum antal foton;FC2 Våtrum foto fr_o_m_;FC2 Våtrum foto t_o_m_;FC2 Kostnad åtgärd våtrum;id
+SH1001;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;4;1;;Inom 1-3 år;2007;;;;49038;104
+SH1007;S;7 - Utbyte av skadade väggdelar, nytt tätskikt och ytmaterial, m²;Tvättstuga, kakel/PVC;5 - Slitage och åverkan;21;;;Snarast;2007;2;3;4;31040;21
+SH1011;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;4 - Dåliga tätskikt;;1;;Snarast;9999;1;5;5;49038;53
+SH1021;S;5 - Ny våtrumsmatta golv eller vägg, m²;;1 - Underhåll;16;;;Inom 1-3 år;2007;2;8;9;7936;108
+SH1024;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;6;1;;Inom 1-3 år;9999;;;;49038;22
+SH1025;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;;1;;Inom 1-3 år;9999;;;;49038;13
+SH1026;S;5 - Ny våtrumsmatta golv eller vägg, m²;;5 - Slitage och åverkan;25;;;Snarast;2007;;;;12400;42
+SH1029;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;3 - Spräckt sanitetsporslin eller nedslitna ytskikt (badkar, tvättfat);;1;;Längre fram;9999;1;17;17;49038;125
+SH1030;S;5 - Ny våtrumsmatta golv eller vägg, m²;;1 - Underhåll;22;;;Längre fram;9999;;;;10912;36
+SH1037;S;6 - Nytt tätskikt och kakel/klinker, m²;kakel/klinker;4 - Dåliga tätskikt;16;;;Inom 1-3 år;9999;4;9;13;18336;70
+SH1038;S;5 - Ny våtrumsmatta golv eller vägg, m²;;1 - Underhåll;12;;;Inom 1-3 år;9999;;;;5952;20
+SH1043;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;;1;;Längre fram;2007;;;;49038;123
+SH1048;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;4 - Dåliga tätskikt;;1;;Snarast;2007;;;;49038;119
+SH1052;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;;2;;Längre fram;9999;;;;98076;105
+SH1053;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;;2;;Längre fram;9999;;;;98076;124
+SH1057;S;6 - Nytt tätskikt och kakel/klinker, m²;byte av ytskikt, halvkakel/klinker;1 - Underhåll;30;;;Längre fram;2007;;;;34380;72
+SH1063;S;4a - Nya tvättmaskiner, torktumlare och torkskåp;Renovering med nya ytskikt i tvättstuga;5 - Slitage och åverkan;10;1;;Snarast;2007;;;;13370;106
+SH1077;S;5 - Ny våtrumsmatta golv eller vägg, m²;Nytt golv o väggmaterial;1 - Underhåll;24;;;Inom 1-3 år;2007;;;;11904;90
+SH1080;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);Finns inget våtrum byggas om man skall bo där;Standardhöjande;;1;;Inom 1-3 år;9999;;;;49038;55
+SH1082;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);Kolla Atemp + antal bad;1 - Underhåll;32;;;Längre fram;2007;;;;99999;131
+SH1086;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;4;1;;Inom 1-3 år;9999;;;;49038;34
+SH1089;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;;1;;Inom 1-3 år;9999;;;;49038;64
+SH1103;S;5 - Ny våtrumsmatta golv eller vägg, m²;;1 - Underhåll;24;;;Inom 1-3 år;9999;;;;11904;66
+SH1111;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;4 - Dåliga tätskikt;;1;;Inom 1-3 år;9999;;12;14;49038;12
+SH1112;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);Avser badrum, bottenvåning.;4 - Dåliga tätskikt;;1;;Snarast;9999;;;;49038;120
+SH1115;S;3 - Byte sanitetsporslin våtrum (badkar, WC-stol, tvättfat, blandare);;1 - Underhåll;3,2;;;Snarast;2007;3;9;11;8000;107
+SH1120;S;3 - Byte sanitetsporslin våtrum (badkar, WC-stol, tvättfat, blandare);Speciellt högre toalett;1 - Underhåll;;1;;Snarast;2007;2;10;11;17890;109
+SH1125;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;;1;;Inom 1-3 år;9999;;;;49038;3
+SH1129;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);200,00 kr;1 - Underhåll;;1;;Inom 1-3 år;9999;;;;49038;14
+SH1136;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;6;1;;Längre fram;2002;;;;49038;41
+SH1137;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;;1;;Inom 1-3 år;2001;;;;49038;39
+SH1139;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);Nytt duschrum på plan 2;4 - Dåliga tätskikt;8;1;;Snarast;2007;1;8;8;49038;35
+SH1141;S;5 - Ny våtrumsmatta golv eller vägg, m²;;1 - Underhåll;48;2;;Inom 1-3 år;2007;;;;23808;126
+SH1147;S;6 - Nytt tätskikt och kakel/klinker, m²;;1 - Underhåll;8;;;Inom 1-3 år;9999;;;;9168;118
+SH1157;S;6 - Nytt tätskikt och kakel/klinker, m²;;6 - Otäthet mellan golvbrunn och golvmaterial;20;;;Snarast;9999;1;6;;22920;127
+SH1161;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;5 - Slitage och åverkan;;1;;Inom 1-3 år;9999;;;;49038;19
+SH1164;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;6;1;;Inom 1-3 år;9999;;;;49038;56
+SH1167;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;;1;;Inom 1-3 år;2005;;;;49038;128
+SH1168;S;10 - Torkning vattenskada;väggmatta/PVC;Fuktskada pga vattenskada;;1;;Snarast;2007;;;;5000;230
+SH1168;S;7 - Utbyte av skadade väggdelar, nytt tätskikt och ytmaterial, m²;väggmatta/PVC;Fuktskada pga vattenskada;2;;;Snarast;2007;1;16;;2480;136
+SH2014;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;4;1;;Längre fram;9999;;;;49038;121
+SH2015;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;5 - Slitage och åverkan;;1;;Inom 1-3 år;9999;;10;14;49038;4
+SH2032;S;5 - Ny våtrumsmatta golv eller vägg, m²;nytt golv + tapet, tvätt. 10.000kr;1 - Underhåll;24;;;Inom 1-3 år;9999;;;;10000;17
+SH2043;S;5 - Ny våtrumsmatta golv eller vägg, m²;;1 - Underhåll;48;2;;Inom 1-3 år;9999;;;;23808;5
+SH2053;S;5 - Ny våtrumsmatta golv eller vägg, m²;Nya ytskikt-våtrumsmatta+pvc-golv;1 - Underhåll;24;;;Inom 1-3 år;2007;;;;11904;92
+SH2059;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;;1;;Inom 1-3 år;2000;;;;49038;129
+SH2070;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;5;1;;Snarast;9999;3;10;12;49038;138
+SH2071;S;10 - Torkning vattenskada;;Fuktskada pga vattenskada;;1;;snarast;2007;;;;5000;224
+SH2071;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;Fuktskada pga vattenskada;;1;;Snarast;2007;;;;49038;23
+SH2081;S;6 - Nytt tätskikt och kakel/klinker, m²;i tvättstuga, ytskikt från 1967;1 - Underhåll;4;;;Längre fram;9999;;;;4584;74
+SH2082;S;6 - Nytt tätskikt och kakel/klinker, m²;;6 - Otäthet mellan golvbrunn och golvmaterial;2;;;Snarast;2007;1;6;;2292;98
+SH2084;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;5;1;;Inom 1-3 år;9999;;;;49038;133
+SH2105;S;10 - Torkning vattenskada;tvättstuga. tidigare läckage, golvbrunn i högpunkt;Fuktskada pga vattenskada;;1;;Snarast;9999;;;;5000;223
+SH2105;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);tvättstuga. tidigare läckage, golvbrunn i högpunkt;Fuktskada pga vattenskada;;1;;Snarast;9999;;6;7;49038;6
+SH2109;S;3 - Byte sanitetsporslin våtrum (badkar, WC-stol, tvättfat, blandare);Nytt porslin i våtrum;5 - Slitage och åverkan;;1;;Inom 1-3 år;;;;;17890;10
+SH2117;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;3;1;;Inom 1-3 år;2007;;;;49038;110
+SH2119;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;6;1;;Inom 1-3 år;2007;;;;49038;49
+SH2131;S;6 - Nytt tätskikt och kakel/klinker, m²;Underhåll golv samt att klinkerfogar spricker;4 - Dåliga tätskikt;6;;;Snarast;2002;;;;6876;73
+SH2133;S;6 - Nytt tätskikt och kakel/klinker, m²;Ytskiktsrenovering;1 - Underhåll;30;;;Inom 1-3 år;9999;;;;34380;77
+SH2138;S;8 - Utbyte av skadade golvdelar, nytt tätskikt och ytmaterial, m²;kakel/klinker;6 - Otäthet mellan golvbrunn och golvmaterial;5;;;Inom 1-3 år;2007;1;;;5900;111
+SH2140;S;10 - Torkning vattenskada;halvkakel/PVC;Fuktskada pga vattenskada;;1;;Snarast;2007;;;;5000;229
+SH2140;S;7 - Utbyte av skadade väggdelar, nytt tätskikt och ytmaterial, m²;halvkakel/PVC;Fuktskada pga vattenskada;4;;;Snarast;2007;3;1;3;4960;97
+SH2143;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);Renov badrum/byta yt´skikt;1 - Underhåll;;1;;Inom 1-3 år;1994;;;;49038;91
+SH2148;S;5 - Ny våtrumsmatta golv eller vägg, m²;reparation tätskikt på golv;1 - Underhåll;6;;;Snarast;2007;;;;2976;43
+SH2153;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);Renov badrum, golvyta+takskada;4 - Dåliga tätskikt;4;1;;Inom 1-3 år;2006;1;;;98076;78
+SH2158;S;6 - Nytt tätskikt och kakel/klinker, m²;byte av ytskikt;1 - Underhåll;30;;;Inom 1-3 år;9999;;;;34380;75
+SH2164;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);Kolla Atemp + antal bad;1 - Underhåll;30;1;;Snarast;2007;1;11;23;98076;112
+SH2166;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;4 - Dåliga tätskikt;;1;;Snarast;2007;1;7;;49038;57
+SH2171;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);Kolla Atemp + antal bad;1 - Underhåll;60;;;Längre fram;2007;;;;99999;132
+SH3002;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;5 - Slitage och åverkan;;1;;Inom 1-3 år;2007;;;;49038;15
+SH3005;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);Renovering våtrum övre- o nedre plan;1 - Underhåll;;1;;Inom 1-3 år;9999;;;;49038;61
+SH3010;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);Kolla Atemp + antal bad;1 - Underhåll;30;1;;Inom 1-3 år;2007;;;;98076;115
+SH3018;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;4 - Dåliga tätskikt;;1;;Inom 1-3 år;2007;;;;49038;8
+SH3023;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;5 - Slitage och åverkan;;1;;Inom 1-3 år;9999;;;;49038;9
+SH3036;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);Renovering;1 - Underhåll;;1;;Inom 1-3 år;9999;;;;49038;102
+SH3039;S;5 - Ny våtrumsmatta golv eller vägg, m²;;5 - Slitage och åverkan;23;;;Snarast;2007;1;14;;11408;60
+SH3043;S;5 - Ny våtrumsmatta golv eller vägg, m²;;4 - Dåliga tätskikt;24;1;;Snarast;9999;;5;5;11904;25
+SH3047;S;3 - Byte sanitetsporslin våtrum (badkar, WC-stol, tvättfat, blandare);;1 - Underhåll;;2;;Inom 1-3 år;9999;;;;35780;37
+SH3067;S;10 - Torkning vattenskada;kakel/klinker;Fuktskada pga vattenskada;;1;;Snarast;2007;;;;5000;227
+SH3067;S;8 - Utbyte av skadade golvdelar, nytt tätskikt och ytmaterial, m²;kakel/klinker;Fuktskada pga vattenskada;10;;;Snarast;2007;;;;11800;59
+SH3070;S;8 - Utbyte av skadade golvdelar, nytt tätskikt och ytmaterial, m²;kakel/PVC;6 - Otäthet mellan golvbrunn och golvmaterial;2;;;Snarast;9999;1;1;1;980;83
+SH3077;S;5 - Ny våtrumsmatta golv eller vägg, m²;;1 - Underhåll;8;;;Inom 1-3 år;9999;;;;3968;31
+SH3088;S;5 - Ny våtrumsmatta golv eller vägg, m²;;1 - Underhåll;30;;;Inom 1-3 år;2007;;;;14880;114
+SH3089;S;6 - Nytt tätskikt och kakel/klinker, m²;;1 - Underhåll;10;;;Längre fram;2000;;;;11460;116
+SH3092;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);Renov 2 st badrum, våtrumsmatta i plastgolv;1 - Underhåll;;1;;Snarast;2006;;;;49038;93
+SH3095;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);Tänkt renovering;1 - Underhåll;;1;;Inom 1-3 år;9999;;;;49038;103
+SH3101;S;5 - Ny våtrumsmatta golv eller vägg, m²;;5 - Slitage och åverkan;30;;;Inom 1-3 år;2007;1;11;11;14880;113
+SH3102;S;10 - Torkning vattenskada;Dålig lukt i badrum. Smuts ev mögel i mjukfog, kakel/klinker;Fuktskada pga vattenskada;;1;;snarast;2007;;;;5000;225
+SH3102;S;7 - Utbyte av skadade väggdelar, nytt tätskikt och ytmaterial, m²;Dålig lukt i badrum. Smuts ev mögel i mjukfog, kakel/klinker;Fuktskada pga vattenskada;24;;;Snarast;2007;;;;58200;29
+SH3119;S;5 - Ny våtrumsmatta golv eller vägg, m²;;1 - Underhåll;48;2;;Inom 1-3 år;9999;;;;23808;24
+SH3125;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;12;2;;Längre fram;9999;;;;98076;50
+SH3130;S;5 - Ny våtrumsmatta golv eller vägg, m²;Vägg och golv;1 - Underhåll;24;;;Inom 1-3 år;9999;;;;11904;101
+SH3133;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);Badrum;1 - Underhåll;4;1;;Längre fram;9999;;;;49038;122
+SH3137;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;5,5;1;;Inom 1-3 år;2007;;;;98076;99
+SH3140;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;5 - Slitage och åverkan;;2;;Inom 1-3 år;9999;;;;98076;54
+SH3142;S;10 - Torkning vattenskada;;Fuktskada pga vattenskada;;1;;Snarast;2006;;;;5000;226
+SH3142;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;Fuktskada pga vattenskada;6;1;;Snarast;2006;;;;98076;58
+SH3143;S;3 - Byte sanitetsporslin våtrum (badkar, WC-stol, tvättfat, blandare);;1 - Underhåll;;2;;Inom 1-3 år;2007;;;;35780;45
+SH3149;S;5 - Ny våtrumsmatta golv eller vägg, m²;vid ändrad anv av bad+dusch:nytt tätskikt pga ålde;4 - Dåliga tätskikt;24;;;Längre fram;2007;;;;11904;81
+SH3154;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;4 - Dåliga tätskikt;7;1;;Inom 1-3 år;9999;;8;9;49038;7
+SH3156;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;;1;;Längre fram;9999;;;;49038;40
+SH3158;S;6 - Nytt tätskikt och kakel/klinker, m²;;4 - Dåliga tätskikt;4;;;Inom 1-3 år;9999;2;;;4584;82
+SH3163;S;10 - Torkning vattenskada;lukt, synlig mögelpåväxt i badrum, kakel/klinker;Fuktskada pga vattenskada;;1;;Snarast;2007;;;;5000;228
+SH3163;S;7 - Utbyte av skadade väggdelar, nytt tätskikt och ytmaterial, m²;lukt, synlig mögelpåväxt i badrum, kakel/klinker;Fuktskada pga vattenskada;24;;;Snarast;2007;;;;58200;80
+SH3164;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;12;1;;Inom 1-3 år;9999;;;;49038;44
+SH3166;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;;1;;Inom 1-3 år;9999;;;;49038;16
+SH4014;S;6 - Nytt tätskikt och kakel/klinker, m²;kakel/klinker;1 - Underhåll;35;;;Inom 1-3 år;9999;;;;40110;38
+SH4019;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);Bv. renovering badrum;1 - Underhåll;;1;;Inom 1-3 år;2006;;;;49038;87
+SH4021;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;12;2;;Längre fram;9999;;;;98076;51
+SH4023;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);bottenvåning;1 - Underhåll;;1;;Snarast;9999;1;2;;49038;84
+SH4025;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;15;2;;Inom 1-3 år;9999;;;;98076;48
+SH4035;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;;1;;Inom 1-3 år;9999;;;;49038;134
+SH4041;S;5 - Ny våtrumsmatta golv eller vägg, m²;;1 - Underhåll;24;;;Inom 1-3 år;9999;;;;11904;67
+SH4051;S;3 - Byte sanitetsporslin våtrum (badkar, WC-stol, tvättfat, blandare);;1 - Underhåll;;1;;Inom 1-3 år;9999;;;;17890;135
+SH4086;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;6;1;;Snarast;9999;;;;49038;47
+SH4106;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);Våtrum övre plan, renovering / nya ytskikt;1 - Underhåll;;1;;Inom 1-3 år;9999;;;;49038;62
+SH4108;S;5 - Ny våtrumsmatta golv eller vägg, m²;;5 - Slitage och åverkan;8,7;;;Snarast;2007;;;;4315;137
+SH4112;S;5 - Ny våtrumsmatta golv eller vägg, m²;Byta golv/väggmaterial i WC/D på bottenvåningen;4 - Dåliga tätskikt;23;;;Snarast;2007;1;5;5;11408;28
+SH4114;S;5 - Ny våtrumsmatta golv eller vägg, m²;;1 - Underhåll;20;;;Inom 1-3 år;2007;;;;9920;117
+SH4118;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);klinkerplattor lossnat från golv;4 - Dåliga tätskikt;3,75;1;;Snarast;2002;;7;8;49038;11
+SH4127;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);;1 - Underhåll;;1;;Inom 1-3 år;9999;;;;49038;18
+SH5007;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);Golvklinker släpper från btg-platta i klädvård.;4 - Dåliga tätskikt;;2;;Snarast;2007;1;;;98076;30
+SH5019;S;6 - Nytt tätskikt och kakel/klinker, m²;klinker släppt p.g.a. spänningar i bottenplatta;1 - Underhåll;7;;;Inom 1-3 år;9999;;;;8022;88
+SH5046;S;7 - Utbyte av skadade väggdelar, nytt tätskikt och ytmaterial, m²;väggmatta/PVC;4 - Dåliga tätskikt;17;;;Inom 1-3 år;2007;3;7;9;21080;33
+SH5062;S;2 - Totalrenovering våtrum (tätskikt, ytmaterial, sanitetsporslin, ommålning tak);inredning badrum övervån: kakel & klinker& porslin;1 - Underhåll;7;1;;Inom 1-3 år;2003;;;;98076;95
+SH5079;S;6 - Nytt tätskikt och kakel/klinker, m²;kakel/klinker;6 - Otäthet mellan golvbrunn och golvmaterial;10;;;Inom 1-3 år;2001;;;;11460;52
+SH5110;S;8 - Utbyte av skadade golvdelar, nytt tätskikt och ytmaterial, m²;sprucket klinker i dusch;1 - Underhåll;1;;;Inom 1-3 år;9999;1;1;;1180;32

@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
+results/
+runs/
+*.sqlite
+*.sql
+epw/
+_download_epw.py
+/idf
+/results
+*duckdb
+/epw
+/FINDINGS
+/renovation_catalogue
+/streetview_pipeline

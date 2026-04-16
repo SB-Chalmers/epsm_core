@@ -1,0 +1,113 @@
+Byggnad;Hustyp;Fasad åtgärd;FC1 Fasad annan åtgärd;FC1 Fasad orsak till åtgärd;FC1 Fasad m;FC1 Fasad kvm;FC1 Fasad styck;FC1 Fasad timmar;FC1 Fasad år för åtgärd;FC1 Fasad år för upptäckt;id;Kostnad
+SH1001;S;9 - Målning träfasad, m²;;1 - Underhåll;;140;;;2 007;9 999;112;31780
+SH1002;S;17 - Demontering av eternitfasad;Demontering eternit;2 - Mycket kraftig utseendeförändring;93;29,5;;;2 007;9 999;40;2537
+SH1002;S;8 - Byte av träfasad, m²;ny träfasad + tilläggsisolering;2 - Mycket kraftig utseendeförändring;93;32,6;;;2 007;9 999;47;29079
+SH1002;S;9 - Målning träfasad, m²;;2 - Mycket kraftig utseendeförändring;93;133;;;2 007;9 999;48;30191
+SH1010;S;9 - Målning träfasad, m²;;1 - Underhåll;;100;;;2 005;9 999;123;22700
+SH1019;S;9 - Målning träfasad, m²;;1 - Underhåll;;80;;;2 004;9 999;2;18160
+SH1020;S;9 - Målning träfasad, m²;;1 - Underhåll;;147;;;2 005;9 999;51;33369
+SH1052;S;8 - Byte av träfasad, m²;;7 - Otäthet (drag), bristande värmeisolering (kyla);;99;;;2 006;2 003;113;88308
+SH1059;S;8 - Byte av träfasad, m²;;1 - Underhåll;;35,4;;;2 005;9 999;42;31577
+SH1069;S;9 - Målning träfasad, m²;;1 - Underhåll;;189;;;2 006;2 006;139;42903
+SH1079;S;9 - Målning träfasad, m²;Målning en långsida;1 - Underhåll;;126;;;9 999;9 999;50;28602
+SH1082;S;8 - Byte av träfasad, m²;;1 - Underhåll;;50;;;2 004;2 000;133;44600
+SH1083;S;8 - Byte av träfasad, m²;;1 - Underhåll;;68;;;2 005;9 999;49;60656
+SH1096;S;9 - Målning träfasad, m²;;1 - Underhåll;;160;;;9 999;9 999;3;36320
+SH1115;S;26 - Borttagning balkong och montering av ny balkong, styck;;1 - Underhåll;;;1;;2 007;9 999;114;27315
+SH1115;S;9 - Målning träfasad, m²;;1 - Underhåll;;54;;;2 007;9 999;115;12258
+SH1141;S;8 - Byte av träfasad, m²;tilläggsisolering;1 - Underhåll;;150;;;2 004;2 004;130;133800
+SH1143;S;9 - Målning träfasad, m²;Ommålning två fasadsidor se foton.;1 - Underhåll;;60;;;2 007;2 004;95;13620
+SH2008;S;9 - Målning träfasad, m²;Fasad övre del dvs. plan 2 av trä, målning underhå;1 - Underhåll;;93;;;2 007;9 999;61;21111
+SH2010;S;9 - Målning träfasad, m²;;1 - Underhåll;;74;;;9 999;9 999;30;16798
+SH2011;S;8 - Byte av träfasad, m²;;1 - Underhåll;;40;;;9 999;9 999;108;35680
+SH2014;S;9 - Målning träfasad, m²;;1 - Underhåll;;73;;;2 004;9 999;125;16571
+SH2016;S;3 - Målning putsad fasad, m²;;2 - Mycket kraftig utseendeförändring;;111;;;2 007;2 005;16;28638
+SH2025;S;9 - Målning träfasad, m²;;1 - Underhåll;;137;1;;2 006;9 999;126;31099
+SH2035;S;8 - Byte av träfasad, m²;och ommålning;1 - Underhåll;;25;;;2 006;9 999;26;22300
+SH2046;S;8 - Byte av träfasad, m²;;1 - Underhåll;;20;;;2 004;9 999;58;17840
+SH2055;S;9 - Målning träfasad, m²;;1 - Underhåll;;60;;;2 007;2 006;132;13620
+SH2059;S;8 - Byte av träfasad, m²;;1 - Underhåll;;12;;;2 004;1 998;131;10704
+SH2061;S;8 - Byte av träfasad, m²;Balkong, utbyte av allt trä;1 - Underhåll;;52;;;2 004;9 999;55;46384
+SH2076;S;8 - Byte av träfasad, m²;Avser gavelspetsar i fasader.;1 - Underhåll;;30;;;9 999;9 999;124;26760
+SH2081;S;9 - Målning träfasad, m²;ommålning balkong och träfasad gavlar;1 - Underhåll;;16;;;2 004;9 999;53;3632
+SH2091;S;8 - Byte av träfasad, m²;Underhåll: Byte fasadpanel mot S.;1 - Underhåll;;33;;;9 999;9 999;60;29436
+SH2099;S;9 - Målning träfasad, m²;;1 - Underhåll;;80;;;2 006;2 004;54;18160
+SH2119;S;10 - Byte av fasad med fibercement, laminatskivor, m²;Klätt med minerit på utsidan, väster;3 - Sprickor;;117;12;;2 007;2 007;25;84825
+SH2131;S;9 - Målning träfasad, m²;;1 - Underhåll;;45;;;2 006;9 999;52;10215
+SH2133;S;8 - Byte av träfasad, m²;;Fuktskada yttervägg (låg);;60;;;2 004;9 999;63;53520
+SH2135;S;9 - Målning träfasad, m²;;1 - Underhåll;;74;;;2 006;9 999;62;16798
+SH2138;S;9 - Målning träfasad, m²;;1 - Underhåll;;33;;;2 007;9 999;116;7491
+SH2139;S;8 - Byte av träfasad, m²;;7 - Otäthet (drag), bristande värmeisolering (kyla);;23;;;9 999;9 999;107;20516
+SH2140;S;5 - Ommurning av tegelytor, m²;;5 - Lossnande delar (inkl lossnande puts och avskalningar betongbalkonger);;1;;;2 007;2 002;101;1720
+SH2150;S;9 - Målning träfasad, m²;;1 - Underhåll;;200;;;2 006;9 999;59;45400
+SH2158;S;9 - Målning träfasad, m²;;1 - Underhåll;;22;;;2 004;9 999;57;4994
+SH2172;S;9 - Målning träfasad, m²;;1 - Underhåll;;93;;;2 004;2 004;4;21111
+SH3005;S;9 - Målning träfasad, m²;Byte vindskivor;1 - Underhåll;;46;;;2 006;9 999;37;10442
+SH3025;S;25 - Målning tak- och fönsterkompletteringar, m;;1 - Underhåll;119;;;;9 999;9 999;28;21182
+SH3034;S;8 - Byte av träfasad, m²;;1 - Underhåll;;30;;;2 007;2 005;134;26760
+SH3070;S;9 - Målning träfasad, m²;;1 - Underhåll;;66;;;2 007;9 999;69;14982
+SH3071;S;9 - Målning träfasad, m²;Målning;1 - Underhåll;;116;;;2 007;9 999;109;26332
+SH3072;S;8 - Byte av träfasad, m²;Byte panel på gavlarna;1 - Underhåll;;58;;;9 999;2 006;33;51736
+SH3102;S;8 - Byte av träfasad, m²;;1 - Underhåll;;40;;;2 007;9 999;11;35680
+SH3102;S;9 - Målning träfasad, m²;;1 - Underhåll;;116;;;2 007;9 999;12;26332
+SH3105;S;8 - Byte av träfasad, m²;2007: Fasadrenov. delvis(utbyte av skadat trä);1 - Underhåll;;70;;;2 007;9 999;64;62440
+SH3105;S;9 - Målning träfasad, m²;Ca. 60% av fasaden målad;1 - Underhåll;;42;;;9 999;9 999;65;9534
+SH3106;S;8 - Byte av träfasad, m²;Panelbyte;Fuktskada yttervägg (låg);;40;;;9 999;9 999;9;35680
+SH3115;S;8 - Byte av träfasad, m²;;1 - Underhåll;;5;;;2 006;2 005;104;4460
+SH3118;S;9 - Målning träfasad, m²;;1 - Underhåll;;120;;;2 007;2 006;117;27240
+SH3126;S;9 - Målning träfasad, m²;;1 - Underhåll;;100;;;2 007;2 004;96;22700
+SH3137;S;8 - Byte av träfasad, m²;;1 - Underhåll;;36;;;2 007;2 007;102;32112
+SH3137;S;9 - Målning träfasad, m²;;1 - Underhåll;;132;;;2 007;2 007;103;29964
+SH3141;S;29 - Byte balkongräcke;Nya plåtfronter till balkong;1 - Underhåll;;;2;;4 014;4 010;299;10321
+SH3146;S;9 - Målning träfasad, m²;;1 - Underhåll;;62;;;2 006;9 999;135;14074
+SH3149;S;29 - Byte balkongräcke;nya plåtfronter till balkong;1 - Underhåll;;;1;;2 007;2 005;68;10321
+SH4001;S;9 - Målning träfasad, m²;Ommålning fasader;1 - Underhåll;;50;10;;9 999;9 999;10;11350
+SH4004;S;5 - Ommurning av tegelytor, m²;Byte av frostskadat tegel;Fuktskada yttervägg (låg);;70;5;;2 005;9 999;18;120400
+SH4008;S;8 - Byte av träfasad, m²;nedre del av panel avsågad och målad;Fuktskada yttervägg (låg);44;171;;;9 999;9 999;77;152530
+SH4012;S;9 - Målning träfasad, m²;;1 - Underhåll;;50;;;2 006;9 999;76;11350
+SH4029;S;27 - Renovering balkong, styck;Bytt tätskikt vid balkong;Fuktskada yttervägg (låg);;;1;;9 999;9 999;19;21634
+SH4030;S;9 - Målning träfasad, m²;;1 - Underhåll;;35;;;2 007;9 999;34;7945
+SH4031;S;3 - Målning putsad fasad, m²;Ommålning putsfasad;1 - Underhåll;;203;1;;2 004;9 999;81;52374
+SH4031;S;9 - Målning träfasad, m²;Ommålning träfasad;1 - Underhåll;;203;1;;2 004;9 999;75;46081
+SH4035;S;9 - Målning träfasad, m²;Inklädnad krypgrund, fasad balkonggavlar, ommålnin;1 - Underhåll;;100;;;2 007;9 999;136;22700
+SH4041;S;9 - Målning träfasad, m²;;1 - Underhåll;;121;;;2 005;9 999;45;27467
+SH4043;S;9 - Målning träfasad, m²;;1 - Underhåll;;100;;;2 005;9 999;127;22700
+SH4044;S;9 - Målning träfasad, m²;50 000:-;1 - Underhåll;;118;;;9 999;9 999;6;50000
+SH4052;S;9 - Målning träfasad, m²;;1 - Underhåll;;100;;;2 007;2 006;137;22700
+SH4059;S;9 - Målning träfasad, m²;;1 - Underhåll;;140;;;9 999;9 999;7;31780
+SH4073;S;9 - Målning träfasad, m²;Brf gemensam fasadmålning;1 - Underhåll;;92;;;2 005;9 999;39;20884
+SH4079;S;9 - Målning träfasad, m²;;1 - Underhåll;;96;;;9 999;9 999;46;21792
+SH4080;S;2 - Omputsning fasad, m²;1mm ny ytskiktsputs - vattentät;1 - Underhåll;;283;;;2 006;9 999;73;270548
+SH4080;S;3 - Målning putsad fasad, m²;;3 - Sprickor;;283;;;2 006;9 999;72;73014
+SH4084;S;26 - Borttagning balkong och montering av ny balkong, styck;;1 - Underhåll;;;1;;9 999;9 999;44;27315
+SH4091;S;25 - Målning tak- och fönsterkompletteringar, m;;Fuktskada yttervägg (låg);57;;;;2 007;2 007;15;10146
+SH4093;S;9 - Målning träfasad, m²;;1 - Underhåll;;77;;;2 005;9 999;78;17479
+SH4095;S;3 - Målning putsad fasad, m²;målning av utvändiga snickerier;1 - Underhåll;;130;;;2 005;9 999;20;33540
+SH4100;S;8 - Byte av träfasad, m²;komplettering skadat trä;1 - Underhåll;;55;;;2 006;9 999;87;49060
+SH4100;S;9 - Målning träfasad, m²;;1 - Underhåll;;55;;;2 006;9 999;86;12485
+SH4104;S;9 - Målning träfasad, m²;;1 - Underhåll;;70;;;2 007;9 999;14;15890
+SH4106;S;9 - Målning träfasad, m²;Löpande hela Brf under 2005-2008;1 - Underhåll;;98;;;9 999;9 999;38;22246
+SH4107;S;9 - Målning träfasad, m²;;1 - Underhåll;;110;;;2 007;9 999;13;24970
+SH4113;S;9 - Målning träfasad, m²;;1 - Underhåll;;160;;;2 004;9 999;105;36320
+SH4114;S;9 - Målning träfasad, m²;;1 - Underhåll;;86;;;2 004;2 000;120;19522
+SH4131;S;9 - Målning träfasad, m²;Utbyte av delar av träfasad + målning;1 - Underhåll;;43;;;2 007;9 999;43;9761
+SH4132;S;8 - Byte av träfasad, m²;delar av panelen har bytts ut;Fuktskada yttervägg (låg);;96;;;2 007;9 999;71;85632
+SH4132;S;9 - Målning träfasad, m²;;1 - Underhåll;;96;;;2 007;9 999;70;21792
+SH4148;S;9 - Målning träfasad, m²;;1 - Underhåll;;94;;;9 999;9 999;74;21338
+SH4155;S;9 - Målning träfasad, m²;;1 - Underhåll;;150;;;2 004;9 999;118;34050
+SH4156;S;9 - Målning träfasad, m²;fullständig grundmålning saknades.;1 - Underhåll;;78;;;2 007;9 999;5;17706
+SH4157;S;9 - Målning träfasad, m²;;1 - Underhåll;;136;;;2 006;9 999;140;30872
+SH5017;S;9 - Målning träfasad, m²;;1 - Underhåll;;70;;;2 007;9 999;90;15890
+SH5024;S;9 - Målning träfasad, m²;;1 - Underhåll;;97;;;2 006;9 999;79;22019
+SH5031;S;9 - Målning träfasad, m²;;1 - Underhåll;;126;;;2 006;9 999;35;28602
+SH5033;S;3 - Målning putsad fasad, m²;Målade om fasaden;Fuktskada yttervägg (låg);;195;;;2 007;9 999;21;50310
+SH5038;S;9 - Målning träfasad, m²;Målning alla fasadytor;1 - Underhåll;;85;;;2 006;9 999;84;19295
+SH5060;S;9 - Målning träfasad, m²;Målning fasad - Hela Brf utförde målning fasad;1 - Underhåll;;75;;;2 007;9 999;89;17025
+SH5074;S;9 - Målning träfasad, m²;;1 - Underhåll;;127;;;9 999;9 999;99;28829
+SH5077;S;9 - Målning träfasad, m²;;1 - Underhåll;;109;;;2 007;9 999;41;24743
+SH5115;S;9 - Målning träfasad, m²;Komplett målning fasad, vindskivor etc;1 - Underhåll;;110;;;2 007;9 999;94;24970
+SH5127;S;27 - Renovering balkong, styck;Utbyte av stolpar för balkong;1 - Underhåll;;;1;;2 005;2 003;92;21634
+SH5136;S;9 - Målning träfasad, m²;;1 - Underhåll;;133;;;2 007;9 999;93;30191
+SH5140;S;9 - Målning träfasad, m²;Målat all fasad;1 - Underhåll;;126;;;2 006;9 999;80;28602
+SH5156;S;9 - Målning träfasad, m²;;1 - Underhåll;;80;;;2 006;2 000;121;18160
+SH5157;S;9 - Målning träfasad, m²;;1 - Underhåll;;166;;;9 999;9 999;8;37682

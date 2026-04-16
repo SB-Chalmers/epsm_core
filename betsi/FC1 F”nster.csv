@@ -1,0 +1,97 @@
+Byggnad;Hustyp;FC1 Fönster åtgärd;FC1 Fönster annan åtgärd;FC1 Fönster orsak till åtgärd;FC1 Fönster kvm;FC1 Fönster styck;FC1 Fönster timmar;FC1 Fönster år för åtgärd;FC1 Fönster år för upptäckt;id;Kostnad
+SH1001;S;4 - Målning fönster;;1 - Underhåll;;10;;2 006;9 999;78;6880
+SH1002;S;2 - Byte fönster;Byte altandörr och entrédörr;1 - Underhåll;;12;;2 007;9 999;50;105180
+SH1002;S;8 - Byte ytterdörr;Fönsterbyte;1 - Underhåll;;2;;2 007;9 999;51;18000
+SH1009;S;2 - Byte fönster;bytt fönsterpartier;1 - Underhåll;91;;;2 006;9 999;208;417508
+SH1014;S;2 - Byte fönster;Byte av delar fönster;1 - Underhåll;;9;;2 006;9 999;92;78885
+SH1014;S;8 - Byte ytterdörr;Byte av delar ytterdörr.;1 - Underhåll;;9;;2 006;9 999;91;81000
+SH1023;S;2 - Byte fönster;Fönsterbyten-underhåll och energispar;1 - Underhåll;;19;;2 005;2 004;64;166535
+SH1024;S;2 - Byte fönster;;1 - Underhåll;19;;;2 007;9 999;7;87172
+SH1029;S;6 - Byte glas fönster;Ökande buller från E14;1 - Underhåll;35,2;;;2 004;2 004;87;36748,8
+SH1030;S;8 - Byte ytterdörr;Ny altandörr i söder;1 - Underhåll;;1;;2 007;9 999;13;9000
+SH1039;S;2 - Byte fönster;;1 - Underhåll;;7;;2 006;9 999;93;61355
+SH1046;S;6 - Byte glas fönster;;1 - Underhåll;14,28;5;;2 006;9 999;23;14908,32
+SH1051;S;4 - Målning fönster;;1 - Underhåll;;15;;9 999;9 999;22;10320
+SH1055;S;2 - Byte fönster;;1 - Underhåll;;12;;9 999;9 999;39;105180
+SH1058;S;3 - Lagning, reparation av fönster;;1 - Underhåll;;3;;2 007;2 007;38;5100
+SH1059;S;6 - Byte glas fönster;;1 - Underhåll;5,8;3;;2 007;9 999;48;6055,2
+SH1061;S;2 - Byte fönster;;1 - Underhåll;;27;;2 007;2 002;86;236655
+SH1068;S;2 - Byte fönster;;1 - Underhåll;;13;;2 006;1 995;21;113945
+SH1074;S;2 - Byte fönster;;5 - Drag och kyla;;13;;2 004;9 999;6;113945
+SH1098;S;2 - Byte fönster;;1 - Underhåll;;5;;2 004;9 999;18;43825
+SH1099;S;2 - Byte fönster;;1 - Underhåll;;2;;2 006;2 006;29;17530
+SH1115;S;2 - Byte fönster;;5 - Drag och kyla;;18;;2 006;9 999;79;157770
+SH1135;S;2 - Byte fönster;;1 - Underhåll;16,8;7;;2 007;2 005;2;77078,4
+SH1136;S;2 - Byte fönster;;1 - Underhåll;;5;;2 006;2 002;19;43825
+SH1141;S;2 - Byte fönster;;1 - Underhåll;;10;;2 004;2 004;88;87650
+SH1147;S;2 - Byte fönster;;1 - Underhåll;;19;;2 006;9 999;85;166535
+SH1158;S;2 - Byte fönster;;1 - Underhåll;;17;;9 999;9 999;28;149005
+SH1162;S;2 - Byte fönster;alla på ovan vån + 1 på bv;1 - Underhåll;;10;;2 007;9 999;20;87650
+SH1167;S;2 - Byte fönster;;5 - Drag och kyla;;8;;2 005;1 995;89;70120
+SH2004;S;2 - Byte fönster;Samtliga;1 - Underhåll;;12;;2 005;9 999;24;105180
+SH2015;S;2 - Byte fönster;;1 - Underhåll;24;7;;2 006;9 999;4;110112
+SH2017;S;2 - Byte fönster;och 1 dörr;6 - Kondens i fönster;;3;;2 006;9 999;34;26295
+SH2017;S;8 - Byte ytterdörr;;6 - Kondens i fönster;;1;;2 006;9 999;204;9000
+SH2022;S;2 - Byte fönster;;1 - Underhåll;;8;;2 007;9 999;14;70120
+SH2026;S;2 - Byte fönster;;1 - Underhåll;;7;;2 005;9 999;40;61355
+SH2034;S;2 - Byte fönster;;1 - Underhåll;;6;;2 007;9 999;15;52590
+SH2040;S;2 - Byte fönster;;1 - Underhåll;;7;;2 005;9 999;11;61355
+SH2045;S;2 - Byte fönster;;1 - Underhåll;;12;;2 005;9 999;30;105180
+SH2053;S;2 - Byte fönster;Byte fönster;1 - Underhåll;;8;;2 007;2 005;65;70120
+SH2059;S;2 - Byte fönster;;1 - Underhåll;;12;;2 004;2 002;90;105180
+SH2062;S;8 - Byte ytterdörr;;1 - Underhåll;;2;;9 999;9 999;42;18000
+SH2066;S;2 - Byte fönster;;5 - Drag och kyla;;7;;2 004;9 999;31;61355
+SH2079;S;2 - Byte fönster;;1 - Underhåll;;2;;2 007;9 999;54;17530
+SH2081;S;2 - Byte fönster;;1 - Underhåll;;2;;2 006;9 999;52;17530
+SH2099;S;4 - Målning fönster;målning dörrar;1 - Underhåll;;10;;2 006;2 006;53;6880
+SH2100;S;8 - Byte ytterdörr;;1 - Underhåll;;1;;2 005;9 999;41;9000
+SH2104;S;2 - Byte fönster;byte fönster;1 - Underhåll;;4;;2 005;9 999;8;35060
+SH2104;S;8 - Byte ytterdörr;byte fönsterdörr;1 - Underhåll;;4;;2 005;9 999;206;36000
+SH2111;S;4 - Målning fönster;;1 - Underhåll;;4;;9 999;9 999;5;2752
+SH2123;S;2 - Byte fönster;Byte fönster;1 - Underhåll;;5;;2 005;2 004;66;43825
+SH2123;S;8 - Byte ytterdörr;Byte ytterdörr;1 - Underhåll;;5;;2 005;2 004;70;45000
+SH2125;S;2 - Byte fönster;Söderfasad;1 - Underhåll;10;;;2 006;9 999;57;45880
+SH2138;S;4 - Målning fönster;;1 - Underhåll;;12;;9 999;9 999;80;8256
+SH2139;S;8 - Byte ytterdörr;Ny garageport;1 - Underhåll;;5;;9 999;9 999;73;45000
+SH2150;S;2 - Byte fönster;köket byte 2 fönster mot söder;1 - Underhåll;;19;;2 005;9 999;56;166535
+SH2159;S;7 - Byte isolerruta fönster;;6 - Kondens i fönster;3;;;2 006;9 999;36;8031
+SH2159;S;8 - Byte ytterdörr;Garageport, pga risk fjäderupphängning;1 - Underhåll;;5;;2 005;9 999;35;35000
+SH2167;S;2 - Byte fönster;;1 - Underhåll;;11;;9 999;9 999;43;96415
+SH3011;S;2 - Byte fönster;;1 - Underhåll;;3;;2 006;2 006;83;26295
+SH3011;S;8 - Byte ytterdörr;;1 - Underhåll;;1;;2 006;2 006;82;9000
+SH3015;S;2 - Byte fönster;Byte av fönster;1 - Underhåll;;11;;2 007;9 999;95;96415
+SH3015;S;8 - Byte ytterdörr;Byte av dörrar;1 - Underhåll;;11;;2 007;9 999;47;99000
+SH3019;S;2 - Byte fönster;;1 - Underhåll;;7;;2 006;9 999;25;61355
+SH3036;S;2 - Byte fönster;Dåliga Från början, 100000:-;1 - Underhåll;;11;;2 006;9 999;74;96415
+SH3047;S;8b - Byte garageport;byte garageport;1 - Underhåll;;1;;2 007;9 999;16;16392
+SH3048;S;2 - Byte fönster;Fönster mot söder Ytterbåge                5000:-;1 - Underhåll;;6;;2 006;9 999;75;52590
+SH3072;S;2 - Byte fönster;;1 - Underhåll;;17;;9 999;2 005;44;149005
+SH3092;S;2 - Byte fönster;bytt fönster-energibesparing;1 - Underhåll;;14;;2 004;2 003;68;122710
+SH3094;S;8 - Byte ytterdörr;;1 - Underhåll;;3;;2 004;2 003;1;27000
+SH3099;S;2 - Byte fönster;Byte av fönster;1 - Underhåll;;17;;2 004;9 999;94;149005
+SH3099;S;8 - Byte ytterdörr;Byte av dörrar;1 - Underhåll;;17;;2 004;9 999;72;153000
+SH3102;S;3 - Lagning, reparation av fönster;Nya tätningslister;5 - Drag och kyla;;20;;2 007;9 999;12;34000
+SH3108;S;2 - Byte fönster;;5 - Drag och kyla;;7;;2 004;9 999;9;61355
+SH3113;S;8b - Byte garageport;Garageportar;1 - Underhåll;5;;;9 999;9 999;76;16392
+SH3118;S;2 - Byte fönster;;6 - Kondens i fönster;;6;;2 005;2 003;81;52590
+SH3121;S;2 - Byte fönster;Byte 3 st fönster;1 - Underhåll;;3;;2 004;9 999;58;26295
+SH3126;S;4 - Målning fönster;;1 - Underhåll;;12;;2 007;2 004;67;8256
+SH3137;S;2 - Byte fönster;Fönsterdörr altan;1 - Underhåll;;1;;2 007;2 007;71;8765
+SH3141;S;3 - Lagning, reparation av fönster;Omkittning fönster;1 - Underhåll;;15;;2 005;9 999;60;25500
+SH3155;S;2 - Byte fönster;;1 - Underhåll;;1;;2 006;9 999;32;8765
+SH3163;S;2 - Byte fönster;bytta delvis på västra och östra fasaden;6 - Kondens i fönster;;19;;9 999;9 999;59;166535
+SH3165;S;2 - Byte fönster;Byte av fönster;1 - Underhåll;;11;;2 007;9 999;96;96415
+SH3165;S;8 - Byte ytterdörr;Byte av dörrar;1 - Underhåll;;11;;2 007;9 999;140;99000
+SH4031;S;4 - Målning fönster;;1 - Underhåll;;33;;2 004;9 999;62;22704
+SH4080;S;4 - Målning fönster;;1 - Underhåll;;30;;2 007;9 999;61;20640
+SH4094;S;8 - Byte ytterdörr;;1 - Underhåll;;1;;2 005;9 999;10;9000
+SH4100;S;2 - Byte fönster;;1 - Underhåll;;9;;2 006;9 999;63;78885
+SH4102;S;2 - Byte fönster;;1 - Underhåll;;9;;2 004;9 999;46;78885
+SH4104;S;4 - Målning fönster;;1 - Underhåll;;7;;2 007;9 999;17;4816
+SH4122;S;4 - Målning fönster;;1 - Underhåll;;22;;9 999;9 999;27;15136
+SH4131;S;8 - Byte ytterdörr;Byte altandörrar I BRF;1 - Underhåll;;7;;2 007;9 999;49;63000
+SH4143;S;2 - Byte fönster;;1 - Underhåll;;9;;2 004;9 999;45;78885
+SH4155;S;8 - Byte ytterdörr;Byte dörr;1 - Underhåll;;1;;2 004;2 003;84;9000
+SH5057;S;3 - Lagning, reparation av fönster;Läckage kring takfönster;Fuktskada takläckage;;1;;2 005;2 005;212;1700
+SH5097;S;4 - Målning fönster;;1 - Underhåll;;8;;2 005;9 999;33;5504
+SH5148;S;3 - Lagning, reparation av fönster;Tätning vid inläckage vid fönsterdörr;Fuktskada pga inläckande vatten (låg);;2;;2 004;2 000;37;3400

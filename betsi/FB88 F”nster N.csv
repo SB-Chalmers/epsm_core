@@ -1,0 +1,1635 @@
+Byggnad;Hustyp;FB88Fönstertyp;FB88Uvärde;FB88Fönsterarea;FB88Karmmaterial;id
+FH1001;F;3-glas isolerruta;2;29;Träfönster;984
+FH1002;F;2-glas;2,5;1,4;Träfönster;915
+FH1002;F;3-glas isolerruta;2;8,3;Träfönster;914
+FH1003;F;2-glas;2,5;75;Träfönster;828
+FH1004;F;2-glas;2,5;121;;745
+FH1005;F;3-glas;1,9;34;Aluminiumklädda träfönster;972
+FH1006;F;2-glas;2,5;14;Träfönster;1 124
+FH1007;F;2-glas;2,5;110;Träfönster;1 042
+FH1008;F;2-glas;2,5;53;Träfönster;1 171
+FH1009;F;2-glas;2,5;1,9;Aluminiumklädda träfönster;1 179
+FH1010;F;2-glas isolerruta + 1 glas;1,8;19;Träfönster;1 249
+FH1011;F;2-glas isolerruta + 1 glas;1,8;61;Träfönster;1 280
+FH1012;F;3-glas;1,9;21;Träfönster;866
+FH1013;F;2-glas;2,5;131;Träfönster;750
+FH1014;F;2-glas;2,5;0;Träfönster;748
+FH1015;F;3-glas;1,9;11;Träfönster;853
+FH1016;F;2-glas;2,5;24;Träfönster;854
+FH1017;F;3-glas;1,9;133;Träfönster;1 170
+FH1018;F;2-glas;2,5;68;Träfönster;744
+FH1019;F;2-glas;2,5;41;Aluminiumklädda träfönster;1 180
+FH1020;F;2-glas isolerruta + 1 glas;1,8;55;Träfönster;751
+FH1021;F;3-glas isolerruta;2;9;Aluminiumklädda träfönster;1 111
+FH1022;F;3-glas isolerruta;2;10;Aluminium/metall;730
+FH1023;F;2-glas;2,5;5;Träfönster;855
+FH1024;F;2-glas isolerruta + 1 glas;1,8;10;Träfönster;1 211
+FH1025;F;2-glas;2,5;0;Träfönster;1 003
+FH1026;F;2-glas;2,5;7;Aluminiumklädda träfönster;1 196
+FH1027;F;3-glas isolerruta;2;12;Aluminium/metall;1 025
+FH1028;F;2-glas;2,5;146;Träfönster;752
+FH1029;F;2-glas;2,5;22;Träfönster;867
+FH1030;F;3-glas;1,9;62;Träfönster;1 032
+FH1031;F;2-glas isolerruta + 1 glas;1,8;95;Träfönster;947
+FH1032;F;2-glas isolerruta + 1 glas;1,8;31;Träfönster;1 026
+FH1033;F;2-glas;2,5;62;Träfönster;826
+FH1034;F;2-glas isolerruta + 1 glas;1,8;12;Träfönster;1 269
+FH1035;F;2-glas;2,5;73;Träfönster;743
+FH1036;F;2-glas;2,5;65;Träfönster;843
+FH1037;F;2-glas;2,5;168;Träfönster;754
+FH1038;F;2-glas;2,5;61;Träfönster;842
+FH1039;F;2-glas isolerruta + 1 glas;1,8;5;Aluminiumklädda träfönster;1 047
+FH1040;F;2-glas;2,5;20;Träfönster;1 210
+FH1041;F;2-glas isolerruta + 1 glas;1,8;0;Aluminiumklädda träfönster;971
+FH1044;F;2-glas isolerruta + 1 glas;1,8;60;Träfönster;806
+FH1045;F;2-glas;2,5;0;Träfönster;742
+FH1046;F;2-glas isolerruta + 1 glas;1,8;100;Träfönster;1 248
+FH1047;F;2-glas;2,5;63;Träfönster;916
+FH1048;F;2-glas;2,5;35;Träfönster;913
+FH1049;F;2-glas isolerruta;2,6;14;Plastklädda träfönster;996
+FH1050;F;3-glas isolerruta;2;32;Träfönster;865
+FH1051;F;2-glas isolerruta;2,6;88;Träfönster;1 694
+FH1052;F;2-glas;2,5;47;Träfönster;746
+FH1054;F;2-glas;2,5;5;Träfönster;1 123
+FH1055;F;2-glas isolerruta;2,6;2,4;Träfönster;1 247
+FH1056;F;2-glas isolerruta + 1 glas;1,8;294;Aluminiumklädda träfönster;1 038
+FH1057;F;;0;0;;1 067
+FH1058;F;2-glas;2,5;77;Aluminium/metall;729
+FH1059;F;2-glas isolerruta + 1 glas;1,8;188;Aluminiumklädda träfönster;945
+FH1060;F;2-glas;2,5;61;Träfönster;897
+FH1061;F;2-glas;2,5;59;Träfönster;951
+FH1062;F;2-glas;2,5;6;Träfönster;812
+FH1063;F;2-glas isolerruta + 1 glas;1,8;10;Träfönster;1 212
+FH1065;F;2-glas;2,5;1;Träfönster;1 183
+FH1065;F;2-glas isolerruta;2,6;5,7;Aluminium/metall;1 182
+FH1065;F;2-glas isolerruta + 1 glas;1,8;63;Aluminiumklädda träfönster;1 181
+FH1066;F;3-glas;1,9;2,3;Träfönster;1 016
+FH1067;F;2-glas;2,5;175;Träfönster;948
+FH1068;F;2-glas;2,5;135;;1 153
+FH1069;F;3-glas;1,9;20;Träfönster;925
+FH1070;F;2-glas;2,5;186;Träfönster;995
+FH1071;F;3-glas isolerruta;2;80;Träfönster;1 043
+FH1072;F;3-glas isolerruta;2;4,3;Aluminiumklädda träfönster;926
+FH1073;F;3-glas isolerruta;2;74;Aluminiumklädda träfönster;1 037
+FH1074;F;2-glas;2,5;2;Aluminiumklädda träfönster;927
+FH1075;F;2-glas isolerruta + 1 glas;1,8;100;Aluminiumklädda träfönster;1 039
+FH1076;F;2-glas isolerruta + 1 glas;1,8;42;Träfönster;1 214
+FH1077;F;2-glas;2,5;8,6;Träfönster;1 197
+FH1078;F;2-glas;2,5;37;Träfönster;1 040
+FH1079;F;2-glas isolerruta + 1 glas;1,8;190;Träfönster;1 084
+FH1080;F;2-glas;2,5;43;Träfönster;1 552
+FH1080;F;2-glas isolerruta;2,6;9;Aluminium/metall;1 553
+FH1082;F;2-glas isolerruta;2,6;65;Träfönster;1 044
+FH1083;F;3-glas isolerruta;2;3,6;Träfönster;1 110
+FH1084;F;2-glas isolerruta + 1 glas;1,8;21;Aluminiumklädda träfönster;1 193
+FH1085;F;2-glas isolerruta + 1 glas;1,8;142;Aluminiumklädda träfönster;946
+FH1086;F;2-glas isolerruta + 1 glas;1,8;18,5;Träfönster;1 236
+FH1087;F;2-glas;2,5;77;Träfönster;741
+FH1089;F;3-glas isolerruta;2;87;Aluminiumklädda träfönster;1 041
+FH1090;F;2-glas;2,5;145;Träfönster;747
+FH1091;F;2-glas;2,5;133;Träfönster;949
+FH1092;F;3-glas;1,9;1;Aluminium/metall;1 425
+FH1093;F;2-glas;2,5;55;Träfönster;935
+FH1095;F;3-glas isolerruta;2;7;Träfönster;921
+FH1096;F;2-glas isolerruta + 1 glas;1,8;9;Träfönster;1 267
+FH1097;F;2-glas isolerruta + 1 glas;1,8;42;Träfönster;1 213
+FH1098;F;2-glas isolerruta + 1 glas;1,8;20;Aluminiumklädda träfönster;944
+FH1099;F;2-glas;2,5;240;Träfönster;753
+FH1100;F;2-glas;2,5;79;Träfönster;749
+FH1101;F;2-glas;2,5;4;Träfönster;1 027
+FH1102;F;2-glas isolerruta + 1 glas;1,8;76;Träfönster;827
+FH1103;F;2-glas;2,5;116;Träfönster;783
+FH1104;F;2-glas isolerruta + 1 glas;1,8;35;Träfönster;1 268
+FH1105;F;2-glas isolerruta + 1 glas;1,8;5;Aluminiumklädda träfönster;1 046
+FH1106;F;3-glas;1,9;15;Träfönster;985
+FH1107;F;3-glas;1,9;257;Träfönster;1 154
+FH1108;F;3-glas isolerruta;2;16;Plastklädda träfönster;1 136
+FH1109;F;3-glas;1,9;37;Träfönster;731
+FH1110;F;3-glas isolerruta;2;26;Träfönster;1 045
+FH1111;F;2-glas;2,5;17;Träfönster;896
+FH1112;F;2-glas isolerruta + 1 glas;1,8;22;Träfönster;1 235
+FH2001;F;2-glas isolerruta + 1 glas;1,8;120;Aluminiumklädda träfönster;955
+FH2002;F;2-glas, varav ett med LE-skikt;1,9;11;Aluminiumklädda träfönster;929
+FH2003;F;2-glas isolerruta + 1 glas;1,8;15;Träfönster;953
+FH2004;F;2-glas isolerruta + 1 glas;1,8;8;Träfönster;1 253
+FH2005;F;2-glas;2,5;254;Träfönster;831
+FH2006;F;1-glas;4,5;7;Träfönster;1 201
+FH2006;F;2-glas;2,5;51;Träfönster;1 200
+FH2007;F;2-glas;2,5;46;Träfönster;1 079
+FH2008;F;3-glas isolerruta;2;103;Plastklädda träfönster;954
+FH2009;F;2-glas;2,5;4;Träfönster;762
+FH2010;F;2-glas;2,5;5;Träfönster;869
+FH2011;F;2-glas;2,5;84;Träfönster;1 141
+FH2011;F;3-glas;1,9;83;Träfönster;1 142
+FH2012;F;2-glas;2,5;87;Träfönster;997
+FH2013;F;2-glas;2,5;141;Träfönster;1 139
+FH2014;F;2-glas;2,5;12;Träfönster;1 017
+FH2015;F;2-glas isolerruta + 1 glas;1,8;102;Träfönster;779
+FH2016;F;2-glas;2,5;5,5;Aluminiumklädda träfönster;1 138
+FH2017;F;2-glas;2,5;0;Träfönster;763
+FH2018;F;2-glas;2,5;19;Träfönster;898
+FH2019;F;2-glas;2,5;86;Träfönster;1 050
+FH2020;F;2-glas;2,5;194;Aluminiumklädda träfönster;956
+FH2021;F;3-glas isolerruta;2;0;;1 077
+FH2022;F;2-glas;2,5;151;Träfönster;844
+FH2023;F;3-glas isolerruta;2;38;Träfönster;1 113
+FH2024;F;2-glas isolerruta + 1 glas;1,8;220;Träfönster;1 217
+FH2025;F;3-glas;1,9;1,5;;1 075
+FH2026;F;2-glas isolerruta + 1 glas;1,8;72;Träfönster;1 224
+FH2027;F;2-glas isolerruta + 1 glas;1,8;80;Träfönster;1 271
+FH2028;F;2-glas;2,5;6;Träfönster;878
+FH2030;F;2-glas;2,5;336;Aluminiumklädda träfönster;1 287
+FH2031;F;2-glas;2,5;0;Träfönster;1 250
+FH2032;F;2-glas;2,5;10;Träfönster;1 053
+FH2033;F;2-glas isolerruta;2,6;8;Aluminiumklädda träfönster;952
+FH2034;F;2-glas isolerruta + 1 glas;1,8;138;Träfönster;1 225
+FH2035;F;2-glas;2,5;198;;1 697
+FH2037;F;2-glas isolerruta;2,6;0;Aluminiumklädda träfönster;987
+FH2038;F;3-glas;1,9;195;Aluminiumklädda träfönster;1 080
+FH2039;F;2-glas isolerruta + 1 glas;1,8;8;Träfönster;732
+FH2040;F;3-glas;1,9;91;Träfönster;830
+FH2041;F;2-glas;2,5;83;Aluminiumklädda träfönster;1 055
+FH2042;F;2-glas;2,5;7;Träfönster;1 035
+FH2043;F;2-glas;2,5;300;Aluminiumklädda träfönster;1 063
+FH2044;F;2-glas;2,5;46;Aluminiumklädda träfönster;1 062
+FH2045;F;2-glas isolerruta + 1 glas;1,8;139;Aluminiumklädda träfönster;1 065
+FH2046;F;2-glas isolerruta + 1 glas;1,8;70;Träfönster;1 218
+FH2047;F;2-glas;2,5;45;Träfönster;1 018
+FH2048;F;2-glas isolerruta + 1 glas;1,8;124;Aluminiumklädda träfönster;988
+FH2049;F;2-glas isolerruta;2,6;14;Träfönster;975
+FH2051;F;2-glas;2,5;3;Träfönster;1 198
+FH2052;F;2-glas;2,5;151;Aluminiumklädda träfönster;958
+FH2053;F;2-glas;2,5;999;Aluminiumklädda träfönster;1 052
+FH2054;F;2-glas, varav ett med LE-skikt;1,9;59;Aluminiumklädda träfönster;930
+FH2055;F;2-glas isolerruta + 1 glas;1,8;120;Träfönster;1 281
+FH2056;F;3-glas;1,9;28;Träfönster;1 184
+FH2057;F;2-glas;2,5;62;Aluminiumklädda träfönster;1 056
+FH2059;F;2-glas;2,5;24;Träfönster;761
+FH2060;F;2-glas isolerruta + 1 glas;1,8;32;Träfönster;1 072
+FH2061;F;2-glas;2,5;44;Träfönster;1 172
+FH2062;F;2-glas isolerruta + 1 glas;1,8;16;Aluminiumklädda träfönster;1 059
+FH2063;F;2-glas;2,5;3,2;Aluminiumklädda träfönster;1 127
+FH2065;F;2-glas isolerruta + 1 glas;1,8;23;Träfönster;882
+FH2066;F;2-glas isolerruta + 1 glas;1,8;37;Träfönster;1 223
+FH2067;F;2-glas isolerruta + 1 glas;1,8;70;Aluminiumklädda träfönster;1 076
+FH2069;F;2-glas isolerruta + 1 glas;1,8;18;Träfönster;765
+FH2070;F;2-glas;2,5;52;Träfönster;1 219
+FH2072;F;2-glas;2,5;7,5;Träfönster;769
+FH2073;F;3-glas;1,9;4,6;Aluminium/metall;1 019
+FH2074;F;2-glas;2,5;36;Träfönster;1 251
+FH2075;F;3-glas;1,9;14;Träfönster;857
+FH2076;F;2-glas isolerruta + 1 glas;1,8;3,6;Träfönster;1 270
+FH2077;F;2-glas;2,5;8,5;Träfönster;1 126
+FH2078;F;2-glas isolerruta + 1 glas;1,8;28;Träfönster;868
+FH2079;F;2-glas;2,5;24;Träfönster;1 078
+FH2080;F;2-glas isolerruta;2,6;13;Träfönster;1 156
+FH2081;F;2-glas;2,5;1;Träfönster;734
+FH2083;F;2-glas isolerruta + 1 glas;1,8;224;Aluminiumklädda träfönster;991
+FH2084;F;2-glas isolerruta + 1 glas;1,8;260;Träfönster;1 068
+FH2085;F;2-glas;2,5;120;Träfönster;998
+FH2086;F;2-glas isolerruta + 1 glas;1,8;8;Träfönster;973
+FH2087;F;2-glas;2,5;118;Träfönster;999
+FH2089;F;2-glas;2,5;5;Träfönster;757
+FH2090;F;3-glas isolerruta ett med LE-skikt;1,2;102;Aluminiumklädda träfönster;1 114
+FH2091;F;3-glas;1,9;345;Träfönster;1 137
+FH2092;F;3-glas isolerruta;2;5,7;Träfönster;881
+FH2093;F;2-glas isolerruta + 1 glas;1,8;87;Träfönster;986
+FH2094;F;2-glas isolerruta + 1 glas;1,8;17;Träfönster;1 220
+FH2095;F;2-glas isolerruta + 1 glas;1,8;5;Träfönster;1 185
+FH2096;F;2-glas isolerruta + 1 glas;1,8;24;Träfönster;1 221
+FH2097;F;2-glas;2,5;39;Träfönster;780
+FH2098;F;2-glas;2,5;255;Träfönster;1 071
+FH2099;F;2-glas isolerruta + 1 glas;1,8;8;Träfönster;1 252
+FH2100;F;3-glas;1,9;3;Träfönster;766
+FH2101;F;2-glas;2,5;12;Träfönster;773
+FH2102;F;2-glas isolerruta;2,6;5,5;Plastklädda träfönster;1 283
+FH2103;F;2-glas isolerruta + 1 glas;1,8;48;Aluminiumklädda träfönster;974
+FH2104;F;3-glas;1,9;30;Aluminiumklädda träfönster;1 070
+FH2105;F;2-glas;2,5;7;Aluminiumklädda träfönster;1 186
+FH2106;F;3-glas;1,9;42;Träfönster;1 060
+FH2107;F;2-glas;2,5;88;Träfönster;777
+FH2108;F;3-glas;1,9;134;Träfönster;772
+FH2109;F;2-glas isolerruta + 1 glas;1,8;52;Träfönster;770
+FH2110;F;2-glas;2,5;4,7;Träfönster;917
+FH2111;F;2-glas isolerruta + 1 glas;1,8;72;Träfönster;1 284
+FH2112;F;2-glas, varav ett med LE-skikt;1,9;0;;1 187
+FH2113;F;2-glas isolerruta;2,6;12;Aluminiumklädda träfönster;950
+FH2114;F;2-glas isolerruta + 1 glas;1,8;150;Aluminiumklädda träfönster;1 069
+FH2115;F;2-glas;2,5;24;Träfönster;1 028
+FH2116;F;2-glas isolerruta + 1 glas;1,8;7;Träfönster;937
+FH2117;F;2-glas;2,5;67;Träfönster;829
+FH2118;F;2-glas;2,5;88;Träfönster;1 000
+FH2119;F;3-glas isolerruta;2;28;Träfönster;982
+FH2120;F;2-glas isolerruta + 1 glas;1,8;220;Träfönster;1 216
+FH2121;F;2-glas;2,5;34;Träfönster;928
+FH2122;F;2-glas;2,5;288;Aluminiumklädda träfönster;1 105
+FH2123;F;2-glas isolerruta;2,6;0;Aluminiumklädda träfönster;1 061
+FH2124;F;2-glas;2,5;65;Träfönster;832
+FH2125;F;2-glas;2,5;4;Träfönster;976
+FH2126;F;2-glas isolerruta + 1 glas;1,8;37;Träfönster;1 222
+FH2127;F;2-glas;2,5;43;Träfönster;1 058
+FH2127;F;2-glas isolerruta + 1 glas;1,8;40;Aluminiumklädda träfönster;1 057
+FH2129;F;2-glas, varav ett med LE-skikt;1,9;164;Aluminiumklädda träfönster;1 173
+FH2130;F;2-glas isolerruta + 1 glas;1,8;67;Träfönster;1 282
+FH2131;F;3-glas;1,9;55;Aluminium/metall;1 051
+FH2132;F;2-glas isolerruta + 1 glas;1,8;279;Träfönster;1 215
+FH2133;F;2-glas;2,5;360;Träfönster;1 054
+FH2134;F;2-glas isolerruta;2,6;85;Träfönster;880
+FH2135;F;3-glas isolerruta;2;2;Träfönster;1 033
+FH2136;F;2-glas;2,5;61;Träfönster;856
+FH2137;F;2-glas;2,5;37;Träfönster;760
+FH2138;F;2-glas;2,5;175;Träfönster;767
+FH2139;F;3-glas;1,9;150;Aluminiumklädda träfönster;1 074
+FH2140;F;2-glas isolerruta + 1 glas;1,8;132;Träfönster;957
+FH2141;F;2-glas isolerruta + 1 glas;1,8;133;Träfönster;870
+FH2142;F;2-glas;2,5;64;Träfönster;759
+FH2142;F;3-glas;1,9;40;Träfönster;758
+FH2143;F;2-glas isolerruta + 1 glas;1,8;44;Träfönster;1 064
+FH2145;F;2-glas isolerruta + 1 glas;1,8;143;Träfönster;756
+FH2146;F;2-glas isolerruta + 1 glas;1,8;0,5;Aluminiumklädda träfönster;1 285
+FH2147;F;3-glas;1,9;6,3;Plastklädda träfönster;1 140
+FH2148;F;2-glas;2,5;113;Aluminiumklädda träfönster;1 073
+FH2149;F;2-glas;2,5;60;Aluminiumklädda träfönster;899
+FH2150;F;3-glas isolerruta;2;183;Aluminiumklädda träfönster;1 066
+FH2151;F;2-glas;2,5;166;Träfönster;774
+FH2152;F;2-glas isolerruta + 1 glas;1,8;780;;764
+FH2153;F;2-glas;2,5;36;Träfönster;1 199
+FH2154;F;2-glas;2,5;5;Träfönster;876
+FH2155;F;2-glas;2,5;4;Träfönster;879
+FH2156;F;3-glas;1,9;23;;768
+FH2158;F;3-glas isolerruta;2;38;Träfönster;1 112
+FH2159;F;2-glas;2,5;1;Träfönster;733
+FH2160;F;2-glas;2,5;60;Aluminiumklädda träfönster;900
+FH2161;F;2-glas;2,5;203;Träfönster;778
+FH2162;F;2-glas isolerruta + 1 glas;1,8;3;Träfönster;936
+FH2163;F;2-glas;2,5;33;Träfönster;918
+FH3001;F;2-glas isolerruta + 1 glas;1,8;25;Träfönster;1 229
+FH3002;F;3-glas;1,9;112;Träfönster;873
+FH3003;F;2-glas;2,5;29;Träfönster;990
+FH3004;F;2-glas isolerruta + 1 glas;1,8;12;;1 157
+FH3005;F;2-glas;2,5;10;Träfönster;932
+FH3006;F;2-glas isolerruta + 1 glas;1,8;36;Träfönster;858
+FH3007;F;3-glas;1,9;176;Träfönster;790
+FH3008;F;3-glas isolerruta;2;76;Träfönster;792
+FH3009;F;2-glas isolerruta + 1 glas;1,8;14;Aluminiumklädda träfönster;1 206
+FH3009;F;2-glas isolerruta + 1 glas;1,8;85;Träfönster;1 205
+FH3010;F;2-glas isolerruta + 1 glas;1,8;31;Träfönster;1 286
+FH3011;F;2-glas isolerruta + 1 glas;1,8;3;Träfönster;1 006
+FH3012;F;3-glas isolerruta;2;155;Träfönster;1 128
+FH3013;F;2-glas isolerruta + 1 glas;1,8;45;Träfönster;977
+FH3014;F;3-glas;1,9;11;Träfönster;1 260
+FH3015;F;2-glas isolerruta + 1 glas;1,8;14;Träfönster;1 085
+FH3016;F;2-glas isolerruta;2,6;270;Träfönster;1 086
+FH3017;F;3-glas;1,9;34;Träfönster;884
+FH3018;F;3-glas;1,9;2,4;Träfönster;1 004
+FH3020;F;2-glas isolerruta + 1 glas;1,8;6;Träfönster;735
+FH3021;F;2-glas isolerruta;2,6;27;Träfönster;872
+FH3022;F;3-glas;1,9;174;Träfönster;833
+FH3023;F;2-glas;2,5;313;Aluminium/metall;961
+FH3024;F;2-glas isolerruta;2,6;265;Träfönster;1 088
+FH3025;F;2-glas isolerruta + 1 glas;1,8;83;Träfönster;1 007
+FH3026;F;3-glas;1,9;70;Träfönster;1 021
+FH3027;F;3-glas;1,9;124;Träfönster;786
+FH3028;F;2-glas isolerruta;2,6;19;Träfönster;1 259
+FH3029;F;3-glas;1,9;4,6;Träfönster;1 022
+FH3030;F;3-glas isolerruta;2;66;Träfönster;784
+FH3031;F;3-glas isolerruta;2;22;Träfönster;978
+FH3032;F;3-glas isolerruta;2;33;Träfönster;885
+FH3033;F;2-glas isolerruta + 1 glas;1,8;85;Träfönster;938
+FH3035;F;2-glas isolerruta + 1 glas;1,8;12;Träfönster;1 174
+FH3036;F;2-glas isolerruta + 1 glas;1,8;90;Aluminiumklädda träfönster;1 089
+FH3037;F;2-glas;2,5;74;Träfönster;782
+FH3039;F;2-glas isolerruta + 1 glas;1,8;0;Träfönster;1 115
+FH3040;F;2-glas isolerruta + 1 glas;1,8;0;;1 189
+FH3042;F;1-glas;4,5;78;;788
+FH3044;F;2-glas isolerruta;2,6;36;Träfönster;1 227
+FH3045;F;2-glas isolerruta + 1 glas;1,8;20;Träfönster;1 117
+FH3046;F;2-glas isolerruta;2,6;36;Träfönster;1 226
+FH3048;F;3-glas isolerruta;2;21;Träfönster;904
+FH3049;F;2-glas;2,5;55;Träfönster;791
+FH3050;F;2-glas;2,5;382;Träfönster;846
+FH3051;F;2-glas;2,5;18;Träfönster;1 258
+FH3052;F;2-glas, varav ett med LE-skikt;1,9;13;Träfönster;905
+FH3053;F;3-glas;1,9;189;Träfönster;835
+FH3056;F;2-glas isolerruta + 1 glas;1,8;178;Träfönster;962
+FH3058;F;3-glas;1,9;1;Träfönster;1 145
+FH3059;F;3-glas isolerruta;2;63;Träfönster;1 158
+FH3060;F;2-glas isolerruta + 1 glas;1,8;61;Träfönster;1 159
+FH3061;F;2-glas isolerruta + 1 glas;1,8;3,5;Träfönster;1 020
+FH3062;F;2-glas isolerruta;2,6;17;Träfönster;1 204
+FH3062;F;2-glas isolerruta + 1 glas;1,8;47;Aluminiumklädda träfönster;1 203
+FH3063;F;2-glas;2,5;32;;1 696
+FH3064;F;2-glas isolerruta + 1 glas;1,8;0,3;Träfönster;1 276
+FH3065;F;2-glas;2,5;9;Träfönster;781
+FH3066;F;2-glas;2,5;11;Träfönster;1 087
+FH3067;F;3-glas;1,9;58;Träfönster;834
+FH3068;F;2-glas isolerruta + 1 glas;1,8;29;Träfönster;1 275
+FH3069;F;2-glas;2,5;19;Träfönster;1 188
+FH3070;F;2-glas isolerruta;2,6;23;Träfönster;989
+FH3073;F;2-glas isolerruta + 1 glas;1,8;170;Träfönster;1 081
+FH3074;F;2-glas;2,5;853;Träfönster;787
+FH3075;F;2-glas isolerruta + 1 glas;1,8;181;Träfönster;959
+FH3076;F;2-glas isolerruta + 1 glas;1,8;24;Träfönster;1 228
+FH3079;F;3-glas isolerruta;2;442;Träfönster;847
+FH3080;F;2-glas isolerruta + 1 glas;1,8;2,6;Träfönster;919
+FH3081;F;2-glas isolerruta + 1 glas;1,8;24;Träfönster;1 175
+FH3082;F;2-glas isolerruta + 1 glas;1,8;235;Träfönster;789
+FH3083;F;3-glas isolerruta;2;144;Aluminium/metall;1 029
+FH3084;F;2-glas isolerruta + 1 glas;1,8;8,7;;1 116
+FH3085;F;2-glas isolerruta + 1 glas;1,8;46;Träfönster;1 231
+FH3086;F;2-glas;2,5;333;Träfönster;793
+FH3087;F;3-glas;1,9;27;Aluminiumklädda träfönster;1 143
+FH3088;F;2-glas isolerruta + 1 glas;1,8;28;Träfönster;1 230
+FH3089;F;2-glas isolerruta + 1 glas;1,8;6,3;Aluminiumklädda träfönster;1 083
+FH3090;F;2-glas isolerruta + 1 glas;1,8;38;Träfönster;1 277
+FH3091;F;3-glas;1,9;15;Träfönster;871
+FH3092;F;3-glas isolerruta;2;21;Träfönster;1 082
+FH3093;F;3-glas;1,9;74;Träfönster;1 005
+FH3094;F;2-glas;2,5;1;Aluminiumklädda träfönster;1 202
+FH3095;F;2-glas isolerruta + 1 glas;1,8;403;Träfönster;785
+FH3096;F;2-glas isolerruta + 1 glas;1,8;58;Träfönster;960
+FH4001;F;2-glas isolerruta + 1 glas;1,8;90;Träfönster;889
+FH4002;F;3-glas;1,9;88;Träfönster;1 177
+FH4003;F;2-glas isolerruta;2,6;31;Träfönster;797
+FH4004;F;2-glas isolerruta;2,6;6;Aluminium/metall;1 191
+FH4004;F;2-glas isolerruta + 1 glas;1,8;50;Aluminiumklädda träfönster;1 190
+FH4005;F;2-glas isolerruta + 1 glas;1,8;30;Aluminiumklädda träfönster;939
+FH4006;F;2-glas isolerruta + 1 glas;1,8;386;Aluminium/metall;803
+FH4007;F;2-glas isolerruta + 1 glas;1,8;0,6;Träfönster;1 266
+FH4008;F;2-glas isolerruta + 1 glas;1,8;22;Träfönster;1 237
+FH4009;F;3-glas isolerruta;2;21;Träfönster;1 207
+FH4010;F;2-glas isolerruta + 1 glas;1,8;95;Aluminiumklädda träfönster;979
+FH4011;F;2-glas isolerruta + 1 glas;1,8;12;Aluminiumklädda träfönster;1 129
+FH4012;F;3-glas;1,9;0;Träfönster;796
+FH4013;F;2-glas isolerruta;2,6;2;Träfönster;1 133
+FH4013;F;3-glas isolerruta;2;12;Träfönster;1 132
+FH4014;F;3-glas;1,9;16;Träfönster;1 011
+FH4015;F;3-glas isolerruta;2;24;Träfönster;836
+FH4016;F;3-glas isolerruta;2;16;Aluminiumklädda träfönster;1 125
+FH4017;F;2-glas isolerruta + 1 glas;1,8;81;Träfönster;801
+FH4018;F;2-glas isolerruta + 1 glas;1,8;14;Träfönster;1 265
+FH4019;F;3-glas isolerruta;2;20;Aluminium/metall;1 030
+FH4020;F;3-glas isolerruta;2;57,6;Träfönster;888
+FH4021;F;2-glas isolerruta + 1 glas;1,8;156;Träfönster;964
+FH4022;F;3-glas isolerruta;2;62;Träfönster;886
+FH4024;F;2-glas isolerruta + 1 glas;1,8;13;Träfönster;1 234
+FH4025;F;3-glas;1,9;72;Träfönster;809
+FH4027;F;3-glas isolerruta;2;60;Träfönster;805
+FH4028;F;2-glas isolerruta + 1 glas;1,8;14;Träfönster;1 192
+FH4029;F;3-glas;1,9;8;Aluminiumklädda träfönster;1 090
+FH4030;F;3-glas;1,9;258;Träfönster;822
+FH4031;F;2-glas isolerruta + 1 glas;1,8;29;Aluminium/metall;838
+FH4032;F;3-glas;1,9;71;Träfönster;1 148
+FH4033;F;3-glas isolerruta;2;362;Träfönster;808
+FH4034;F;3-glas;1,9;2,6;Träfönster;1 262
+FH4035;F;3-glas isolerruta;2;2,2;Träfönster;906
+FH4036;F;3-glas isolerruta;2;29;Aluminiumklädda träfönster;1 093
+FH4037;F;2-glas isolerruta + 1 glas;1,8;153;Träfönster;794
+FH4038;F;2-glas isolerruta + 1 glas;1,8;71;Träfönster;1 289
+FH4039;F;3-glas;1,9;33;Träfönster;861
+FH4040;F;2-glas isolerruta + 1 glas;1,8;13;Träfönster;1 233
+FH4041;F;3-glas isolerruta;2;8;Träfönster;933
+FH4042;F;3-glas isolerruta;2;57;Träfönster;940
+FH4044;F;2-glas isolerruta + 1 glas;1,8;15;Träfönster;1 290
+FH4045;F;3-glas isolerruta;2;27;Träfönster;1 131
+FH4046;F;2-glas isolerruta + 1 glas;1,8;74;Aluminiumklädda träfönster;1 232
+FH4047;F;3-glas;1,9;0;;1 024
+FH4048;F;3-glas;1,9;44;Träfönster;862
+FH4049;F;3-glas;1,9;21;Träfönster;1 010
+FH4050;F;2-glas isolerruta + 1 glas;1,8;34;Aluminiumklädda träfönster;965
+FH4052;F;2-glas isolerruta + 1 glas;1,8;51;Träfönster;849
+FH4053;F;3-glas isolerruta;2;1,7;Träfönster;1 146
+FH4054;F;2-glas isolerruta + 1 glas;1,8;6,8;Träfönster;180
+FH4055;F;2-glas isolerruta + 1 glas;1,8;35;Träfönster;738
+FH4056;F;2-glas isolerruta + 1 glas;1,8;18;Träfönster;1 160
+FH4057;F;3-glas isolerruta;2;30;Aluminiumklädda träfönster;1 119
+FH4058;F;3-glas isolerruta;2;37;Träfönster;191
+FH4061;F;2-glas isolerruta + 1 glas;1,8;18;Aluminiumklädda träfönster;981
+FH4062;F;2-glas isolerruta + 1 glas;1,8;24;Aluminiumklädda träfönster;799
+FH4063;F;3-glas;1,9;36;Aluminiumklädda träfönster;1 023
+FH4064;F;3-glas isolerruta;2;12;Träfönster;874
+FH4065;F;2-glas isolerruta + 1 glas;1,8;225;Träfönster;804
+FH4066;F;3-glas isolerruta;2;24;Träfönster;966
+FH4067;F;2-glas isolerruta + 1 glas;1,8;51;Träfönster;1 278
+FH4068;F;3-glas isolerruta;2;102;;798
+FH4069;F;2-glas isolerruta + 1 glas;1,8;101;Träfönster;837
+FH4070;F;3-glas isolerruta;2;13;Träfönster;1 034
+FH4071;F;2-glas isolerruta + 1 glas;1,8;119;Träfönster;1 161
+FH4072;F;2-glas isolerruta + 1 glas;1,8;143;Aluminiumklädda träfönster;992
+FH4073;F;2-glas isolerruta + 1 glas;1,8;218;Aluminiumklädda träfönster;795
+FH4074;F;2-glas;2,5;190;Träfönster;1 092
+FH4076;F;3-glas;1,9;31;Plastklädda träfönster;1 147
+FH4077;F;3-glas isolerruta;2;8;Träfönster;860
+FH4078;F;2-glas isolerruta + 1 glas;1,8;51;Aluminiumklädda träfönster;1 208
+FH4079;F;3-glas isolerruta;2;91;Träfönster;1 209
+FH4080;F;2-glas isolerruta + 1 glas;1,8;258;Aluminiumklädda träfönster;887
+FH4081;F;2-glas isolerruta + 1 glas;1,8;98;Träfönster;800
+FH4082;F;2-glas isolerruta + 1 glas;1,8;42;Aluminiumklädda träfönster;993
+FH4083;F;2-glas isolerruta + 1 glas;1,8;33;Aluminiumklädda träfönster;1 130
+FH4084;F;3-glas isolerruta ett med LE-skikt;1,2;102;;980
+FH4085;F;3-glas isolerruta;2;115;Träfönster;807
+FH4086;F;2-glas isolerruta + 1 glas;1,8;151;Träfönster;802
+FH4087;F;3-glas isolerruta;2;21;;1 695
+FH4088;F;3-glas isolerruta;2;4;Aluminiumklädda träfönster;922
+FH4089;F;3-glas;1,9;2,6;Träfönster;1 263
+FH4091;F;3-glas isolerruta;2;31;Aluminiumklädda träfönster;1 120
+FH4092;F;2-glas isolerruta + 1 glas;1,8;167;Aluminiumklädda träfönster;941
+FH4094;F;2-glas isolerruta + 1 glas;1,8;7,4;Aluminiumklädda träfönster;1 291
+FH4095;F;2-glas isolerruta;2,6;58;Träfönster;848
+FH4096;F;3-glas isolerruta;2;9,6;Aluminiumklädda träfönster;1 118
+FH4097;F;3-glas isolerruta;2;14;;1 031
+FH4098;F;2-glas isolerruta + 1 glas;1,8;171;Träfönster;963
+FH5001;F;2-glas isolerruta;2,6;19;Aluminiumklädda träfönster;943
+FH5003;F;2-glas isolerruta + 1 glas;1,8;54;Aluminium/metall;816
+FH5004;F;2-glas isolerruta + 1 glas;1,8;106;Träfönster;841
+FH5005;F;2-glas isolerruta + 1 glas;1,8;127;;817
+FH5006;F;3-glas isolerruta;2;131;Träfönster;1 012
+FH5007;F;3-glas isolerruta;2;105;Aluminium/metall;1 167
+FH5008;F;2-glas isolerruta;2,6;30;;1 095
+FH5009;F;2-glas isolerruta;2,6;162;Träfönster;850
+FH5010;F;2-glas isolerruta + 1 glas;1,8;351;Aluminiumklädda träfönster;820
+FH5011;F;2-glas isolerruta + 1 glas;1,8;36;Träfönster;823
+FH5012;F;2-glas isolerruta;2,6;26;Aluminium/metall;1 107
+FH5013;F;2-glas isolerruta + 1 glas;1,8;43;Träfönster;864
+FH5015;F;3-glas isolerruta;2;45;Träfönster;1 162
+FH5016;F;3-glas;1,9;61;Plastklädda träfönster;1 151
+FH5017;F;3-glas isolerruta;2;11;Träfönster;890
+FH5018;F;2-glas isolerruta + 1 glas;1,8;55;Träfönster;1 194
+FH5019;F;3-glas isolerruta;2;146;Aluminiumklädda träfönster;970
+FH5020;F;2-glas isolerruta + 1 glas;1,8;22;Aluminiumklädda träfönster;1 094
+FH5021;F;3-glas isolerruta;2;52;Träfönster;1 163
+FH5022;F;3-glas isolerruta;2;27;Träfönster;1 149
+FH5023;F;3-glas;1,9;36;Aluminiumklädda träfönster;825
+FH5024;F;2-glas isolerruta;2,6;19;Aluminiumklädda träfönster;942
+FH5025;F;2-glas isolerruta + 1 glas;1,8;12;Aluminium/metall;1 097
+FH5026;F;3-glas isolerruta;2;44,4;Aluminiumklädda träfönster;893
+FH5028;F;2-glas isolerruta + 1 glas;1,8;150;Aluminiumklädda träfönster;1 106
+FH5029;F;2-glas isolerruta;2,6;513;Aluminiumklädda träfönster;968
+FH5030;F;3-glas isolerruta ett med LE-skikt;1,2;39;Träfönster;740
+FH5031;F;3-glas;1,9;72;Träfönster;875
+FH5032;F;3-glas isolerruta;2;65;Träfönster;839
+FH5033;F;3-glas isolerruta;2;24;;1 164
+FH5034;F;3-glas isolerruta;2;130;Aluminiumklädda träfönster;895
+FH5035;F;2-glas isolerruta + 1 glas;1,8;14;Träfönster;969
+FH5036;F;2-glas isolerruta + 1 glas;1,8;9;Träfönster;852
+FH5037;F;3-glas isolerruta;2;54;Träfönster;1 121
+FH5038;F;2-glas isolerruta med ett LE-skikt + 1 glas;1,3;93;Aluminiumklädda träfönster;923
+FH5039;F;3-glas isolerruta;2;4,2;Träfönster;1 135
+FH5040;F;2-glas isolerruta + 1 glas;1,8;39;Träfönster;1 292
+FH5041;F;3-glas isolerruta;2;45;Träfönster;851
+FH5042;F;3-glas;1,9;445;Träfönster;814
+FH5043;F;2-glas isolerruta + 1 glas;1,8;7,6;Aluminiumklädda träfönster;1 244
+FH5043;F;3-glas isolerruta;2;2,1;Aluminium/metall;1 245
+FH5044;F;2-glas isolerruta + 1 glas;1,8;218;Aluminiumklädda träfönster;1 102
+FH5045;F;3-glas isolerruta ett med LE-skikt;1,2;38;Aluminiumklädda träfönster;909
+FH5046;F;3-glas;1,9;74;Träfönster;821
+FH5047;F;3-glas isolerruta;2;190;Aluminiumklädda träfönster;1 108
+FH5048;F;2-glas;2,5;15;Träfönster;1 099
+FH5048;F;3-glas isolerruta;2;2;Träfönster;1 100
+FH5049;F;2-glas isolerruta + 1 glas;1,8;28;Träfönster;1 279
+FH5050;F;2-glas isolerruta;2,6;149;Aluminiumklädda träfönster;983
+FH5051;F;2-glas isolerruta + 1 glas;1,8;57;Aluminiumklädda träfönster;1 238
+FH5051;F;3-glas isolerruta;2;24;Aluminium/metall;1 239
+FH5052;F;3-glas isolerruta;2;18;Träfönster;1 178
+FH5054;F;2-glas isolerruta + 1 glas;1,8;0;Träfönster;824
+FH5055;F;3-glas isolerruta ett med LE-skikt;1,2;31;Aluminiumklädda träfönster;910
+FH5056;F;3-glas isolerruta;2;303;Träfönster;818
+FH5057;F;3-glas isolerruta;2;3;Träfönster;907
+FH5059;F;2-glas isolerruta + 1 glas;1,8;82;Träfönster;813
+FH5060;F;2-glas isolerruta + 1 glas;1,8;65;;1 168
+FH5061;F;3-glas isolerruta ett med LE-skikt;1,2;9;Aluminiumklädda träfönster;908
+FH5062;F;3-glas isolerruta;2;138;Träfönster;1 165
+FH5063;F;2-glas isolerruta + 1 glas;1,8;49;Träfönster;1 166
+FH5064;F;2-glas isolerruta + 1 glas;1,8;237;Träfönster;967
+FH5065;F;3-glas isolerruta;2;11;Träfönster;1 122
+FH5066;F;2-glas isolerruta + 1 glas;1,8;79;Träfönster;815
+FH5067;F;3-glas;1,9;104;Träfönster;840
+FH5068;F;3-glas isolerruta;2;40;Träfönster;739
+FH5069;F;3-glas isolerruta;2;50;Träfönster;1 096
+FH5070;F;3-glas isolerruta ett med LE-skikt;1,2;9;Träfönster;1 152
+FH5071;F;2-glas isolerruta + 1 glas;1,8;39;Aluminiumklädda träfönster;811
+FH5072;F;3-glas isolerruta;2;25;Träfönster;1 246
+FH5073;F;3-glas isolerruta;2;191;Aluminiumklädda träfönster;1 150
+FH5074;F;3-glas isolerruta;2;2,1;Aluminium/metall;1 241
+FH5074;F;3-glas isolerruta;2;7,6;Aluminiumklädda träfönster;1 240
+FH5075;F;2-glas isolerruta, ett med LE-skikt;1,8;90;Plastklädda träfönster;924
+FH5076;F;2-glas isolerruta + 1 glas;1,8;41;Träfönster;863
+FH5077;F;2-glas isolerruta + 1 glas;1,8;180;;1 109
+FH5078;F;2-glas isolerruta + 1 glas;1,8;14;Aluminiumklädda träfönster;1 014
+FH5079;F;2-glas isolerruta + 1 glas;1,8;3,6;Aluminiumklädda träfönster;892
+FH5080;F;2-glas isolerruta + 1 glas;1,8;255;Träfönster;1 098
+FH5081;F;2-glas isolerruta + 1 glas;1,8;368;Aluminiumklädda träfönster;891
+FH5082;F;2-glas isolerruta + 1 glas;1,8;90;Träfönster;819
+FH5083;F;2-glas isolerruta + 1 glas;1,8;5,5;Träfönster;1 293
+FH5084;F;2-glas isolerruta;2,6;19;Aluminiumklädda träfönster;1 015
+FH5086;F;2-glas isolerruta + 1 glas;1,8;4,2;Träfönster;1 195
+FH5087;F;2-glas isolerruta + 1 glas;1,8;57;Aluminiumklädda träfönster;1 242
+FH5087;F;3-glas isolerruta;2;24;Aluminium/metall;1 243
+FH5088;F;2-glas isolerruta + 1 glas;1,8;136;Aluminiumklädda träfönster;810
+FH5089;F;3-glas isolerruta;2;128;Träfönster;1 013
+LA0001;L;2-glas;2,5;0,5;Träfönster;1 596
+LA0002;L;3-glas;1,9;25;Träfönster;1 599
+LA0003;L;3-glas isolerruta;2;160;Träfönster;1 624
+LA0004;L;2-glas;2,5;6;Träfönster;1 629
+LA0006;L;2-glas;2,5;7,7;Träfönster;1 647
+LA0007;L;2-glas;2,5;7,2;Träfönster;1 595
+LA0008;L;2-glas;2,5;9;Träfönster;1 630
+LA0009;L;2-glas;2,5;7,3;Träfönster;1 654
+LA0010;L;3-glas;1,9;18;Aluminiumklädda träfönster;1 626
+LA0011;L;2-glas;2,5;97;Träfönster;1 625
+LA0012;L;1-glas;4,5;10;Aluminium/metall;1 454
+LA0013;L;2-glas isolerruta + 1 glas;1,8;32;Träfönster;1 656
+LA0015;L;1-glas;4,5;17;Träfönster;1 584
+LA0015;L;2-glas isolerruta;2,6;1;Träfönster;1 585
+LA0016;L;3-glas isolerruta;2;99;Träfönster;1 652
+LA0017;L;2-glas;2,5;3,7;Träfönster;1 604
+LA0018;L;3-glas isolerruta;2;27;Aluminiumklädda träfönster;1 601
+LA0019;L;3-glas;1,9;23;Aluminiumklädda träfönster;1 618
+LA0020;L;2-glas;2,5;14;Träfönster;1 628
+LA0021;L;1-glas;4,5;4;Träfönster;1 641
+LA0021;L;2-glas;2,5;1,4;Träfönster;1 640
+LA0022;L;3-glas isolerruta;2;5,5;Träfönster;1 655
+LA0023;L;2-glas;2,5;2,6;Träfönster;1 586
+LA0024;L;3-glas isolerruta;2;2,6;;1 623
+LA0025;L;3-glas isolerruta;2;39;Träfönster;1 546
+LA0026;L;3-glas isolerruta;2;1,4;Träfönster;1 615
+LA0027;L;2-glas;2,5;9,5;Träfönster;1 617
+LA0028;L;2-glas;2,5;4;Träfönster;1 645
+LA0029;L;1-glas;4,5;1;Träfönster;1 651
+LA0030;L;2-glas;2,5;8;Träfönster;1 389
+LA0031;L;3-glas isolerruta;2;83;Aluminium/metall;1 610
+LA0032;L;2-glas;2,5;7,3;Träfönster;1 580
+LA0032;L;3-glas isolerruta;2;3;Träfönster;1 581
+LA0035;L;2-glas;2,5;1,7;Träfönster;1 619
+LA0036;L;2-glas;2,5;1,7;Träfönster;1 588
+LA0037;L;2-glas;2,5;234;Träfönster;1 377
+LA0038;L;3-glas isolerruta;2;2;Träfönster;1 613
+LA0039;L;2-glas;2,5;14;Träfönster;1 591
+LA0040;L;2-glas;2,5;3;Träfönster;1 578
+LA0041;L;2-glas;2,5;12;Träfönster;1 592
+LA0042;L;2-glas;2,5;50;Träfönster;1 575
+LA0044;L;2-glas;2,5;8;Träfönster;1 622
+LA0045;L;2-glas isolerruta;2,6;6;Träfönster;1 693
+LA0047;L;2-glas;2,5;2,4;Träfönster;1 590
+LA0048;L;2-glas isolerruta;2,6;30;Aluminium/metall;1 644
+LA0049;L;3-glas;1,9;17;;1 579
+LA0050;L;2-glas isolerruta + 1 glas;1,8;15;Träfönster;1 603
+LA0051;L;2-glas isolerruta;2,6;11;Träfönster;1 690
+LA0052;L;1-glas;4,5;7;Aluminium/metall;1 631
+LA0053;L;2-glas;2,5;6,9;Träfönster;1 635
+LA0054;L;2-glas;2,5;6,4;Träfönster;1 692
+LA0055;L;3-glas;1,9;50;Träfönster;1 600
+LA0056;L;2-glas;2,5;10;Träfönster;1 614
+LK0001;L;2-glas;2,5;15;Träfönster;1 576
+LK0002;L;2-glas;2,5;9;Träfönster;1 372
+LK0003;L;2-glas isolerruta + 1 glas;1,8;86;Träfönster;1 376
+LK0004;L;2-glas isolerruta + 1 glas;1,8;26;Träfönster;1 468
+LK0005;L;3-glas isolerruta;2;24;Träfönster;1 587
+LK0006;L;2-glas;2,5;5,8;Träfönster;1 543
+LK0007;L;2-glas isolerruta;2,6;170;Träfönster;1 607
+LK0008;L;2-glas;2,5;20;Träfönster;1 401
+LK0009;L;2-glas isolerruta;2,6;4,5;Träfönster;1 689
+LK0010;L;2-glas isolerruta + 1 glas;1,8;80;Aluminiumklädda träfönster;1 571
+LK0011;L;2-glas isolerruta;2,6;351;Plastklädda träfönster;1 350
+LK0012;L;2-glas;2,5;12;;1 537
+LK0013;L;2-glas isolerruta;2,6;15;Aluminium/metall;1 418
+LK0013;L;2-glas isolerruta + 1 glas;1,8;65;Träfönster;1 417
+LK0014;L;2-glas;2,5;411;Träfönster;1 574
+LK0015;L;2-glas isolerruta + 1 glas;1,8;156;Aluminiumklädda träfönster;1 352
+LK0016;L;2-glas isolerruta + 1 glas;1,8;529;Träfönster;1 446
+LK0017;L;2-glas isolerruta + 1 glas;1,8;7,2;Träfönster;1 653
+LK0018;L;2-glas;2,5;20;Träfönster;1 486
+LK0019;L;2-glas;2,5;163;Träfönster;1 340
+LK0020;L;2-glas;2,5;391;;1 685
+LK0021;L;1-glas;4,5;12;Träfönster;1 399
+LK0021;L;3-glas isolerruta ett med LE-skikt;1,2;140;Aluminiumklädda träfönster;1 398
+LK0022;L;3-glas isolerruta;2;7,4;Aluminiumklädda träfönster;1 462
+LK0023;L;2-glas isolerruta + 1 glas;1,8;267;Träfönster;1 564
+LK0024;L;2-glas;2,5;40;Träfönster;1 375
+LK0024;L;3-glas;1,9;56;Träfönster;1 374
+LK0025;L;3-glas isolerruta;2;0;;1 333
+LK0027;L;2-glas;2,5;90;;1 348
+LK0028;L;2-glas isolerruta;2,6;236;Träfönster;1 322
+LK0029;L;2-glas isolerruta;2,6;68;Träfönster;1 346
+LK0030;L;2-glas isolerruta + 1 glas;1,8;5;Aluminium/metall;1 369
+LK0030;L;3-glas isolerruta;2;13;Aluminium/metall;1 370
+LK0031;L;2-glas;2,5;48;;1 351
+LK0032;L;2-glas isolerruta;2,6;2;Träfönster;1 634
+LK0033;L;3-glas isolerruta;2;0;Träfönster;1 310
+LK0034;L;2-glas;2,5;180;Träfönster;1 335
+LK0035;L;2-glas isolerruta + 1 glas;1,8;90;Aluminiumklädda träfönster;1 101
+LK0037;L;2-glas isolerruta;2,6;23;Träfönster;1 421
+LK0038;L;2-glas;2,5;38;Aluminiumklädda träfönster;1 391
+LK0038;L;2-glas isolerruta;2,6;6;Aluminium/metall;1 390
+LK0039;L;2-glas;2,5;25;Träfönster;1 373
+LK0040;L;2-glas isolerruta + 1 glas;1,8;20;Aluminiumklädda träfönster;1 338
+LK0041;L;2-glas;2,5;27;Träfönster;1 397
+LK0042;L;2-glas;2,5;170;Träfönster;1 414
+LK0043;L;2-glas isolerruta;2,6;22;Aluminium/metall;1 309
+LK0043;L;2-glas isolerruta + 1 glas;1,8;186;Aluminiumklädda träfönster;1 307
+LK0043;L;3-glas isolerruta;2;53;Aluminiumklädda träfönster;1 308
+LK0044;L;2-glas isolerruta;2,6;58;Träfönster;1 464
+LK0045;L;2-glas;2,5;250;Träfönster;1 383
+LK0046;L;2-glas, varav ett med LE-skikt;1,9;24;Träfönster;1 353
+LK0047;L;2-glas isolerruta + 1 glas;1,8;1,3;Träfönster;1 411
+LK0048;L;3-glas isolerruta;2;24;Aluminiumklädda träfönster;1 405
+LK0049;L;3-glas isolerruta ett med LE-skikt;1,2;46;Aluminium/metall;1 371
+LK0050;L;2-glas;2,5;6,5;Träfönster;1 627
+LK0051;L;2-glas;2,5;99;Träfönster;1 311
+LK0052;L;2-glas;2,5;9;Träfönster;1 361
+LK0052;L;2-glas isolerruta;2,6;64;Aluminium/metall;1 362
+LK0053;L;2-glas;2,5;436;Aluminiumklädda träfönster;1 347
+LK0054;L;2-glas isolerruta;2,6;34;Aluminiumklädda träfönster;1 404
+LK0056;L;2-glas;2,5;118;Aluminiumklädda träfönster;1 342
+LK0056;L;2-glas isolerruta;2,6;23;Träfönster;1 344
+LK0056;L;2-glas isolerruta;2,6;33;Aluminium/metall;1 343
+LK0057;L;2-glas;2,5;5,5;Träfönster;1 294
+LK0057;L;2-glas isolerruta;2,6;1,5;Träfönster;1 295
+LK0058;L;2-glas isolerruta + 1 glas;1,8;45;Aluminiumklädda träfönster;1 316
+LK0058;L;3-glas isolerruta ett med LE-skikt;1,2;238;Aluminiumklädda träfönster;1 315
+LK0059;L;2-glas;2,5;4,4;Träfönster;1 326
+LK0060;L;2-glas;2,5;34;Träfönster;1 443
+LK0062;L;1-glas;4,5;44;Aluminium/metall;1 328
+LK0062;L;2-glas;2,5;52;Träfönster;1 327
+LK0063;L;1-glas;4,5;35;Träfönster;1 256
+LK0064;L;1-glas;4,5;12;Aluminium/metall;1 320
+LK0065;L;2-glas;2,5;6,7;Träfönster;1 400
+LK0068;L;3-glas isolerruta;2;10;Träfönster;1 530
+LK0069;L;2-glas;2,5;61;Träfönster;1 482
+LK0070;L;2-glas;2,5;8;;1 583
+LK0071;L;2-glas;2,5;12;Aluminiumklädda träfönster;1 686
+LK0072;L;2-glas;2,5;115;Träfönster;1 301
+LK0073;L;3-glas;1,9;43;Träfönster;1 422
+LK0074;L;3-glas isolerruta;2;34;Aluminiumklädda träfönster;1 393
+LK0075;L;2-glas;2,5;49;Träfönster;1 416
+LK0075;L;2-glas isolerruta;2,6;10;Aluminium/metall;1 415
+LK0077;L;2-glas;2,5;9;Träfönster;1 648
+LK0078;L;2-glas isolerruta;2,6;178;Aluminium/metall;1 337
+LK0078;L;3-glas isolerruta;2;197;Aluminiumklädda träfönster;1 336
+LK0079;L;3-glas isolerruta;2;26;Träfönster;1 463
+LK0080;L;2-glas isolerruta;2,6;20;Aluminium/metall;1 378
+LK0082;L;2-glas;2,5;45;Träfönster;1 650
+LK0083;L;2-glas;2,5;101;Aluminiumklädda träfönster;1 394
+LK0084;L;2-glas isolerruta;2,6;56;Träfönster;1 487
+LK0085;L;3-glas isolerruta ett med LE-skikt;1,2;344;Aluminium/metall;1 684
+LK0086;L;2-glas;2,5;75;Träfönster;1 608
+LK0086;L;3-glas isolerruta;2;49;Aluminiumklädda träfönster;1 609
+LK0087;L;2-glas;2,5;19;Träfönster;1 334
+LK0088;L;2-glas;2,5;130;Träfönster;1 402
+LK0089;L;2-glas;2,5;101;Träfönster;877
+LK0090;L;2-glas;2,5;52;Aluminium/metall;1 314
+LK0091;L;3-glas;1,9;2,2;Träfönster;1 420
+LK0092;L;3-glas isolerruta;2;6,1;Aluminiumklädda träfönster;1 593
+LK0093;L;2-glas isolerruta + 1 glas;1,8;3;Träfönster;1 354
+LK0094;L;2-glas;2,5;132;Träfönster;1 438
+LK0095;L;2-glas;2,5;33;Träfönster;1 349
+LK0096;L;2-glas isolerruta med ett LE-skikt + 1 glas;1,3;9,6;Plastklädda träfönster;1 426
+LK0097;L;2-glas;2,5;9;Aluminium/metall;1 296
+LK0098;L;2-glas;2,5;2;Träfönster;1 621
+LK0099;L;2-glas isolerruta + 1 glas;1,8;281;Aluminiumklädda träfönster;1 429
+LK0100;L;2-glas;2,5;112;Träfönster;1 321
+LK0101;L;1-glas;4,5;0,8;Träfönster;1 582
+LK0102;L;2-glas isolerruta;2,6;36;Aluminium/metall;1 407
+LK0102;L;2-glas isolerruta + 1 glas;1,8;65;Träfönster;1 406
+LK0104;L;2-glas;2,5;3,4;Träfönster;1 496
+LK0106;L;3-glas;1,9;34;Aluminiumklädda träfönster;1 433
+LK0107;L;2-glas isolerruta;2,6;330;Aluminiumklädda träfönster;1 330
+LK0109;L;2-glas;2,5;15;Träfönster;1 492
+LK0110;L;2-glas isolerruta;2,6;65;Aluminium/metall;1 355
+LK0111;L;2-glas isolerruta + 1 glas;1,8;20;Träfönster;1 412
+LK0112;L;3-glas isolerruta;2;3,1;Aluminiumklädda träfönster;1 323
+LK0113;L;2-glas;2,5;40;Träfönster;1 419
+LK0114;L;3-glas;1,9;25;Aluminiumklädda träfönster;1 432
+LK0115;L;3-glas isolerruta;2;9,4;Träfönster;1 424
+LK0116;L;2-glas isolerruta + 1 glas;1,8;40;Träfönster;1 367
+LK0117;L;2-glas isolerruta;2,6;200;Träfönster;1 646
+LK0119;L;2-glas isolerruta + 1 glas;1,8;84;Träfönster;1 299
+LK0120;L;2-glas;2,5;11;Träfönster;1 632
+LK0121;L;2-glas isolerruta;2,6;24;Aluminium/metall;1 297
+LK0121;L;3-glas isolerruta;2;39;Träfönster;1 298
+LK0124;L;3-glas isolerruta;2;77;Aluminium/metall;1 597
+LK0125;L;2-glas isolerruta;2,6;6,6;Aluminiumklädda träfönster;1 611
+LK0125;L;3-glas;1,9;0;;1 612
+LK0126;L;2-glas;2,5;54;;1 385
+LK0127;L;2-glas isolerruta;2,6;56;Aluminium/metall;1 409
+LK0127;L;2-glas isolerruta + 1 glas;1,8;60;Träfönster;1 408
+LK0128;L;2-glas;2,5;3;;1 598
+LK0129;L;1-glas;4,5;35;Träfönster;1 257
+LK0131;L;2-glas;2,5;107;Träfönster;1 688
+LK0132;L;3-glas isolerruta;2;272,8;Träfönster;1 381
+LK0133;L;3-glas;1,9;169;Aluminium/metall;1 306
+LK0134;L;2-glas;2,5;494;Träfönster;1 683
+LK0135;L;2-glas;2,5;2;Träfönster;1 643
+LK0135;L;2-glas isolerruta + 1 glas;1,8;86;Aluminiumklädda träfönster;1 642
+LK0136;L;2-glas;2,5;49;Träfönster;1 313
+LK0137;L;2-glas;2,5;17;Träfönster;1 616
+LK0138;L;2-glas;2,5;8;Träfönster;1 605
+LK0138;L;3-glas isolerruta;2;8;Träfönster;1 606
+LK0139;L;2-glas isolerruta + 1 glas;1,8;57;Aluminium/metall;1 302
+LK0140;L;2-glas isolerruta + 1 glas;1,8;20;Träfönster;1 341
+LK0141;L;2-glas isolerruta;2,6;450;Träfönster;1 577
+LK0142;L;3-glas;1,9;61;Plastklädda träfönster;1 503
+LK0143;L;2-glas;2,5;1,2;Träfönster;1 620
+LK0144;L;2-glas isolerruta;2,6;45;Aluminium/metall;1 366
+LK0146;L;3-glas isolerruta;2;0;Aluminium/metall;1 305
+LK0147;L;3-glas isolerruta;2;1,8;Aluminium/metall;1 368
+LK0149;L;2-glas;2,5;205;Träfönster;1 312
+LK0150;L;3-glas;1,9;70;Aluminium/metall;1 380
+LK0151;L;2-glas;2,5;151;Aluminiumklädda träfönster;1 345
+LK0152;L;2-glas isolerruta;2,6;24;Aluminiumklädda träfönster;1 360
+LK0155;L;2-glas;2,5;9;Träfönster;1 691
+LK0156;L;3-glas;1,9;90;Träfönster;1 382
+LK0157;L;2-glas;2,5;5,1;Träfönster;1 325
+LK0158;L;2-glas isolerruta + 1 glas;1,8;137;Träfönster;1 566
+LK0159;L;3-glas;1,9;999;;1 304
+LK0160;L;3-glas;1,9;86;Träfönster;1 403
+LK0161;L;2-glas;2,5;10;Träfönster;1 633
+LK0162;L;2-glas isolerruta + 1 glas;1,8;40;Träfönster;1 300
+LK0163;L;3-glas;1,9;999;Aluminium/metall;1 379
+LK0164;L;2-glas isolerruta;2,6;47;Träfönster;1 386
+LK0165;L;2-glas;2,5;334;Träfönster;1 395
+LK0166;L;2-glas isolerruta;2,6;10;Träfönster;1 319
+LK0167;L;2-glas isolerruta + 1 glas;1,8;24;Träfönster;1 428
+LK0168;L;2-glas;2,5;67;Träfönster;1 396
+LK0169;L;2-glas;2,5;88;Träfönster;1 594
+LK0170;L;2-glas;2,5;5;Träfönster;1 388
+LK0173;L;1-glas;4,5;1,5;Träfönster;1 359
+LK0173;L;2-glas;2,5;6;Träfönster;1 358
+LK0174;L;2-glas;2,5;22;Träfönster;1 365
+LK0175;L;2-glas;2,5;0,5;Träfönster;1 589
+LK0176;L;2-glas;2,5;199;Träfönster;1 356
+LK0177;L;2-glas isolerruta med ett LE-skikt + 1 glas;1,3;41;Aluminiumklädda träfönster;1 317
+LK0177;L;2-glas isolerruta, ett med LE-skikt;1,8;135;Aluminium/metall;1 318
+LK0178;L;2-glas isolerruta;2,6;8;Aluminium/metall;1 364
+LK0178;L;2-glas isolerruta + 1 glas;1,8;7;Aluminiumklädda träfönster;1 363
+LK0179;L;2-glas isolerruta;2,6;131,1;Aluminium/metall;1 329
+LK0181;L;2-glas isolerruta, ett med LE-skikt;1,8;1;Träfönster;1 637
+LK0181;L;3-glas isolerruta ett med LE-skikt;1,2;6,7;Träfönster;1 636
+LV0001;L;2-glas isolerruta + 1 glas;1,8;34;Träfönster;1 558
+LV0001;L;3-glas;1,9;26;Träfönster;1 559
+LV0002;L;2-glas isolerruta + 1 glas;1,8;60;Aluminium/metall;1 513
+LV0003;L;2-glas isolerruta + 1 glas;1,8;114;Träfönster;1 568
+LV0004;L;2-glas isolerruta + 1 glas;1,8;170;Träfönster;845
+LV0005;L;2-glas;2,5;520;Träfönster;1 484
+LV0006;L;2-glas isolerruta med ett LE-skikt + 1 glas;1,3;23;Träfönster;1 481
+LV0007;L;2-glas;2,5;36;;1 538
+LV0008;L;2-glas;2,5;51;Träfönster;1 479
+LV0009;L;2-glas isolerruta + 1 glas;1,8;148;Träfönster;1 567
+LV0010;L;1-glas + 3-glas isolerruta med tre LE-skikt;0,8;10;Aluminiumklädda träfönster;1 455
+LV0010;L;2-glas isolerruta;2,6;10;Aluminium/metall;1 456
+LV0011;L;2-glas isolerruta;2,6;100;Aluminium/metall;1 458
+LV0011;L;2-glas isolerruta + 1 glas;1,8;100;Aluminiumklädda träfönster;1 457
+LV0013;L;2-glas isolerruta + 1 glas;1,8;12;Träfönster;1 497
+LV0014;L;2-glas isolerruta + 1 glas;1,8;15;Träfönster;1 555
+LV0015;L;3-glas isolerruta;2;127;Träfönster;1 448
+LV0016;L;3-glas;1,9;10,6;Träfönster;883
+LV0017;L;2-glas isolerruta + 1 glas;1,8;4;Träfönster;1 556
+LV0018;L;2-glas;2,5;2,1;Träfönster;1 410
+LV0019;L;3-glas isolerruta;2;12;Träfönster;1 528
+LV0020;L;2-glas isolerruta + 1 glas;1,8;340;Aluminiumklädda träfönster;1 531
+LV0021;L;3-glas isolerruta;2;112;Aluminiumklädda träfönster;931
+LV0022;L;3-glas;1,9;54;Aluminium/metall;1 512
+LV0023;L;2-glas;2,5;8,5;Träfönster;1 554
+LV0024;L;2-glas isolerruta + 1 glas;1,8;274;Träfönster;1 551
+LV0025;L;2-glas isolerruta + 1 glas;1,8;10;Aluminiumklädda träfönster;1 134
+LV0026;L;3-glas isolerruta;2;5;Träfönster;1 520
+LV0027;L;2-glas;2,5;18;Träfönster;1 498
+LV0028;L;2-glas;2,5;159;;1 541
+LV0029;L;2-glas;2,5;18;Träfönster;1 474
+LV0029;L;2-glas isolerruta;2,6;33;Aluminium/metall;1 475
+LV0030;L;;0;113;;1 447
+LV0032;L;3-glas isolerruta;2;1,1;Träfönster;1 526
+LV0033;L;2-glas;2,5;445;Träfönster;1 444
+LV0034;L;2-glas isolerruta;2,6;600;Aluminium/metall;1 471
+LV0035;L;3-glas isolerruta;2;43;Aluminiumklädda träfönster;1 490
+LV0036;L;3-glas isolerruta;2;87;Träfönster;1 488
+LV0037;L;2-glas isolerruta + 1 glas;1,8;52;Aluminiumklädda träfönster;1 561
+LV0038;L;3-glas isolerruta;2;70;Aluminium/metall;1 507
+LV0039;L;3-glas isolerruta;2;25;Aluminiumklädda träfönster;934
+LV0040;L;3-glas;1,9;358;Träfönster;1 303
+LV0041;L;2-glas;2,5;106;Träfönster;1 436
+LV0042;L;2-glas isolerruta + 1 glas;1,8;165;Träfönster;1 453
+LV0043;L;3-glas isolerruta;2;6;Träfönster;1 491
+LV0044;L;2-glas isolerruta + 1 glas;1,8;44;Aluminiumklädda träfönster;1 550
+LV0045;L;2-glas isolerruta + 1 glas;1,8;32;Aluminiumklädda träfönster;1 569
+LV0046;L;2-glas isolerruta + 1 glas;1,8;47;Träfönster;1 480
+LV0047;L;2-glas;2,5;377;Aluminiumklädda träfönster;1 485
+LV0048;L;3-glas isolerruta;2;2,8;Träfönster;1 465
+LV0049;L;3-glas isolerruta;2;103;Aluminiumklädda träfönster;994
+LV0050;L;2-glas isolerruta + 1 glas;1,8;2,2;Träfönster;1 562
+LV0051;L;2-glas isolerruta + 1 glas;1,8;328;Aluminiumklädda träfönster;1 570
+LV0052;L;2-glas;2,5;19;Träfönster;1 563
+LV0053;L;2-glas;2,5;20;Träfönster;1 435
+LV0054;L;2-glas;2,5;87;Träfönster;1 540
+LV0055;L;2-glas isolerruta + 1 glas;1,8;63;Träfönster;1 445
+LV0057;L;2-glas;2,5;257;Aluminiumklädda träfönster;1 483
+LV0058;L;2-glas isolerruta + 1 glas;1,8;3,6;Träfönster;1 560
+LV0059;L;2-glas isolerruta + 1 glas;1,8;80;Träfönster;1 467
+LV0060;L;3-glas;1,9;116;Plastklädda träfönster;1 687
+LV0061;L;2-glas;2,5;42;Träfönster;1 440
+LV0062;L;2-glas;2,5;230;;1 511
+LV0063;L;2-glas isolerruta + 1 glas;1,8;66;Aluminiumklädda träfönster;1 509
+LV0064;L;2-glas isolerruta + 1 glas;1,8;20;Aluminiumklädda träfönster;1 536
+LV0065;L;2-glas isolerruta, ett med LE-skikt;1,8;20;Aluminiumklädda träfönster;1 529
+LV0066;L;2-glas;2,5;404;Träfönster;776
+LV0067;L;2-glas;2,5;155;Träfönster;1 324
+LV0068;L;2-glas;2,5;43;Träfönster;1 451
+LV0068;L;2-glas isolerruta + 1 glas;1,8;71;Aluminiumklädda träfönster;1 450
+LV0068;L;3-glas isolerruta;2;2;Aluminiumklädda träfönster;1 452
+LV0069;L;3-glas isolerruta;2;17,9;Träfönster;903
+LV0070;L;2-glas isolerruta + 1 glas;1,8;45;Aluminiumklädda träfönster;1 091
+LV0071;L;2-glas;2,5;216;Träfönster;1 437
+LV0072;L;2-glas isolerruta + 1 glas;1,8;267;Aluminiumklädda träfönster;1 548
+LV0073;L;2-glas isolerruta + 1 glas;1,8;12;Träfönster;1 573
+LV0074;L;2-glas;2,5;14;Träfönster;1 602
+LV0075;L;2-glas isolerruta;2,6;430;Träfönster;1 534
+LV0076;L;2-glas;2,5;109;Träfönster;1 169
+LV0077;L;2-glas isolerruta + 1 glas;1,8;84;Aluminiumklädda träfönster;1 499
+LV0078;L;2-glas isolerruta;2,6;102;Plastklädda träfönster;1 176
+LV0079;L;3-glas isolerruta;2;9;Träfönster;1 495
+LV0080;L;2-glas isolerruta + 1 glas;1,8;110;Aluminium/metall;1 104
+LV0081;L;2-glas isolerruta + 1 glas;1,8;110;;1 522
+LV0082;L;2-glas isolerruta + 1 glas;1,8;24;Träfönster;1 545
+LV0083;L;3-glas isolerruta;2;39;Träfönster;1 339
+LV0084;L;2-glas;2,5;20;Träfönster;1 533
+LV0084;L;2-glas isolerruta + 1 glas;1,8;20;Aluminiumklädda träfönster;1 532
+LV0085;L;3-glas;1,9;39;Aluminiumklädda träfönster;1 504
+LV0086;L;2-glas;2,5;8;Träfönster;1 502
+LV0087;L;3-glas;1,9;24;Träfönster;1 274
+LV0088;L;2-glas isolerruta + 1 glas;1,8;218;Träfönster;1 441
+LV0089;L;3-glas isolerruta;2;22,1;Träfönster;894
+LV0090;L;2-glas;2,5;66;;1 542
+LV0091;L;3-glas isolerruta;2;12;Träfönster;1 557
+LV0092;L;3-glas isolerruta;2;12;Aluminiumklädda träfönster;1 527
+LV0093;L;2-glas isolerruta + 1 glas;1,8;51;Aluminiumklädda träfönster;1 572
+LV0094;L;2-glas isolerruta + 1 glas;1,8;41;Aluminiumklädda träfönster;1 521
+LV0095;L;3-glas isolerruta;2;5,8;Träfönster;1 431
+LV0096;L;2-glas isolerruta + 1 glas;1,8;150;Aluminiumklädda träfönster;1 384
+LV0097;L;2-glas isolerruta;2,6;8;Aluminiumklädda träfönster;1 500
+LV0098;L;2-glas isolerruta;2,6;50;Träfönster;1 508
+LV0099;L;2-glas;2,5;16;Träfönster;1 565
+LV0100;L;3-glas;1,9;25;Träfönster;1 517
+LV0101;L;2-glas isolerruta + 1 glas;1,8;110;Aluminiumklädda träfönster;771
+LV0102;L;2-glas isolerruta + 1 glas;1,8;7,7;;1 523
+LV0103;L;2-glas isolerruta;2,6;48;Aluminium/metall;1 470
+LV0104;L;2-glas;2,5;7;Träfönster;1 473
+LV0105;L;2-glas isolerruta + 1 glas;1,8;46;Aluminiumklädda träfönster;1 549
+LV0106;L;3-glas isolerruta;2;1;Träfönster;1 392
+LV0107;L;3-glas isolerruta;2;5,5;Träfönster;1 036
+LV0108;L;2-glas isolerruta + 1 glas;1,8;95;Aluminiumklädda träfönster;1 103
+LV0109;L;2-glas;2,5;7;Träfönster;1 331
+LV0109;L;2-glas isolerruta;2,6;13;Aluminium/metall;1 332
+LV0110;L;2-glas isolerruta;2,6;34;;1 539
+LV0111;L;2-glas isolerruta + 1 glas;1,8;112;Träfönster;1 469
+LV0112;L;2-glas isolerruta + 1 glas;1,8;14;Träfönster;1 430
+LV0113;L;3-glas;1,9;37;Träfönster;1 273
+LV0114;L;2-glas isolerruta;2,6;5,2;Träfönster;1 387
+LV0115;L;2-glas isolerruta + 1 glas;1,8;5;Träfönster;1 449
+LV0116;L;3-glas;1,9;13;Träfönster;1 516
+LV0117;L;2-glas isolerruta + 1 glas;1,8;20;Träfönster;1 489
+LV0118;L;2-glas;2,5;310;;1 439
+LV0119;L;3-glas isolerruta;2;11;Aluminiumklädda träfönster;1 535
+LV0120;L;2-glas isolerruta + 1 glas;1,8;146;Träfönster;1 272
+LV0121;L;2-glas;2,5;205;Träfönster;775
+LV0122;L;2-glas isolerruta;2,6;86;Träfönster;1 501
+LV0123;L;3-glas;1,9;313;Träfönster;1 357
+LV0124;L;2-glas isolerruta;2,6;25;Träfönster;1 442
+LV0125;L;2-glas isolerruta + 1 glas;1,8;100;Aluminiumklädda träfönster;1 288
+LV0126;L;2-glas isolerruta + 1 glas;1,8;26;Träfönster;1 472
+LV0127;L;3-glas isolerruta;2;30;Aluminiumklädda träfönster;1 144
+LV0128;L;2-glas;2,5;8,4;Träfönster;1 493
+LV0128;L;3-glas isolerruta;2;2,2;Träfönster;1 494
+LV0129;L;3-glas isolerruta;2;53;Aluminiumklädda träfönster;1 476
+LV0130;L;2-glas;2,5;54;Träfönster;1 547
+SH1001;S;2-glas;2,5;3,5;Träfönster;610
+SH1002;S;3-glas isolerruta ett med LE-skikt;1,2;5,2;Träfönster;393
+SH1003;S;2-glas;2,5;7;Träfönster;28
+SH1004;S;2-glas;2,5;2,4;Träfönster;325
+SH1005;S;2-glas;2,5;6;Träfönster;708
+SH1006;S;3-glas;1,9;1,5;Aluminiumklädda träfönster;354
+SH1007;S;3-glas isolerruta;2;3,3;Träfönster;124
+SH1009;S;2-glas;2,5;9;Träfönster;323
+SH1010;S;2-glas;2,5;2,2;Träfönster;637
+SH1012;S;2-glas isolerruta + 1 glas;1,8;2,8;Träfönster;397
+SH1013;S;2-glas;2,5;3;Träfönster;327
+SH1014;S;3-glas;1,9;1,6;Träfönster;694
+SH1015;S;3-glas isolerruta;2;3,1;Träfönster;126
+SH1016;S;3-glas;1,9;1;Träfönster;517
+SH1017;S;3-glas;1,9;13;Träfönster;92
+SH1018;S;2-glas;2,5;12;Träfönster;280
+SH1019;S;2-glas;2,5;2,8;Träfönster;24
+SH1020;S;2-glas;2,5;2,5;Träfönster;403
+SH1021;S;2-glas;2,5;4;Träfönster;615
+SH1023;S;3-glas isolerruta;2;5,6;Aluminiumklädda träfönster;491
+SH1024;S;3-glas isolerruta;2;2;Aluminiumklädda träfönster;125
+SH1025;S;2-glas;2,5;3;Träfönster;69
+SH1026;S;2-glas;2,5;3;Träfönster;236
+SH1027;S;2-glas;2,5;4;Träfönster;553
+SH1028;S;2-glas;2,5;7,7;Träfönster;2
+SH1029;S;2-glas;2,5;6,6;Träfönster;660
+SH1030;S;2-glas;2,5;2,1;Träfönster;201
+SH1031;S;3-glas;1,9;6,9;Träfönster;709
+SH1032;S;2-glas;2,5;9;Träfönster;555
+SH1033;S;3-glas isolerruta;2;16;Träfönster;404
+SH1034;S;2-glas;2,5;0;Träfönster;392
+SH1035;S;2-glas;2,5;3;Träfönster;91
+SH1036;S;3-glas isolerruta ett med LE-skikt;1,2;7;Träfönster;238
+SH1037;S;3-glas;1,9;5,3;Träfönster;396
+SH1038;S;2-glas;2,5;2,9;Träfönster;121
+SH1039;S;3-glas;1,9;3,3;Träfönster;705
+SH1040;S;3-glas isolerruta;2;3,4;Träfönster;401
+SH1042;S;2-glas;2,5;8,5;Träfönster;40
+SH1043;S;2-glas;2,5;4,9;Träfönster;657
+SH1044;S;2-glas;2,5;3,8;Träfönster;520
+SH1045;S;3-glas;1,9;4,2;Träfönster;398
+SH1046;S;2-glas;2,5;6;Träfönster;239
+SH1047;S;3-glas isolerruta;2;3,6;Träfönster;275
+SH1048;S;2-glas;2,5;7,2;Träfönster;639
+SH1049;S;2-glas isolerruta;2,6;4,2;Träfönster;380
+SH1050;S;3-glas isolerruta;2;3,2;Träfönster;170
+SH1051;S;2-glas;2,5;7,6;Träfönster;237
+SH1052;S;2-glas;2,5;4;Träfönster;611
+SH1053;S;2-glas;2,5;9,2;Träfönster;658
+SH1053;S;3-glas;1,9;2,2;Träfönster;659
+SH1054;S;2-glas;2,5;4;Träfönster;25
+SH1055;S;3-glas isolerruta;2;8;Träfönster;321
+SH1056;S;2-glas;2,5;3;Träfönster;211
+SH1057;S;2-glas;2,5;1,7;Träfönster;400
+SH1057;S;3-glas;1,9;2,2;Träfönster;399
+SH1058;S;2-glas;2,5;2;Träfönster;319
+SH1059;S;3-glas isolerruta;2;5;Träfönster;367
+SH1060;S;2-glas;2,5;4;Träfönster;595
+SH1061;S;2-glas;2,5;6;Träfönster;638
+SH1062;S;2-glas;2,5;7,5;Träfönster;390
+SH1063;S;3-glas isolerruta;2;4;Träfönster;612
+SH1064;S;2-glas;2,5;4,2;Träfönster;365
+SH1065;S;2-glas;2,5;3,3;Träfönster;405
+SH1066;S;2-glas;2,5;1,6;Träfönster;518
+SH1067;S;2-glas;2,5;6,7;Träfönster;29
+SH1068;S;2-glas isolerruta;2,6;2,5;Aluminium/metall;235
+SH1069;S;3-glas isolerruta;2;6,7;Träfönster;695
+SH1070;S;3-glas;1,9;0,8;Träfönster;707
+SH1071;S;3-glas;1,9;2;Träfönster;35
+SH1072;S;2-glas;2,5;3,5;Träfönster;22
+SH1073;S;3-glas;1,9;4;Träfönster;522
+SH1074;S;3-glas isolerruta;2;11;Träfönster;123
+SH1075;S;3-glas isolerruta;2;2,4;Träfönster;662
+SH1076;S;3-glas;1,9;7,8;Träfönster;683
+SH1077;S;2-glas;2,5;4,5;Träfönster;492
+SH1078;S;2-glas;2,5;8;Träfönster;75
+SH1079;S;3-glas;1,9;1,2;Träfönster;402
+SH1080;S;2-glas;2,5;3;Träfönster;320
+SH1081;S;2-glas isolerruta + 1 glas;1,8;3,1;Aluminiumklädda träfönster;23
+SH1082;S;2-glas;2,5;14;Träfönster;667
+SH1085;S;2-glas;2,5;7;Träfönster;32
+SH1086;S;2-glas;2,5;9;Träfönster;198
+SH1087;S;2-glas;2,5;7,2;Träfönster;640
+SH1088;S;3-glas isolerruta;2;1;Aluminium/metall;39
+SH1089;S;2-glas;2,5;1,7;Träfönster;366
+SH1090;S;3-glas isolerruta;2;8,3;Träfönster;127
+SH1091;S;2-glas;2,5;4,5;Träfönster;613
+SH1093;S;2-glas;2,5;7,9;Träfönster;122
+SH1094;S;3-glas;1,9;13;Träfönster;682
+SH1095;S;2-glas;2,5;2;Träfönster;21
+SH1096;S;2-glas;2,5;3,3;Träfönster;36
+SH1097;S;3-glas isolerruta;2;3,6;Träfönster;322
+SH1098;S;2-glas;2,5;2;;216
+SH1099;S;2-glas isolerruta + 1 glas;1,8;2;Träfönster;278
+SH1099;S;2-glas isolerruta med ett LE-skikt + 1 glas;1,3;3,5;Träfönster;279
+SH1102;S;2-glas;2,5;5,3;Träfönster;389
+SH1103;S;2-glas;2,5;0,3;Träfönster;379
+SH1104;S;2-glas;2,5;4;Träfönster;34
+SH1105;S;2-glas;2,5;12;Träfönster;552
+SH1106;S;2-glas;2,5;5,1;Träfönster;281
+SH1106;S;2-glas isolerruta;2,6;15;Träfönster;282
+SH1107;S;3-glas;1,9;5,7;Träfönster;692
+SH1108;S;2-glas;2,5;12;Träfönster;324
+SH1109;S;2-glas;2,5;2;Träfönster;395
+SH1109;S;2-glas, varav ett med LE-skikt;1,9;2,8;Träfönster;394
+SH1110;S;2-glas;2,5;4,3;Träfönster;231
+SH1111;S;2-glas isolerruta;2,6;7,8;Träfönster;68
+SH1112;S;2-glas;2,5;3,4;Träfönster;641
+SH1113;S;3-glas;1,9;5,3;Träfönster;72
+SH1114;S;2-glas;2,5;1,2;Träfönster;524
+SH1115;S;3-glas isolerruta;2;3,5;Träfönster;614
+SH1116;S;2-glas;2,5;22;Träfönster;81
+SH1117;S;2-glas;2,5;4;Träfönster;27
+SH1118;S;2-glas;2,5;7,2;Träfönster;128
+SH1119;S;3-glas;1,9;1,5;Träfönster;232
+SH1120;S;3-glas isolerruta;2;1,5;Träfönster;616
+SH1121;S;2-glas;2,5;10;Träfönster;31
+SH1123;S;2-glas;2,5;10;Träfönster;26
+SH1124;S;3-glas isolerruta;2;4;Träfönster;308
+SH1125;S;2-glas;2,5;4,9;Träfönster;38
+SH1126;S;2-glas;2,5;61;Träfönster;1 423
+SH1127;S;2-glas;2,5;3,8;Träfönster;30
+SH1128;S;2-glas;2,5;2,2;Träfönster;523
+SH1129;S;2-glas;2,5;5,6;Träfönster;79
+SH1130;S;2-glas;2,5;5;Träfönster;33
+SH1131;S;2-glas;2,5;7;Träfönster;594
+SH1132;S;2-glas;2,5;5;Träfönster;20
+SH1133;S;3-glas;1,9;11;Träfönster;70
+SH1134;S;2-glas;2,5;7;;3
+SH1135;S;3-glas isolerruta;2;4,5;Träfönster;37
+SH1136;S;2-glas isolerruta;2,6;3,5;Träfönster;230
+SH1137;S;2-glas;2,5;1,4;Träfönster;215
+SH1139;S;2-glas;2,5;1;Träfönster;200
+SH1140;S;2-glas;2,5;6,7;Träfönster;80
+SH1141;S;2-glas isolerruta, ett med LE-skikt;1,8;2;Träfönster;661
+SH1142;S;2-glas;2,5;6;Träfönster;19
+SH1143;S;2-glas;2,5;4,6;Träfönster;493
+SH1144;S;2-glas;2,5;7;Träfönster;199
+SH1145;S;2-glas;2,5;1;Träfönster;554
+SH1146;S;2-glas;2,5;6;;1
+SH1147;S;3-glas;1,9;3,4;Träfönster;636
+SH1148;S;3-glas isolerruta;2;4;Träfönster;120
+SH1149;S;2-glas;2,5;2;Träfönster;519
+SH1150;S;2-glas;2,5;9,5;Träfönster;353
+SH1151;S;2-glas;2,5;5;Träfönster;183
+SH1152;S;3-glas isolerruta;2;7,2;Träfönster;277
+SH1153;S;2-glas;2,5;14;Träfönster;596
+SH1154;S;2-glas isolerruta + 1 glas;1,8;4,3;Träfönster;706
+SH1155;S;2-glas;2,5;9;Träfönster;521
+SH1156;S;2-glas;2,5;9;Träfönster;504
+SH1158;S;2-glas, varav ett med LE-skikt;1,9;6;Träfönster;276
+SH1159;S;2-glas;2,5;3,5;Träfönster;171
+SH1160;S;2-glas;2,5;1;Träfönster;391
+SH1161;S;2-glas;2,5;6;Träfönster;108
+SH1162;S;2-glas;2,5;2,8;Träfönster;233
+SH1162;S;2-glas isolerruta, ett med LE-skikt;1,8;6,1;Plastklädda träfönster;234
+SH1163;S;2-glas;2,5;0,6;Träfönster;309
+SH1164;S;2-glas;2,5;2,5;Träfönster;326
+SH1165;S;2-glas;2,5;1;Träfönster;307
+SH1166;S;2-glas;2,5;37;Träfönster;71
+SH1167;S;3-glas isolerruta ett med LE-skikt;1,2;5;Träfönster;663
+SH1168;S;2-glas;2,5;3,9;Träfönster;696
+SH2001;S;2-glas;2,5;2;Träfönster;135
+SH2002;S;2-glas;2,5;5,8;Träfönster;206
+SH2003;S;2-glas;2,5;5;Träfönster;335
+SH2004;S;3-glas;1,9;5,9;Träfönster;245
+SH2005;S;2-glas;2,5;3;Träfönster;94
+SH2006;S;2-glas;2,5;8,8;Träfönster;172
+SH2007;S;2-glas;2,5;3;Träfönster;5
+SH2008;S;2-glas;2,5;8,8;Träfönster;418
+SH2009;S;2-glas;2,5;12;Träfönster;599
+SH2010;S;2-glas;2,5;3;Träfönster;310
+SH2011;S;2-glas;2,5;2;Träfönster;530
+SH2012;S;2-glas isolerruta + 1 glas;1,8;3,2;Träfönster;664
+SH2013;S;2-glas;2,5;7;;556
+SH2014;S;2-glas;2,5;4,2;Träfönster;643
+SH2016;S;2-glas;2,5;5;Träfönster;242
+SH2018;S;2-glas;2,5;8;Träfönster;76
+SH2019;S;2-glas isolerruta;2,6;1,7;Träfönster;370
+SH2019;S;3-glas isolerruta;2;0,8;Träfönster;371
+SH2020;S;2-glas;2,5;3,6;Träfönster;644
+SH2021;S;2-glas;2,5;1,2;Träfönster;495
+SH2022;S;3-glas isolerruta;2;8,1;Träfönster;202
+SH2023;S;2-glas;2,5;9;;337
+SH2024;S;2-glas;2,5;3;Träfönster;129
+SH2025;S;2-glas;2,5;7,6;Träfönster;645
+SH2026;S;3-glas;1,9;6;Träfönster;329
+SH2027;S;3-glas isolerruta;2;2;Träfönster;6
+SH2028;S;3-glas isolerruta;2;4,2;Träfönster;283
+SH2029;S;2-glas;2,5;7;Träfönster;531
+SH2030;S;2-glas;2,5;5;Träfönster;597
+SH2031;S;2-glas;2,5;17;Träfönster;74
+SH2033;S;3-glas;1,9;6,7;Träfönster;711
+SH2034;S;3-glas isolerruta;2;4;Träfönster;203
+SH2036;S;3-glas isolerruta;2;7;Träfönster;328
+SH2037;S;2-glas;2,5;7,8;Träfönster;1 427
+SH2038;S;2-glas;2,5;6,5;Träfönster;620
+SH2039;S;2-glas;2,5;7;Träfönster;83
+SH2040;S;3-glas isolerruta;2;6;Träfönster;173
+SH2041;S;2-glas isolerruta;2,6;1,6;Träfönster;560
+SH2042;S;2-glas;2,5;12;Träfönster;525
+SH2043;S;2-glas;2,5;5,1;Träfönster;45
+SH2044;S;2-glas;2,5;6;Träfönster;598
+SH2045;S;3-glas isolerruta;2;6;Träfönster;287
+SH2047;S;1-glas;4,5;0,5;Plastklädda träfönster;526
+SH2048;S;3-glas isolerruta;2;3,6;Träfönster;381
+SH2049;S;2-glas;2,5;2;Träfönster;715
+SH2051;S;3-glas isolerruta;2;6;Träfönster;204
+SH2052;S;2-glas isolerruta;2,6;3;Träfönster;109
+SH2053;S;2-glas isolerruta;2,6;5,5;Träfönster;496
+SH2055;S;2-glas;2,5;4;Träfönster;666
+SH2056;S;3-glas isolerruta;2;6,4;Träfönster;286
+SH2057;S;3-glas;1,9;11;Träfönster;686
+SH2058;S;2-glas isolerruta;2,6;45;Träfönster;73
+SH2059;S;3-glas isolerruta;2;9,1;Träfönster;665
+SH2062;S;2-glas;2,5;7,8;Träfönster;332
+SH2063;S;3-glas isolerruta;2;5;Träfönster;423
+SH2064;S;2-glas;2,5;5,3;Träfönster;43
+SH2067;S;2-glas;2,5;6,8;Träfönster;285
+SH2069;S;2-glas;2,5;7;Träfönster;558
+SH2070;S;2-glas;2,5;7,9;Träfönster;716
+SH2071;S;2-glas;2,5;12;Träfönster;132
+SH2072;S;2-glas;2,5;4,2;Träfönster;668
+SH2073;S;2-glas;2,5;10;Träfönster;48
+SH2074;S;3-glas isolerruta;2;3,6;Träfönster;415
+SH2076;S;2-glas, varav ett med LE-skikt;1,9;2,8;Träfönster;642
+SH2077;S;2-glas;2,5;10;;618
+SH2078;S;2-glas;2,5;0,8;Träfönster;311
+SH2079;S;1-glas;4,5;6;Träfönster;412
+SH2079;S;2-glas;2,5;1,1;Träfönster;411
+SH2079;S;3-glas isolerruta;2;6,9;Träfönster;410
+SH2080;S;2-glas;2,5;4;Träfönster;42
+SH2081;S;2-glas;2,5;1;Träfönster;407
+SH2082;S;2-glas;2,5;1,5;Träfönster;507
+SH2083;S;2-glas;2,5;3,4;Träfönster;420
+SH2084;S;2-glas isolerruta + 1 glas;1,8;6,3;Träfönster;670
+SH2085;S;2-glas;2,5;1,1;Träfönster;713
+SH2086;S;3-glas;1,9;9,7;Träfönster;712
+SH2087;S;2-glas;2,5;3;Träfönster;44
+SH2088;S;2-glas isolerruta + 1 glas;1,8;5;Träfönster;50
+SH2089;S;2-glas;2,5;8,4;Träfönster;717
+SH2091;S;2-glas;2,5;0,4;Träfönster;417
+SH2091;S;3-glas;1,9;4;Träfönster;416
+SH2092;S;2-glas;2,5;1;Träfönster;284
+SH2093;S;2-glas isolerruta;2,6;6,5;Träfönster;96
+SH2094;S;2-glas;2,5;1,7;Träfönster;288
+SH2095;S;2-glas;2,5;8;Träfönster;529
+SH2097;S;2-glas;2,5;3,5;Träfönster;684
+SH2098;S;3-glas isolerruta;2;1;Träfönster;561
+SH2100;S;2-glas;2,5;3,6;Träfönster;330
+SH2100;S;3-glas isolerruta;2;1,2;Träfönster;331
+SH2102;S;2-glas;2,5;1,8;Träfönster;710
+SH2106;S;2-glas;2,5;8,8;Träfönster;333
+SH2108;S;2-glas;2,5;3,3;Träfönster;413
+SH2109;S;3-glas;1,9;2,2;Träfönster;355
+SH2110;S;2-glas;2,5;8;;334
+SH2111;S;2-glas;2,5;6;Träfönster;93
+SH2112;S;2-glas;2,5;8;Träfönster;244
+SH2113;S;2-glas isolerruta + 1 glas;1,8;11;Träfönster;697
+SH2114;S;2-glas;2,5;6,1;Aluminium/metall;248
+SH2114;S;3-glas;1,9;8,4;Träfönster;247
+SH2115;S;2-glas isolerruta;2,6;8;Träfönster;95
+SH2116;S;2-glas isolerruta;2,6;10;Träfönster;408
+SH2117;S;2-glas;2,5;3;Träfönster;617
+SH2118;S;3-glas isolerruta;2;5,5;Träfönster;49
+SH2121;S;2-glas;2,5;7;Träfönster;46
+SH2122;S;2-glas;2,5;8,5;Träfönster;134
+SH2122;S;2-glas isolerruta;2,6;4,1;Träfönster;133
+SH2123;S;3-glas isolerruta;2;4,7;Träfönster;497
+SH2124;S;2-glas;2,5;8;;564
+SH2125;S;2-glas isolerruta;2,6;3;Träfönster;421
+SH2126;S;3-glas isolerruta;2;2,1;Träfönster;218
+SH2127;S;3-glas isolerruta;2;2,9;Träfönster;205
+SH2128;S;3-glas isolerruta;2;5,5;Träfönster;532
+SH2130;S;2-glas;2,5;3;Träfönster;505
+SH2131;S;3-glas isolerruta;2;1;Träfönster;406
+SH2132;S;2-glas;2,5;4;Träfönster;369
+SH2133;S;2-glas;2,5;6,5;Träfönster;422
+SH2134;S;3-glas isolerruta;2;7,9;Träfönster;131
+SH2135;S;2-glas isolerruta;2,6;5,3;Träfönster;419
+SH2136;S;2-glas;2,5;2,1;Träfönster;176
+SH2137;S;2-glas;2,5;1;Aluminiumklädda träfönster;130
+SH2138;S;2-glas;2,5;6,5;Träfönster;619
+SH2139;S;2-glas;2,5;4;Träfönster;528
+SH2139;S;3-glas;1,9;17;Träfönster;527
+SH2140;S;2-glas;2,5;9;Träfönster;506
+SH2142;S;2-glas;2,5;11;Träfönster;685
+SH2143;S;3-glas isolerruta;2;5,8;Träfönster;494
+SH2144;S;2-glas;2,5;12;Träfönster;368
+SH2146;S;3-glas isolerruta;2;8;Träfönster;246
+SH2147;S;2-glas;2,5;3;Träfönster;41
+SH2148;S;2-glas;2,5;6,5;Träfönster;243
+SH2149;S;2-glas;2,5;5;Träfönster;110
+SH2150;S;3-glas isolerruta;2;11;Träfönster;414
+SH2151;S;3-glas isolerruta;2;3;Träfönster;82
+SH2152;S;2-glas;2,5;1;Träfönster;175
+SH2152;S;2-glas;2,5;2;Träfönster;174
+SH2153;S;2-glas isolerruta;2,6;1,1;Träfönster;425
+SH2153;S;3-glas isolerruta;2;1,2;Träfönster;424
+SH2154;S;2-glas;2,5;8;Träfönster;289
+SH2155;S;2-glas;2,5;6;Träfönster;557
+SH2156;S;2-glas isolerruta;2,6;8,5;Träfönster;47
+SH2158;S;2-glas;2,5;12;Träfönster;409
+SH2160;S;2-glas isolerruta + 1 glas;1,8;6;Träfönster;714
+SH2161;S;2-glas;2,5;5;Träfönster;217
+SH2162;S;2-glas isolerruta + 1 glas;1,8;8,7;Träfönster;136
+SH2163;S;2-glas;2,5;6;Träfönster;4
+SH2164;S;2-glas;2,5;6,8;Träfönster;621
+SH2165;S;2-glas;2,5;2;Träfönster;240
+SH2168;S;2-glas;2,5;15;Träfönster;559
+SH2169;S;2-glas;2,5;6;Träfönster;563
+SH2171;S;2-glas;2,5;2,8;Träfönster;669
+SH2173;S;2-glas;2,5;3,5;Träfönster;562
+SH2174;S;2-glas;2,5;4;Träfönster;241
+SH2175;S;2-glas;2,5;6;Träfönster;565
+SH3001;S;3-glas isolerruta;2;9,4;Träfönster;720
+SH3002;S;3-glas;1,9;7;Träfönster;85
+SH3003;S;3-glas isolerruta;2;6,5;Träfönster;568
+SH3004;S;3-glas;1,9;7;Träfönster;52
+SH3005;S;3-glas;1,9;3,5;Träfönster;356
+SH3006;S;3-glas;1,9;4;Träfönster;431
+SH3007;S;2-glas;2,5;2,3;Träfönster;566
+SH3008;S;3-glas;1,9;3,4;Träfönster;357
+SH3009;S;2-glas;2,5;6;Träfönster;575
+SH3010;S;2-glas isolerruta + 1 glas;1,8;5,6;Träfönster;627
+SH3011;S;2-glas isolerruta + 1 glas;1,8;3,5;Träfönster;629
+SH3013;S;3-glas;1,9;5,7;Träfönster;147
+SH3014;S;3-glas;1,9;6;Träfönster;603
+SH3015;S;2-glas isolerruta, ett med LE-skikt;1,8;10;Plastklädda träfönster;719
+SH3016;S;3-glas isolerruta;2;2,6;Träfönster;54
+SH3017;S;3-glas;1,9;6,4;Träfönster;143
+SH3018;S;2-glas isolerruta + 1 glas;1,8;0;Träfönster;56
+SH3019;S;2-glas isolerruta med ett LE-skikt + 1 glas;1,3;2,6;Träfönster;249
+SH3021;S;2-glas isolerruta + 1 glas;1,8;3,9;Träfönster;646
+SH3023;S;2-glas isolerruta + 1 glas;1,8;8,3;Träfönster;57
+SH3024;S;2-glas;2,5;1,7;Träfönster;148
+SH3025;S;3-glas;1,9;6,6;Träfönster;293
+SH3027;S;2-glas;2,5;2;Aluminium/metall;188
+SH3027;S;3-glas isolerruta;2;2,8;Träfönster;187
+SH3028;S;2-glas isolerruta + 1 glas;1,8;7;Träfönster;142
+SH3029;S;2-glas;2,5;5,9;Träfönster;255
+SH3030;S;3-glas isolerruta;2;9,5;Träfönster;8
+SH3031;S;3-glas;1,9;6;Träfönster;699
+SH3032;S;3-glas;1,9;5;Träfönster;859
+SH3034;S;2-glas;2,5;5,5;Träfönster;672
+SH3035;S;3-glas;1,9;5;Träfönster;698
+SH3036;S;3-glas;1,9;0;Träfönster;534
+SH3038;S;3-glas isolerruta;2;0;Träfönster;383
+SH3039;S;3-glas isolerruta;2;0;;339
+SH3040;S;2-glas;2,5;12;Träfönster;146
+SH3042;S;2-glas isolerruta + 1 glas;1,8;4;Träfönster;574
+SH3043;S;3-glas isolerruta;2;8,2;Träfönster;141
+SH3044;S;3-glas isolerruta;2;1,2;Träfönster;647
+SH3045;S;2-glas;2,5;6;Träfönster;111
+SH3046;S;2-glas isolerruta + 1 glas;1,8;3;Träfönster;601
+SH3047;S;3-glas isolerruta;2;12;Träfönster;208
+SH3048;S;3-glas;1,9;9;Träfönster;538
+SH3049;S;3-glas isolerruta;2;5,4;Träfönster;207
+SH3052;S;3-glas;1,9;2,8;Träfönster;53
+SH3053;S;2-glas isolerruta + 1 glas;1,8;4,4;Träfönster;290
+SH3055;S;3-glas isolerruta;2;1,5;Träfönster;144
+SH3057;S;3-glas;1,9;3;Träfönster;602
+SH3058;S;3-glas isolerruta;2;3,2;Träfönster;149
+SH3059;S;2-glas;2,5;4;Träfönster;570
+SH3060;S;3-glas isolerruta;2;17;Träfönster;250
+SH3061;S;3-glas isolerruta;2;9;Träfönster;671
+SH3063;S;2-glas isolerruta;2,6;4,6;Träfönster;437
+SH3064;S;3-glas isolerruta;2;2;Träfönster;373
+SH3065;S;3-glas isolerruta;2;1;Träfönster;7
+SH3066;S;2-glas;2,5;2;Träfönster;138
+SH3067;S;1-glas;4,5;0,5;Aluminium/metall;338
+SH3068;S;3-glas isolerruta;2;47;Träfönster;313
+SH3071;S;2-glas isolerruta + 1 glas;1,8;6;Träfönster;537
+SH3072;S;2-glas isolerruta;2,6;4;Plastklädda träfönster;340
+SH3073;S;3-glas;1,9;0,5;Träfönster;426
+SH3074;S;2-glas;2,5;2;Träfönster;573
+SH3075;S;2-glas;2,5;6;Träfönster;539
+SH3076;S;3-glas;1,9;5;Träfönster;576
+SH3077;S;2-glas;2,5;6,1;Träfönster;185
+SH3080;S;2-glas isolerruta + 1 glas;1,8;4,7;Träfönster;186
+SH3081;S;2-glas isolerruta + 1 glas;1,8;2,4;Träfönster;508
+SH3082;S;3-glas isolerruta;2;6,1;Träfönster;434
+SH3083;S;2-glas isolerruta + 1 glas;1,8;3;Träfönster;626
+SH3084;S;2-glas;2,5;0;Träfönster;435
+SH3085;S;3-glas;1,9;9;Träfönster;571
+SH3086;S;3-glas isolerruta;2;5,4;Träfönster;137
+SH3087;S;3-glas;1,9;5;Träfönster;113
+SH3088;S;3-glas isolerruta;2;6,4;Träfönster;625
+SH3089;S;2-glas isolerruta + 1 glas;1,8;4,7;Träfönster;628
+SH3091;S;2-glas;2,5;5,5;Träfönster;600
+SH3092;S;3-glas isolerruta;2;4,5;Aluminiumklädda träfönster;499
+SH3093;S;2-glas isolerruta + 1 glas;1,8;2,4;Träfönster;99
+SH3095;S;3-glas;1,9;5;Träfönster;541
+SH3096;S;3-glas isolerruta;2;0;Träfönster;67
+SH3097;S;3-glas isolerruta;2;6,1;Träfönster;432
+SH3098;S;2-glas;2,5;6,4;Träfönster;251
+SH3099;S;3-glas;1,9;11;Träfönster;718
+SH3100;S;2-glas;2,5;6,7;Träfönster;221
+SH3101;S;2-glas isolerruta + 1 glas;1,8;1,2;Träfönster;623
+SH3102;S;3-glas;1,9;0,8;Träfönster;178
+SH3103;S;2-glas;2,5;6;Träfönster;540
+SH3105;S;2-glas isolerruta;2,6;13;Träfönster;429
+SH3106;S;3-glas;1,9;4;Plastklädda träfönster;112
+SH3107;S;2-glas isolerruta + 1 glas;1,8;1,8;Träfönster;687
+SH3109;S;3-glas isolerruta;2;4;Träfönster;9
+SH3110;S;3-glas;1,9;1,2;Träfönster;536
+SH3112;S;2-glas;2,5;3,5;;252
+SH3113;S;3-glas;1,9;12;Träfönster;542
+SH3114;S;3-glas isolerruta;2;6;Träfönster;535
+SH3115;S;3-glas isolerruta;2;5,1;Träfönster;510
+SH3116;S;3-glas isolerruta;2;7,5;Träfönster;427
+SH3117;S;3-glas isolerruta;2;5;Träfönster;55
+SH3118;S;3-glas isolerruta;2;5,5;Träfönster;624
+SH3119;S;2-glas isolerruta;2,6;7,2;Träfönster;140
+SH3120;S;3-glas;1,9;7,1;Träfönster;688
+SH3123;S;1-glas + 3-glas isolerruta med tre LE-skikt;0,8;2,2;Träfönster;622
+SH3124;S;3-glas;1,9;5;Träfönster;569
+SH3125;S;3-glas;1,9;0,6;Träfönster;292
+SH3126;S;3-glas isolerruta;2;6;Träfönster;498
+SH3127;S;3-glas isolerruta;2;3;;577
+SH3128;S;3-glas isolerruta;2;6,6;Träfönster;139
+SH3129;S;2-glas;2,5;9,3;Träfönster;673
+SH3130;S;3-glas isolerruta;2;2;Träfönster;533
+SH3131;S;2-glas;2,5;5,3;Träfönster;436
+SH3132;S;3-glas isolerruta;2;5,9;Träfönster;314
+SH3133;S;2-glas;2,5;1;Träfönster;649
+SH3134;S;2-glas;2,5;4,5;Träfönster;382
+SH3136;S;3-glas isolerruta;2;16;Träfönster;674
+SH3137;S;3-glas isolerruta;2;0;;509
+SH3139;S;3-glas isolerruta;2;13;Träfönster;97
+SH3140;S;3-glas;1,9;2,5;Träfönster;312
+SH3141;S;2-glas isolerruta + 1 glas;1,8;2,3;Träfönster;430
+SH3142;S;3-glas isolerruta;2;4,5;Träfönster;336
+SH3144;S;3-glas isolerruta;2;4,3;Träfönster;374
+SH3145;S;3-glas isolerruta;2;2,6;Träfönster;184
+SH3146;S;2-glas;2,5;2;Träfönster;675
+SH3147;S;3-glas isolerruta;2;7,9;Träfönster;648
+SH3148;S;2-glas isolerruta + 1 glas;1,8;5,4;Träfönster;721
+SH3150;S;2-glas isolerruta med ett LE-skikt + 1 glas;1,3;2,3;Träfönster;177
+SH3151;S;3-glas isolerruta;2;2;Träfönster;145
+SH3152;S;2-glas;2,5;1,4;Träfönster;572
+SH3154;S;3-glas;1,9;5,2;Träfönster;51
+SH3155;S;2-glas;2,5;2,5;Träfönster;291
+SH3156;S;2-glas isolerruta + 1 glas;1,8;1;Träfönster;219
+SH3156;S;2-glas isolerruta, ett med LE-skikt;1,8;10;Aluminium/metall;220
+SH3157;S;3-glas isolerruta;2;9,9;Träfönster;372
+SH3158;S;3-glas;1,9;2,1;Träfönster;433
+SH3159;S;2-glas;2,5;5;Träfönster;98
+SH3160;S;2-glas;2,5;8;Träfönster;567
+SH3161;S;3-glas isolerruta;2;4;Träfönster;254
+SH3163;S;3-glas;1,9;5,4;Träfönster;428
+SH3164;S;3-glas isolerruta;2;9,2;Träfönster;253
+SH3165;S;3-glas;1,9;3,6;Träfönster;722
+SH3166;S;3-glas;1,9;6;Träfönster;89
+SH3167;S;3-glas isolerruta;2;3;Träfönster;84
+SH3168;S;3-glas isolerruta;2;0,5;Träfönster;920
+SH4001;S;3-glas;1,9;5;Träfönster;116
+SH4002;S;2-glas;2,5;2,6;Träfönster;386
+SH4004;S;3-glas isolerruta;2;15;Träfönster;257
+SH4005;S;3-glas isolerruta;2;7;Träfönster;630
+SH4006;S;3-glas isolerruta;2;7;Träfönster;438
+SH4007;S;2-glas isolerruta + 1 glas;1,8;1;Träfönster;585
+SH4008;S;3-glas;1,9;9,6;Träfönster;452
+SH4009;S;3-glas isolerruta;2;5,3;Träfönster;296
+SH4010;S;3-glas isolerruta;2;3,3;Träfönster;631
+SH4011;S;3-glas isolerruta;2;3,9;Träfönster;193
+SH4012;S;2-glas isolerruta + 1 glas;1,8;3;Träfönster;451
+SH4013;S;3-glas isolerruta;2;16;Träfönster;736
+SH4014;S;3-glas isolerruta;2;8,2;Träfönster;210
+SH4015;S;2-glas isolerruta + 1 glas;1,8;6,3;Träfönster;440
+SH4016;S;3-glas;1,9;2,5;Träfönster;579
+SH4017;S;2-glas;2,5;2,2;Träfönster;701
+SH4018;S;2-glas;2,5;0,4;Träfönster;444
+SH4018;S;3-glas isolerruta;2;7,3;Träfönster;443
+SH4019;S;3-glas isolerruta;2;4,6;Träfönster;445
+SH4020;S;1-glas;4,5;0;;341
+SH4021;S;2-glas isolerruta + 1 glas;1,8;0,6;Träfönster;295
+SH4023;S;3-glas isolerruta;2;6,7;Träfönster;439
+SH4024;S;3-glas isolerruta;2;5,5;Träfönster;150
+SH4025;S;3-glas;1,9;8,3;Träfönster;262
+SH4026;S;3-glas isolerruta;2;5;;584
+SH4027;S;3-glas isolerruta;2;8,7;Träfönster;159
+SH4028;S;3-glas isolerruta;2;15;Träfönster;59
+SH4029;S;3-glas isolerruta;2;5;Träfönster;260
+SH4030;S;3-glas isolerruta;2;7;Träfönster;347
+SH4031;S;3-glas isolerruta;2;21;Träfönster;449
+SH4032;S;2-glas;2,5;2,8;Träfönster;653
+SH4032;S;2-glas;2,5;5;Träfönster;652
+SH4033;S;3-glas;1,9;4,3;Träfönster;690
+SH4034;S;3-glas isolerruta;2;0,9;Träfönster;258
+SH4035;S;3-glas isolerruta;2;3;Träfönster;677
+SH4036;S;3-glas;1,9;4,2;Träfönster;358
+SH4037;S;3-glas;1,9;1,3;Träfönster;263
+SH4038;S;3-glas isolerruta;2;4;Träfönster;500
+SH4040;S;2-glas isolerruta + 1 glas;1,8;3,8;Träfönster;222
+SH4043;S;3-glas isolerruta ett med LE-skikt;1,2;5,2;Träfönster;650
+SH4044;S;2-glas isolerruta + 1 glas;1,8;5,8;Träfönster;61
+SH4045;S;3-glas;1,9;6;Träfönster;578
+SH4046;S;3-glas isolerruta;2;10;Träfönster;153
+SH4047;S;3-glas isolerruta;2;6,9;Träfönster;543
+SH4048;S;3-glas isolerruta;2;8;Träfönster;194
+SH4049;S;3-glas;1,9;4,4;Träfönster;361
+SH4050;S;2-glas isolerruta, ett med LE-skikt;1,8;4,8;Träfönster;152
+SH4051;S;3-glas isolerruta;2;3;Träfönster;678
+SH4052;S;3-glas isolerruta;2;2,5;Träfönster;680
+SH4053;S;3-glas isolerruta;2;2;Träfönster;10
+SH4054;S;3-glas isolerruta;2;2;Aluminiumklädda träfönster;376
+SH4055;S;3-glas isolerruta;2;8,2;Träfönster;455
+SH4057;S;3-glas isolerruta;2;8;Träfönster;156
+SH4058;S;3-glas isolerruta;2;3,3;Träfönster;511
+SH4059;S;3-glas;1,9;5,9;Träfönster;100
+SH4060;S;3-glas isolerruta;2;5;Träfönster;190
+SH4062;S;3-glas isolerruta ett med LE-skikt;1,2;6;Träfönster;155
+SH4063;S;3-glas;1,9;2,9;Träfönster;544
+SH4065;S;3-glas isolerruta;2;7,1;Träfönster;158
+SH4066;S;3-glas;1,9;1,3;;101
+SH4067;S;2-glas isolerruta;2,6;9;;1 698
+SH4068;S;3-glas;1,9;3;Träfönster;114
+SH4069;S;2-glas isolerruta;2,6;3;Träfönster;160
+SH4070;S;3-glas isolerruta;2;8,2;Träfönster;679
+SH4071;S;3-glas;1,9;1,9;Träfönster;725
+SH4072;S;2-glas isolerruta + 1 glas;1,8;8;Träfönster;580
+SH4073;S;3-glas;1,9;2,4;Träfönster;360
+SH4075;S;3-glas isolerruta;2;10;Träfönster;583
+SH4076;S;3-glas isolerruta;2;6;Träfönster;11
+SH4077;S;3-glas;1,9;1,4;Träfönster;724
+SH4078;S;3-glas isolerruta;2;7,8;Träfönster;346
+SH4079;S;3-glas isolerruta;2;11;Träfönster;385
+SH4080;S;3-glas;1,9;5,2;Träfönster;441
+SH4081;S;3-glas;1,9;11;Träfönster;512
+SH4082;S;3-glas isolerruta;2;6;Träfönster;545
+SH4084;S;3-glas isolerruta;2;7,8;Träfönster;384
+SH4085;S;3-glas isolerruta;2;10;Träfönster;448
+SH4087;S;2-glas isolerruta + 1 glas;1,8;5,6;Träfönster;676
+SH4088;S;3-glas isolerruta;2;3,1;Träfönster;225
+SH4089;S;3-glas;1,9;2,5;Träfönster;87
+SH4090;S;3-glas isolerruta;2;5;Träfönster;450
+SH4091;S;3-glas isolerruta;2;3,3;Träfönster;224
+SH4093;S;3-glas isolerruta;2;7,8;Träfönster;453
+SH4094;S;3-glas isolerruta;2;8,2;Träfönster;154
+SH4095;S;3-glas isolerruta ett med LE-skikt;1,2;5,2;Träfönster;261
+SH4096;S;3-glas isolerruta;2;10;Träfönster;605
+SH4097;S;3-glas isolerruta;2;10;Träfönster;151
+SH4098;S;2-glas;2,5;2,1;Träfönster;693
+SH4099;S;3-glas isolerruta;2;10;Träfönster;454
+SH4100;S;3-glas isolerruta;2;4;Träfönster;472
+SH4101;S;3-glas;1,9;6,8;Träfönster;256
+SH4102;S;3-glas isolerruta;2;4,9;Träfönster;342
+SH4103;S;2-glas;2,5;0,4;Träfönster;209
+SH4105;S;3-glas isolerruta;2;1,8;Träfönster;223
+SH4106;S;3-glas;1,9;0;Träfönster;359
+SH4107;S;3-glas;1,9;0,6;Träfönster;179
+SH4108;S;3-glas;1,9;11;Träfönster;700
+SH4109;S;2-glas isolerruta + 1 glas;1,8;12;Träfönster;86
+SH4111;S;2-glas isolerruta + 1 glas;1,8;2,1;Träfönster;88
+SH4112;S;3-glas isolerruta;2;10;Träfönster;157
+SH4113;S;3-glas isolerruta ett med LE-skikt;1,2;9;Träfönster;513
+SH4115;S;3-glas;1,9;1,5;Träfönster;115
+SH4116;S;3-glas isolerruta;2;3,6;Träfönster;192
+SH4117;S;3-glas;1,9;2,4;Träfönster;702
+SH4118;S;2-glas isolerruta;2,6;9,4;Träfönster;65
+SH4119;S;3-glas;1,9;6;Träfönster;723
+SH4120;S;3-glas isolerruta;2;6,6;Träfönster;315
+SH4123;S;3-glas isolerruta ett med LE-skikt;1,2;0;Träfönster;259
+SH4124;S;3-glas;1,9;2;Träfönster;604
+SH4125;S;3-glas isolerruta;2;5;Träfönster;737
+SH4127;S;2-glas;2,5;4,3;Träfönster;103
+SH4128;S;3-glas isolerruta;2;5;Träfönster;102
+SH4129;S;2-glas isolerruta + 1 glas;1,8;4,3;Träfönster;651
+SH4133;S;3-glas isolerruta;2;5;Aluminiumklädda träfönster;447
+SH4134;S;3-glas isolerruta;2;0,9;Träfönster;726
+SH4135;S;3-glas isolerruta;2;13;Träfönster;586
+SH4136;S;3-glas isolerruta;2;4;;62
+SH4137;S;3-glas;1,9;7,1;Träfönster;60
+SH4138;S;3-glas isolerruta;2;4,5;Träfönster;294
+SH4139;S;3-glas isolerruta;2;6;Träfönster;375
+SH4141;S;3-glas isolerruta;2;5,4;Träfönster;298
+SH4142;S;3-glas isolerruta;2;10;Träfönster;297
+SH4145;S;3-glas isolerruta;2;2,8;Träfönster;316
+SH4146;S;3-glas isolerruta;2;1;Träfönster;161
+SH4147;S;3-glas isolerruta;2;3,7;Träfönster;442
+SH4148;S;3-glas;1,9;6;Träfönster;446
+SH4149;S;2-glas;2,5;1,2;Träfönster;689
+SH4150;S;2-glas isolerruta + 1 glas;1,8;6;Träfönster;582
+SH4151;S;3-glas;1,9;1;Träfönster;581
+SH4153;S;3-glas;1,9;0,5;;345
+SH4154;S;2-glas isolerruta;2,6;2,1;Träfönster;344
+SH4154;S;3-glas isolerruta;2;2,1;Träfönster;343
+SH4155;S;2-glas isolerruta + 1 glas;1,8;3;Träfönster;632
+SH4156;S;3-glas isolerruta ett med LE-skikt;1,2;4,6;Träfönster;58
+SH5001;S;3-glas isolerruta;2;48;Träfönster;90
+SH5002;S;3-glas;1,9;3;Träfönster;119
+SH5003;S;3-glas isolerruta med två LE-skikt;1;10;Aluminium/metall;271
+SH5005;S;3-glas isolerruta;2;1,9;Träfönster;487
+SH5006;S;2-glas isolerruta, ett med LE-skikt;1,8;10;Aluminiumklädda träfönster;268
+SH5008;S;3-glas isolerruta;2;4;Träfönster;635
+SH5010;S;3-glas isolerruta;2;7;Träfönster;299
+SH5011;S;3-glas;1,9;3,3;Träfönster;63
+SH5012;S;3-glas isolerruta;2;5;Träfönster;587
+SH5013;S;2-glas isolerruta + 1 glas;1,8;11;Träfönster;18
+SH5014;S;3-glas isolerruta;2;2,5;Träfönster;270
+SH5015;S;3-glas;1,9;6;Träfönster;704
+SH5016;S;3-glas isolerruta;2;5;Träfönster;467
+SH5018;S;3-glas isolerruta;2;8;Träfönster;456
+SH5019;S;3-glas isolerruta;2;5;Träfönster;479
+SH5020;S;3-glas;1,9;8,3;Träfönster;77
+SH5021;S;2-glas isolerruta;2,6;2,3;Träfönster;269
+SH5022;S;2-glas isolerruta, ett med LE-skikt;1,8;4,7;Träfönster;226
+SH5024;S;3-glas isolerruta;2;4,3;Träfönster;459
+SH5025;S;2-glas isolerruta + 1 glas;1,8;3,6;Träfönster;485
+SH5026;S;3-glas isolerruta;2;8;;118
+SH5027;S;3-glas isolerruta ett med LE-skikt;1,2;6,4;Träfönster;272
+SH5028;S;3-glas isolerruta;2;5;Träfönster;164
+SH5030;S;2-glas isolerruta;2,6;3,5;Träfönster;471
+SH5031;S;2-glas isolerruta + 1 glas;1,8;9;Träfönster;351
+SH5032;S;3-glas isolerruta;2;3;Träfönster;105
+SH5033;S;3-glas isolerruta ett med LE-skikt;1,2;10;Träfönster;266
+SH5034;S;2-glas isolerruta + 1 glas;1,8;6,8;Träfönster;377
+SH5035;S;2-glas isolerruta + 1 glas;1,8;6;Aluminium/metall;14
+SH5037;S;2-glas, varav ett med LE-skikt;1,9;20;;609
+SH5038;S;3-glas isolerruta;2;1,9;Träfönster;465
+SH5039;S;3-glas;1,9;0,5;Träfönster;78
+SH5040;S;3-glas isolerruta ett med LE-skikt;1,2;3,3;Träfönster;228
+SH5041;S;3-glas isolerruta;2;4;;589
+SH5042;S;2-glas isolerruta, ett med LE-skikt;1,8;11;Träfönster;265
+SH5043;S;3-glas isolerruta;2;6,1;Träfönster;213
+SH5044;S;3-glas isolerruta;2;3,3;Träfönster;503
+SH5045;S;3-glas isolerruta ett med LE-skikt;1,2;11;Träfönster;470
+SH5046;S;2-glas isolerruta + 1 glas;1,8;2;Träfönster;196
+SH5047;S;2-glas isolerruta + 1 glas;1,8;8;Träfönster;64
+SH5048;S;3-glas isolerruta;2;2,9;Träfönster;703
+SH5049;S;3-glas;1,9;4,9;Träfönster;728
+SH5050;S;2-glas isolerruta + 1 glas;1,8;2;Träfönster;350
+SH5051;S;2-glas isolerruta;2,6;1;Träfönster;481
+SH5052;S;3-glas;1,9;0,7;Träfönster;104
+SH5054;S;3-glas isolerruta;2;1,5;Träfönster;482
+SH5055;S;2-glas isolerruta + 1 glas;1,8;7;;588
+SH5056;S;3-glas isolerruta;2;3;Träfönster;634
+SH5057;S;3-glas isolerruta;2;15;Träfönster;305
+SH5058;S;3-glas;1,9;1;Träfönster;117
+SH5059;S;3-glas isolerruta;2;10;Aluminiumklädda träfönster;167
+SH5060;S;2-glas;2,5;2,4;Träfönster;473
+SH5061;S;3-glas isolerruta;2;8,3;Träfönster;66
+SH5062;S;3-glas isolerruta;2;3,5;Träfönster;501
+SH5064;S;2-glas isolerruta;2,6;5,8;Träfönster;607
+SH5065;S;2-glas isolerruta;2,6;2,7;Aluminiumklädda träfönster;273
+SH5066;S;3-glas isolerruta;2;8;Träfönster;168
+SH5067;S;3-glas;1,9;4,6;Träfönster;461
+SH5068;S;3-glas isolerruta;2;3;Träfönster;107
+SH5069;S;3-glas isolerruta;2;6,1;Träfönster;478
+SH5070;S;2-glas isolerruta + 1 glas;1,8;8;Träfönster;352
+SH5071;S;3-glas isolerruta med två LE-skikt;1;2,5;;514
+SH5072;S;3-glas isolerruta;2;4;Träfönster;489
+SH5073;S;3-glas isolerruta;2;14;Träfönster;212
+SH5074;S;3-glas;1,9;2,3;Träfönster;502
+SH5075;S;3-glas isolerruta;2;0;;548
+SH5076;S;3-glas isolerruta;2;3,9;Träfönster;691
+SH5077;S;3-glas;1,9;1,2;Träfönster;362
+SH5078;S;3-glas isolerruta ett med LE-skikt;1,2;11;Träfönster;229
+SH5079;S;3-glas isolerruta;2;6;Träfönster;300
+SH5080;S;3-glas isolerruta;2;4,4;Träfönster;318
+SH5081;S;3-glas;1,9;5,8;Träfönster;474
+SH5082;S;2-glas;2,5;18;Träfönster;654
+SH5083;S;3-glas isolerruta ett med LE-skikt;1,2;6;Träfönster;197
+SH5084;S;3-glas isolerruta;2;1;Träfönster;363
+SH5085;S;3-glas isolerruta;2;3,5;Träfönster;480
+SH5086;S;3-glas;1,9;7;Träfönster;608
+SH5087;S;3-glas;1,9;0;Träfönster;606
+SH5088;S;3-glas isolerruta;2;5,5;;468
+SH5089;S;3-glas isolerruta;2;4,9;Träfönster;592
+SH5090;S;3-glas isolerruta;2;8,9;Aluminiumklädda träfönster;488
+SH5091;S;2-glas isolerruta;2,6;5,3;;378
+SH5092;S;2-glas, varav ett med LE-skikt;1,9;5,5;Träfönster;303
+SH5094;S;3-glas isolerruta;2;5,4;Träfönster;681
+SH5095;S;3-glas isolerruta;2;6;Träfönster;458
+SH5096;S;3-glas isolerruta;2;3;Träfönster;165
+SH5097;S;2-glas isolerruta, ett med LE-skikt;1,8;11;Träfönster;306
+SH5099;S;3-glas isolerruta med två LE-skikt;1;7,2;Träfönster;301
+SH5101;S;2-glas isolerruta, ett med LE-skikt;1,8;6,4;Träfönster;274
+SH5102;S;3-glas isolerruta;2;6;Träfönster;546
+SH5103;S;3-glas isolerruta;2;8;Träfönster;547
+SH5104;S;2-glas isolerruta med ett LE-skikt + 1 glas;1,3;1,5;Träfönster;515
+SH5105;S;3-glas;1,9;1,3;Träfönster;727
+SH5106;S;3-glas isolerruta;2;7;Träfönster;12
+SH5107;S;3-glas isolerruta;2;5;Träfönster;462
+SH5108;S;3-glas isolerruta;2;4,5;Träfönster;388
+SH5109;S;3-glas isolerruta;2;2;Träfönster;166
+SH5110;S;3-glas isolerruta;2;2;Träfönster;195
+SH5111;S;2-glas isolerruta;2,6;3;Träfönster;13
+SH5113;S;2-glas isolerruta + 1 glas;1,8;4;Träfönster;593
+SH5114;S;2-glas isolerruta + 1 glas;1,8;4,3;Träfönster;656
+SH5115;S;2-glas;2,5;1,5;Träfönster;477
+SH5116;S;3-glas isolerruta;2;6;Aluminiumklädda träfönster;516
+SH5117;S;2-glas isolerruta + 1 glas;1,8;10;Träfönster;17
+SH5119;S;2-glas isolerruta + 1 glas;1,8;3,4;Aluminium/metall;484
+SH5120;S;3-glas isolerruta ett med LE-skikt;1,2;1,4;;214
+SH5121;S;3-glas isolerruta;2;4,9;Aluminiumklädda träfönster;486
+SH5122;S;3-glas isolerruta;2;3;Träfönster;463
+SH5123;S;2-glas isolerruta med ett LE-skikt + 1 glas;1,3;2,8;Träfönster;304
+SH5124;S;3-glas isolerruta ett med LE-skikt;1,2;5,2;Träfönster;364
+SH5125;S;3-glas isolerruta;2;2;Träfönster;457
+SH5126;S;3-glas isolerruta;2;5,5;Träfönster;551
+SH5127;S;3-glas isolerruta;2;6,1;Träfönster;475
+SH5128;S;3-glas isolerruta ett med LE-skikt;1,2;2,3;Träfönster;162
+SH5129;S;3-glas isolerruta;2;2,4;Träfönster;317
+SH5130;S;3-glas isolerruta;2;4,5;Träfönster;549
+SH5131;S;2-glas isolerruta + 1 glas;1,8;8,5;Aluminiumklädda träfönster;349
+SH5132;S;2-glas isolerruta, ett med LE-skikt;1,8;10;Aluminiumklädda träfönster;267
+SH5133;S;3-glas isolerruta;2;3;Träfönster;590
+SH5134;S;3-glas isolerruta;2;7,2;Träfönster;633
+SH5135;S;3-glas;1,9;10;Träfönster;348
+SH5136;S;2-glas isolerruta;2,6;1,7;Träfönster;476
+SH5137;S;3-glas isolerruta;2;10;Träfönster;490
+SH5138;S;2-glas;2,5;8;Träfönster;655
+SH5139;S;3-glas isolerruta ett med LE-skikt;1,2;2,4;Träfönster;302
+SH5140;S;3-glas isolerruta;2;1,8;Träfönster;460
+SH5141;S;3-glas isolerruta;2;1;Träfönster;483
+SH5142;S;3-glas isolerruta ett med LE-skikt;1,2;10;Träfönster;464
+SH5143;S;3-glas isolerruta ett med LE-skikt;1,2;3;Träfönster;181
+SH5144;S;2-glas isolerruta med ett LE-skikt + 1 glas;1,3;6,2;Träfönster;264
+SH5145;S;3-glas isolerruta;2;2,5;Träfönster;469
+SH5146;S;3-glas isolerruta;2;6,2;Träfönster;466
+SH5147;S;3-glas isolerruta;2;3;Träfönster;16
+SH5149;S;3-glas isolerruta;2;5,8;Träfönster;169
+SH5150;S;3-glas isolerruta;2;7,8;Träfönster;550
+SH5151;S;3-glas isolerruta;2;4,2;Träfönster;387
+SH5152;S;3-glas isolerruta;2;5,5;Träfönster;15
+SH5153;S;3-glas isolerruta;2;3;Träfönster;182
+SH5154;S;3-glas isolerruta;2;6,5;Träfönster;591
+SH5155;S;3-glas isolerruta ett med LE-skikt;1,2;6,1;Träfönster;227
+SH5157;S;3-glas;1,9;3,3;Träfönster;106
+SH5158;S;3-glas isolerruta;2;0,6;Träfönster;163

@@ -1,0 +1,292 @@
+Byggnad;Hustyp;FC2 Tak åtgärd;FC2 Tak annat vad;FC2 Tak orsak till åtgärd;FC2 Tak kvm;FC2 Tak styck;FC2 Tak timmar;FC2 Tak tid för åtgärd;FC2 Tak år för upptäckt;FC2 Tak antal foton;FC2 Tak foto fr_o_m_;FC2 Tak foto t_o_m;FC2 Kostnad åtgärd yttertak;id
+SH1001;S;18 - Ta bort påväxt;;Fuktskada klimat vind;130;;;Snarast;;;;;10400;482
+SH1001;S;20 - Tätning av vindsbjälklag;1950;Fuktskada klimat vind;40;1;;Snarast;2007;;;;53200;104
+SH1002;S;2a - Byte av takpannor (tegel) + bärläkt, ströläkt och underlagspapp, m²;Troligen nytt tak om ca 5-10 år;1 - Underhåll;68;;;Längre fram;9999;;;;55488;69
+SH1003;S;18 - Ta bort påväxt;;Fuktskada klimat vind;122;;;Snarast;;;;;9760;314
+SH1003;S;20 - Tätning av vindsbjälklag;1946;Fuktskada klimat vind;66;1;;Snarast;;;;;55280;313
+SH1005;S;18 - Ta bort påväxt;;Fuktskada klimat vind;105;;;Snarast;;;;;8400;525
+SH1005;S;20 - Tätning av vindsbjälklag;1954;Fuktskada klimat vind;63;1;;Snarast;;;;;55040;523
+SH1008;S;2a - Byte av takpannor (tegel) + bärläkt, ströläkt och underlagspapp, m²;;1 - Underhåll ;100;;;Längre fram;2007;;;;81600;106
+SH1010;S;18 - Ta bort påväxt;;Fuktskada klimat vind;61;;;Snarast;;;;;4880;493
+SH1010;S;20 - Tätning av vindsbjälklag;1909;Fuktskada klimat vind;77;1;;Snarast;;;;;56160;492
+SH1011;S;2a - Byte av takpannor (tegel) + bärläkt, ströläkt och underlagspapp, m²;Helrenovering av tak;1 - Underhåll ;140;;;Snarast;9999;;;;114240;46
+SH1012;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;Plus ev. råspont etc;Fuktskada takläckage;92;;;Inom 1-3 år;9999;9;8;16;68356;70
+SH1012;S;2c - Reparation tak med takpannor inklusive byte av underlagstak;Plus ev. råspont etc;Fuktskada pga takläckage;24;;;Inom 1-3 år;;;;;17328;743
+SH1013;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);170;;;Snarast;;;;;13600;651
+SH1013;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;;Fuktskada takläckage;170;;;Inom 1-3 år;9999;;;;126310;56
+SH1014;S;18 - Ta bort påväxt;;Fuktskada klimat vind;171;;;Snarast;;;;;13680;517
+SH1014;S;20 - Tätning av vindsbjälklag;1880;Fuktskada klimat vind;157;1;;Snarast;;;;;62560;516
+SH1018;S;18 - Ta bort påväxt;;Fuktskada klimat vind;254;;;Snarast;;;;;20320;383
+SH1018;S;20 - Tätning av vindsbjälklag;1880;Fuktskada klimat vind;183;2;;Snarast;;;;;114640;382
+SH1020;S;18 - Ta bort påväxt;;Fuktskada klimat vind;103;;;Snarast;;;;;8240;417
+SH1020;S;20 - Tätning av vindsbjälklag;1923;Fuktskada klimat vind;60;1;;Snarast;;;;;54800;416
+SH1022;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);80;;;Snarast;;;;;6400;322
+SH1022;S;2c - Reparation tak med takpannor inklusive byte av underlagstak;Otätt runt genomförning;Fuktskada takläckage;2;;;Snarast;;;;;1444;632
+SH1023;S;18 - Ta bort påväxt;;Fuktskada klimat vind;154;;;Snarast;;;;;12320;670
+SH1023;S;20 - Tätning av vindsbjälklag;1942;Fuktskada klimat vind;110;1;;Snarast;;;;;58800;671
+SH1023;S;2a - Byte av takpannor (tegel) + bärläkt, ströläkt och underlagspapp, m²;Byte tätskikt, pannor, underlagspapp, läkt;1 - Underhåll ;154;;;Inom 1-3 år;2004;;;;125664;90
+SH1029;S;2a - Byte av takpannor (tegel) + bärläkt, ströläkt och underlagspapp, m²;Kontroll av angrepp Blåjon och Husbock i takstolar;1 - Underhåll ;136;;;Snarast;2007;4;10;16;37808;115
+SH1030;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;Nytt ytskikt på taket;1 - Underhåll;124;;;Längre fram;9999;;;;92132;22
+SH1034;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);147;;;Snarast;;;;;11760;413
+SH1036;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);70;;;Snarast;;;;;5600;645
+SH1036;S;4a - Byte plåttak (galvad bandtäckt);;Fuktskada takläckage;70;;;Inom 1-3 år;;;;;51660;367
+SH1039;S;18 - Ta bort påväxt;;Fuktskada klimat vind;92;;;Snarast;;;;;7360;519
+SH1039;S;20 - Tätning av vindsbjälklag;1920;Fuktskada klimat vind;60;1;;Snarast;;;;;54800;518
+SH1040;S;2a - Byte av takpannor (tegel) + bärläkt, ströläkt och underlagspapp, m²;Rep tak/nytt tak invest ca 90 000:-;Fuktskada pga takläckage (låg);96;;;Snarast;9999;;;;78336;299
+SH1042;S;18 - Ta bort påväxt;;Fuktskada pga takläckage;90;;;Snarast;;;;;7200;327
+SH1042;S;20 - Tätning av vindsbjälklag;1926;Fuktskada klimat vind;78;1;;Snarast;;;;;56240;326
+SH1043;S;18 - Ta bort påväxt;1900;Fuktskada klimat vind;111;1;;Snarast;;;;;8880;626
+SH1043;S;20 - Tätning av vindsbjälklag;1900;Fuktskada klimat vind;96;1;;Snarast;;;;;57680;508
+SH1043;S;4a - Byte plåttak (galvad bandtäckt);Undersök vindsbjälklaget täthet åtgärda otätheter ;1 - Underhåll;111;;8;Snarast;2007;2;7;8;81918;114
+SH1044;S;16 - Byte skorstenshuv plåt, styck;Renovering skorsten;1 - Underhåll;;1;;Inom 1-3 år;9999;;;;2490;293
+SH1044;S;5 - Målning plåt (koppar, aluminium, galvad, m²);Takrenovering stålplåt;1 - Underhåll ;80;;;Inom 1-3 år;9999;;;;29840;96
+SH1045;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;Byte av underlagspapp och läkt;1 - Underhåll ;139;;;Längre fram;9999;;;;38642;71
+SH1046;S;18 - Ta bort påväxt;;Fuktskada klimat vind;190;;;Snarast;;;;;15200;369
+SH1046;S;20 - Tätning av vindsbjälklag;1946;Fuktskada klimat vind;74;1;;Snarast;;;;;55920;368
+SH1047;S;18 - Ta bort påväxt;;Fuktskada klimat vind;126;;;Snarast;;;;;10080;381
+SH1047;S;20 - Tätning av vindsbjälklag;1953;Fuktskada klimat vind;48;1;;Snarast;;;;;53840;380
+SH1049;S;18 - Ta bort påväxt;aluminiumtak profilerad;Fuktskada pga takläckage;139;;;Snarast;;;;;11120;655
+SH1049;S;4b - Byte plåttak (profilerad aluminium);aluminiumtak profilerad;Fuktskada takläckage;139;;;Inom 1-3 år;9999;;;;66442;65
+SH1057;S;18 - Ta bort påväxt;;Fuktskada klimat vind;67;;;Snarast;;;;;5360;658
+SH1057;S;20 - Tätning av vindsbjälklag;1934;Fuktskada klimat vind;46;1;;Snarast;;;;;53680;659
+SH1057;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;tegel eller betong? Byte av tak, underlagspapp ej tidigare bytt;1 - Underhåll ;67;;;Längre fram;9999;;;;49781;72
+SH1058;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);119;;;Snarast;;;;;9520;392
+SH1060;S;18 - Ta bort påväxt;;Fuktskada klimat vind;116;;;Snarast;;;;;9280;474
+SH1060;S;20 - Tätning av vindsbjälklag;1949;Fuktskada klimat vind;80;1;;Snarast;;;;;56400;473
+SH1063;S;5 - Målning plåt (koppar, aluminium, galvad, m²);;5 - Ytskador utan läckage;100;;;Snarast;2007;;;;37300;105
+SH1065;S;18 - Ta bort påväxt;;Fuktskada klimat vind;71;;;Snarast;;;;;5680;660
+SH1065;S;6a - Byte tak asbestcement;;Fuktskada takläckage;71;;;Inom 1-3 år;;;;;63616;418
+SH1070;S;18 - Ta bort påväxt;;Fuktskada klimat vind;126;;;Snarast;;;;;10080;522
+SH1070;S;2c - Reparation tak med takpannor inklusive byte av underlagstak;Lokal skada byte av massonite;Fuktskada pga takläckage;32;;;Snarast;;;;;23104;520
+SH1071;S;18 - Ta bort påväxt;;Fuktskada klimat vind;100;;;Snarast;;;;;8000;318
+SH1071;S;20 - Tätning av vindsbjälklag;1946;Fuktskada klimat vind;90;1;;Snarast;;;;;57200;317
+SH1073;S;13b - Byte vindskivor;Byte av vindskivor, 40 m;1 - Underhåll;;40;;Inom 1-3 år;9999;;;;22200;97
+SH1076;S;6 - Byte av papptak, m²;Takpapp bytes;1 - Underhåll ;180;;;Inom 1-3 år;2007;1;;5;87120;122
+SH1079;S;18 - Ta bort påväxt;Total genomgång av tak, pannor, underpapp m.m;Fuktskada pga takläckage (låg);78;;;Snarast;9999;1;13;13;6240;625
+SH1079;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;Total genomgång av tak, pannor, underpapp m.m;Fuktskada takläckage;78;;;Snarast;9999;;13;;57954;624
+SH1080;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;;Fuktskada takläckage;93;;;Inom 1-3 år;9999;;;;69099;51
+SH1081;S;18 - Ta bort påväxt;;Fuktskada pga takläckage;97;;;Snarast;;;;;7760;311
+SH1082;S;2a - Byte av takpannor (tegel) + bärläkt, ströläkt och underlagspapp, m²;;Fuktskada takläckage;220;;;Inom 1-3 år;;;;;179520;746
+SH1084;S;18 - Ta bort påväxt;;Fuktskada pga takläckage;82;;;Snarast;;;;;6560;657
+SH1087;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);95;;;Snarast;;;;;7600;495
+SH1101;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);85;;;Snarast;;;;;6800;463
+SH1102;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);110;;;Snarast;;;;;8800;656
+SH1102;S;2a - Byte av takpannor (tegel) + bärläkt, ströläkt och underlagspapp, m²;;Fuktskada takläckage;120;;;Snarast;2007;2;7;8;97920;66
+SH1103;S;18 - Ta bort påväxt;;Fuktskada klimat vind;117;;;Snarast;;;;;9360;404
+SH1103;S;20 - Tätning av vindsbjälklag;Vinden är fuktig, ev läckage , 1948;Fuktskada klimat vind;78;1;;Snarast;9999;1;7;;56240;64
+SH1105;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);;;;;;;;;6000;781
+SH1106;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;Utbyte av asbestplattor;Fuktskada takläckage;285;;;Snarast;9999;;6;7;211755;39
+SH1109;S;18 - Ta bort påväxt;;Fuktskada klimat vind;133;;;Snarast;;;;;10640;415
+SH1109;S;20 - Tätning av vindsbjälklag;1926;Fuktskada klimat vind;42;1;;Snarast;;;;;53360;414
+SH1111;S;14a - Ta upp vindslucka, inspektionsmöjlighet;öppna för inspektionsmöjlighet;1 - Underhåll;;1;;Snarast;9999;;8;;6000;9
+SH1112;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);95;;;Snarast;;;;;7600;497
+SH1123;S;18 - Ta bort påväxt;Mögel på vind;Fuktskada klimat vind;100;;;Snarast;;;;;8000;312
+SH1123;S;20 - Tätning av vindsbjälklag;Mögel på vind 1923;Fuktskada klimat vind;88;1;;Snarast;2005;;;;57040;2
+SH1125;S;18 - Ta bort påväxt;;Fuktskada klimat vind;75;;;Snarast;;;;;6000;325
+SH1125;S;20 - Tätning av vindsbjälklag;1957;Fuktskada klimat vind;100;1;;Snarast;;;;;58000;324
+SH1126;S;13 - Byte takbrunnar, styck;Laga takstos till avloppsrör;Fuktskada pga takläckage (låg);;1;8;Snarast;2007;;;;1910;246
+SH1128;S;18 - Ta bort påväxt;;Fuktskada klimat vind;104;;;Snarast;;;;;8320;453
+SH1128;S;20 - Tätning av vindsbjälklag;1910;Fuktskada klimat vind;67;1;;Snarast;;;;;55360;452
+SH1129;S;18 - Ta bort påväxt;;Fuktskada klimat vind;270;;;Snarast;;;;;21600;636
+SH1129;S;20 - Tätning av vindsbjälklag;1950;Fuktskada klimat vind;186;2;;Snarast;;;;;114880;637
+SH1130;S;18 - Ta bort påväxt;;Fuktskada klimat vind;93;;;Snarast;;;;;7440;316
+SH1130;S;20 - Tätning av vindsbjälklag;1925;Fuktskada klimat vind;52;1;;Snarast;;;;;54160;315
+SH1134;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);130;;;Snarast;;;;;10400;630
+SH1134;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;;Fuktskada takläckage;130;;;Snarast;;;;;96590;304
+SH1135;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);240;;;Snarast;;;;;19200;633
+SH1135;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;;Fuktskada takläckage;240;;;Snarast;;;;;178320;323
+SH1136;S;18 - Ta bort påväxt;;Fuktskada klimat vind;100;;;Snarast;;;;;8000;366
+SH1136;S;20 - Tätning av vindsbjälklag;1927;Fuktskada klimat vind;59;1;;Snarast;;;;;54720;644
+SH1136;S;2a - Byte av takpannor (tegel) + bärläkt, ströläkt och underlagspapp, m²;;1 - Underhåll;10;;15;Inom 1-3 år;2002;2;1;2;8160;32
+SH1137;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;;1 - Underhåll;100;;;Inom 1-3 år;2007;;;;74300;23
+SH1141;S;4a - Byte plåttak (galvad bandtäckt);;1 - Underhåll ;100;;;Inom 1-3 år;2007;;;;73800;116
+SH1142;S;18 - Ta bort påväxt;;Fuktskada klimat vind;101;;;Snarast;;;;;8080;308
+SH1142;S;20 - Tätning av vindsbjälklag;1934;Fuktskada klimat vind;76;1;;Snarast;;;;;56080;309
+SH1149;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);108;;;Snarast;;;;;8640;672
+SH1150;S;2a - Byte av takpannor (tegel) + bärläkt, ströläkt och underlagspapp, m²;Omläggning av tak.;1 - Underhåll;120;;;Snarast;9999;;;;97920;60
+SH1153;S;18 - Ta bort påväxt;;Fuktskada klimat vind;323;;;Snarast;;;;;25840;476
+SH1153;S;20 - Tätning av vindsbjälklag;1900;Fuktskada klimat vind;235;2;;Snarast;;;;;118800;475
+SH1156;S;16 - Byte skorstenshuv plåt, styck;Läckage vid skorsten;Fuktskada takläckage;15;;;Snarast;2007;1;1;1;8070;93
+SH1157;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);108;;;Snarast;;;;;8640;680
+SH1157;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;;Fuktskada takläckage;108;;;Inom 1-3 år;9999;;;;80244;117
+SH1164;S;16 - Byte skorstenshuv plåt, styck;;Fuktskada pga takläckage (låg);;1;;Snarast;9999;2;7;8;2490;53
+SH1164;S;17 - Reparation skorsten tegel, styck;;1 - Underhåll;;1;;Inom 1-3 år;;1;18;;3512;608
+SH1167;S;18 - Ta bort påväxt;;Fuktskada klimat vind;75;;;Snarast;;;;;6000;511
+SH1167;S;20 - Tätning av vindsbjälklag;1928;Fuktskada klimat vind;60;1;;Snarast;;;;;54800;510
+SH2003;S;2a - Byte av takpannor (tegel) + bärläkt, ströläkt och underlagspapp, m²;;Fuktskada pga takläckage (låg);137;;;Inom 1-3 år;9999;;;;111792;58
+SH2011;S;18 - Ta bort påväxt;;Fuktskada klimat vind;143;;;Snarast;;;;;11440;456
+SH2011;S;20 - Tätning av vindsbjälklag;1973;Fuktskada klimat vind;106;1;;Snarast;;;;;58480;454
+SH2016;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);280;;;Snarast;;;;;22400;647
+SH2016;S;2a - Byte av takpannor (tegel) + bärläkt, ströläkt och underlagspapp, m²;;Fuktskada takläckage;280;;;Inom 1-3 år;2006;1;7;;228480;35
+SH2020;S;18 - Ta bort påväxt;;Fuktskada klimat vind;141;;;Snarast;;;;;11280;499
+SH2020;S;20 - Tätning av vindsbjälklag;1964;Fuktskada klimat vind;102;1;;Snarast;2007;5;17;21;58160;112
+SH2021;S;18 - Ta bort påväxt;;Fuktskada klimat vind;164;;;Snarast;;;;;13120;442
+SH2023;S;18 - Ta bort påväxt;1975;Fuktskada klimat vind;207;;;Snarast;;;;;16560;741
+SH2023;S;20 - Tätning av vindsbjälklag;1975;Fuktskada klimat vind;105;2;;Inom 1-3 år;;;;;58400;742
+SH2025;S;20 - Tätning av vindsbjälklag;1970;Fuktskada klimat vind;105;1;;Snarast;;;;;58400;501
+SH2025;S;4a - Byte plåttak (galvad bandtäckt);;1 - Underhåll;80;;;Inom 1-3 år;9999;4;10;13;59040;113
+SH2027;S;18 - Ta bort påväxt;;Fuktskada pga takläckage;178;;;Snarast;;;;;14240;631
+SH2027;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;;Fuktskada takläckage;178;;;Snarast;;;;;132254;307
+SH2028;S;7a - Renovering gummiduktak;;Fuktskada pga takläckage (låg);10;;;Snarast;2007;;;;3660;40
+SH2031;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);228;;;Snarast;;;;;18240;341
+SH2040;S;18 - Ta bort påväxt;;Fuktskada klimat vind;151;;;Snarast;;;;;12080;353
+SH2040;S;2c - Reparation tak med takpannor inklusive byte av underlagstak;massonite bytes lokalt;Fuktskada pga takläckage;35;1;;Snarast;2007;;;;25270;17
+SH2044;S;18 - Ta bort påväxt;;Fuktskada klimat vind;213;;;Snarast;;;;;17040;479
+SH2044;S;20 - Tätning av vindsbjälklag;1968;Fuktskada klimat vind;150;1;;Snarast;;;;;62000;477
+SH2045;S;6 - Byte av papptak, m²;;1 - Underhåll ;120;;;Längre fram;9999;;;;58080;43
+SH2052;S;18 - Ta bort påväxt;;Fuktskada pga takläckage;192;;;Snarast;;;;;15360;351
+SH2052;S;20 - Tätning av vindsbjälklag;1924;Fuktskada klimat vind;117;1;;Snarast;;;;;59360;350
+SH2052;S;6 - Byte av papptak, m²;1924;Fuktskada pga takläckage;192;;;Snarast;;;;;92928;638
+SH2053;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;Byte underlagspapp+pannor;1 - Underhåll ;136;;;Längre fram;2007;;;;101048;92
+SH2055;S;18 - Ta bort påväxt;;Fuktskada klimat vind;135;;;Snarast;;;;;10800;512
+SH2055;S;20 - Tätning av vindsbjälklag;1971;Fuktskada klimat vind;136;1;;Snarast;2007;3;7;9;60880;119
+SH2067;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;;1 - Underhåll ;209;;;Längre fram;9999;;;;155287;42
+SH2068;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);163;;;Snarast;;;;;13040;466
+SH2069;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);150;;;Snarast;;;;;12000;465
+SH2073;S;18 - Ta bort påväxt;;Fuktskada klimat vind;80;;;Snarast;;;;;6400;331
+SH2073;S;2c - Reparation tak med takpannor inklusive byte av underlagstak;Byte av underlagstak där det är skadat;Fuktskada pga takläckage;80;;;Snarast;;;;;57760;634
+SH2077;S;18 - Ta bort påväxt;;Fuktskada pga takläckage;258;;;Snarast;;;;;20640;486
+SH2079;S;18 - Ta bort påväxt;;Fuktskada klimat vind;236;;;Snarast;;;;;18880;421
+SH2079;S;20 - Tätning av vindsbjälklag;1966;Fuktskada klimat vind;185;2;;Snarast;;;;;114800;420
+SH2083;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;Råsponten är generellt angripen, måste bytas.;Fuktskada takläckage;91;;;Inom 1-3 år;9999;;;;67613;79
+SH2083;S;2c - Reparation tak med takpannor inklusive byte av underlagstak;Råsponten är generellt angripen, måste bytas;Fuktskada pga takläckage;17;;;Snarast;;;;;12274;663
+SH2086;S;18 - Ta bort påväxt;;Fuktskada klimat vind;202;;;Snarast;;;;;16160;528
+SH2086;S;20 - Tätning av vindsbjälklag;1968;Fuktskada klimat vind;150;1;;Snarast;;;;;62000;526
+SH2088;S;6a - Byte tak asbestcement;;1 - Underhåll ;80;;;Längre fram;2000;;;;71680;3
+SH2092;S;18 - Ta bort påväxt;;Fuktskada klimat vind;142;;;Snarast;;;;;11360;385
+SH2092;S;20 - Tätning av vindsbjälklag;1974;Fuktskada klimat vind;70;1;;Snarast;;;;;55600;384
+SH2106;S;2c - Reparation tak med takpannor inklusive byte av underlagstak;;Fuktskada pga takläckage (låg);;;;;;;;;6000;786
+SH2108;S;18 - Ta bort påväxt;;Fuktskada klimat vind;163;;;Snarast;;;;;13040;423
+SH2108;S;20 - Tätning av vindsbjälklag;1971;Fuktskada klimat vind;108;1;;Snarast;;;;;58640;422
+SH2111;S;18 - Ta bort påväxt;;Fuktskada klimat vind;80;;;Snarast;;;;;6400;347
+SH2111;S;20 - Tätning av vindsbjälklag;1969;Fuktskada klimat vind;115;1;;Snarast;2007;;6;8;59200;12
+SH2112;S;18 - Ta bort påväxt;;Fuktskada klimat vind;160;;;Snarast;;;;;12800;373
+SH2112;S;20 - Tätning av vindsbjälklag;1964;Fuktskada klimat vind;147;1;;Snarast;;;;;61760;372
+SH2117;S;18 - Ta bort påväxt;;Fuktskada klimat vind;160;;;Snarast;;;;;12800;484
+SH2117;S;20 - Tätning av vindsbjälklag;1967;Fuktskada klimat vind;150;1;;Snarast;;;;;62000;483
+SH2121;S;18 - Ta bort påväxt;;Fuktskada klimat vind;156;;;Snarast;;;;;12480;329
+SH2121;S;20 - Tätning av vindsbjälklag;1975;Fuktskada klimat vind;242;1;;Snarast;;;;;69360;328
+SH2123;S;18 - Ta bort påväxt;;Fuktskada klimat vind;122;;;Snarast;;;;;9760;445
+SH2123;S;20 - Tätning av vindsbjälklag;1961;Fuktskada klimat vind;75;1;;Snarast;;;;;56000;443
+SH2125;S;6 - Byte av papptak, m²;;1 - Underhåll ;150;;;Inom 1-3 år;9999;;;;72600;80
+SH2126;S;6a - Byte tak asbestcement;;Fuktskada takläckage;125;;;Snarast;2000;5;6;10;112000;26
+SH2130;S;18 - Ta bort påväxt;;Fuktskada klimat vind;166;;;Snarast;;;;;13280;450
+SH2130;S;20 - Tätning av vindsbjälklag;1965;Fuktskada klimat vind;105;1;;Snarast;;;;;58400;448
+SH2131;S;18 - Ta bort påväxt;;Fuktskada klimat vind;113;;;Snarast;;;;;9040;661
+SH2131;S;20 - Tätning av vindsbjälklag;1966;Fuktskada klimat vind;72;1;;Snarast;;;;;55760;662
+SH2132;S;2a - Byte av takpannor (tegel) + bärläkt, ströläkt och underlagspapp, m²;;1 - Underhåll;129;;;Snarast;2007;;;;105264;62
+SH2135;S;18 - Ta bort påväxt;;Fuktskada klimat vind;160;;;Snarast;;;;;12800;424
+SH2135;S;20 - Tätning av vindsbjälklag;1970, Takåtgärder, råspont skadats av läckage;Fuktskada klimat vind;134;1;;Snarast;9999;;;;60720;76
+SH2135;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;Rengöring av betongytskicktet + koll av inläckage;Fuktskada takläckage;160;;;Snarast;9999;;;;118880;77
+SH2140;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;;1 - Underhåll ;144;;;Inom 1-3 år;2005;;;;106992;94
+SH2142;S;18 - Ta bort påväxt;;Fuktskada klimat vind;167;;;Snarast;;;;;13360;681
+SH2142;S;20 - Tätning av vindsbjälklag;1967;Fuktskada klimat vind;75;1;;Snarast;;;;;56000;682
+SH2143;S;18 - Ta bort påväxt;;Fuktskada klimat vind;220;;;Snarast;;;;;17600;440
+SH2148;S;6 - Byte av papptak, m²;;1 - Underhåll;140;;;Inom 1-3 år;;;;;67760;609
+SH2152;S;18 - Ta bort påväxt;;Fuktskada klimat vind;168;;;Snarast;;;;;13440;356
+SH2157;S;18 - Ta bort påväxt;;Fuktskada klimat vind;90;;;Snarast;;;;;7200;664
+SH2157;S;20 - Tätning av vindsbjälklag;1967;Fuktskada klimat vind;64;1;;Snarast;;;;;55120;665
+SH2159;S;6 - Byte av papptak, m²;;1 - Underhåll ;120;;;Inom 1-3 år;9999;;;;58080;48
+SH2160;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;Byte av takkonstruktion;Fuktskada takläckage;95;;;Snarast;2007;2;5;6;70585;294
+SH2160;S;2c - Reparation tak med takpannor inklusive byte av underlagstak;Byte av takkonstruktion;Fuktskada pga takläckage;24;;;Inom 1-3 år;;;;;17328;747
+SH2161;S;6 - Byte av papptak, m²;tak från 1978;Fuktskada takläckage;131;;;Inom 1-3 år;2007;2;6;7;63404;25
+SH2163;S;18 - Ta bort påväxt;;Fuktskada klimat vind;106;;;Snarast;;;;;8480;305
+SH2163;S;20 - Tätning av vindsbjälklag;1968;Fuktskada klimat vind;91;1;;Snarast;;;;;57280;306
+SH2165;S;16 - Byte skorstenshuv plåt, styck;Åtgärda inläckage på vind kring ventilationshuv;Fuktskada takläckage;;1;;Snarast;2007;3;2;4;2490;33
+SH2165;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);202;;;Snarast;;;;;16160;646
+SH2166;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;Reparation betongtak, 114 kvm, inläckage på övervåning;Fuktskada pga takläckage (låg);114;;16;Snarast;9999;1;6;;84702;57
+SH2167;S;18 - Ta bort påväxt;;Fuktskada klimat vind;135;;;Snarast;;;;;10800;739
+SH2167;S;20 - Tätning av vindsbjälklag;1961;Fuktskada klimat vind;105;1;;Inom 1-3 år;;;;;58400;740
+SH2174;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);200;;;Snarast;;;;;16000;371
+SH3009;S;18 - Ta bort påväxt;;Fuktskada klimat vind;237;;;Snarast;;;;;18960;469
+SH3010;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);176;;;Snarast;;;;;14080;489
+SH3011;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);170;;;Snarast;;;;;13600;677
+SH3011;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;;Fuktskada takläckage;170;;;Längre fram;2007;;;;126310;110
+SH3016;S;18 - Ta bort påväxt;;Fuktskada klimat vind;203;;;Snarast;;;;;16240;335
+SH3022;S;6 - Byte av papptak, m²;;1 - Underhåll;102;;;Längre fram;2007;;;;49368;121
+SH3023;S;6 - Byte av papptak, m²;;1 - Underhåll;77;;;Inom 1-3 år;9999;1;0;0;37268;5
+SH3039;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;;Fuktskada takläckage;105;;;Snarast;;;;;78015;395
+SH3039;S;2c - Reparation tak med takpannor inklusive byte av underlagstak;Inläckage till underlagsboard, åtgärda lokalt vid skada;Fuktskada pga takläckage (låg);30;;;Snarast;;;;;21660;653
+SH3044;S;18 - Ta bort påväxt;;Fuktskada klimat vind;169;;;Snarast;;;;;13520;504
+SH3048;S;18 - Ta bort påväxt;;Fuktskada klimat vind;100;;;Snarast;;;;;8000;461
+SH3050;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);94;;;Snarast;;;;;7520;666
+SH3050;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;;Fuktskada takläckage;94;;;Snarast;;;;;69842;430
+SH3055;S;18 - Ta bort påväxt;;Fuktskada klimat vind;118;;;Snarast;;;;;9440;352
+SH3055;S;20 - Tätning av vindsbjälklag;ang mögel 1981;Fuktskada klimat vind;84;1;;Snarast;2007;2;7;8;28720;15
+SH3056;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);107;;;Snarast;;;;;8560;363
+SH3056;S;21 - Montera nockband;;Fuktskada pga takläckage (låg);10;1;;Snarast;9999;4;7;10;3050;28
+SH3057;S;18 - Ta bort påväxt;;Fuktskada klimat vind;189;;;Snarast;;;;;15120;481
+SH3059;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;;Fuktskada takläckage;213;;;Snarast;;;;;158259;467
+SH3060;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);240;;;Snarast;;;;;19200;648
+SH3060;S;2a - Byte av takpannor (tegel) + bärläkt, ströläkt och underlagspapp, m²;;Fuktskada takläckage;240;;;Snarast;;;;;195840;374
+SH3067;S;2a - Byte av takpannor (tegel) + bärläkt, ströläkt och underlagspapp, m²;;Fuktskada takläckage;206;;;Snarast;;;;;168096;394
+SH3067;S;2c - Reparation tak med takpannor inklusive byte av underlagstak;Inläckage till underlagsboard, åtgärda lokalt vid skada;Fuktskada pga takläckage (låg);50;;;Snarast;;;;;36100;652
+SH3068;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;;Fuktskada takläckage;91;;;Inom 1-3 år;;;;;67613;738
+SH3071;S;18 - Ta bort påväxt;;Fuktskada klimat vind;180;;;Snarast;;;;;14400;458
+SH3071;S;20 - Tätning av vindsbjälklag;1972;Fuktskada klimat vind;94;1;;Snarast;;;;;57520;457
+SH3078;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);80;;;Snarast;;;;;6400;667
+SH3078;S;2a - Byte av takpannor (tegel) + bärläkt, ströläkt och underlagspapp, m²;;Fuktskada takläckage;80;;;Inom 1-3 år;9999;;;;65280;86
+SH3088;S;2c - Reparation tak med takpannor inklusive byte av underlagstak;Lokal skada byte av massonite;Fuktskada pga takläckage (låg);41;;;Snarast;;;;;29602;675
+SH3089;S;18 - Ta bort påväxt;;Fuktskada klimat vind;201;;;Snarast;;;;;16080;676
+SH3093;S;18 - Ta bort påväxt;;Fuktskada klimat vind;190;;;Snarast;;;;;15200;349
+SH3093;S;20 - Tätning av vindsbjälklag;1976;Fuktskada klimat vind;111;1;;Snarast;;;;;30880;348
+SH3111;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);5;;;Snarast;2007;1;20;20;400;639
+SH3111;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;;Fuktskada takläckage;5;;;Snarast;2007;1;20;20;3715;18
+SH3118;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;;1 - Underhåll ;150;;;Längre fram;2007;;;;111450;107
+SH3121;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;Bort med betongpannor och annat taktätskikt;1 - Underhåll;85;;;Längre fram;9999;;;;63155;83
+SH3123;S;18 - Ta bort påväxt;;Fuktskada klimat vind;268;;;Snarast;;;;;21440;744
+SH3123;S;20 - Tätning av vindsbjälklag;1980;Fuktskada klimat vind;248;2;;Inom 1-3 år;;;;;85840;745
+SH3123;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;;1 - Underhåll;268;;;Snarast;;;;;199124;487
+SH3127;S;18 - Ta bort påväxt;;Fuktskada klimat vind;247;;;Snarast;;;;;19760;472
+SH3134;S;18 - Ta bort påväxt;;Fuktskada klimat vind;174;;;Snarast;;;;;13920;408
+SH3134;S;20 - Tätning av vindsbjälklag;1972;Fuktskada klimat vind;94;1;;Snarast;;;;;57520;407
+SH3136;S;18 - Ta bort påväxt;;Fuktskada klimat vind;267;;;Snarast;;;;;21360;515
+SH3136;S;20 - Tätning av vindsbjälklag;1976;Fuktskada klimat vind;108;1;;Snarast;;;;;30640;513
+SH3141;S;18 - Ta bort påväxt;;Fuktskada pga takläckage;205;;;Snarast;;;;;16400;429
+SH3147;S;18 - Ta bort påväxt;Konderserar mot plåttak;Fuktskada klimat vind;84;;;Snarast;;;;;6720;506
+SH3154;S;18 - Ta bort påväxt;;Fuktskada klimat vind;93;;;Snarast;;;;;7440;333
+SH3163;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;Koll av underlagspapp;1 - Underhåll ;201;;;Längre fram;9999;;;;55878;84
+SH3167;S;18 - Ta bort påväxt;;Fuktskada klimat vind;173;;;Snarast;;;;;13840;346
+SH3168;S;18 - Ta bort påväxt;;Fuktskada klimat vind;210;;;Snarast;;;;;16800;752
+SH4020;S;18 - Ta bort påväxt;;Fuktskada klimat vind;82;;;Snarast;;;;;6560;397
+SH4020;S;2c - Reparation tak med takpannor inklusive byte av underlagstak;Inläckage till underlagsboard, åtgärda lokalt vid skada;Fuktskada pga takläckage;21;;;Snarast;;;;;15162;654
+SH4023;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);220;;;Snarast;;;;;17600;432
+SH4023;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;;Fuktskada takläckage;220;;;Snarast;;;;;163460;668
+SH4037;S;18 - Ta bort påväxt;;Fuktskada klimat vind;263;;;Snarast;;;;;21040;379
+SH4040;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;;Fuktskada takläckage;112;;;Snarast;;;;;83216;643
+SH4040;S;2c - Reparation tak med takpannor inklusive byte av underlagstak;board byte ut lokalt;Fuktskada pga takläckage (låg);26;;;Snarast;;;;;18772;642
+SH4041;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;;Fuktskada takläckage;163;;;Snarast;;;;;121109;409
+SH4042;S;18 - Ta bort påväxt;;Fuktskada klimat vind;75;;;Snarast;;;;;6000;737
+SH4047;S;17 - Reparation skorsten tegel, styck;Trasig panna läckage;Fuktskada takläckage;1;1;;Inom 1-3 år;9999;;;;3512;99
+SH4047;S;2c - Reparation tak med takpannor inklusive byte av underlagstak;Lokal skada byte av plywood;Fuktskada pga takläckage (låg);54;;;Snarast;;;;;38988;673
+SH4048;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;;Fuktskada takläckage;214;;;Snarast;;;;;159002;360
+SH4048;S;2c - Reparation tak med takpannor inklusive byte av underlagstak;massonite bytes lokalt;Fuktskada pga takläckage (låg);69;;;Snarast;;;;;49818;641
+SH4064;S;18 - Ta bort påväxt;lagning fuktskada, råspont, papp, läkt, takpannor;Fuktskada pga takläckage (låg);102;;;Snarast;;;;;8160;640
+SH4064;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;lagning fuktskada, råspont, papp, läkt, takpannor;Fuktskada pga takläckage;102;;;Inom 1-3 år;;;;;75786;618
+SH4073;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);90;;;Snarast;;;;;7200;402
+SH4086;S;18 - Ta bort påväxt;;Fuktskada pga takläckage;120;;;Snarast;;;;;9600;649
+SH4086;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;Ny krönplåt. Översyn vind, byta skadad lghskiljande vägg på vinden.;Fuktskada takläckage;10;;;Snarast;2007;2;6;7;7430;36
+SH4089;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;Betong;1 - Underhåll;145;;;Inom 1-3 år;9999;;;;107735;11
+SH4101;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);140;;;Snarast;;;;;11200;377
+SH4114;S;18 - Ta bort påväxt;;Fuktskada klimat vind;173;;;Snarast;;;;;13840;679
+SH4114;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;;1 - Underhåll;173;;;Inom 1-3 år;2007;2;1;2;128539;111
+SH4118;S;18 - Ta bort påväxt;;Fuktskada pga takläckage (låg);248;;;Snarast;;;;;19840;635
+SH4122;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;Inläckage till underlags- board längs nock;Fuktskada takläckage;10;;;Inom 1-3 år;2007;3;4;6;7430;38
+SH4122;S;2c - Reparation tak med takpannor inklusive byte av underlagstak;Inläckage till underlags- board längs nock;Fuktskada pga takläckage (låg);51;;;Snarast;;;;;36822;650
+SH4130;S;18 - Ta bort påväxt;;Fuktskada klimat vind;114;;;Snarast;;;;;9120;678
+SH4135;S;2c - Reparation tak med takpannor inklusive byte av underlagstak;Lokal skada byte av massonite;Fuktskada pga takläckage (låg);60;;;Snarast;;;;;43320;674
+SH4149;S;14a - Ta upp vindslucka, inspektionsmöjlighet;Byte av vindslucka.;1 - Underhåll;0,5;;;Snarast;2007;1;;11;6000;123
+SH4151;S;14a - Ta upp vindslucka, inspektionsmöjlighet;;1 - Underhåll;;1;;Inom 1-3 år;;;;;6000;610
+SH4151;S;2a - Byte av takpannor (tegel) + bärläkt, ströläkt och underlagspapp, m²;åtgärda svacka på yttertak;1 - Underhåll;10;;;Inom 1-3 år;9999;1;5;5;8160;103
+SH4156;S;18 - Ta bort påväxt;fuktmärken/ läckage synligt i undertäckning;Fuktskada pga takläckage (låg);119;;;Snarast;9999;;;;9520;623
+SH4156;S;2b - Byte av takpannor (betong), m² + bärläkt, ströläkt och underlagspapp, m²;fuktmärken/ läckage synligt i undertäckning;Fuktskada takläckage;119;;;Snarast;9999;;;;88417;6
+SH5023;S;18 - Ta bort påväxt;;Fuktskada klimat vind;103;;;Snarast;;;;;8240;388
+SH5031;S;2c - Reparation tak med takpannor inklusive byte av underlagstak;;Fuktskada pga takläckage (låg);;;;;;;;;6000;787
+SH5045;S;2a - Byte av takpannor (tegel) + bärläkt, ströläkt och underlagspapp, m²;Vatteninträngning via tak vid storm. Felet ännu in;Fuktskada pga takläckage (låg);10;;;Inom 1-3 år;9999;;;;8160;88
+SH5061;S;18 - Ta bort påväxt;;Fuktskada klimat vind;157;;;Snarast;;;;;12560;339
+SH5093;S;18 - Ta bort påväxt;;Fuktskada klimat vind;93;;;Snarast;;;;;7440;435
+SH5110;S;18 - Ta bort påväxt;;Fuktskada klimat vind;190;;;Snarast;;;;;15200;362
+SH5112;S;18 - Ta bort påväxt;;Fuktskada pga takläckage;92;;;Snarast;;;;;7360;669
+SH5112;S;4a - Byte plåttak (galvad bandtäckt);;Fuktskada takläckage;92;;;Inom 1-3 år;;;;;67896;433
+SH5131;S;18 - Ta bort påväxt;;Fuktskada klimat vind;235;;;Snarast;;;;;18800;400
+SH5153;S;2c - Reparation tak med takpannor inklusive byte av underlagstak;;Fuktskada pga takläckage (låg);;;;;;;;;6000;785

@@ -1,0 +1,3408 @@
+INFO  Found 35 CMF_1960 buildings to simulate
+INFO  ============================================================
+INFO  START  Flato_2_h1  (FormularId=1076119, Bidevindsvägen 1)
+INFO  ============================================================
+INFO  Loaded 2 footprint(s) from EPC database
+INFO  EPC 1076119: year=1968  Atemp=5333  floors=7  apts=52  EP=79 kWh/m²/yr
+INFO  EPC 1076119 energy: {'FjvUPPV': 333586, 'FjvVV': 116153, 'Fastighet': 30614, 'Summa2': 480353}
+INFO  EPC 1076119: detected ventilation system F (frånluft)
+INFO    depth=2.2m  perim_atemp=6744 m²  gross=7550 m²  epc_atemp=5333
+INFO  Simulation 'Flato_2_h1': 7 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 34 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.158
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:32
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 03min  8.07sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=311209 kWh, cooling=149203 kWh, DHW=131658 kWh, site=659953 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   311209 kWh  (46.1 kWh/m2)
+INFO    Sveby airing:  26976 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       131658 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 38714 kWh  (5.7 kWh/m2)
+INFO    Sim cooling:   149203 kWh  (22.1 kWh/m2)
+INFO    Sim EPC-comp:  657759 kWh  (97.5 kWh/m2)
+INFO    Sim site:      659953 kWh  (97.9 kWh/m2)
+INFO    EPC energy:    79 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 1.23
+INFO  ============================================================
+INFO  START  Graniten_1_h1  (FormularId=1033810, Östanvindsvägen 16A)
+INFO  ============================================================
+INFO  Loaded 4 footprint(s) from EPC database
+INFO  EPC 1033810: year=1966  Atemp=4248  floors=8  apts=48  EP=90 kWh/m²/yr
+INFO  EPC 1033810 energy: {'FjvUPPV': 171558, 'FjvVV': 106200, 'Fastighet': 41251, 'Summa2': 319009}
+INFO  EPC 1033810: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=3080 m²  gross=3846 m²  epc_atemp=4248
+INFO  Simulation 'Graniten_1_h1': 8 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 4 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.037
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:35
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Warming up {9}
+Warming up {10}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min 10.13sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=203844 kWh, cooling=41957 kWh, DHW=60135 kWh, site=360164 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   203844 kWh  (66.2 kWh/m2)
+INFO    Sveby airing:  12321 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       60135 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 29912 kWh  (9.7 kWh/m2)
+INFO    Sim cooling:   41957 kWh  (13.6 kWh/m2)
+INFO    Sim EPC-comp:  348169 kWh  (113.0 kWh/m2)
+INFO    Sim site:      360164 kWh  (116.9 kWh/m2)
+INFO    EPC energy:    90 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 1.26
+INFO  ============================================================
+INFO  START  Graniten_1_h2  (FormularId=1033809, Östanvindsvägen 14B)
+INFO  ============================================================
+INFO  Loaded 4 footprint(s) from EPC database
+INFO  EPC 1033809: year=1966  Atemp=4248  floors=8  apts=48  EP=92 kWh/m²/yr
+INFO  EPC 1033809 energy: {'FjvUPPV': 165876, 'FjvVV': 106200, 'Fastighet': 51015, 'Summa2': 323091}
+INFO  EPC 1033809: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=3062 m²  gross=3822 m²  epc_atemp=4248
+INFO  Simulation 'Graniten_1_h2': 8 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 4 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.034
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:35
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Warming up {9}
+Warming up {10}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min 10.01sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=203135 kWh, cooling=41743 kWh, DHW=59768 kWh, site=358656 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   203135 kWh  (66.4 kWh/m2)
+INFO    Sveby airing:  12246 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       59768 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 36766 kWh  (12.0 kWh/m2)
+INFO    Sim cooling:   41743 kWh  (13.6 kWh/m2)
+INFO    Sim EPC-comp:  353658 kWh  (115.5 kWh/m2)
+INFO    Sim site:      358656 kWh  (117.1 kWh/m2)
+INFO    EPC energy:    92 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 1.26
+INFO  ============================================================
+INFO  START  Graniten_1_h3  (FormularId=1033808, Östanvindsvägen 12B)
+INFO  ============================================================
+INFO  Loaded 4 footprint(s) from EPC database
+INFO  EPC 1033808: year=1966  Atemp=4248  floors=8  apts=48  EP=100 kWh/m²/yr
+INFO  EPC 1033808 energy: {'FjvUPPV': 199449, 'FjvVV': 106200, 'Fastighet': 46635, 'Summa2': 352284}
+INFO  EPC 1033808: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=3070 m²  gross=3832 m²  epc_atemp=4248
+INFO  Simulation 'Graniten_1_h3': 8 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 4 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.035
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:36
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Warming up {9}
+Warming up {10}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  9.95sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=203409 kWh, cooling=41853 kWh, DHW=59924 kWh, site=359283 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   203409 kWh  (66.3 kWh/m2)
+INFO    Sveby airing:  12278 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       59924 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 33698 kWh  (11.0 kWh/m2)
+INFO    Sim cooling:   41853 kWh  (13.6 kWh/m2)
+INFO    Sim EPC-comp:  351162 kWh  (114.4 kWh/m2)
+INFO    Sim site:      359283 kWh  (117.0 kWh/m2)
+INFO    EPC energy:    100 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 1.14
+INFO  ============================================================
+INFO  START  Gronlingen_1_h1  (FormularId=981188, Tureborgsvägen 14)
+INFO  ============================================================
+INFO  Loaded 3 footprint(s) from EPC database
+INFO  EPC 981188: year=1962  Atemp=2178  floors=3  apts=12  EP=169 kWh/m²/yr
+INFO  EPC 981188 energy: {'FjvUPPV': 214922, 'FjvVV': 54450, 'Fastighet': 33221, 'Summa2': 302593}
+INFO  EPC 981188: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=1600 m²  gross=1997 m²  epc_atemp=2178
+INFO  Simulation 'Gronlingen_1_h1': 3 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 4 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.024
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:36
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Warming up {9}
+Warming up {10}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  3.42sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=118198 kWh, cooling=14645 kWh, DHW=31242 kWh, site=194758 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   118198 kWh  (73.9 kWh/m2)
+INFO    Sveby airing:  6401 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       31242 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 24410 kWh  (15.3 kWh/m2)
+INFO    Sim cooling:   14645 kWh  (9.2 kWh/m2)
+INFO    Sim EPC-comp:  194897 kWh  (121.8 kWh/m2)
+INFO    Sim site:      194758 kWh  (121.7 kWh/m2)
+INFO    EPC energy:    169 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 0.72
+INFO  ============================================================
+INFO  START  Karpen_1_h1  (FormularId=755764, Klippgatan 1)
+INFO  ============================================================
+INFO  Loaded 4 footprint(s) from EPC database
+INFO  EPC 755764: year=1961  Atemp=4818  floors=8  apts=65  EP=117 kWh/m²/yr
+INFO  EPC 755764 energy: {'Fjv': 519709, 'Summa1': 519709, 'VVBered': 119134, 'Fastighet': 25000, 'Summa2': 25000}
+INFO  EPC 755764: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=2136 m²  gross=2664 m²  epc_atemp=4818
+INFO  Simulation 'Karpen_1_h1': 8 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 4 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.035
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:36
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Warming up {9}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  9.93sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=145104 kWh, cooling=33935 kWh, DHW=41698 kWh, site=258197 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   145104 kWh  (67.9 kWh/m2)
+INFO    Sveby airing:  8544 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       41698 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 11083 kWh  (5.2 kWh/m2)
+INFO    Sim cooling:   33935 kWh  (15.9 kWh/m2)
+INFO    Sim EPC-comp:  240364 kWh  (112.5 kWh/m2)
+INFO    Sim site:      258197 kWh  (120.9 kWh/m2)
+INFO    EPC energy:    117 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 0.96
+INFO  ============================================================
+INFO  START  Koster_10_h1  (FormularId=1033784, Sunnanvindsvägen 8)
+INFO  ============================================================
+INFO  Loaded 2 footprint(s) from EPC database
+INFO  EPC 1033784: year=1969  Atemp=2744  floors=4  apts=24  EP=170 kWh/m²/yr
+INFO  EPC 1033784 energy: {'FjvUPPV': 260853, 'FjvVV': 46635, 'Fastighet': 62201, 'Summa2': 369689}
+INFO  EPC 1033784: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=2984 m²  gross=3899 m²  epc_atemp=2744
+INFO  Simulation 'Koster_10_h1': 4 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 4 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.026
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:36
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  4.74sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=169906 kWh, cooling=35978 kWh, DHW=58252 kWh, site=311003 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   169906 kWh  (56.9 kWh/m2)
+INFO    Sveby airing:  11936 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       58252 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 67639 kWh  (22.7 kWh/m2)
+INFO    Sim cooling:   35978 kWh  (12.1 kWh/m2)
+INFO    Sim EPC-comp:  343710 kWh  (115.2 kWh/m2)
+INFO    Sim site:      311003 kWh  (104.2 kWh/m2)
+INFO    EPC energy:    170 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 0.68
+INFO  ============================================================
+INFO  START  Koster_8_h1  (FormularId=1033792, Sunnanvindsvägen 12)
+INFO  ============================================================
+INFO  Loaded 1 footprint(s) from EPC database
+INFO  EPC 1033792: year=1962  Atemp=1186  floors=1  apts=0  EP=119 kWh/m²/yr
+INFO  EPC 1033792 energy: {'FjvUPPV': 64240, 'FjvVV': 2016, 'Fastighet': 37925, 'Summa2': 104181}
+INFO  EPC 1033792: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=677 m²  gross=1274 m²  epc_atemp=1186
+INFO  Simulation 'Koster_8_h1': 1 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 9 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.022
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:36
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  2.71sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=71505 kWh, cooling=4155 kWh, DHW=13212 kWh, site=102678 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   71505 kWh  (105.7 kWh/m2)
+INFO    Sveby airing:  2707 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       13212 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 21642 kWh  (32.0 kWh/m2)
+INFO    Sim cooling:   4155 kWh  (6.1 kWh/m2)
+INFO    Sim EPC-comp:  113221 kWh  (167.3 kWh/m2)
+INFO    Sim site:      102678 kWh  (151.7 kWh/m2)
+INFO    EPC energy:    119 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 1.41
+INFO  ============================================================
+INFO  START  Koster_9_h1  (FormularId=1033788, Sunnanvindsvägen 10)
+INFO  ============================================================
+INFO  Loaded 1 footprint(s) from EPC database
+INFO  EPC 1033788: year=1962  Atemp=5436  floors=12  apts=66  EP=146 kWh/m²/yr
+INFO  EPC 1033788 energy: {'FjvUPPV': 349396, 'FjvVV': 113250, 'PumpFranluftUPPV': 57140, 'Fastighet': 86353, 'Summa2': 606139}
+INFO  EPC 1033788: detected ventilation system FVP (frånluftvärmepump)
+INFO    depth=2.7m  perim_atemp=9854 m²  gross=10750 m²  epc_atemp=5436
+INFO  Simulation 'Koster_9_h1': 12 floors, floor_height=2.7m, construction=CMF_1960, ventilation=FVP
+INFO  Footprint: 11 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.089
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:36
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Warming up {9}
+Warming up {10}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min 50.65sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=357827 kWh, cooling=199154 kWh, DHW=192374 kWh, site=826725 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   357827 kWh  (36.3 kWh/m2)
+INFO    Sveby airing:  39416 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       192374 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 156535 kWh  (15.9 kWh/m2)
+INFO    Sim cooling:   199154 kWh  (20.2 kWh/m2)
+INFO    Sim EPC-comp:  945306 kWh  (95.9 kWh/m2)
+INFO    Sim site:      826725 kWh  (83.9 kWh/m2)
+INFO    EPC energy:    146 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 0.66
+INFO  ============================================================
+INFO  START  Koster_9_h2  (FormularId=1033789, Sunnanvindsvägen 8B)
+INFO  ============================================================
+INFO  Loaded 1 footprint(s) from EPC database
+INFO  EPC 1033789: year=1962  Atemp=1177  floors=2  apts=0  EP=172 kWh/m²/yr
+INFO  EPC 1033789 energy: {'FjvUPPV': 102323, 'FjvVV': 2354, 'Fastighet': 46130, 'Summa2': 150807}
+INFO  EPC 1033789: detected ventilation system F (frånluft)
+INFO    depth=4.5m  perim_atemp=915 m²  gross=1270 m²  epc_atemp=1177
+INFO  Simulation 'Koster_9_h2': 2 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 5 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.023
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:37
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Warming up {9}
+Warming up {10}
+Warming up {11}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  2.81sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=76001 kWh, cooling=6080 kWh, DHW=17865 kWh, site=118878 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   76001 kWh  (83.0 kWh/m2)
+INFO    Sveby airing:  3661 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       17865 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 35867 kWh  (39.2 kWh/m2)
+INFO    Sim cooling:   6080 kWh  (6.6 kWh/m2)
+INFO    Sim EPC-comp:  139474 kWh  (152.4 kWh/m2)
+INFO    Sim site:      118878 kWh  (129.9 kWh/m2)
+INFO    EPC energy:    172 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 0.89
+INFO  ============================================================
+INFO  START  Laxen_1_h1  (FormularId=755729, Hagarnevägen 41A)
+INFO  ============================================================
+INFO  Loaded 5 footprint(s) from EPC database
+INFO  EPC 755729: year=1960  Atemp=4784  floors=4  apts=64  EP=131 kWh/m²/yr
+INFO  EPC 755729 energy: {'Fjv': 574948, 'Summa1': 574948, 'VVBered': 120000, 'Fastighet': 31000, 'Summa2': 31000}
+INFO  EPC 755729: detected ventilation system F (frånluft)
+INFO    depth=0.0m  perim_atemp=5290 m²  gross=5290 m²  epc_atemp=4784
+INFO  Simulation 'Laxen_1_h1': 4 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 30 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.024
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:37
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min 10.62sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=421025 kWh, cooling=43219 kWh, DHW=103279 kWh, site=676800 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   421025 kWh  (79.6 kWh/m2)
+INFO    Sveby airing:  21161 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       103279 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 34281 kWh  (6.5 kWh/m2)
+INFO    Sim cooling:   43219 kWh  (8.2 kWh/m2)
+INFO    Sim EPC-comp:  622966 kWh  (117.8 kWh/m2)
+INFO    Sim site:      676800 kWh  (127.9 kWh/m2)
+INFO    EPC energy:    131 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 0.90
+INFO  ============================================================
+INFO  START  Laxen_1_h2  (FormularId=755703, Hagarnevägen 39A)
+INFO  ============================================================
+INFO  Loaded 6 footprint(s) from EPC database
+INFO  EPC 755703: year=1960  Atemp=5749  floors=4  apts=76  EP=129 kWh/m²/yr
+INFO  EPC 755703 energy: {'Fjv': 684021, 'Summa1': 684021, 'VVBered': 144000, 'Fastighet': 34000, 'Summa2': 34000}
+INFO  EPC 755703: detected ventilation system F (frånluft)
+INFO    depth=0.0m  perim_atemp=6354 m²  gross=6354 m²  epc_atemp=5749
+INFO  Simulation 'Laxen_1_h2': 4 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 34 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.025
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:37
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min 12.72sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=509163 kWh, cooling=47223 kWh, DHW=124043 kWh, site=812692 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   509163 kWh  (80.1 kWh/m2)
+INFO    Sveby airing:  25416 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       124043 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 37578 kWh  (5.9 kWh/m2)
+INFO    Sim cooling:   47223 kWh  (7.4 kWh/m2)
+INFO    Sim EPC-comp:  743423 kWh  (117.0 kWh/m2)
+INFO    Sim site:      812692 kWh  (127.9 kWh/m2)
+INFO    EPC energy:    129 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 0.91
+INFO  ============================================================
+INFO  START  Marmorn_1_h1  (FormularId=1033802, Östanvindsvägen 19A)
+INFO  ============================================================
+INFO  Loaded 42 footprint(s) from EPC database
+INFO  EPC 1033802: year=1966  Atemp=4641  floors=3  apts=41  EP=121 kWh/m²/yr
+INFO  EPC 1033802 energy: {'FjvUPPV': 291252, 'FjvVV': 116025, 'Fastighet': 53824, 'Summa2': 461101}
+INFO  EPC 1033802: detected ventilation system F (frånluft)
+INFO    depth=0.0m  perim_atemp=4365 m²  gross=4365 m²  epc_atemp=4641
+INFO  Simulation 'Marmorn_1_h1': 3 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 16 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.020
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:38
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  3.12sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=344121 kWh, cooling=15411 kWh, DHW=85214 kWh, site=538336 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   344121 kWh  (78.8 kWh/m2)
+INFO    Sveby airing:  17460 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       85214 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 50623 kWh  (11.6 kWh/m2)
+INFO    Sim cooling:   15411 kWh  (3.5 kWh/m2)
+INFO    Sim EPC-comp:  512829 kWh  (117.5 kWh/m2)
+INFO    Sim site:      538336 kWh  (123.3 kWh/m2)
+INFO    EPC energy:    121 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 0.97
+INFO  ============================================================
+INFO  START  Marmorn_3_h1  (FormularId=1033803, Ögårdsvägen 1D)
+INFO  ============================================================
+INFO  Loaded 12 footprint(s) from EPC database
+INFO  EPC 1033803: year=1966  Atemp=3237  floors=3  apts=27  EP=161 kWh/m²/yr
+INFO  EPC 1033803 energy: {'FjvUPPV': 287539, 'FjvVV': 80925, 'Fastighet': 53824, 'Summa2': 422288}
+INFO  EPC 1033803: detected ventilation system F (frånluft)
+INFO    depth=0.0m  perim_atemp=3000 m²  gross=3000 m²  epc_atemp=3237
+INFO  Simulation 'Marmorn_3_h1': 3 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 8 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.018
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:38
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  1.70sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=235868 kWh, cooling=11258 kWh, DHW=58573 kWh, site=369783 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   235868 kWh  (78.6 kWh/m2)
+INFO    Sveby airing:  12001 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       58573 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 49889 kWh  (16.6 kWh/m2)
+INFO    Sim cooling:   11258 kWh  (3.8 kWh/m2)
+INFO    Sim EPC-comp:  367589 kWh  (122.5 kWh/m2)
+INFO    Sim site:      369783 kWh  (123.2 kWh/m2)
+INFO    EPC energy:    161 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 0.76
+INFO  ============================================================
+INFO  START  Marmorn_3_h2  (FormularId=1033804, Östanvindsvägen 13C)
+INFO  ============================================================
+INFO  Loaded 3 footprint(s) from EPC database
+INFO  EPC 1033804: year=1966  Atemp=2178  floors=3  apts=18  EP=156 kWh/m²/yr
+INFO  EPC 1033804 energy: {'FjvUPPV': 198263, 'FjvVV': 54450, 'Fastighet': 26624, 'Summa2': 279337}
+INFO  EPC 1033804: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=1621 m²  gross=2039 m²  epc_atemp=2178
+INFO  Simulation 'Marmorn_3_h2': 3 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 4 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.023
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:38
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Warming up {9}
+Warming up {10}
+Warming up {11}
+Warming up {12}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  3.36sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=113682 kWh, cooling=20198 kWh, DHW=31651 kWh, site=195239 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   113682 kWh  (70.1 kWh/m2)
+INFO    Sveby airing:  6485 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       31651 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 19819 kWh  (12.2 kWh/m2)
+INFO    Sim cooling:   20198 kWh  (12.5 kWh/m2)
+INFO    Sim EPC-comp:  191835 kWh  (118.3 kWh/m2)
+INFO    Sim site:      195239 kWh  (120.4 kWh/m2)
+INFO    EPC energy:    156 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 0.76
+INFO  ============================================================
+INFO  START  Morten_1_h1  (FormularId=811532, Tureborgsvägen 24)
+INFO  ============================================================
+INFO  Loaded 15 footprint(s) from EPC database
+INFO  EPC 811532: year=1961  Atemp=4818  floors=10  apts=68  EP=102 kWh/m²/yr
+INFO  EPC 811532 energy: {'Fjv': 448845, 'Summa1': 448845, 'VVBered': 120000, 'Fastighet': 30000, 'Summa2': 30000}
+INFO  EPC 811532: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=2741 m²  gross=3427 m²  epc_atemp=4818
+INFO  Simulation 'Morten_1_h1': 10 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 4 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.038
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:38
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Warming up {9}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min 12.50sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=178450 kWh, cooling=46699 kWh, DHW=53518 kWh, site=325325 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   178450 kWh  (65.1 kWh/m2)
+INFO    Sveby airing:  10966 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       53518 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 17070 kWh  (6.2 kWh/m2)
+INFO    Sim cooling:   46699 kWh  (17.0 kWh/m2)
+INFO    Sim EPC-comp:  306702 kWh  (111.9 kWh/m2)
+INFO    Sim site:      325325 kWh  (118.7 kWh/m2)
+INFO    EPC energy:    102 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 1.10
+INFO  ============================================================
+INFO  START  Reso_1_h1  (FormularId=1033783, Sunnanvindsvägen 7B)
+INFO  ============================================================
+INFO  Loaded 4 footprint(s) from EPC database
+INFO  EPC 1033783: year=1960  Atemp=2696  floors=3  apts=36  EP=154 kWh/m²/yr
+INFO  EPC 1033783 energy: {'FjvUPPV': 241101, 'FjvVV': 67400, 'Fastighet': 32121, 'Summa2': 340622}
+INFO  EPC 1033783: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=1792 m²  gross=2221 m²  epc_atemp=2696
+INFO  Simulation 'Reso_1_h1': 3 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 4 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.023
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:38
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  3.36sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=136968 kWh, cooling=26495 kWh, DHW=34982 kWh, site=232533 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   136968 kWh  (76.4 kWh/m2)
+INFO    Sveby airing:  7168 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       34982 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 21349 kWh  (11.9 kWh/m2)
+INFO    Sim cooling:   26495 kWh  (14.8 kWh/m2)
+INFO    Sim EPC-comp:  226961 kWh  (126.7 kWh/m2)
+INFO    Sim site:      232533 kWh  (129.8 kWh/m2)
+INFO    EPC energy:    154 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 0.82
+INFO  ============================================================
+INFO  START  Rodingen_3_h1  (FormularId=934031, Timmerbergsvägen 3)
+INFO  ============================================================
+INFO  Loaded 1 footprint(s) from EPC database
+INFO  EPC 934031: year=1962  Atemp=2355  floors=7  apts=36  EP=136 kWh/m²/yr
+INFO  EPC 934031 energy: {'FjvUPPV': 171606, 'FjvVV': 58875, 'Fastighet': 34000, 'Summa2': 264481}
+INFO  EPC 934031: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=2203 m²  gross=2744 m²  epc_atemp=2355
+INFO  Simulation 'Rodingen_3_h1': 7 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 4 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.032
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:38
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  8.58sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=142883 kWh, cooling=32719 kWh, DHW=43007 kWh, site=255914 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   142883 kWh  (64.9 kWh/m2)
+INFO    Sveby airing:  8812 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       43007 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 31805 kWh  (14.4 kWh/m2)
+INFO    Sim cooling:   32719 kWh  (14.9 kWh/m2)
+INFO    Sim EPC-comp:  259225 kWh  (117.7 kWh/m2)
+INFO    Sim site:      255914 kWh  (116.2 kWh/m2)
+INFO    EPC energy:    136 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 0.87
+INFO  ============================================================
+INFO  START  Rodingen_3_h2  (FormularId=933732, Timmerbergsvägen 1)
+INFO  ============================================================
+INFO  Loaded 1 footprint(s) from EPC database
+INFO  EPC 933732: year=1962  Atemp=2355  floors=7  apts=38  EP=136 kWh/m²/yr
+INFO  EPC 933732 energy: {'FjvUPPV': 171606, 'FjvVV': 58875, 'Fastighet': 34000, 'Summa2': 264481}
+INFO  EPC 933732: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=2207 m²  gross=2748 m²  epc_atemp=2355
+INFO  Simulation 'Rodingen_3_h2': 7 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 4 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.032
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:38
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  8.40sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=143223 kWh, cooling=32713 kWh, DHW=43088 kWh, site=256425 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   143223 kWh  (64.9 kWh/m2)
+INFO    Sveby airing:  8829 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       43088 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 31865 kWh  (14.4 kWh/m2)
+INFO    Sim cooling:   32713 kWh  (14.8 kWh/m2)
+INFO    Sim EPC-comp:  259718 kWh  (117.7 kWh/m2)
+INFO    Sim site:      256425 kWh  (116.2 kWh/m2)
+INFO    EPC energy:    136 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 0.87
+INFO  ============================================================
+INFO  START  Sandstenen_1_h1  (FormularId=1033799, Aftonbrisvägen 9A)
+INFO  ============================================================
+INFO  Loaded 4 footprint(s) from EPC database
+INFO  EPC 1033799: year=1964  Atemp=1786  floors=4  apts=20  EP=101 kWh/m²/yr
+INFO  EPC 1033799 energy: {'FjvUPPV': 89760, 'FjvVV': 44650, 'Fastighet': 16021, 'Summa2': 150431}
+INFO  EPC 1033799: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=1842 m²  gross=2386 m²  epc_atemp=1786
+INFO  Simulation 'Sandstenen_1_h1': 4 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 4 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.026
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:38
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  4.65sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=116558 kWh, cooling=21211 kWh, DHW=35960 kWh, site=204903 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   116558 kWh  (63.3 kWh/m2)
+INFO    Sveby airing:  7368 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       35960 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 16524 kWh  (9.0 kWh/m2)
+INFO    Sim cooling:   21211 kWh  (11.5 kWh/m2)
+INFO    Sim EPC-comp:  197621 kWh  (107.3 kWh/m2)
+INFO    Sim site:      204903 kWh  (111.2 kWh/m2)
+INFO    EPC energy:    101 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 1.06
+INFO  ============================================================
+INFO  START  Sandstenen_1_h2  (FormularId=1033798, Aftonbrisvägen 7A)
+INFO  ============================================================
+INFO  Loaded 4 footprint(s) from EPC database
+INFO  EPC 1033798: year=1964  Atemp=1786  floors=4  apts=20  EP=102 kWh/m²/yr
+INFO  EPC 1033798 energy: {'FjvUPPV': 91260, 'FjvVV': 44650, 'Fastighet': 16021, 'Summa2': 151931}
+INFO  EPC 1033798: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=1842 m²  gross=2386 m²  epc_atemp=1786
+INFO  Simulation 'Sandstenen_1_h2': 4 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 4 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.025
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:38
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  4.62sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=116557 kWh, cooling=21216 kWh, DHW=35960 kWh, site=204908 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   116557 kWh  (63.3 kWh/m2)
+INFO    Sveby airing:  7368 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       35960 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 16524 kWh  (9.0 kWh/m2)
+INFO    Sim cooling:   21216 kWh  (11.5 kWh/m2)
+INFO    Sim EPC-comp:  197625 kWh  (107.3 kWh/m2)
+INFO    Sim site:      204908 kWh  (111.2 kWh/m2)
+INFO    EPC energy:    102 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 1.05
+INFO  ============================================================
+INFO  START  Sandstenen_1_h3  (FormularId=1033797, Aftonbrisvägen 3B)
+INFO  ============================================================
+INFO  Loaded 8 footprint(s) from EPC database
+INFO  EPC 1033797: year=1964  Atemp=3960  floors=3  apts=36  EP=110 kWh/m²/yr
+INFO  EPC 1033797 energy: {'FjvUPPV': 226457, 'FjvVV': 99000, 'Fastighet': 35523, 'Summa2': 360980}
+INFO  EPC 1033797: detected ventilation system F (frånluft)
+INFO    depth=0.0m  perim_atemp=3840 m²  gross=3840 m²  epc_atemp=3960
+INFO  Simulation 'Sandstenen_1_h3': 3 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 8 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.019
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:39
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  1.71sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=302278 kWh, cooling=13325 kWh, DHW=74956 kWh, site=472939 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   302278 kWh  (78.7 kWh/m2)
+INFO    Sveby airing:  15358 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       74956 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 34442 kWh  (9.0 kWh/m2)
+INFO    Sim cooling:   13325 kWh  (3.5 kWh/m2)
+INFO    Sim EPC-comp:  440360 kWh  (114.7 kWh/m2)
+INFO    Sim site:      472939 kWh  (123.2 kWh/m2)
+INFO    EPC energy:    110 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 1.04
+INFO  ============================================================
+INFO  START  Skiffern_1_h1  (FormularId=1033795, Aftonbrisvägen 4A)
+INFO  ============================================================
+INFO  Loaded 6 footprint(s) from EPC database
+INFO  EPC 1033795: year=1964  Atemp=2732  floors=3  apts=27  EP=107 kWh/m²/yr
+INFO  EPC 1033795 energy: {'FjvUPPV': 146701, 'FjvVV': 68300, 'Fastighet': 27227, 'Summa2': 242228}
+INFO  EPC 1033795: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=2066 m²  gross=2634 m²  epc_atemp=2732
+INFO  Simulation 'Skiffern_1_h1': 3 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 4 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.024
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:39
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Warming up {9}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  3.29sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=134605 kWh, cooling=24148 kWh, DHW=40342 kWh, site=235600 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   134605 kWh  (65.1 kWh/m2)
+INFO    Sveby airing:  8266 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       40342 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 20594 kWh  (10.0 kWh/m2)
+INFO    Sim cooling:   24148 kWh  (11.7 kWh/m2)
+INFO    Sim EPC-comp:  227954 kWh  (110.3 kWh/m2)
+INFO    Sim site:      235600 kWh  (114.0 kWh/m2)
+INFO    EPC energy:    107 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 1.03
+INFO  ============================================================
+INFO  START  Skiffern_1_h2  (FormularId=1033794, Aftonbrisvägen 2A)
+INFO  ============================================================
+INFO  Loaded 6 footprint(s) from EPC database
+INFO  EPC 1033794: year=1964  Atemp=3001  floors=3  apts=27  EP=102 kWh/m²/yr
+INFO  EPC 1033794 energy: {'FjvUPPV': 150270, 'FjvVV': 75025, 'Fastighet': 29907, 'Summa2': 255202}
+INFO  EPC 1033794: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=2194 m²  gross=2798 m²  epc_atemp=3001
+INFO  Simulation 'Skiffern_1_h2': 3 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 4 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.023
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:39
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Warming up {9}
+Warming up {10}
+Warming up {11}
+Warming up {12}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  3.33sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=143529 kWh, cooling=20442 kWh, DHW=42831 kWh, site=246161 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   143529 kWh  (65.4 kWh/m2)
+INFO    Sveby airing:  8776 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       42831 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 21864 kWh  (10.0 kWh/m2)
+INFO    Sim cooling:   20442 kWh  (9.3 kWh/m2)
+INFO    Sim EPC-comp:  237443 kWh  (108.2 kWh/m2)
+INFO    Sim site:      246161 kWh  (112.2 kWh/m2)
+INFO    EPC energy:    102 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 1.06
+INFO  ============================================================
+INFO  START  Spiggen_1_h1  (FormularId=1033631, Tureborgsvägen 22)
+INFO  ============================================================
+INFO  Loaded 1 footprint(s) from EPC database
+INFO  EPC 1033631: year=1960  Atemp=4732  floors=14  apts=68  EP=123 kWh/m²/yr
+INFO  EPC 1033631 energy: {'FjvUPPV': 287237, 'FjvVV': 118300, 'Fastighet': 67779, 'Summa2': 473316}
+INFO  EPC 1033631: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=3841 m²  gross=4773 m²  epc_atemp=4732
+INFO  Simulation 'Spiggen_1_h1': 14 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 4 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.047
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:39
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Warming up {9}
+Warming up {10}
+Warming up {11}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min 19.06sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=248040 kWh, cooling=67880 kWh, DHW=74978 kWh, site=456256 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   248040 kWh  (64.6 kWh/m2)
+INFO    Sveby airing:  15363 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       74978 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 55012 kWh  (14.3 kWh/m2)
+INFO    Sim cooling:   67880 kWh  (17.7 kWh/m2)
+INFO    Sim EPC-comp:  461271 kWh  (120.1 kWh/m2)
+INFO    Sim site:      456256 kWh  (118.8 kWh/m2)
+INFO    EPC energy:    123 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 0.98
+INFO  ============================================================
+INFO  START  Trubaduren_3_h1  (FormularId=1076133, Serenadvägen 2)
+INFO  ============================================================
+INFO  Loaded 8 footprint(s) from EPC database
+INFO  EPC 1076133: year=1969  Atemp=1586  floors=3  apts=12  EP=183 kWh/m²/yr
+INFO  EPC 1076133 energy: {'FjvUPPV': 187938, 'FjvVV': 39650, 'Fastighet': 11902, 'Summa2': 239490}
+INFO  EPC 1076133: detected ventilation system F (frånluft)
+INFO    depth=4.9m  perim_atemp=1114 m²  gross=1335 m²  epc_atemp=1586
+INFO  Simulation 'Trubaduren_3_h1': 3 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 10 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.033
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:39
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Warming up {9}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  9.40sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=86602 kWh, cooling=12814 kWh, DHW=21740 kWh, site=142481 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   86602 kWh  (77.8 kWh/m2)
+INFO    Sveby airing:  4454 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       21740 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 8357 kWh  (7.5 kWh/m2)
+INFO    Sim cooling:   12814 kWh  (11.5 kWh/m2)
+INFO    Sim EPC-comp:  133968 kWh  (120.3 kWh/m2)
+INFO    Sim site:      142481 kWh  (127.9 kWh/m2)
+INFO    EPC energy:    183 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 0.66
+INFO  ============================================================
+INFO  START  Trubaduren_3_h2  (FormularId=1076135, Serenadvägen 6)
+INFO  ============================================================
+INFO  Loaded 8 footprint(s) from EPC database
+INFO  EPC 1076135: year=1969  Atemp=1679  floors=3  apts=12  EP=183 kWh/m²/yr
+INFO  EPC 1076135 energy: {'FjvUPPV': 198959, 'FjvVV': 41975, 'Fastighet': 12882, 'Summa2': 253816}
+INFO  EPC 1076135: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=1126 m²  gross=1392 m²  epc_atemp=1679
+INFO  Simulation 'Trubaduren_3_h2': 3 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 4 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.024
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:39
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  3.23sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=88865 kWh, cooling=9727 kWh, DHW=21983 kWh, site=142744 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   88865 kWh  (78.9 kWh/m2)
+INFO    Sveby airing:  4504 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       21983 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 8640 kWh  (7.7 kWh/m2)
+INFO    Sim cooling:   9727 kWh  (8.6 kWh/m2)
+INFO    Sim EPC-comp:  133720 kWh  (118.7 kWh/m2)
+INFO    Sim site:      142744 kWh  (126.8 kWh/m2)
+INFO    EPC energy:    183 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 0.65
+INFO  ============================================================
+INFO  START  Trubaduren_3_h3  (FormularId=1076129, Romansvägen 1)
+INFO  ============================================================
+INFO  Loaded 16 footprint(s) from EPC database
+INFO  EPC 1076129: year=1969  Atemp=3345  floors=3  apts=36  EP=181 kWh/m²/yr
+INFO  EPC 1076129 energy: {'FjvUPPV': 396377, 'FjvVV': 83625, 'Fastighet': 20826, 'Summa2': 500828}
+INFO  EPC 1076129: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=2244 m²  gross=2749 m²  epc_atemp=3345
+INFO  Simulation 'Trubaduren_3_h3': 3 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 6 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.026
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:39
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Warming up {9}
+Warming up {10}
+Warming up {11}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  5.27sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=170481 kWh, cooling=17706 kWh, DHW=43813 kWh, site=276056 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   170481 kWh  (76.0 kWh/m2)
+INFO    Sveby airing:  8977 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       43813 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 13973 kWh  (6.2 kWh/m2)
+INFO    Sim cooling:   17706 kWh  (7.9 kWh/m2)
+INFO    Sim EPC-comp:  254951 kWh  (113.6 kWh/m2)
+INFO    Sim site:      276056 kWh  (123.0 kWh/m2)
+INFO    EPC energy:    181 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 0.63
+INFO  ============================================================
+INFO  START  Trubaduren_3_h5  (FormularId=1076139, Romansvägen 4)
+INFO  ============================================================
+INFO  Loaded 8 footprint(s) from EPC database
+INFO  EPC 1076139: year=1969  Atemp=1157  floors=3  apts=12  EP=181 kWh/m²/yr
+INFO  EPC 1076139 energy: {'FjvUPPV': 137102, 'FjvVV': 28925, 'Fastighet': 7384, 'Summa2': 173411}
+INFO  EPC 1076139: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=1072 m²  gross=1324 m²  epc_atemp=1157
+INFO  Simulation 'Trubaduren_3_h5': 3 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 4 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.022
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:39
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  3.26sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=84890 kWh, cooling=11461 kWh, DHW=20919 kWh, site=138094 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   84890 kWh  (79.2 kWh/m2)
+INFO    Sveby airing:  4286 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       20919 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 6839 kWh  (6.4 kWh/m2)
+INFO    Sim cooling:   11461 kWh  (10.7 kWh/m2)
+INFO    Sim EPC-comp:  128395 kWh  (119.8 kWh/m2)
+INFO    Sim site:      138094 kWh  (128.9 kWh/m2)
+INFO    EPC energy:    181 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 0.66
+INFO  ============================================================
+INFO  START  Trubaduren_3_h6  (FormularId=1076138, Sångvägen 5)
+INFO  ============================================================
+INFO  Loaded 12 footprint(s) from EPC database
+INFO  EPC 1076138: year=1969  Atemp=1868  floors=3  apts=24  EP=179 kWh/m²/yr
+INFO  EPC 1076138 energy: {'FjvUPPV': 221355, 'FjvVV': 46700, 'Fastighet': 10072, 'Summa2': 278127}
+INFO  EPC 1076138: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=1685 m²  gross=2092 m²  epc_atemp=1868
+INFO  Simulation 'Trubaduren_3_h6': 3 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 4 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.023
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:39
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  3.30sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=128206 kWh, cooling=14664 kWh, DHW=32895 kWh, site=208661 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   128206 kWh  (76.1 kWh/m2)
+INFO    Sveby airing:  6740 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       32895 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 9085 kWh  (5.4 kWh/m2)
+INFO    Sim cooling:   14664 kWh  (8.7 kWh/m2)
+INFO    Sim EPC-comp:  191590 kWh  (113.7 kWh/m2)
+INFO    Sim site:      208661 kWh  (123.8 kWh/m2)
+INFO    EPC energy:    179 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 0.64
+INFO  ============================================================
+INFO  START  Trubaduren_3_h7  (FormularId=1076141, Romansvägen 10)
+INFO  ============================================================
+INFO  Loaded 8 footprint(s) from EPC database
+INFO  EPC 1076141: year=1969  Atemp=1157  floors=3  apts=12  EP=181 kWh/m²/yr
+INFO  EPC 1076141 energy: {'FjvUPPV': 137901, 'FjvVV': 28127, 'Fastighet': 7384, 'Summa2': 173412}
+INFO  EPC 1076141: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=1068 m²  gross=1318 m²  epc_atemp=1157
+INFO  Simulation 'Trubaduren_3_h7': 3 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 4 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.023
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:40
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  3.25sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=82281 kWh, cooling=14989 kWh, DHW=20844 kWh, site=138581 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   82281 kWh  (77.1 kWh/m2)
+INFO    Sveby airing:  4271 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       20844 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 6814 kWh  (6.4 kWh/m2)
+INFO    Sim cooling:   14989 kWh  (14.0 kWh/m2)
+INFO    Sim EPC-comp:  129199 kWh  (121.0 kWh/m2)
+INFO    Sim site:      138581 kWh  (129.8 kWh/m2)
+INFO    EPC energy:    181 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 0.67
+INFO  ============================================================
+INFO  START  Trubaduren_3_h10  (FormularId=1076140, Sångvägen 9)
+INFO  ============================================================
+INFO  Loaded 12 footprint(s) from EPC database
+INFO  EPC 1076140: year=1969  Atemp=1868  floors=3  apts=24  EP=179 kWh/m²/yr
+INFO  EPC 1076140 energy: {'FjvUPPV': 221355, 'FjvVV': 46700, 'Fastighet': 10072, 'Summa2': 278127}
+INFO  EPC 1076140: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=1669 m²  gross=2069 m²  epc_atemp=1868
+INFO  Simulation 'Trubaduren_3_h10': 3 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 4 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.023
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:40
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  3.25sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=129007 kWh, cooling=12745 kWh, DHW=32574 kWh, site=207203 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   129007 kWh  (77.3 kWh/m2)
+INFO    Sveby airing:  6674 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       32574 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 8997 kWh  (5.4 kWh/m2)
+INFO    Sim cooling:   12745 kWh  (7.6 kWh/m2)
+INFO    Sim EPC-comp:  189998 kWh  (113.9 kWh/m2)
+INFO    Sim site:      207203 kWh  (124.2 kWh/m2)
+INFO    EPC energy:    179 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 0.64
+INFO  ============================================================
+INFO  START  Trubaduren_3_h11  (FormularId=1076142, Sångvägen 15)
+INFO  ============================================================
+INFO  Loaded 8 footprint(s) from EPC database
+INFO  EPC 1076142: year=1969  Atemp=3915  floors=3  apts=42  EP=181 kWh/m²/yr
+INFO  EPC 1076142 energy: {'FjvUPPV': 466622, 'FjvVV': 95174, 'Fastighet': 24429, 'Summa2': 586225}
+INFO  EPC 1076142: detected ventilation system F (frånluft)
+INFO    depth=2.3m  perim_atemp=3043 m²  gross=3796 m²  epc_atemp=3915
+INFO  Simulation 'Trubaduren_3_h11': 3 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 8 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.030
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:40
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Warming up {9}
+Warming up {10}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  7.14sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=157921 kWh, cooling=56897 kWh, DHW=59397 kWh, site=317533 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   157921 kWh  (51.9 kWh/m2)
+INFO    Sveby airing:  12170 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       59397 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 18985 kWh  (6.2 kWh/m2)
+INFO    Sim cooling:   56897 kWh  (18.7 kWh/m2)
+INFO    Sim EPC-comp:  305370 kWh  (100.4 kWh/m2)
+INFO    Sim site:      317533 kWh  (104.4 kWh/m2)
+INFO    EPC energy:    181 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 0.55
+INFO  ============================================================
+INFO  START  Taljstenen_1_h1  (FormularId=1033807, Aftonbrisvägen 8B)
+INFO  ============================================================
+INFO  Loaded 6 footprint(s) from EPC database
+INFO  EPC 1033807: year=1964  Atemp=2727  floors=3  apts=27  EP=106 kWh/m²/yr
+INFO  EPC 1033807 energy: {'FjvUPPV': 140634, 'FjvVV': 68175, 'Fastighet': 29267, 'Summa2': 238076}
+INFO  EPC 1033807: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=2085 m²  gross=2638 m²  epc_atemp=2727
+INFO  Simulation 'Taljstenen_1_h1': 3 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 5 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.024
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:40
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Warming up {9}
+Warming up {10}
+Warming up {11}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  4.46sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=136544 kWh, cooling=21005 kWh, DHW=40703 kWh, site=235211 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   136544 kWh  (65.5 kWh/m2)
+INFO    Sveby airing:  8340 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       40703 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 22376 kWh  (10.7 kWh/m2)
+INFO    Sim cooling:   21005 kWh  (10.1 kWh/m2)
+INFO    Sim EPC-comp:  228968 kWh  (109.8 kWh/m2)
+INFO    Sim site:      235211 kWh  (112.8 kWh/m2)
+INFO    EPC energy:    106 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 1.04
+INFO  ============================================================
+INFO  START  Taljstenen_1_h2  (FormularId=1033805, Aftonbrisvägen 11A)
+INFO  ============================================================
+INFO  Loaded 10 footprint(s) from EPC database
+INFO  EPC 1033805: year=1964  Atemp=4548  floors=3  apts=45  EP=112 kWh/m²/yr
+INFO  EPC 1033805 energy: {'FjvUPPV': 256810, 'FjvVV': 113700, 'Fastighet': 48810, 'Summa2': 419320}
+INFO  EPC 1033805: detected ventilation system F (frånluft)
+INFO    depth=5.0m  perim_atemp=3375 m²  gross=4324 m²  epc_atemp=4548
+INFO  Simulation 'Taljstenen_1_h2': 3 floors, floor_height=2.7m, construction=CMF_1960, ventilation=F
+INFO  Footprint: 4 vertices, weather: SWE_VG_Ljungskile.025100_TMYx.2011-2025.epw
+ExpandObjects Started.
+ Begin reading Energy+.idd file.
+ Done reading Energy+.idd file.
+ExpandObjects Finished. Time:     0.024
+EnergyPlus Starting
+EnergyPlus, Version 24.2.0-94a887817b, YMD=2026.04.13 23:40
+Adjusting Air System Sizing
+Adjusting Standard 62.1 Ventilation Sizing
+Initializing Simulation
+Reporting Surfaces
+Beginning Primary Simulation
+Initializing New Environment Parameters
+Warming up {1}
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Warming up {2}
+Warming up {3}
+Warming up {4}
+Warming up {5}
+Warming up {6}
+Warming up {7}
+Warming up {8}
+Warming up {9}
+Starting Simulation at 01/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=01/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 01/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=03/02/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 03/02/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=04/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 04/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/01/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/01/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=05/31/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 05/31/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=06/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 06/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=07/30/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 07/30/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=08/29/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 08/29/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=09/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 09/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=10/28/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 10/28/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=11/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 11/27/2017 for CUSTOMRUNPERIOD
+Updating Shadowing Calculations, Start Date=12/27/2017
+Updating Beam-to-Diffuse Exterior Solar Reflection Factors
+Updating Beam-to-Beam Exterior Solar Reflection Factors
+Continuing Simulation at 12/27/2017 for CUSTOMRUNPERIOD
+Writing tabular output file results using comma format.
+Writing tabular output file results using HTML format.
+Writing final SQL reports
+EnergyPlus Run Time=00hr 00min  3.30sec
+EnergyPlus Completed Successfully.
+INFO  Results: heating=214178 kWh, cooling=49809 kWh, DHW=65888 kWh, site=388189 kWh
+INFO  === Results (Sveby 2.0) ===
+INFO    Sim heating:   214178 kWh  (63.5 kWh/m2)
+INFO    Sveby airing:  13500 kWh  (4.0 kWh/m2)
+INFO    Sim DHW:       65888 kWh  (19.5 kWh/m2)
+INFO    Bldg services: 36222 kWh  (10.7 kWh/m2)
+INFO    Sim cooling:   49809 kWh  (14.8 kWh/m2)
+INFO    Sim EPC-comp:  379597 kWh  (112.5 kWh/m2)
+INFO    Sim site:      388189 kWh  (115.0 kWh/m2)
+INFO    EPC energy:    112 kWh/m2/yr
+INFO    EPC-comparable ratio (sim/EPC): 1.00
+INFO  Wrote 35 results to results_cmf1960.csv
+INFO  ============================================================
+INFO  DONE   35 succeeded, 0 failed out of 35
