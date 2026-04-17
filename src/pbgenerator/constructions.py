@@ -179,13 +179,12 @@ CONSTRUCTION_SETS: dict[str, callable] = {}
 def _load_epsm_archetypes() -> None:
     """Auto-discover epsm_data archetypes and register them."""
     try:
+        import epsm_data
         from epsm_data import run_build_baseline
         from pathlib import Path
 
-        epsm_root = Path(__file__).resolve().parents[3] / "EPSM_data"
-        if not epsm_root.exists():
-            epsm_root = Path.home() / "GitHub" / "EPSM_data"
-
+        # Data files live in <epsm_data repo>/Data/ — find via the installed package
+        epsm_root = Path(epsm_data.__file__).resolve().parent.parent
         excel = epsm_root / "Data" / "Material_Database.xlsx"
         json_path = epsm_root / "Data" / "opaque_material.json"
 

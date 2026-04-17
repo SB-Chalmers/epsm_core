@@ -1,0 +1,31 @@
+FormularId,Fastighet,Husnr,Adress,Byggar,Atemp,EP,Eklass,Kategori,Archetype,Godkand,Vplan,Lgh,FJV_kWh,FastEl_kWh,FTX,F,Sjalvdrag
+875950,Cellon 3,4,Violinvägen 81,1966,1035,91,D,Flerbostadshus,CMF_1960,,2,10,,826,Nej,Nej,Ja
+875948,Violinen 1,2,Violinvägen 24,1966,1368,92,D,Flerbostadshus,CMF_1960,,2,8,,2499,Nej,Nej,Ja
+872633,Altfiolen 1,1,Pianovägen 46,1963,1015,112,E,Flerbostadshus,CMF_1960,,2,10,,999,Nej,Nej,Ja
+816192,Stören 3,3,Österled 13A,1961,1548,84,D,Flerbostadshus,CMF_1960,,3,18,,6236,Nej,Nej,Ja
+838082,Diabasen 1,1,Morgonbrisvägen 1C,1965,4707,94,D,Flerbostadshus,CMF_1960,,4,60,,3302,Nej,Nej,Ja
+838077,Porfyren 1,1,Morgonbrisvägen 2D,1965,4998,83,D,Flerbostadshus,CMF_1960,,4,51,,2942,Nej,Nej,Ja
+816211,Stören 5,2,Österled 1A,1962,1453,95,D,Flerbostadshus,CMF_1960,,3,24,,5853,Nej,Nej,Ja
+816154,Stören 6,3,Måltemyrsvägen 15,1963,697,80,C,Flerbostadshus,CMF_1960,,3,9,,2808,Nej,Nej,Ja
+1568177,Gullbrandsdalen 11,1,Erik Dahlbergsgatan 38,1970,581,121,E,Flerbostadshus,CMF_1960,,2,10,,2289,Nej,Nej,Ja
+1420179,Myrten 1,1,Fjällvägen 41,1968,673,102,E,Flerbostadshus,CMF_1960,,3,8,,1567,Nej,Nej,Ja
+972746,Hönseberget 2,1,Kämpegatan 57,1967,11138,122,E,Flerbostadshus,CMF_1960,,9,127,,43991,Nej,Ja,Nej
+972922,Hönseberget 1,1,Samnerödsvägen 6,1967,7626,118,E,Flerbostadshus,CMF_1960,,7,72,,39791,Nej,Ja,Nej
+972932,Hönseberget 3,2,Kämpegatan 45,1967,15357,121,E,Flerbostadshus,CMF_1960,,9,168,,75563,Nej,Ja,Nej
+1085885,Gnejsen 1,1,Östanvindsvägen 8,1964,3428,173,F,Flerbostadshus,CMF_1960,,8,40,,26908,Nej,Ja,Nej
+906571,Kören 2,2,Motettvägen 12,1969,1539,129,E,Flerbostadshus,CMF_1960,,3,12,,15379,Nej,Ja,Nej
+1085854,Fältspaten 3,3,Östanvindsvägen 7A,1967,1815,145,E,Flerbostadshus,CMF_1960,,3,18,,14247,Nej,Ja,Nej
+1076125,Trubaduren 2,7,Balladvägen 20,1970,1157,208,G,Flerbostadshus,CMF_1960,,3,12,,6912,Nej,Ja,Nej
+1076105,Trubaduren 1,4,Balladvägen 3,1970,2524,133,E,Flerbostadshus,CMF_1960,,3,24,,16341,Nej,Ja,Nej
+965878,Färöarna 1,3,Fritjof Nansens Väg 9,1966,2020,123,E,Flerbostadshus,CMF_1960,,6,29,,9445,Nej,Ja,Nej
+906556,Kören 1,2,Motettvägen 5,1969,1137,129,E,Flerbostadshus,CMF_1960,,3,12,,11362,Nej,Ja,Nej
+1033794,Skiffern 1,2,Aftonbrisvägen 2C,1964,3001,102,D,Flerbostadshus,CMF_1960,,3,27,,29907,Ja,Nej,Nej
+1033804,Marmorn 3,2,Östanvindsvägen 13C,1966,2178,156,F,Flerbostadshus,CMF_1960,,3,18,,26624,Ja,Nej,Nej
+1033799,Sandstenen 1,1,Aftonbrisvägen 9B,1964,1786,101,D,Flerbostadshus,CMF_1960,,4,20,,16021,Ja,Nej,Nej
+965888,Grönland 1,3,Fritjof Nansens Väg 24,1963,5601,139,E,Flerbostadshus,CMF_1960,,3,54,,53587,Ja,Nej,Nej
+1076133,Trubaduren 3,1,Serenadvägen 2,1969,1586,183,F,Flerbostadshus,CMF_1960,,3,12,,11902,Ja,Nej,Nej
+1033807,Täljstenen 1,1,Aftonbrisvägen 8B,1964,2727,106,D,Flerbostadshus,CMF_1960,,3,27,,29267,Ja,Nej,Nej
+1026471,Ljungs-Hälle 1:286,1,Parkvägen 11A,1968,1790,138,E,Flerbostadshus,CMF_1960,,3,21,,21186,Ja,Nej,Nej
+1033789,Koster 9,2,Sunnanvindsvägen 8B,1962,1177,172,E,Flerbostadshus,CMF_1960,,2,0,,46130,Ja,Nej,Nej
+1033810,Graniten 1,1,Östanvindsvägen 16B,1966,4248,90,D,Flerbostadshus,CMF_1960,,8,48,,41251,Ja,Nej,Nej
+1033802,Marmorn 1,1,Östanvindsvägen 19C,1966,4641,121,E,Flerbostadshus,CMF_1960,,3,41,,53824,Ja,Nej,Nej
