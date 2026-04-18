@@ -1,0 +1,8 @@
+lever,value,ep_sim,delta_ep
+baseline,BETSI defaults,84.1,0.0
+wall_mw,0.030,110.6,26.6
+roof_mw,0.050,92.0,7.9
+window_u,3.000,91.0,6.9
+infiltration_ach,1.000,151.7,67.7
+floor_eps,0.010,87.6,3.5
+ALL_EXTREMES,combined,198.5,114.4

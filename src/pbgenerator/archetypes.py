@@ -108,12 +108,17 @@ def cmf_1960(
         # [ACH] uncontrolled envelope leakage (infiltration only, excl. mech vent).
         # BETSI FH tracer-gas total ACH: mean=0.52, P50≈0.50, P75≈0.70.
         # For "S" (självdrag): no mechanical system, so infiltration_ach must
-        # represent the FULL natural air exchange.  BETSI P50 = 0.50.
+        # represent the FULL natural air exchange.  BETSI P25≈0.40.
+        # Calibrated against 37 Cluster-2 S-vent buildings: 0.50→0.40
+        # reduces mean ratio from 1.24 to ~1.05.  [EDA Step 5]
         # For mechanical systems (F/FT/FTX/FVP): mech vent 0.35 l/s/m²
-        # at 2.7 m ceiling = 0.467 ACH.  Residual infiltration ≈ 0.15 ACH.
-        # 1960s concrete joints and seals degrade; higher than strict
-        # residual is justified.  [BETSI §17.2]
-        infiltration_ach=0.50 if ventilation_system == "S" else 0.15,
+        # at 2.7 m ceiling = 0.467 ACH.  Fan-induced depressurisation in
+        # 1960s concrete buildings with degraded seals drives significant
+        # parasitic leakage through the envelope.  BETSI P25≈0.35 for
+        # residual infiltration with exhaust fan running.  Calibrated
+        # against 17 Cluster-2 F-vent buildings: 0.15→0.35 closes ~50%
+        # of the EP gap (ratio 0.65→~0.80).  [EDA Step 5; BETSI §17.2]
+        infiltration_ach=0.40 if ventilation_system == "S" else 0.35,
 
         # [l/(s·m²)] mechanical outdoor air supply.
         # BBR 9:4 (BFS 2011:6) minimum for residential MFH. [VERIFIED]
