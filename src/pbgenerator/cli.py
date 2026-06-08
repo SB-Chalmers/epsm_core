@@ -11,8 +11,9 @@ from .location import Location, WeatherSite
 def build_from_config(cfg, name: str) -> Building:
     """Construct a :class:`Building` aggregate from a loaded :class:`Config`."""
     weather = WeatherSite(epw_path=str(cfg.weather_file))
-    location = Location.hypothetical_site(cfg.footprint_pts, weather=weather)
-    return Building(name=name, params=cfg.building, location=location)
+    location = Location.hypothetical_site(weather=weather)
+    return Building(name=name, params=cfg.building,
+                    footprint_pts=cfg.footprint_pts, location=location)
 
 
 def main() -> None:

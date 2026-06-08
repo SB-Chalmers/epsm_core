@@ -15,11 +15,20 @@ A ``Building`` is the single object that owns everything about one building:
 
 Typical use::
 
-    b = Building(name="agir17", params=cmf_1960(4, "FTX"), location=loc)
+    b = Building(name="agir17", params=cmf_1960(4, "FTX"),
+                 footprint_pts=[[0, 0], [20, 0], [20, 12], [0, 12]],
+                 location=loc)
     b.build_model()        # populate honeybee_model + geometry
     b.simulate(...)        # run E+ and store results on the object
     b.simulate_pv()        # optional PVWatts V8 production
     print(b.results.site_eui)
+
+Geometry (``footprint_pts``) lives on the building itself, independent of
+``location`` (weather/site/provenance).  The same building can therefore be
+re-simulated under different weather by swapping its location, e.g.::
+
+    b.location = Location.hypothetical_site(city="Kiruna", weather=kiruna_epw)
+    b.simulate(...)        # same geometry, different climate
 """
 from __future__ import annotations
 
@@ -35,6 +44,8 @@ from .results import BuildingResults
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from honeybee.model import Model
     from .geometry import BuildingRooms
+    from .shapes import FootprintShape
+    from epsm_data import ConstructionSet
 
 
 @dataclass
@@ -43,19 +54,35 @@ class Building:
 
     name: str
     params: BuildingParams
+    footprint_pts: list[list[float]]
     location: Location
     pv: PVSystem | None = None
+
+    # Optional authoring provenance: how the footprint was parameterised
+    # (rectangle / L / U / O).  ``footprint_pts`` stays the source of truth.
+    shape: "FootprintShape | None" = None
 
     # Generated artifacts (populated by build_model / simulate).
     honeybee_model: "Model | None" = field(default=None, repr=False)
     rooms: "BuildingRooms | None" = field(default=None, repr=False)
     results: BuildingResults | None = None
 
+    def __post_init__(self) -> None:
+        # Normalise footprint vertices to plain [[x, y], ...] floats.
+        self.footprint_pts = [[float(c) for c in pt] for pt in self.footprint_pts]
+
     # -- geometry / area ---------------------------------------------------
 
     @property
-    def footprint_pts(self) -> list[list[float]]:
-        return self.location.footprint_pts
+    def footprint_area_m2(self) -> float:
+        """Footprint area in m² (shoelace formula)."""
+        pts = self.footprint_pts
+        n = len(pts)
+        a = 0.0
+        for i in range(n):
+            j = (i + 1) % n
+            a += pts[i][0] * pts[j][1] - pts[j][0] * pts[i][1]
+        return abs(a) / 2.0
 
     @property
     def heated_floor_area_m2(self) -> float | None:
@@ -66,6 +93,33 @@ class Building:
         if self.rooms is None:
             return None
         return self.rooms.perimeter_floor_area
+
+    # -- constructions / envelope -----------------------------------------
+
+    @property
+    def construction(self) -> "ConstructionSet":
+        """The building's envelope as the epsm_data :class:`ConstructionSet`.
+
+        Pure epsm_data domain objects — no honeybee leaks through.  Resolved
+        live from ``params.construction_set`` (the building stores only the
+        set *name*).  ``.elements`` maps each ``BuildingElement`` role to an
+        ``Element`` / ``WindowElement`` exposing ``.u_value`` (W/m²K, incl.
+        boundary air films), ``.r_total`` and ``.components`` →
+        ``Component.layers`` → ``Layer.materials``::
+
+            from epsm_data import BuildingElement
+            cs = b.construction
+            cs.elements[BuildingElement.EXT_WALL].u_value
+            cs.elements[BuildingElement.EXT_WALL].components[0].thickness
+            for slot in cs.elements[BuildingElement.EXT_WALL].components[0].layers:
+                slot.layer.materials  # material composition of each layer
+
+        Raises ``ValueError`` if the building's construction set has no
+        epsm_data archetype behind it.
+        """
+        from .constructions import get_epsm_construction_set
+
+        return get_epsm_construction_set(self.params.construction_set)
 
     # -- result navigation -------------------------------------------------
 
@@ -120,11 +174,16 @@ class Building:
         atemp_override: float | None = None,
         engine_options: dict | None = None,
         keep_hourly: bool = True,
+        include_pv: bool = True,
     ) -> BuildingResults:
         """Run the simulation and store :class:`BuildingResults` on this object.
 
         Parameters mirror :func:`pbgenerator.runner.run` but results are
         retained on ``self.results`` (and returned for convenience).
+
+        If a PV system is attached (``self.pv`` is set) and ``include_pv`` is
+        ``True`` (the default), rooftop PV is evaluated automatically and its
+        results are folded into ``self.results.pv``.
         """
         from .runner import simulate_building
 
@@ -139,6 +198,10 @@ class Building:
             keep_hourly=keep_hourly,
         )
         self.results = results
+
+        if include_pv and self.pv is not None:
+            self.simulate_pv(keep_hourly=keep_hourly)
+
         return results
 
     # -- PV ----------------------------------------------------------------
@@ -161,6 +224,48 @@ class Building:
         if self.results is not None:
             self.results.pv = pv_results
         return pv_results
+
+    # -- serialisation -----------------------------------------------------
+
+    def to_dict(self, *, include_results: bool = True,
+                include_timeseries: bool = False) -> dict:
+        """Plain, JSON-ready dict of this building (no honeybee objects).
+
+        ``include_results=False`` yields only the inputs that define the run
+        (identity, params, footprint, location, PV design).  See
+        :mod:`pbgenerator.serialize`.
+        """
+        from .serialize import building_to_dict
+
+        return building_to_dict(
+            self, include_results=include_results,
+            include_timeseries=include_timeseries,
+        )
+
+    def to_json(self, *, include_results: bool = True,
+                include_timeseries: bool = False, indent: int | None = None) -> str:
+        """This building as a JSON string."""
+        from .serialize import to_json
+
+        return to_json(
+            self.to_dict(include_results=include_results,
+                         include_timeseries=include_timeseries),
+            indent=indent,
+        )
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "Building":
+        """Rebuild a :class:`Building` from :meth:`to_dict` output."""
+        from .serialize import building_from_dict
+
+        return building_from_dict(data)
+
+    @classmethod
+    def from_json(cls, text: str) -> "Building":
+        """Rebuild a :class:`Building` from :meth:`to_json` output."""
+        from .serialize import from_json
+
+        return cls.from_dict(from_json(text))
 
 
 __all__ = ["Building"]

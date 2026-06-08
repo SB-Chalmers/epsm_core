@@ -78,8 +78,9 @@ class TestUnits(unittest.TestCase):
 class TestAggregateConstruction(unittest.TestCase):
     def _building(self) -> Building:
         weather = WeatherSite(epw_path="weather.epw", station_name="test")
-        loc = Location.hypothetical_site(_SQUARE, city="Testville", weather=weather)
-        return Building(name="demo", params=cmf_1960(4, "FTX"), location=loc)
+        loc = Location.hypothetical_site(city="Testville", weather=weather)
+        return Building(name="demo", params=cmf_1960(4, "FTX"),
+                        footprint_pts=_SQUARE, location=loc)
 
     def test_retains_params_location_weather(self):
         b = self._building()
@@ -93,7 +94,7 @@ class TestAggregateConstruction(unittest.TestCase):
 
     def test_footprint_area_shoelace(self):
         b = self._building()
-        self.assertAlmostEqual(b.location.footprint_area_m2, 240.0)
+        self.assertAlmostEqual(b.footprint_area_m2, 240.0)
 
     def test_build_model_populates_geometry(self):
         b = self._building()

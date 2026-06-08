@@ -11,12 +11,15 @@ from .constructions import (
     ConstructionSetDef,
     get_construction_set,
     make_construction_set,
+    make_construction_set_from_spec,
 )
 from .location import EPCSource, Location, WeatherSite
 from .pv import PVResults, PVSystem, evaluate_pv
 from .reporting import compare_building_to_epc
 from .results import BuildingResults
 from .series import FloorResults, Signal, ZoneCollection, ZoneResults
+from .shapes import FootprintShape
+from .store import SimStore, compute_run_id
 from .units import Quantity, TimeSeries
 
 __all__ = [
@@ -45,6 +48,7 @@ __all__ = [
     # parameter model
     "BuildingParams",
     "FacadeWWR",
+    "FootprintShape",
     # archetypes / levers
     "cmf_1960",
     "sample_wwr",
@@ -53,6 +57,7 @@ __all__ = [
     "ConstructionSetDef",
     "get_construction_set",
     "make_construction_set",
+    "make_construction_set_from_spec",
     "BETSI_TEMPLATES",
     "LEVER_BOUNDS",
     # cohort builders
@@ -61,4 +66,7 @@ __all__ = [
     "uddevalla_1960s",
     # batch deployment
     "deploy",
+    # campaign storage
+    "SimStore",
+    "compute_run_id",
 ]

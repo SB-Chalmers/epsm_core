@@ -21,6 +21,15 @@ log = logging.getLogger(__name__)
 # Range 2.5–3.5; 3.0 is a conservative central estimate (BETSI, VVS-forum).
 FVP_COP = 3.0
 
+# Forward-design FVP coverage: share of the simulated space-heat demand that an
+# exhaust-air heat pump can plausibly cover, used only when no *measured* FVP
+# electricity (PumpFranluftUPPV) is available. The exhaust stream at the BBR
+# minimum airflow (0.35 l/s·m²) carries on the order of 40 kWh/m²/yr of
+# recoverable sensible heat, i.e. roughly 0.3–0.45 of a 1960s block's heating
+# demand; 0.40 is a conservative central estimate. Applied to space heat only
+# (DHW is taken from the EPC or Sveby value elsewhere).
+_FVP_SPACEHEAT_COVERAGE = 0.40
+
 
 def _epc_heating_kwh(epc_energy: dict[str, int | None]) -> int:
     """Sum all EPC heating energy carriers (kWh, raw measured)."""
@@ -114,7 +123,7 @@ def log_epc_comparison(
     energi_prestanda : EPC energy performance (kWh/m²/yr).
     epc_energy : EPC energy breakdown from load_epc_energy().
         When provided, FjvVV and Fastighet are used directly.
-    ventilation_system : "S", "F", "FT", "FTX", or "FVP".
+    ventilation_system : "S", "F", "Fmed", "FT", "FTX", or "FVP".
     fgeo : Sveby geographic factor for airing add-on (default 1.0).
     """
     sim_heating = results["heating_kwh"]
@@ -146,24 +155,33 @@ def log_epc_comparison(
     # ── Heating: convert demand → delivered ─────────────────────────
     # FVP (frånluftvärmepump) is a *heating system*, not a ventilation type.
     # A building can have självdrag ventilation with a supplementary FVP.
-    # Check for FVP presence via epc_energy, not ventilation_system.
+    # Measured path: electricity from the EPC PumpFranluftUPPV column
+    # (property-wide, scaled to sim geometry). Forward-design path: when the
+    # building is configured as FVP but no measured electricity exists,
+    # estimate the exhaust-air HP contribution from simulated space heat.
     #   Heat output = COP × electricity
     #   Free heat   = (COP - 1) × electricity
     # The simulation gives the full demand (no FVP).  Delivered energy
     # = demand − free_heat.  The EPC counts HP_el as delivered,
     # so: delivered_heating = demand − (COP−1)×el.
     fvp_free_heat = 0.0
+    fvp_el_scaled = 0.0
     if fvp_el > 0:
+        # Measured FVP electricity (property-wide) → scale to sim geometry.
         fvp_free_heat = (FVP_COP - 1) * fvp_el
-        # Scale to sim geometry
         fvp_free_heat *= (sim_atemp / epc_atemp) if epc_atemp else 1.0
+        fvp_el_scaled = fvp_el * (sim_atemp / epc_atemp) if epc_atemp else float(fvp_el)
+    elif ventilation_system.upper() == "FVP":
+        # Forward design, no measured electricity: estimate the exhaust-air
+        # HP from simulated space-heat demand.  Already in sim geometry, so
+        # no EPC scaling is applied.
+        covered = _FVP_SPACEHEAT_COVERAGE * sim_heating
+        fvp_el_scaled = covered / FVP_COP
+        fvp_free_heat = covered - fvp_el_scaled   # = (COP − 1) × el
 
     sim_delivered_heating = max(0.0, sim_heating - fvp_free_heat)
 
     sveby_airing = 4.0 * fgeo * sim_atemp
-
-    # Include FVP electricity as delivered energy (it's purchased).
-    fvp_el_scaled = fvp_el * (sim_atemp / epc_atemp) if epc_atemp and fvp_el else 0.0
 
     # ── Totals ──────────────────────────────────────────────────────
     # EPC-comparable = delivered heating + airing + DHW + fastighetsel + FVP_el

@@ -36,6 +36,7 @@ _OUTPUT_VARIABLES = [
     "Zone Electric Equipment Total Heating Energy",
     "Zone Lights Total Heating Energy",
     "Water Use Equipment Heating Energy",
+    "Site Outdoor Air Drybulb Temperature",
 ]
 
 

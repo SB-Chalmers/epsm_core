@@ -22,7 +22,7 @@ class BuildingParams:
     apartment_depth: float
     t_heating: float
     t_cooling: float
-    ventilation_system: str             # "F", "FT", "FTX", or "FVP"
+    ventilation_system: str             # "S", "F", "Fmed", "FT", "FTX", or "FVP"
     infiltration_ach: float             # uncontrolled envelope leakage (ACH), BETSI empirical
     mech_vent_l_s_m2: float             # mechanical ventilation (l/s per m² floor)
     occupant_density: float

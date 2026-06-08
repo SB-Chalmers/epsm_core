@@ -38,9 +38,12 @@ import time
 import traceback
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
-from typing import Callable, Iterable
+from typing import TYPE_CHECKING, Callable, Iterable
 
 import pandas as pd
+
+if TYPE_CHECKING:  # pragma: no cover - typing only
+    from .store import SimStore
 
 log = logging.getLogger(__name__)
 
@@ -78,6 +81,7 @@ def deploy(
     failures_csv: str | Path | None = None,
     cleanup_fn: CleanupFn | None = None,
     log_every: int = 5,
+    store: "SimStore | None" = None,
 ) -> dict:
     """Run *simulate_fn* over *rows* in parallel and stream results to CSV.
 
@@ -108,6 +112,13 @@ def deploy(
         ``finally`` block (e.g. delete the E+ scratch directory).
     log_every:
         Emit a progress line every N completed rows.
+    store:
+        Optional :class:`~pbgenerator.store.SimStore`.  When set, each
+        successful result row is also persisted to the campaign DuckDB
+        (``store.upsert_run``).  The worker's ``simulate_fn`` is expected to
+        have already written that run's time-series partition (e.g. via
+        ``store.stage(building)``, which also returns the flat row to return
+        here).  CSV output and CSV-based resume still apply.
 
     Returns
     -------
@@ -185,10 +196,16 @@ def deploy(
                     fieldnames = list(result.keys())
                 write_header = not out_csv.exists()
                 with open(out_csv, "a", newline="") as f:
-                    w = csv.DictWriter(f, fieldnames=fieldnames)
+                    w = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
                     if write_header:
                         w.writeheader()
                     w.writerow(result)
+                if store is not None:
+                    try:
+                        store.upsert_run(result)
+                    except Exception:
+                        log.error("store.upsert_run failed for %s=%s",
+                                  primary_key, row.get(primary_key), exc_info=True)
             else:
                 failed.append({
                     primary_key: row.get(primary_key),

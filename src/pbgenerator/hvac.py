@@ -38,16 +38,19 @@ def _clamp(v: float, lo: float, hi: float) -> float:
 #
 # Dahlström parity (DAHLSTROM_PARITY=1): 0.75 (Dahlström 2025 §1.4 nameplate).
 #
-# Note: FVP (frånluftvärmepump) is a *heating system*, not a ventilation type.
-# Its COP benefit is handled in reporting.py as a delivered-energy correction.
+# Note: FVP (frånluftvärmepump) shares the F airflow pattern (no passive
+# airflow-side recovery); its COP-amplified exhaust-air heat recovery is
+# applied as a delivered-energy correction in reporting.py, not here.
 _DAHLSTROM_PARITY: bool = bool(int(os.environ.get("DAHLSTROM_PARITY", "0")))
 _FTX_RECOVERY: float = 0.75 if _DAHLSTROM_PARITY else 0.65
 
 _VENT_RECOVERY: dict[str, tuple[float, float]] = {
-    "S":   (0.0,          0.0),
-    "F":   (0.0,          0.0),
-    "FT":  (0.0,          0.0),
-    "FTX": (_FTX_RECOVERY, 0.0),
+    "S":    (0.0,          0.0),
+    "F":    (0.0,          0.0),
+    "FMED": (0.0,          0.0),   # F with passive supply openings; no HX
+    "FT":   (0.0,          0.0),
+    "FTX":  (_FTX_RECOVERY, 0.0),
+    "FVP":  (0.0,          0.0),   # exhaust-air HP; recovery handled in reporting
 }
 
 

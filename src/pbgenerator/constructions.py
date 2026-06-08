@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from honeybee.boundarycondition import Ground, Outdoors, Surface as SurfaceBC
 from honeybee.room import Room
@@ -11,6 +12,9 @@ from honeybee_energy.material.opaque import EnergyMaterial, EnergyMaterialNoMass
 from honeybee_energy.material.glazing import EnergyWindowMaterialSimpleGlazSys
 
 from .building_params import BuildingParams
+
+if TYPE_CHECKING:  # pragma: no cover - typing only
+    from epsm_data import BuildingArchetype, ConstructionSet
 
 logger = logging.getLogger(__name__)
 
@@ -175,6 +179,12 @@ def _win(name: str, u: float, shgc: float, vt: float = 0.4) -> WindowConstructio
 
 CONSTRUCTION_SETS: dict[str, callable] = {}
 
+# Parallel registry of the epsm_data archetype behind each construction set.
+# This lets pbgenerator expose the epsm_data domain API (ConstructionSet →
+# Element → Component → Layer) for introspection, keeping honeybee internal to
+# the simulation path only.
+EPSM_ARCHETYPES: dict[str, "BuildingArchetype"] = {}
+
 
 def _load_epsm_archetypes() -> None:
     """Auto-discover epsm_data archetypes and register them."""
@@ -198,6 +208,7 @@ def _load_epsm_archetypes() -> None:
             if aid not in CONSTRUCTION_SETS:
                 # Bind arch in closure to avoid late-binding issues
                 CONSTRUCTION_SETS[aid] = (lambda a: lambda: ConstructionSetDef.from_epsm_archetype(a))(arch)
+                EPSM_ARCHETYPES[aid] = arch
                 logger.info("Registered epsm_data archetype: %s", aid)
 
     except ImportError:
@@ -219,6 +230,24 @@ def get_construction_set(name: str) -> ConstructionSetDef:
             f"Unknown construction set '{name}'. Available: {available}"
         )
     return factory()
+
+
+def get_epsm_construction_set(name: str) -> "ConstructionSet":
+    """Return the epsm_data :class:`ConstructionSet` behind *name*.
+
+    This is the epsm_data-native, honeybee-free view of an envelope:
+    ``.elements`` is a dict keyed by ``BuildingElement`` whose values are
+    ``Element`` / ``WindowElement`` objects (``.u_value``, ``.components``,
+    …).  Raises ValueError if *name* has no epsm_data archetype behind it.
+    """
+    arch = EPSM_ARCHETYPES.get(name)
+    if arch is None:
+        available = ", ".join(sorted(EPSM_ARCHETYPES))
+        raise ValueError(
+            f"No epsm_data archetype registered for '{name}'. Available: {available}"
+        )
+    return arch.construction_set
+
 
 
 # ---------------------------------------------------------------------------
@@ -471,6 +500,48 @@ def make_construction_set(
     cset = ConstructionSetDef.from_epsm_archetype(arch)
     aid = spec["archetype_id"]
     CONSTRUCTION_SETS[aid] = (lambda cs: lambda: cs)(cset)
+    EPSM_ARCHETYPES[aid] = arch
+    return aid
+
+
+def make_construction_set_from_spec(
+    spec: dict,
+    *,
+    skip_api: bool = True,
+    register: bool = True,
+) -> str:
+    """Build, register, and return the id of a construction set from a full spec.
+
+    Unlike :func:`make_construction_set` — which is locked to the CMF-1960
+    envelope geometry and four levers — this accepts a complete epsm_data
+    archetype spec, so every element and layer is customisable while still
+    flowing through epsm_data's material registry and provenance (Boverket
+    material ids, validation).  The returned ``spec["archetype_id"]`` is ready
+    to pass to ``BuildingParams(construction_set=...)``.
+
+    See ``epsm_data.build_archetype_from_spec`` for the spec schema.  Required
+    element roles: ``ROOF``, ``TOP_FLOOR``, ``INTERMEDIATE_FLOOR``,
+    ``GROUND_FLOOR``, ``BASEMENT_FLOOR``, ``BASEMENT_WALL``, ``EXT_WALL``,
+    ``WINDOW``.
+
+    Parameters
+    ----------
+    spec:
+        Full archetype recipe (see schema above).
+    skip_api:
+        If *True* (default), skip the Boverket embodied-carbon API and resolve
+        thermal properties only — no network call.  Set *False* for full LCA.
+    register:
+        If *True* (default), register the set so ``BuildingParams`` can look it
+        up by id.  Set *False* to only build and return the id.
+    """
+    from epsm_data import build_archetype_from_spec
+    arch = build_archetype_from_spec(spec, _opaque_json_path(), skip_api=skip_api)
+    cset = ConstructionSetDef.from_epsm_archetype(arch)
+    aid = spec["archetype_id"]
+    if register:
+        CONSTRUCTION_SETS[aid] = (lambda cs: lambda: cs)(cset)
+        EPSM_ARCHETYPES[aid] = arch
     return aid
 
 

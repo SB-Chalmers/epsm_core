@@ -54,10 +54,13 @@ class EPCSource:
 class Location:
     """Where a building sits, plus its weather and (optional) EPC provenance.
 
+    This is a pure *site* descriptor: it carries no building geometry.  The
+    footprint polygon is a property of the :class:`~pbgenerator.building.Building`
+    itself, so the same building can be re-simulated at different locations
+    (e.g. to compare climates) without duplicating its geometry.
+
     Parameters
     ----------
-    footprint_pts:
-        Polygon vertices ``[[x, y], ...]`` in EPSG:3006 (SWEREF99 TM) metres.
     centroid_lat / centroid_lon:
         WGS-84 centroid coordinates, when known.
     city:
@@ -70,24 +73,12 @@ class Location:
         Optional :class:`EPCSource` provenance for real buildings.
     """
 
-    footprint_pts: list[list[float]]
     centroid_lat: float | None = None
     centroid_lon: float | None = None
     city: str = ""
     hypothetical: bool = False
     weather: WeatherSite | None = None
     epc: EPCSource | None = None
-
-    @property
-    def footprint_area_m2(self) -> float:
-        """Footprint area in m² (shoelace formula)."""
-        pts = self.footprint_pts
-        n = len(pts)
-        a = 0.0
-        for i in range(n):
-            j = (i + 1) % n
-            a += pts[i][0] * pts[j][1] - pts[j][0] * pts[i][1]
-        return abs(a) / 2.0
 
     @property
     def epw_path(self) -> Path | None:
@@ -98,7 +89,6 @@ class Location:
     @classmethod
     def hypothetical_site(
         cls,
-        footprint_pts: list[list[float]],
         *,
         city: str = "",
         centroid_lat: float | None = None,
@@ -107,7 +97,6 @@ class Location:
     ) -> "Location":
         """Build a :class:`Location` for a synthetic/what-if building."""
         return cls(
-            footprint_pts=[[float(c) for c in pt] for pt in footprint_pts],
             centroid_lat=centroid_lat,
             centroid_lon=centroid_lon,
             city=city,
@@ -118,7 +107,11 @@ class Location:
 
     @classmethod
     def from_footprint_record(cls, record, weather: WeatherSite | None = None) -> "Location":
-        """Build a :class:`Location` from an :class:`epc_io.FootprintRecord`."""
+        """Build a :class:`Location` from an :class:`epc_io.FootprintRecord`.
+
+        Note: the record's ``footprint_pts`` geometry is *not* stored here — it
+        belongs on the :class:`~pbgenerator.building.Building`.
+        """
         epc = EPCSource(
             objektidentitet=getattr(record, "objektidentitet", None),
             formular_id=getattr(record, "formular_id", None),
@@ -131,7 +124,6 @@ class Location:
             fastighet_kwh=getattr(record, "fastighet_kwh", None),
         )
         return cls(
-            footprint_pts=[[float(c) for c in pt] for pt in record.footprint_pts],
             centroid_lat=getattr(record, "centroid_lat", None),
             centroid_lon=getattr(record, "centroid_lon", None),
             city=getattr(record, "kommun", "") or "",

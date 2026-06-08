@@ -33,12 +33,17 @@ _J_TO_KWH = 1.0 / 3.6e6
 #   "mean" -> intensive quantities (temperatures) are averaged
 _VARMAP: dict[str, tuple[str, str]] = {
     "air_temperature": ("Zone Mean Air Temperature", "mean"),
+    "outdoor_air_temperature": ("Site Outdoor Air Drybulb Temperature", "mean"),
     "heating_load": ("Zone Ideal Loads Zone Total Heating Energy", "sum"),
     "cooling_load": ("Zone Ideal Loads Zone Total Cooling Energy", "sum"),
     "lighting": ("Zone Lights Total Heating Energy", "sum"),
     "equipment": ("Zone Electric Equipment Total Heating Energy", "sum"),
     "occupancy_heat": ("Zone People Total Heating Energy", "sum"),
-    "solar_gains": ("Zone Windows Total Transmitted Solar Radiation Energy", "sum"),
+    # EnergyPlus 24.x reports transmitted window solar under "Enclosure ..."
+    # even though the IDF requests it as "Zone Windows ...".
+    "solar_gains": ("Enclosure Windows Total Transmitted Solar Radiation Energy", "sum"),
+    "infiltration_loss": ("Zone Infiltration Total Heat Loss Energy", "sum"),
+    "infiltration_gain": ("Zone Infiltration Total Heat Gain Energy", "sum"),
     "dhw_energy": ("Water Use Equipment Heating Energy", "sum"),
 }
 
@@ -140,6 +145,10 @@ class _SignalHost:
         return self._signal("air_temperature")
 
     @property
+    def outdoor_air_temperature(self) -> Signal | None:
+        return self._signal("outdoor_air_temperature")
+
+    @property
     def heating_load(self) -> Signal | None:
         return self._signal("heating_load")
 
@@ -162,6 +171,14 @@ class _SignalHost:
     @property
     def solar_gains(self) -> Signal | None:
         return self._signal("solar_gains")
+
+    @property
+    def infiltration_loss(self) -> Signal | None:
+        return self._signal("infiltration_loss")
+
+    @property
+    def infiltration_gain(self) -> Signal | None:
+        return self._signal("infiltration_gain")
 
     @property
     def dhw_energy(self) -> Signal | None:
