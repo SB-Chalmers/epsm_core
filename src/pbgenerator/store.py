@@ -426,6 +426,59 @@ class SimStore:
             row.update(extra)
         return row
 
+    # -- export / packaging -----------------------------------------------
+
+    def package(self, dest: "str | Path | None" = None) -> Path:
+        """Bundle the whole campaign into a single shareable DuckDB file.
+
+        Creates *dest* (default: ``<root.parent>/<root.name>.duckdb``) with
+        two tables:
+
+        * ``runs`` — one row per simulation (all scalar inputs + outputs).
+        * ``timeseries`` — long-format time series with a ``run_id`` column
+          (parsed from the Hive-partitioned directory names).
+
+        The resulting file is self-contained: hand it to collaborators and they
+        can query everything with plain ``duckdb`` — no pbgenerator install
+        needed.
+
+        Returns the path to the produced file.
+        """
+        import duckdb
+
+        if dest is None:
+            dest = self.root.parent / f"{self.root.name}.duckdb"
+        dest = Path(dest)
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        if dest.exists():
+            dest.unlink()
+
+        ts_glob = str(self.ts_dir.resolve() / "**" / "*.parquet")
+
+        con = duckdb.connect(str(dest))
+        try:
+            con.execute(f"ATTACH '{self.runs_db.resolve()}' AS src (READ_ONLY)")
+            con.execute(f"CREATE TABLE runs AS SELECT * FROM src.{_RUNS_TABLE}")
+            con.execute("DETACH src")
+            con.execute(f"""
+                CREATE TABLE timeseries AS
+                SELECT run_id, variable, key, unit, timestep, t, value
+                FROM read_parquet('{ts_glob}', hive_partitioning = true)
+            """)
+            n_runs = con.execute("SELECT COUNT(*) FROM runs").fetchone()[0]
+            n_ts = con.execute(
+                "SELECT COUNT(DISTINCT run_id) FROM timeseries"
+            ).fetchone()[0]
+            size_mb = dest.stat().st_size / 1e6
+            log.info(
+                "Packaged %d runs, %d time-series partitions → %s (%.0f MB)",
+                n_runs, n_ts, dest, size_mb,
+            )
+        finally:
+            con.close()
+
+        return dest
+
 
 def _duckdb_type(dtype) -> str:
     """Map a pandas dtype to a DuckDB column type for ALTER TABLE ADD COLUMN."""
