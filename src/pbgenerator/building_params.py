@@ -41,6 +41,15 @@ class BuildingParams:
     thermal_bridge_fraction: float = 0.0   # fractional UA increase for thermal bridges (e.g. 0.20 = +20%)
     dhw_vvc_kwh_m2: float = 0.0            # DHW circulation (VVC) pipe losses (kWh/m²/yr)
     solar_shading_factor: float = 1.0      # Sveby solar shading multiplier on SHGC (0.5 = curtains+fixed)
+    vent_recovery_eff: float | None = None  # If set, overrides _VENT_RECOVERY[vent_sys] sensible HRV
+                                            # (used as calibration lever; represents installed HRV,
+                                            # FVP retrofit, or under-ventilation in F/S systems)
+    core_setpoint_C: float | None = None    # If set (and a core zone exists from
+                                            # apartment_depth > 0), the core is heated
+                                            # to this setpoint instead of being left
+                                            # unconditioned.  Models semi-heated
+                                            # stair/corridor shafts (~18 °C typical
+                                            # for 1960s Swedish lamellhus).
 
 
 @dataclass(frozen=True)

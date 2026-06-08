@@ -222,6 +222,259 @@ def get_construction_set(name: str) -> ConstructionSetDef:
 
 
 # ---------------------------------------------------------------------------
+# Parametric construction sets — calibration / sensitivity workflows
+# ---------------------------------------------------------------------------
+#
+# CMF_1960_SYN envelope geometry, layer thicknesses fixed except for the four
+# tunable levers (insulation thicknesses + window U).  Mirrors the spec used
+# in the EDA calibration pipeline (step_4_calibrate_v2.py) so calibration
+# results transfer 1:1.  Templates differ only by metadata (typology / year)
+# and intended morphology — the actual construction physics is identical.
+
+_MAT = {
+    "concrete":   ("4 in. Normalweight Concrete Wall",  "6000000026"),
+    "conc_floor": ("100mm Normalweight concrete floor", "6000000026"),
+    "conc_roof":  ("6 in. Heavyweight Concrete Roof",   "6000000026"),
+    "conc_bsmt":  ("8 in. Concrete Block Basement Wall","6000000026"),
+    "mw_old":     ("Mineral Wool Old (created)",        "6000000123"),
+    "gypsum":     ("G01 13mm gypsum board",             "6000000020"),
+    "plaster":    ("25mm Stucco",                       "6000000020"),
+    "eps":        ("I02 50mm insulation board",         "6000000131"),
+    "roof_felt":  ("Built-up Roofing",                  "6000000132"),
+    "lw_concrete":("M11 100mm lightweight concrete",   "0"),
+    "dry_sand":   ("Dry Sand",                         "0"),
+}
+
+# BETSI period defaults for 1960s concrete MFH (from EDA step_14 / step_4_v2).
+# Each entry pairs a construction-spec template with central-tendency lever
+# values; intra-era subtypes (slab/tower/point) carry distinct construction
+# physics in two ways:
+#   * `attic`: cold attic (kallvind, lamellhus) places the MW lever on the
+#     TOP_FLOOR slab and leaves the ROOF as a weather shell (felt + thin
+#     concrete, no MW). Compact flat roofs (skivhus / punkthus) have no
+#     attic — TOP_FLOOR is omitted from the envelope and the MW lever is
+#     placed directly in the ROOF assembly between the deck and the
+#     bitumen membrane. This avoids the previous bug of stacking the MW
+#     layer on both the TOP_FLOOR and the ROOF, which double-counted
+#     insulation through the top-zone heat path.
+#   * Layer thicknesses (wall_mw, roof_mw, floor_eps, window_u) are the
+#     central-tendency lever values from BETSI medians per BuildingType.
+BETSI_TEMPLATES = {
+    "BETSI_CONC_SLAB": {
+        "construction_year": 1968,
+        "attic": True,   # lamellhus: cold attic, MW on TOP_FLOOR
+        "defaults": {
+            "wall_mw": 0.140, "roof_mw": 0.270,
+            "floor_eps": 0.097, "window_u": 2.00,
+            "thermal_bridge_frac": 0.25, "heating_sys_eff": 1.00,
+        },
+    },
+    "BETSI_CONC_TOWER": {
+        "construction_year": 1970,
+        "attic": False,  # skivhus: compact flat roof, MW in ROOF
+        "defaults": {
+            "wall_mw": 0.180, "roof_mw": 0.290,
+            "floor_eps": 0.122, "window_u": 1.90,
+            "thermal_bridge_frac": 0.25, "heating_sys_eff": 1.00,
+        },
+    },
+    "BETSI_CONC_POINT": {
+        "construction_year": 1969,
+        "attic": False,  # punkthus: compact flat roof, MW in ROOF
+        "defaults": {
+            "wall_mw": 0.160, "roof_mw": 0.280,
+            "floor_eps": 0.110, "window_u": 1.95,
+            "thermal_bridge_frac": 0.25, "heating_sys_eff": 1.00,
+        },
+    },
+}
+
+LEVER_BOUNDS = {
+    "wall_mw":             (0.025, 0.220),
+    "roof_mw":             (0.030, 0.400),
+    "window_u":            (1.50,  2.60),
+    "floor_eps":           (0.010, 0.130),
+    "infiltration_ach":    (0.15,  1.00),
+    "thermal_bridge_frac": (0.10,  0.50),
+    "heating_sys_eff":     (0.80,  1.00),
+    # Demand-side levers (Sprint 1 additions, 2026-05-21)
+    "t_heating":           (19.5,  21.0),   # measured Swedish MFH median ~20.3 °C
+    "vent_recovery_eff":   (0.00,  0.80),   # effective sensible HRV (any cause)
+}
+
+
+def _layer(mat_key: str, thickness: float) -> dict:
+    hb, bov = _MAT[mat_key]
+    return {"honeybee_id": hb, "boverket_id": bov, "thickness": thickness}
+
+
+def _build_spec(
+    spec_id: str,
+    construction_year: int,
+    wall_mw: float,
+    roof_mw: float,
+    floor_eps: float,
+    window_u: float,
+    attic: bool = True,
+) -> dict:
+    """Build an EPSM construction spec for the CMF_1960_SYN envelope geometry.
+
+    Parameters
+    ----------
+    attic:
+        If True (lamellhus / cold-attic typology), the MW lever sits on the
+        TOP_FLOOR slab and the ROOF is a weather shell (felt + thin concrete,
+        no MW). If False (skivhus / punkthus compact flat roof), TOP_FLOOR is
+        omitted from the envelope and the MW lever sits in the ROOF assembly
+        between the heavyweight-concrete deck and the bitumen membrane.
+    """
+    elements: dict = {
+        # CMF_1960_SYN wall: precast concrete sandwich panel.
+        #   outer wythe (80mm normalweight concrete)
+        # | MW cavity (lever)
+        # | inner bearing wythe (150mm normalweight concrete)
+        # | gypsum.
+        # Wythes are normalweight reinforced concrete (~2300 kg/m³); the
+        # 1960s prefab miljonprogram panels were structural concrete, not
+        # the aerated lättbetong (M11) the spec carried previously.
+        "EXT_WALL": {"components": [{"shearing_layer": "Skin", "layers": [
+            _layer("concrete", 0.080),
+            _layer("mw_old", wall_mw),
+            _layer("concrete", 0.150),
+            _layer("gypsum", 0.013),
+        ]}]},
+        # CMF_1960_SYN ground floor: slab on sand.
+        #   structural slab (160mm) | EPS (lever) | sand (50mm) | screed (50mm)
+        # Floor finish (linoleum / plastmatta / parquet, ~3 mm) is omitted:
+        # too thin to matter thermally and not in the materials registry.
+        "GROUND_FLOOR": {"components": [{"shearing_layer": "Structure", "layers": [
+            _layer("conc_floor", 0.160),
+            _layer("eps", floor_eps),
+            _layer("dry_sand", 0.050),
+            _layer("conc_floor", 0.050),
+        ]}]},
+        "INTERMEDIATE_FLOOR": {"components": [{"shearing_layer": "Structure",
+            "layers": [_layer("conc_floor", 0.200)]}]},
+        "BASEMENT_FLOOR": {"components": [{"shearing_layer": "Structure", "layers": [
+            _layer("eps", 0.050),
+            _layer("conc_floor", 0.150),
+        ]}]},
+        "BASEMENT_WALL": {"components": [{"shearing_layer": "Structure", "layers": [
+            _layer("conc_bsmt", 0.200),
+            _layer("mw_old", 0.085),
+        ]}]},
+        "WINDOW": {"u_value": window_u, "shgc": 0.70, "vt": 0.65},
+    }
+    if attic:
+        # Cold attic (kallvind): MW on the inhabited-side ceiling slab,
+        # ROOF above the unheated attic is just felt + concrete deck.
+        elements["ROOF"] = {"components": [{"shearing_layer": "Skin", "layers": [
+            _layer("roof_felt", 0.006),
+            _layer("conc_roof", 0.150),
+        ]}]}
+        elements["TOP_FLOOR"] = {"components": [{"shearing_layer": "Structure", "layers": [
+            _layer("conc_floor", 0.150),
+            _layer("mw_old", roof_mw),
+        ]}]}
+    else:
+        # Compact flat roof (skivhus / punkthus): no attic, MW sits inside
+        # the roof assembly between the deck and the membrane. TOP_FLOOR
+        # is kept as a bare 200 mm concrete interzone slab so the spec
+        # validates and any geometry that assigns it to an interior
+        # ceiling-floor surface gets a benign uninsulated construction;
+        # the runner's lumped U-value reporting picks the lower-U of the
+        # two so the envelope U is reported correctly.
+        elements["ROOF"] = {"components": [{"shearing_layer": "Skin", "layers": [
+            _layer("roof_felt", 0.006),
+            _layer("mw_old", roof_mw),
+            _layer("conc_roof", 0.150),
+        ]}]}
+        elements["TOP_FLOOR"] = {"components": [{"shearing_layer": "Structure",
+            "layers": [_layer("conc_floor", 0.200)]}]}
+    return {
+        "archetype_id": spec_id,
+        "display_name": f"Parametric ({spec_id})",
+        "construction_year": construction_year,
+        "building_typology": "multi_family",
+        "elements": elements,
+    }
+
+
+def _opaque_json_path():
+    """Locate epsm_data's opaque_material.json (case-insensitive Data/ dir)."""
+    import epsm_data
+    from pathlib import Path
+    root = Path(epsm_data.__file__).resolve().parent.parent
+    for sub in ("Data", "data"):
+        p = root / sub / "opaque_material.json"
+        if p.exists():
+            return p
+    raise FileNotFoundError("opaque_material.json not found in epsm_data package")
+
+
+_spec_counter: int = 0
+
+
+def _next_spec_id(prefix: str = "PBG") -> str:
+    global _spec_counter
+    _spec_counter += 1
+    return f"{prefix}_{_spec_counter:05d}"
+
+
+def make_construction_set(
+    template: str = "BETSI_CONC_SLAB",
+    *,
+    wall_mw: float | None = None,
+    roof_mw: float | None = None,
+    floor_eps: float | None = None,
+    window_u: float | None = None,
+    spec_id: str | None = None,
+) -> str:
+    """Build, register, and return the id of a parametric construction set.
+
+    Lever values default to the BETSI period-typical centres for *template*
+    (see ``BETSI_TEMPLATES``).  Pass any subset to override.  The returned
+    id is stable for the lifetime of the process and ready for
+    ``BuildingParams(construction_set=id, ...)``.
+
+    Parameters
+    ----------
+    template:
+        One of the keys in :data:`BETSI_TEMPLATES`. Determines metadata
+        (construction-year, intended morphology) and provides default
+        lever values for any unspecified parameter.
+    wall_mw, roof_mw, floor_eps, window_u:
+        Envelope levers (m, m, m, W/m²K).  Falls back to template defaults.
+    spec_id:
+        Optional explicit id.  If omitted, an auto-incrementing id of the
+        form ``PBG_00001`` is generated.
+    """
+    if template not in BETSI_TEMPLATES:
+        raise ValueError(
+            f"Unknown template '{template}'. "
+            f"Available: {sorted(BETSI_TEMPLATES)}"
+        )
+    tmpl = BETSI_TEMPLATES[template]
+    d = tmpl["defaults"]
+    spec = _build_spec(
+        spec_id=spec_id or _next_spec_id(),
+        construction_year=tmpl["construction_year"],
+        wall_mw=wall_mw if wall_mw is not None else d["wall_mw"],
+        roof_mw=roof_mw if roof_mw is not None else d["roof_mw"],
+        floor_eps=floor_eps if floor_eps is not None else d["floor_eps"],
+        window_u=window_u if window_u is not None else d["window_u"],
+        attic=tmpl.get("attic", True),
+    )
+
+    from epsm_data import build_archetype_from_spec
+    arch = build_archetype_from_spec(spec, _opaque_json_path(), skip_api=True)
+    cset = ConstructionSetDef.from_epsm_archetype(arch)
+    aid = spec["archetype_id"]
+    CONSTRUCTION_SETS[aid] = (lambda cs: lambda: cs)(cset)
+    return aid
+
+
+# ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
 

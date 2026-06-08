@@ -1,5 +1,0 @@
-FormularId,Fastighet,Husnr,Adress,Byggar,Atemp_epc,Atemp_sim,Apt_depth,Floors,Num_footprints,Ventilation,Res_pct,Garage_pct,EP_epc,Heating_kwh_m2,Cooling_kwh_m2,DHW_kwh_m2,EP_sim,EPC_ratio
-838082,Diabasen 1,1,Morgonbrisvägen 1A,1965,4707,5428.6,5.0,4,1,S,100,0.0,94,56.6,0.0,22.2,74.9,0.8
-816191,Stören 7,1,Österled 15A,1959,3707,4804.3,4.7,3,1,S,100,0.0,80,60.9,0.0,14.6,83.4,1.04
-816169,Stören 6,1,Måltemyrsvägen 11A,1959,3032,3149.6,4.9,3,1,S,100,0.0,80,63.2,0.0,17.2,85.7,1.07
-1033661,Ägir 17,1,Fjällvägen 28A,1958,5709,5077.6,0.0,4,1,S,98,1.7,110,61.6,0.0,15.3,89.7,0.82

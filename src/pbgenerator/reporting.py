@@ -251,6 +251,40 @@ def log_epc_comparison(
             log.info("  Ratio (sim/raw):   %.2f  (vs %.1f kWh/m2 un-corrected)",
                      ratio_raw, raw_ep)
 
+    # ── Dahlström-comparable indicator (§3 parity) ──────────────────
+    # Dahlström 2025 compares heating + DHW only — no fastighetsel, no
+    # sveby airing add-on.  This is an *additional* indicator; the
+    # primary EPC ratio above (which includes fastighetsel + airing) is
+    # unchanged and remains the Swedish BEN-compliant comparison.
+    #
+    # EP_sim_htg_dhw  = (delivered_heating + FVP_el + DHW) / sim_Atemp
+    # EP_epc_htg_dhw  = EgiEnergiPrestanda − fastighetsel/Atemp
+    #                   (subtracts the fastighetsel portion of the EPC
+    #                   label; fastighetsel = bldg_svc scaled to epc_atemp)
+    #
+    # When fastighetsel is not available from epc_energy the indicator
+    # is still computed with fastighetsel=0, and flagged as approximate.
+    ep_sim_htg_dhw = (
+        (sim_delivered_heating + fvp_el_scaled + dhw_used) / sim_atemp
+        if sim_atemp else 0.0
+    )
+    fastig_per_m2_epc = (
+        (epc_energy.get("Fastighet") or 0) / epc_atemp
+        if (epc_energy and epc_atemp)
+        else (bldg_svc / epc_atemp if epc_atemp else 0.0)
+    )
+    ep_epc_htg_dhw = max(0.0, energi_prestanda - fastig_per_m2_epc) if energi_prestanda else 0.0
+    ratio_dahlstrom = ep_sim_htg_dhw / ep_epc_htg_dhw if ep_epc_htg_dhw else 0.0
+    fastig_source = "EPC Fastighet" if (epc_energy and epc_energy.get("Fastighet")) else "scaled bldg_svc"
+
+    log.info("")
+    log.info("=== Dahlström-comparable indicator (htg+DHW only) ===")
+    log.info("  EP_sim (htg+DHW):   %5.1f kWh/m2  (no airing, no fastighetsel)",
+             ep_sim_htg_dhw)
+    log.info("  EP_epc (htg+DHW):   %5.1f kWh/m2  (EPC − fastighetsel %.1f, src=%s)",
+             ep_epc_htg_dhw, fastig_per_m2_epc, fastig_source)
+    log.info("  Ratio_Dahlstrom:    %.2f", ratio_dahlstrom)
+
     return {
         "sim_heating_demand_kwh": sim_heating,
         "sim_delivered_heating_kwh": sim_delivered_heating,
@@ -264,4 +298,52 @@ def log_epc_comparison(
         "sim_site_kwh": sim_site,
         "epc_ratio": ratio,
         "normal_year_factor": f_ny,
+        # Dahlström-comparable indicator: heating+DHW only, no fastighetsel/airing
+        "EP_sim_htg_dhw_kwh_m2":  round(ep_sim_htg_dhw,   2),
+        "EP_epc_htg_dhw_kwh_m2":  round(ep_epc_htg_dhw,   2),
+        "ratio_dahlstrom":         round(ratio_dahlstrom,  3),
     }
+
+
+def compare_building_to_epc(
+    building,
+    *,
+    fgeo: float = 1.0,
+    sim_atemp: float | None = None,
+) -> dict[str, float]:
+    """Run :func:`log_epc_comparison` for a :class:`~pbgenerator.building.Building`.
+
+    Pulls the simulated metrics, geometry, and EPC provenance straight off the
+    aggregate, stores the resulting comparison dict on
+    ``building.results.epc_comparison``, and returns it.
+
+    Requires ``building.results`` to be populated (call ``building.simulate``
+    first) and ``building.location.epc`` to carry the EPC source data.
+    """
+    results = building.results
+    if results is None:
+        raise ValueError("building.results is empty; run building.simulate() first")
+
+    epc = building.location.epc
+    if epc is None:
+        raise ValueError("building.location.epc is None; no EPC source to compare to")
+
+    if sim_atemp is None:
+        sim_atemp = results.atemp_m2 or building.heated_floor_area_m2
+    if not sim_atemp:
+        raise ValueError("could not determine simulated Atemp for comparison")
+
+    params = building.params
+    comparison = log_epc_comparison(
+        results.as_dict(),
+        sim_atemp=sim_atemp,
+        epc_atemp=epc.atemp_epc_m2 or sim_atemp,
+        energi_prestanda=epc.energi_prestanda or 0,
+        epc_energy=epc.energy_breakdown,
+        ventilation_system=params.ventilation_system,
+        fgeo=fgeo,
+        fastighet_kwh=epc.fastighet_kwh or 0,
+        dhw_vvc_kwh_m2=params.dhw_vvc_kwh_m2,
+    )
+    results.epc_comparison = comparison
+    return comparison

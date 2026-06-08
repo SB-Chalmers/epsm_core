@@ -115,6 +115,24 @@ def build_model(
     context_shades: list[Shade] | None = None,
 ) -> Model:
     """Build a Honeybee Model from a footprint polygon and building parameters."""
+    model, _rooms = build_model_with_rooms(
+        name, footprint_pts, params, context_shades=context_shades
+    )
+    return model
+
+
+def build_model_with_rooms(
+    name: str,
+    footprint_pts: list[list[float]],
+    params: BuildingParams,
+    context_shades: list[Shade] | None = None,
+) -> tuple[Model, BuildingRooms]:
+    """Build a Honeybee Model and return it alongside its :class:`BuildingRooms`.
+
+    Identical model assembly to :func:`build_model`, but also surfaces the
+    perimeter/core room decomposition so callers (e.g. the ``Building``
+    aggregate) can derive the heated floor area without rebuilding geometry.
+    """
     p = params
     floor_height = _clamp(p.floor_height, 2.2, 6.0)
     num_floors = max(1, p.num_floors)
@@ -169,10 +187,22 @@ def build_model(
         else:
             room.properties.energy.program_type = program
 
-    # -- HVAC for perimeter rooms only; core left unconditioned ------------
+    # -- HVAC for perimeter (dwelling) rooms at p.t_heating ----------------
     apply_hvac(bldg.perimeter, p)
 
-    return Model(name, rooms=bldg.all, orphaned_shades=context_shades)
+    # -- Optional second HVAC pass for the core zone (stair/corridor) ------
+    # When ``core_setpoint_C`` is set, the core is treated as a semi-heated
+    # buffer zone (e.g. 18 °C) rather than fully unconditioned.  This matches
+    # the typical 1960s lamellhus stair-shaft with a small radiator.  The
+    # core's heating energy still shows up in ``heating_kwh``, but BBR's
+    # A-temp excludes it from the denominator, so kWh/m² is reported on the
+    # perimeter (dwelling) area only.
+    if p.core_setpoint_C is not None and bldg.core:
+        from dataclasses import replace as _dc_replace
+        p_core = _dc_replace(p, t_heating=float(p.core_setpoint_C))
+        apply_hvac(bldg.core, p_core, zone_label="CORE")
+
+    return Model(name, rooms=bldg.all, orphaned_shades=context_shades), bldg
 
 
 def build_idf_text(
@@ -180,9 +210,15 @@ def build_idf_text(
     footprint_pts: list[list[float]],
     params: BuildingParams,
     context_shades: list[Shade] | None = None,
+    model: Model | None = None,
 ) -> str:
-    """Generate complete IDF text ready for EnergyPlus."""
-    model = build_model(name, footprint_pts, params, context_shades=context_shades)
+    """Generate complete IDF text ready for EnergyPlus.
+
+    Pass a prebuilt ``model`` (e.g. from :func:`build_model_with_rooms`) to
+    avoid reconstructing the geometry; otherwise one is built internally.
+    """
+    if model is None:
+        model = build_model(name, footprint_pts, params, context_shades=context_shades)
     sim_par = _make_sim_par()
     version = energyplus_idf_version()
     idf_text = "\n\n".join([version, sim_par.to_idf(name), model.to.idf(model)]) + "\n"
@@ -234,7 +270,8 @@ def write_idf(
     footprint_pts: list[list[float]],
     params: BuildingParams,
     context_shades: list[Shade] | None = None,
+    model: Model | None = None,
 ) -> None:
     """Write IDF file to disk."""
     path.write_text(build_idf_text(name, footprint_pts, params,
-                                   context_shades=context_shades))
+                                   context_shades=context_shades, model=model))

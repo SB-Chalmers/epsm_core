@@ -1,9 +1,0 @@
-Cluster,FormularId,Fastighet,Adress,Byggar,Floors,Atemp_epc,Atemp_sim,Ventilation,BETSI_template,EP_epc,EP_sim,EPC_ratio,cluster_size,cluster_mean_ep,representativeness,distinctness
-F-vent_C0,1085854,Fältspaten 3,Östanvindsvägen 7A,1967,3,1815,1760.3,F,BETSI_CONC_SLAB,145,84.1,0.58,120,145.0,94.7,87.7
-F-vent_C1,933494,Rödingen 2,Tureborgsvägen 5A,1959,3,6643,6333.9,F,BETSI_CONC_SLAB,155,89.4,0.58,9,155.0,86.8,77.6
-FTX-vent_C0,819244,Sälghugget 3,Hyggestråket 10,1975,4,1816,2024.2,FTX,BETSI_CONC_SLAB,144,77.6,0.54,33,144.0,91.5,83.2
-FTX-vent_C1,965888,Grönland 1,Fritjof Nansens Väg 14,1963,3,5601,6591.8,FTX,BETSI_CONC_SLAB,139,81.6,0.59,7,139.0,87.4,77.6
-Renovated_C0,816182,Stören 7,Måltemyrsvägen 3A,1959,3,1890,2026.4,S,BETSI_CONC_SLAB,80,90.1,1.13,15,80.0,93.4,82.4
-Renovated_C1,972746,Hönseberget 2,Kämpegatan 49,1967,9,11138,11923.6,F,BETSI_CONC_TOWER,122,72.1,0.59,5,122.0,69.5,65.0
-S-vent_C0,875966,Cellon 3,Violinvägen 11,1966,2,1035,843.0,S,BETSI_CONC_SLAB,91,97.1,1.07,13,91.0,88.5,80.0
-S-vent_C1,875600,Iden 2,Äsperödsvägen 14A-C,1958,3,2004,2492.6,S,BETSI_CONC_SLAB,135,67.4,0.5,20,135.0,91.6,83.3

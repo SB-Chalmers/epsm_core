@@ -3,8 +3,16 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+from .building import Building
 from .building_params import load_config
-from .runner import run
+from .location import Location, WeatherSite
+
+
+def build_from_config(cfg, name: str) -> Building:
+    """Construct a :class:`Building` aggregate from a loaded :class:`Config`."""
+    weather = WeatherSite(epw_path=str(cfg.weather_file))
+    location = Location.hypothetical_site(cfg.footprint_pts, weather=weather)
+    return Building(name=name, params=cfg.building, location=location)
 
 
 def main() -> None:
@@ -20,26 +28,21 @@ def main() -> None:
     cfg.idf_dir.mkdir(parents=True, exist_ok=True)
     cfg.output_dir.mkdir(parents=True, exist_ok=True)
 
-    if args.dry_run:
-        from .idf_builder import write_idf
+    building = build_from_config(cfg, args.name)
 
+    if args.dry_run:
         idf_path = cfg.idf_dir / "in.idf"
-        write_idf(idf_path, args.name, cfg.footprint_pts, cfg.building)
+        building.write_idf(idf_path)
         print(f"IDF written to {idf_path}")
         return
 
-    results = run(
-        name=args.name,
-        footprint_pts=cfg.footprint_pts,
-        params=cfg.building,
-        weather_file=cfg.weather_file,
-        idf_dir=cfg.idf_dir,
-        output_dir=cfg.output_dir,
-    )
+    results = building.simulate(idf_dir=cfg.idf_dir, output_dir=cfg.output_dir)
 
-    print(f"Heating: {results['heating_kwh']:.1f} kWh")
-    print(f"Cooling: {results['cooling_kwh']:.1f} kWh")
-    print(f"Site:    {results['site_kwh']:.1f} kWh")
+    print(f"Heating: {results.heating}")
+    print(f"Cooling: {results.cooling}")
+    print(f"Site:    {results.site_energy}")
+    if results.site_eui is not None:
+        print(f"Site EUI:{results.site_eui}")
     print(f"Output:  {cfg.output_dir}")
 
 
