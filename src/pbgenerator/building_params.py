@@ -51,6 +51,21 @@ class BuildingParams:
                                             # stair/corridor shafts (~18 °C typical
                                             # for 1960s Swedish lamellhus).
 
+    # Natural ventilation via ZoneVentilation:WindandStackOpenArea.
+    # All four fields default to None/off — set nat_vent_t_open_c to enable.
+    nat_vent_t_open_c: float | None = None  # Min indoor temp [°C] to open windows
+                                            # (None = natural ventilation disabled).
+                                            # Typical: 24.0 °C
+    nat_vent_min_outdoor_t_c: float = 18.0  # Min outdoor temp [°C] below which
+                                            # windows stay closed (prevents winter
+                                            # opening when indoor > trigger).
+    nat_vent_max_outdoor_t_c: float = 26.0  # Max outdoor temp [°C] above which
+                                            # windows stay closed (too hot outside).
+    nat_vent_max_wind_ms: float = 6.0       # Max wind speed [m/s] — close if gusty.
+    nat_vent_opening_frac: float = 0.06     # Operable window area as a fraction of
+                                            # zone floor area (≈ WWR 0.15 × 40%
+                                            # operable = 0.06).
+
 
 @dataclass(frozen=True)
 class Config:

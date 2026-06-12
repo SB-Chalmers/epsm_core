@@ -30,8 +30,9 @@ def main() -> None:
         epw_path="epw/SWE_BL_Hano.Island.026280_TMYx.2004-2018.epw",
         station_name="Hano Island",
     )
-    location = Location.hypothetical_site(footprint, city="Demoville", weather=weather)
-    building = Building(name="demo_house", params=params, location=location)
+    location = Location.hypothetical_site(city="Demoville", weather=weather)
+    building = Building(name="demo_house", params=params,
+                        footprint_pts=footprint, location=location)
 
     # ------------------------------------------------------------------
     # 2. Run EnergyPlus

@@ -262,7 +262,68 @@ def build_idf_text(
                 f"  {bsmt_ach};              !- Air Changes per Hour {{1/hr}}\n"
             )
 
+    # Natural ventilation: ZoneVentilation:WindandStackOpenArea
+    if params.nat_vent_t_open_c is not None:
+        idf_text += _nat_vent_idf_snippet(model, params)
+
     return idf_text
+
+
+def _nat_vent_idf_snippet(model: "Model", params: BuildingParams) -> str:
+    """Build ZoneVentilation:WindandStackOpenArea IDF text for all heated zones.
+
+    Windows open when ALL conditions hold simultaneously:
+    - Indoor temp ≥ ``nat_vent_t_open_c``            (room is warm enough to benefit)
+    - Outdoor temp ≤ ``nat_vent_max_outdoor_t_c``     (outdoor air is actually cooler)
+    - Indoor − outdoor ≥ 0 °C                         (only cool, never heat by opening)
+    - Wind speed ≤ ``nat_vent_max_wind_ms``
+
+    Opening area per zone = floor_area × ``nat_vent_opening_frac``
+    (default 0.06 ≈ WWR 15% × 40% operable).
+    """
+    t_open = params.nat_vent_t_open_c
+    t_min_out = params.nat_vent_min_outdoor_t_c
+    t_max_out = params.nat_vent_max_outdoor_t_c
+    max_wind = params.nat_vent_max_wind_ms
+    opening_frac = params.nat_vent_opening_frac
+    h_diff = params.floor_height / 2.0  # height diff used for stack-effect calc [m]
+
+    parts: list[str] = [
+        "\n\nSchedule:Constant,",
+        "  NatVent_AlwaysOn,    !- Name",
+        "  Fraction,            !- Schedule Type Limits Name",
+        "  1.0;                 !- Hourly Value",
+    ]
+
+    for room in model.rooms:
+        zone_id = room.identifier
+        if "basement" in zone_id.lower():
+            continue
+        opening_area = max(0.1, room.floor_area * opening_frac)
+        parts += [
+            f"\n\nZoneVentilation:WindandStackOpenArea,",
+            f"  NatVent_{zone_id},   !- Name",
+            f"  {zone_id},            !- Zone Name",
+            f"  {opening_area:.3f},   !- Opening Area {{m2}}",
+            f"  NatVent_AlwaysOn,     !- Opening Area Fraction Schedule Name",
+            f"  Autocalculate,        !- Opening Effectiveness",
+            f"  0.0,                  !- Effective Angle {{deg}}",
+            f"  {h_diff:.2f},         !- Height Difference {{m}}",
+            f"  Autocalculate,        !- Discharge Coefficient for Opening",
+            f"  {t_open:.1f},         !- Minimum Indoor Temperature {{C}}",
+            f"  ,                     !- Minimum Indoor Temperature Schedule Name",
+            f"  100.0,                !- Maximum Indoor Temperature {{C}}",
+            f"  ,                     !- Maximum Indoor Temperature Schedule Name",
+            f"  0.0,                  !- Delta Temperature {{C}}",
+            f"  ,                     !- Delta Temperature Schedule Name",
+            f"  {t_min_out:.1f},       !- Minimum Outdoor Temperature {{C}}",
+            f"  ,                     !- Minimum Outdoor Temperature Schedule Name",
+            f"  {t_max_out:.1f},      !- Maximum Outdoor Temperature {{C}}",
+            f"  ,                     !- Maximum Outdoor Temperature Schedule Name",
+            f"  {max_wind:.1f};       !- Maximum Wind Speed {{m/s}}",
+        ]
+
+    return "\n".join(parts)
 
 
 def write_idf(
