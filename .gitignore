@@ -25,3 +25,7 @@ _download_epw.py
 _eplus_scratch
 _idf_scratch
 /ARCHIVE
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+/output/

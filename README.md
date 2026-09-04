@@ -1,132 +1,32 @@
-# ParametricBuildingGenerator (Simple)
+# epsm_core
 
-Yes — this is possible, and this repo is now set up as a **minimal** parametric IDF workflow.
+Explicit building specifications and direct EnergyPlus 24.2 epJSON simulation for urban building energy modelling. Python 3.11+, with Pydantic, Shapely, NumPy and JSON Schema validation. PVWatts V8 is an optional PySAM stage.
 
-It can vary:
-- window opening behavior (temperature setpoint)
-- envelope U-values (wall/roof/floor/window)
-- orientation
-- length, width, height, number of floors
-- window-to-wall ratio (WWR)
-- optional operation inputs: `g_value`, heating/cooling setpoints, infiltration ACH, internal gains
-- ventilation/infiltration controls: `infiltration_on`, `natvent_on`, `natvent_opening_factor`
-
-It can run sensitivity with:
-- `oat` (one-at-a-time)
-- `random`
-- `lhs` (latin hypercube)
-- `factorial`
-- `grid` (min/max/step)
-
-## 1) Install
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+```sh
+python -m pip install -e '.[dev,pv]'
+export ENERGYPLUS_EXE=/path/to/EnergyPlus/energyplus
+epsm-core validate building.json
+epsm-core compile building.json output/model
+epsm-core run building.json output/run
+epsm-core export-idf building.json output/debug
+pytest
 ```
 
-## 2) Set weather file
+EnergyPlus 24.2 and its adjacent `Energy+.schema.epJSON` are required to compile or run. EPW files are supplied locally and checksummed. Importing the package does not load material registries or contact a network. `epsm-core schema` prints the sole persisted building schema.
 
-Put an EPW file at `./weather.epw` or change `paths.weather_file` in `config.json`.
-
-## 3) Run
-
-Generate + simulate + report:
-
-```bash
-python run.py --method lhs --samples 32
+```python
+from epsm_core import BuildingSpec, EnergyPlusRunner
+spec = BuildingSpec.model_validate_json(open("building.json").read())
+result = EnergyPlusRunner().run(spec, "output/run")
+print(result.scalars["space_heating_demand_eui_kwh_m2"])
 ```
 
-Lightweight parallel run across multiple EPW files:
+`BuildingSpec` combines geometry, facade, climate, envelope, airflow, use, context, delivery, renewables and provenance. Inputs are frozen and validated. Use `spec.updated(...)` for a validated replacement. `BuildingBuilder` combines caller-owned assumption profiles with known observations. `apply_renovation` returns a new spec and a recorded physical change.
 
-```bash
-python run.py --config config.json --method lhs --samples 24 --weather-dir epw --workers 4
-```
+Supported geometry includes concave polygons, courtyards and disconnected components. Choose whole-building or per-storey zoning. Kiva handles slabs and full basements; cold attics are unconditioned zones with insulation on the top-floor ceiling. `DistrictPlan` runs buildings independently with neighbors as shading context.
 
-You can also set weather in JSON config (no CLI weather args needed):
+Standard targets are space-heating demand, DHW load, and their combined ideal thermal load. Cooling, FVP delivery and PV generation have distinct outputs. Runs retain hourly signals with EnergyPlus names and units, and require zero severe/fatal errors, 8760 valid hours and annual/hourly agreement within 0.1%.
 
-- Single weather: `paths.weather_file`
-- List of weathers: `paths.weather_files`
-- Folder of EPWs: `paths.weather_dir`
+Read [architecture and physics](docs/architecture.md), [usage examples](docs/usage.md), and [implementation status](docs/implementation-status.md). The material/archetype adapter belongs to `EPSM_data`; EPC ingestion, the 10,000-run study, storage and ML belong to the sibling `epsm_workflows` repository.
 
-Grid-based GSA from min/max/step JSON:
-
-```bash
-python run.py --config gsa_min_max_step.example.json --method grid
-```
-
-Run over a JSON list of simplified archetypes (e.g., TABULA-like):
-
-```bash
-python run.py --method lhs --samples 24 --archetypes-json tabula_archetypes.example.json
-```
-
-Run with prebuilt Swedish era archetypes (villa + apartment, 10 cases):
-
-```bash
-python run.py --method lhs --samples 24 --archetypes-json swedish_era_archetypes.json
-```
-
-Quick dry-run (only generate IDFs):
-
-```bash
-python run.py --method oat --dry-run
-```
-
-## 4) Outputs
-
-In `results/`:
-- `case_XXXX/in.idf` (each generated model)
-- `results.csv` (all input params + outputs)
-- `report.md` (ranked sensitivity summary)
-- `sensitivity_site_gj.png` (simple ranking chart)
-- `archetypes_map.csv` (only when `--archetypes-json` is used)
-- `weather_map.csv` (only when `--weather-dir` has multiple EPWs)
-
-## Notes (kept intentionally simple)
-
-- Single-zone rectangular geometry.
-- Simple no-mass envelope representation from target U-values.
-- Loads and operational schedules are included by default (people/lights/equipment + thermostat).
-- Envelope leakage uses BBR/Boverket q₅₀ [l/(s·m²) at 50 Pa] converted via n₅₀/20 (SS-EN ISO 13789).
-- Extended output requests are included by default (hourly variables, meters, and SQLite output).
-- Reporting uses annual tabular outputs from EnergyPlus SQL.
-- Only parameters present in `parameter_space` are sampled; others stay at baseline values.
-
-## Archetypes JSON format
-
-Pass a list of objects. Each object can use either flat keys or nested `geometry` + `baseline`.
-
-- Geometry keys: `width_m`, `depth_m`
-- Baseline keys: any of
-	`orientation_deg`, `height_m`, `wwr`, `wall_u`, `roof_u`, `floor_u`, `window_u`,
-	`g_value`, `t_heating`, `t_cooling`, `q50_envelope`,
-	`occupant_density`, `lighting_w_m2`, `equipment_w_m2`
-- Optional: `parameter_space` per archetype (overrides global ranges)
-
-See [tabula_archetypes.example.json](tabula_archetypes.example.json).
-Also see [swedish_era_archetypes.json](swedish_era_archetypes.json) for the era ranges you shared.
-
-For min/max/step style GSA, see [gsa_min_max_step.example.json](gsa_min_max_step.example.json).
-Use this parameter format:
-
-```json
-"wall_u": { "min": 0.15, "max": 0.45, "step": 0.1 }
-```
-
-You can organize `parameter_space` into:
-- `geometry`
-- `envelope`
-- `behaviour`
-- `heating_system`
-
-Both grouped and legacy flat formats are supported.
-
-Note: `grid` builds the full Cartesian combination, so case count grows fast.
-For floor count, use integer-like steps (e.g. `{"min":1,"max":5,"step":1}`); values are rounded to integers.
-
-If you want next steps without making it bloated, add only one at a time:
-1. multi-zone geometry,
-2. Sobol indices (SALib),
-3. uncertainty bands / bootstrap.
+The old `pbgenerator` API has been removed. Existing v1 datasets remain scientific comparison data.
