@@ -3,6 +3,28 @@
 from .specs import ConstructionSpec
 
 
+def internal_mass_halves(assembly: ConstructionSpec):
+    """Two adiabatic half-slabs, ordered from midplane to each exposed face.
+
+    InternalMass exchanges heat on one face only. Each half uses the actual
+    footprint area, preserving both the exposed area and the physical heat capacity.
+    """
+    midpoint = sum(layer.thickness_m for layer in assembly.layers) / 2
+    first, second, position = [], [], 0.0
+    for layer in assembly.layers:
+        left = max(0.0, min(layer.thickness_m, midpoint - position))
+        right = layer.thickness_m - left
+        if left > 1e-12:
+            first.append(layer.updated(thickness_m=left))
+        if right > 1e-12:
+            second.append(layer.updated(thickness_m=right))
+        position += layer.thickness_m
+    return (
+        assembly.updated(layers=tuple(reversed(first))),
+        assembly.updated(layers=tuple(second)),
+    )
+
+
 def solve_insulation(
     assembly: ConstructionSpec,
     layer_index: int,

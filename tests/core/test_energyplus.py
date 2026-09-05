@@ -5,7 +5,17 @@ from epsm_core.specs import Footprint
 
 @pytest.mark.energyplus
 @pytest.mark.parametrize(
-    "variant", ["compact", "attic", "storeys", "basement", "courtyard", "multipolygon", "concave"]
+    "variant",
+    [
+        "compact",
+        "attic",
+        "storeys",
+        "basement",
+        "courtyard",
+        "multipolygon",
+        "concave",
+        "mass_regression",
+    ],
 )
 def test_annual(building, energyplus, tmp_path, variant):
     g = building.geometry
@@ -34,7 +44,17 @@ def test_annual(building, energyplus, tmp_path, variant):
                 Footprint(exterior=((0, 0), (30, 0), (30, 10), (15, 10), (15, 20), (0, 20))),
             )
         )
+    if variant == "mass_regression":
+        g = g.updated(
+            footprints=(
+                Footprint.l_shape(51.3295122915, 14.9176585101, 27.9713555903, 6.0935970290),
+            ),
+            floors=3,
+            floor_height_m=3.0731910256,
+            orientation_deg=71.6329643048,
+        )
     output = EnergyPlusRunner(energyplus).run(building.updated(geometry=g), tmp_path / variant)
     assert output.scalars["space_heating_demand_kwh"] > 0
     assert output.scalars["dhw_load_eui_kwh_m2"] == pytest.approx(21, rel=0.005)
     assert output.diagnostics["severe_count"] == 0
+    assert output.diagnostics["invalid_view_factor_count"] == 0

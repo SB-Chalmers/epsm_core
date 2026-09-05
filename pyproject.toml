@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "epsm_core"
-version = "2.0.0"
+version = "2.0.1"
 description = "Explicit building specifications and EnergyPlus epJSON simulation for UBEM"
 requires-python = ">=3.11"
 dependencies = ["pydantic>=2.10,<3", "shapely>=2.1,<3", "numpy>=2,<3", "jsonschema>=4.23,<5"]

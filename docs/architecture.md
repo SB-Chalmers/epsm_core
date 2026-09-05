@@ -11,8 +11,13 @@ and renovation catalogues and its optional adapter imports core when called.
 One run simulates one target building. A target may have multiple disconnected
 polygon components; each has its own thermal zone in whole-building mode. The
 per-storey option creates a zone at every level in each component. Whole-building
-zones explicitly carry full Atemp and volume; intermediate slabs appear as two-sided
-internal mass. The EnergyPlus floor/space area warning is expected for this simplified
+zones explicitly carry full Atemp and volume; intermediate slabs appear as separate
+internal-mass faces for each storey. Each face uses the corresponding physical half
+of the slab, ordered from the adiabatic midplane to the exposed finish. This preserves
+total material heat capacity and exposed area. Aggregating all slabs into one dominant
+radiating surface is prohibited: campaign checks found incomplete view factors and
+11–12% heating sensitivity in two cases. Incomplete-view-factor warnings now reject a
+run. The EnergyPlus floor/space area warning is expected for this simplified
 zoning mode and is retained in diagnostics.
 
 Coordinates are in metres. The compiler translates target/context by the same source
@@ -94,5 +99,5 @@ preflight; no template expansion or intermediate IDF is used. Every run retains
 building JSON, epJSON, compilation report, SQL, process log and `.err` diagnostics.
 Nonzero exit, severe/fatal errors, missing targets, nonfinite/negative energy,
 incomplete hours and annual/hourly disagreement prevent successful completion.
-Warnings are counted and preserved. The campaign layer separately owns resume and
+Other warnings are counted and preserved. The campaign layer separately owns resume and
 atomic Parquet/catalogue transactions.

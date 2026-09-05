@@ -23,6 +23,7 @@ def error_diagnostics(path):
         "warning_count": len(re.findall(r"\*\*\s+Warning\s+\*\*", text)),
         "severe_count": len(re.findall(r"\*\*\s+Severe\s+\*\*", text)),
         "fatal_count": len(re.findall(r"\*\*\s+Fatal\s+\*\*", text)),
+        "invalid_view_factor_count": text.count("FixViewFactors: View factors not complete"),
         "err_path": str(path),
     }
 
@@ -56,7 +57,12 @@ class EnergyPlusRunner:
             except subprocess.TimeoutExpired as error:
                 raise SimulationError(f"EnergyPlus timeout; diagnostics at {directory}") from error
         diagnostics = error_diagnostics(directory / "eplusout.err")
-        if result.returncode or diagnostics["fatal_count"] or diagnostics["severe_count"]:
+        if (
+            result.returncode
+            or diagnostics["fatal_count"]
+            or diagnostics["severe_count"]
+            or diagnostics["invalid_view_factor_count"]
+        ):
             raise SimulationError(
                 f"EnergyPlus failed: {diagnostics}; see {directory / 'process.log'}"
             )

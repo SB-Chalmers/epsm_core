@@ -14,7 +14,7 @@ import jsonschema
 from shapely.affinity import translate
 from shapely.geometry import LineString
 
-from .constructions import bridge_equivalent
+from .constructions import bridge_equivalent, internal_mass_halves
 from .geometry import (
     cardinal,
     exposed_segments,
@@ -27,7 +27,7 @@ from .geometry import (
 from .specs import BuildingSpec, Spec
 from .weather import file_sha256
 
-COMPILER_VERSION = "2.0.0"
+COMPILER_VERSION = "2.0.1"
 
 
 class CompilationReport(Spec):
@@ -193,15 +193,25 @@ class EnergyPlusCompiler:
             add("Schedule:Compact", name, schedule_type_limits_name="any_number", data=data)
 
         construction_report = {}
-        for role in (
-            "wall",
-            "top",
-            "ground",
-            "intermediate_floor",
-            "weather_shell",
-            "basement_wall",
-        ):
-            nominal = getattr(spec.envelope, role)
+        assemblies = {
+            role: getattr(spec.envelope, role)
+            for role in (
+                "wall",
+                "top",
+                "ground",
+                "intermediate_floor",
+                "weather_shell",
+                "basement_wall",
+            )
+        }
+        if spec.geometry.zoning == "whole_building" and spec.geometry.floors > 1:
+            assemblies.update(
+                zip(
+                    ("internal_slab_face_a", "internal_slab_face_b"),
+                    internal_mass_halves(spec.envelope.intermediate_floor),
+                )
+            )
+        for role, nominal in assemblies.items():
             uplift = (
                 spec.envelope.thermal_bridge_uplift_fraction
                 if role in ("wall", "top", "ground", "basement_wall")
@@ -335,13 +345,17 @@ class EnergyPlusCompiler:
                 if conditioned:
                     self._loads(add, zone, area, volume, spec)
                     if multiplier > 1:
-                        add(
-                            "InternalMass",
-                            zone + "_slabs",
-                            construction_name="intermediate_floor",
-                            zone_or_zonelist_name=zone,
-                            surface_area=2 * polygon.area * (multiplier - 1),
-                        )
+                        # Never aggregate all storeys into one dominant radiating
+                        # surface: EnergyPlus cannot close those view factors.
+                        for storey in range(multiplier - 1):
+                            for face in ("a", "b"):
+                                add(
+                                    "InternalMass",
+                                    f"{zone}_slab_{storey}_{face}",
+                                    construction_name=f"internal_slab_face_{face}",
+                                    zone_or_zonelist_name=zone,
+                                    surface_area=polygon.area,
+                                )
                 for pi, patch in enumerate(patches):
                     floor_name = f"{zone}_floor_{pi}"
                     if zi == 0:

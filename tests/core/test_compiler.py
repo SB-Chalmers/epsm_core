@@ -3,7 +3,7 @@ import math
 import pytest
 
 from epsm_core.compiler import EnergyPlusCompiler
-from epsm_core.constructions import bridge_equivalent, solve_insulation
+from epsm_core.constructions import bridge_equivalent, internal_mass_halves, solve_insulation
 from epsm_core.specs import *
 
 
@@ -24,6 +24,35 @@ def test_u_solver(building):
     assert bridge_equivalent(assembly, 0.25).u_value_w_m2k == pytest.approx(0.5)
     with pytest.raises(ValueError):
         solve_insulation(assembly, 0, 10)
+
+
+def test_internal_mass_preserves_layers_and_capacity(building, energyplus):
+    assembly = building.envelope.wall  # asymmetric multilayer case
+    halves = internal_mass_halves(assembly)
+
+    def capacity(layers):
+        return sum(
+            x.thickness_m * x.material.density_kg_m3 * x.material.specific_heat_j_kgk
+            for x in layers
+        )
+
+    assert sum(capacity(h.layers) for h in halves) == pytest.approx(capacity(assembly.layers))
+    assert halves[0].layers[-1].material == assembly.layers[0].material
+    assert halves[1].layers[-1].material == assembly.layers[-1].material
+    b = building.updated(envelope=building.envelope.updated(intermediate_floor=assembly))
+    model, report = EnergyPlusCompiler(energyplus).compile(b)
+    masses = model["InternalMass"]
+    assert len(masses) == 2 * (b.geometry.floors - 1)
+    total_capacity = 0
+    for mass in masses.values():
+        assert mass["surface_area"] == b.geometry.footprint_area_m2
+        layers = ConstructionSpec.model_validate(
+            report.data["constructions"][mass["construction_name"]]["applied"]
+        ).layers
+        total_capacity += mass["surface_area"] * capacity(layers)
+    assert total_capacity == pytest.approx(
+        b.geometry.footprint_area_m2 * (b.geometry.floors - 1) * capacity(assembly.layers)
+    )
 
 
 def test_shape_utilities():
