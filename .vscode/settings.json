@@ -37,5 +37,6 @@
     "*.out", "*.toc", "*.acn", "*.acr", "*.alg", "*.glg", "*.glo",
     "*.gls", "*.fls", "*.log", "*.fdb_latexmk", "*.snm", "*.synctex.gz",
     "*.nav", "*.run.xml"
-  ]
+  ],
+  "liveServer.settings.port": 5501
 }

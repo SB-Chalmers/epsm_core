@@ -1,0 +1,12 @@
+flowchart TB
+    subgraph describe["1 · Describe the geometry"]
+        direction LR
+        A["Known building<br/>Footprint · storeys · heights"] --> B["GeometrySpec<br/>Roof · zoning · facade IDs"]
+        B --> C["FacadeSpec + ContextSpec<br/>Windows · glazing · shading"]
+    end
+    describe --> D["2 · Inspect geometry<br/>No EnergyPlus needed"]
+    D --> E["3 · Complete BuildingSpec<br/>Constructions · weather · operations"]
+    E --> F["4 · Compile, run and compare<br/>Energy · solar · peaks · runtime"]
+    classDef default fill:#f2f6f8,stroke:#68818f,color:#1c303d
+    classDef inspect fill:#e1f0ec,stroke:#3d8271,color:#1c303d
+    class D inspect

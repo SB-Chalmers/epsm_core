@@ -20,18 +20,22 @@ def test_builder_provenance(building):
     )
     records = {r.field_path: r for r in b.provenance.records}
     assert records["identifier"].status == "measured"
-    assert records["geometry.floors"].assumption_profile == "test"
+    assert records["geometry.parts"].assumption_profile == "test"
 
 
 def test_renovation_does_not_mutate(building):
     original = building.physical_hash()
     renovated = apply_renovation(
-        building, AddInsulation(element="wall", layer=building.envelope.wall.layers[0])
+        building,
+        AddInsulation(element="wall", layer=building.envelope.wall.layers[0]),
+        effective_date="2026-01-01",
     )
     assert renovated.envelope.wall.u_value_w_m2k < building.envelope.wall.u_value_w_m2k
     assert building.physical_hash() == original
     assert renovated.renovations[0].before_sha256 == original
-    solar = apply_renovation(building, InstallPV(pv=PVSpec(dc_capacity_kw=10)))
+    solar = apply_renovation(
+        building, InstallPV(pv=PVSpec(dc_capacity_kw=10)), effective_date="2026-01-01"
+    )
     assert solar.physical_hash() != original
 
 
@@ -56,12 +60,16 @@ def test_district_context(building):
     second = building.updated(
         identifier="second",
         geometry=building.geometry.updated(
-            footprints=(Footprint(exterior=((50, 0), (80, 0), (80, 20), (50, 20))),)
+            parts=(
+                building.geometry.parts[0].updated(
+                    footprint=Footprint(exterior=((50, 0), (80, 0), (80, 20), (50, 20)))
+                ),
+            )
         ),
     )
     resolved = list(DistrictPlan(buildings=(building, second)).resolved_buildings())
     assert len(resolved[0].context.buildings) == 1
-    assert resolved[0].context.buildings[0].identifier == "second"
+    assert resolved[0].context.buildings[0].identifier == "second:main"
     assert resolved[0].geometry == building.geometry
 
 
@@ -73,7 +81,15 @@ def test_hash_physics(building, energyplus):
     changes = [
         building.updated(airflow=building.airflow.updated(envelope_infiltration_ach=0.3)),
         building.updated(climate=building.climate.updated(weather_sha256="f" * 64)),
-        building.updated(geometry=building.geometry.updated(floors=4)),
+        building.updated(
+            geometry=building.geometry.updated(
+                parts=(
+                    building.geometry.parts[0].updated(
+                        storey_elevations_m=(0, 2.8, 5.6, 8.4, 11.2)
+                    ),
+                )
+            )
+        ),
         building.updated(envelope=building.envelope.updated(thermal_bridge_uplift_fraction=0.2)),
     ]
     assert all(compiler.run_id(b) != original for b in changes)

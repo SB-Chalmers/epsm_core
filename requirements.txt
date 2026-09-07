@@ -1,0 +1,2 @@
+# Complete local notebook environment; dependency definitions live in pyproject.toml.
+-e .[dev,geometry,pv,notebook]

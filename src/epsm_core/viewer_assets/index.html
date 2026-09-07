@@ -1,0 +1,50 @@
+<!doctype html>
+<!--
+File: viewer_assets/index.html
+Purpose: Local geometry-inspection layout and stable control IDs for viewer.js.
+SPDX-License-Identifier: MIT
+Copyright (c) 2026 Sanjay Somanath
+License: MIT; see the project-root LICENSE for full permission and warranty terms.
+Author: Sanjay Somanath <sanjay.somanath@chalmers.se>
+Project PI: Alexander Hollberg
+Computational Sustainable Design Group
+Research Area of Sustainable Built Environments
+Chalmers University of Technology, Gothenburg
+Date created: 2026-09-06 (documentation-header creation; not original file creation)
+Date modified: 2026-09-06
+Changelog:
+  2026-09-06 - Document offline asset loading, scene controls and diagnostic panels.
+
+Usage example:
+Generate an epJSON viewer using epsm_core.viewer.view_epjson, then open the
+returned loopback URL while its ViewerHandle is active. The Python server
+provides model.json and the pinned assets; opening this file alone is insufficient.
+
+NOTE: Control IDs are an interface consumed by viewer.js. Keep them synchronized.
+The bundled viewer_assets/LICENSE belongs to upstream Three.js; project-owned
+HTML/JavaScript attribution refers to the separate project-root MIT LICENSE.
+-->
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>epsm · Geometry review</title>
+
+<!-- 1. Keep the viewport and scrollable inspection panel sized independently. -->
+<style>
+*{box-sizing:border-box}body{margin:0;font:14px system-ui;color:#1c303d;background:#e9eff2}header{height:60px;background:#fff;padding:16px 24px;border-bottom:1px solid #cad5dc;display:flex;gap:22px;align-items:center}header b{font-size:21px}header span{color:#526976}main{display:grid;grid-template-columns:1fr 350px;height:calc(100vh - 60px)}#scene{position:relative;min-width:0}canvas{display:block;width:100%;height:100%}aside{background:#fff;border-left:1px solid #cad5dc;overflow:auto;padding:20px}label{display:block;margin:12px 0}input[type=range],select{width:100%}fieldset{border:1px solid #d5dfe5;margin:16px 0;padding:12px}pre{font:12px ui-monospace;white-space:pre-wrap;overflow-wrap:anywhere}#legend{position:absolute;bottom:20px;left:20px;background:#fffffff0;padding:12px;border-radius:6px;pointer-events:none}#status{background:#fff3d8;padding:12px;margin:12px 0}button,select{padding:8px;border:1px solid #a8bac7;background:#fff;border-radius:4px}#details{border-top:1px solid #d5dfe5;padding-top:14px}h2{font-size:16px;margin:16px 0 8px}.muted{color:#607786}@media(max-width:800px){main{grid-template-columns:1fr 270px}aside{padding:12px}}
+</style>
+
+<!-- 2. Resolve Three.js locally through the pinned bundle; no CDN or network fetch is needed. -->
+<script type="importmap">{"imports":{"three":"./three.module.js"}}</script>
+
+<!-- 3. Keep geometry representation and loading/acceptance status visible during inspection. -->
+<header><b>epsm</b><span id="representation">Geometry review</span></header><main><div id="scene"><div id="legend">Drag to orbit · scroll to zoom · click to inspect<br>North: +Y · grid: <span id="scale"></span> m<br><span class="muted">Blue: openings · amber: ground · violet: party walls</span></div></div><aside>
+<div id="status">Loading geometry…</div><label>Isolate storey<select id="storey"><option value="all">All storeys</option></select></label><label>Surface<select id="objects"><option value="">Select a surface</option></select></label>
+
+<!-- 4. Target-only clipping and opacity controls retain a complete context silhouette. -->
+<label><input id="cutaway" type="checkbox"> Building cutaway</label><label>Cut above elevation <output id="clip-value"></output><input id="clip" type="range" step="0.1" disabled></label><p class="muted">Cutaway and storey isolation affect the target building. Context stays complete.</p><label>Building opacity<input id="opacity" type="range" min="0.1" max="1" step="0.05" value="0.85"></label>
+
+<!-- 5. Preparation and normal overlays expose geometry evidence independently of thermal detail. -->
+<fieldset><legend>Overlays</legend><label><input id="context" type="checkbox" checked> Context shading</label><label><input id="normals" type="checkbox"> Outward normals</label><label><input id="footprints" type="checkbox" checked> Source / cleaned footprints</label></fieldset>
+
+<!-- 6. Filter generated details without changing the underlying model or its reported quantities. -->
+<fieldset><legend>Geometry details</legend><label><input id="slabs" type="checkbox" checked> Floor slabs</label><label><input id="reveals" type="checkbox" checked> Window reveals</label><label><input id="overhangs" type="checkbox" checked> Overhangs</label><label><input id="balconies" type="checkbox" checked> Balconies</label><label><input id="roofs" type="checkbox" checked> Roofs</label><label><input id="dwellings" type="checkbox" checked> Apartment zones</label><label><input id="common" type="checkbox" checked> Common zones</label></fieldset><button id="reset">Focus building</button> <button id="fit-context">Fit context</button><div id="details">Select a surface to inspect its identity and construction.</div><h2>Internal mass · quantities only</h2><pre id="mass"></pre><h2>Diagnostics and assumptions</h2><pre id="diagnostics"></pre></aside></main>
+<!-- 7. Start after the control DOM exists; the module fills details using textContent. -->
+<script type="module" src="./viewer.js"></script></html>

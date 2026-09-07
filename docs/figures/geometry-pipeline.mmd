@@ -1,0 +1,17 @@
+flowchart TB
+    A["BuildingSpec<br/>Immutable, validated domain inputs"] --> B["Physical massing and exposure<br/>Original parts, facades and storeys"]
+    B --> C["Logical windows and attached shading<br/>Placed on exposed facade runs"]
+    B --> D["Thermal partitions<br/>Whole building · storey · perimeter · apartments"]
+    D --> E["Shared cell and surface graph<br/>Reciprocal boundaries; physical slabs retained"]
+    C --> F["Assign window panes to thermal parents<br/>Logical openings and their shading stay unchanged"]
+    E --> F
+    F --> G["Resolved geometry<br/>Graph · openings · shading · provenance"]
+    H["Resolved ContextSpec<br/>Custom or procedural neighbours"] --> I["Context shading surfaces<br/>Shared coordinates; no zones or material quantities"]
+    G --> J["EnergyPlus compilation"]
+    I --> J
+    G --> K["Physical quantities"]
+    G --> L["Geometry inspection"]
+    I --> L
+    classDef default fill:#f2f6f8,stroke:#68818f,color:#1c303d
+    classDef resolved fill:#e1f0ec,stroke:#3d8271,color:#1c303d
+    class G resolved

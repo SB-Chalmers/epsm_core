@@ -1,0 +1,2760 @@
+{
+  "profile": "conservative-metric-1",
+  "seed": "epsm-geometry-1",
+  "cases": [
+    {
+      "building_id": "000338b8-c89a-45e2-93f5-f697c11fa8dc",
+      "municipality": "0181",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "016edab7-be03-40dd-ba56-7fcd2c93ed14",
+      "municipality": "0181",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "024209ce-4e67-4b4d-96c0-2077ff6a420f",
+      "municipality": "0181",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "03a14444-1969-434b-80c8-45d9b2bf1e19",
+      "municipality": "0181",
+      "selection_stratum": "holes",
+      "insamlingslage": "Ospecificerad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "0513d295-3a49-49da-8dc6-6da5cc9f99b9",
+      "municipality": "0181",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "06f24046-d3be-430a-a083-b61edb885214",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Ospecificerad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "10936640-cfa4-49bd-afd0-b9764b376ecd",
+      "municipality": "0181",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "15fc9993-853e-47c5-89ff-18909e128265",
+      "municipality": "0181",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "1c6eab10-b28c-4e68-b923-22f6ce517e93",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "208a0fb0-c8b1-4b5e-bd12-b35bcaea6beb",
+      "municipality": "0181",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "2134058a-7e01-40d6-8f79-74b2ed342187",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "215571b4-a993-4300-9474-67d60fb1c369",
+      "municipality": "0181",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "235df886-3f1f-46b3-9bdf-54c0ad06f46c",
+      "municipality": "0181",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "23646887-a3a9-46a4-9d88-3c5e51dc723f",
+      "municipality": "0181",
+      "selection_stratum": "short",
+      "insamlingslage": "Ospecificerad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "23674a2b-7857-42d9-b690-68d717aea2f8",
+      "municipality": "0181",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "276b784a-7443-41df-bedf-5507a5eb17ef",
+      "municipality": "0181",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "2785e84f-fdfa-4cba-9db5-be501b2b4a70",
+      "municipality": "0181",
+      "selection_stratum": "short",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "27d75ef8-d712-41c3-ba7d-51d06962b529",
+      "municipality": "0181",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "28c61115-0c3d-400d-af40-6cab4f1ea97e",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "298afc99-b0e6-4e5a-90e9-d33f7eb8208e",
+      "municipality": "0181",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "2a9c61a1-42ce-469c-a8c2-887bde4b967f",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "2b46f457-8921-4790-8ef2-f6cfc1e49ea0",
+      "municipality": "0181",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "30f0184e-461a-40f6-87f0-05efa9cf2eba",
+      "municipality": "0181",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "320cbb37-7b96-4d0c-9d91-bc2a40beebf0",
+      "municipality": "0181",
+      "selection_stratum": "short",
+      "insamlingslage": "Ospecificerad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "37f520ec-85e9-4142-8220-d1bcd14f0940",
+      "municipality": "0181",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "3a4daf67-45a6-4eda-9d94-9822f1e3a28d",
+      "municipality": "0181",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "3aaae59e-1823-4e7d-80dc-119be4b97938",
+      "municipality": "0181",
+      "selection_stratum": "short",
+      "insamlingslage": "Ospecificerad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "3bd7da65-4219-4eca-8818-bba3c5536e7d",
+      "municipality": "0181",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "3caa8904-a086-44c5-b901-1b0a13b61a4b",
+      "municipality": "0181",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "3fa449d9-8f9c-44f1-844b-4617c8bc364f",
+      "municipality": "0181",
+      "selection_stratum": "holes",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "484ae18e-c037-45fa-9e2a-4e4a3b45c90a",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "4baa7555-f451-4053-9533-63f4dd53c0ed",
+      "municipality": "0181",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "4c591814-53e2-4bfd-902d-de3b48136dd3",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "4dbd945c-f1e8-4c2a-9f10-c21101e676a3",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "4dea5336-c312-4183-a3c8-854c23cc5b0c",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "502707dc-6d08-42cf-b123-3b526ae8e912",
+      "municipality": "0181",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "56f82588-97a4-4377-a094-a5c24749a499",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Ospecificerad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "5724af23-fed3-42a9-b1b6-e866bb7daed9",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "5812bf8e-d526-41fe-901c-51986a1c1de7",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "58d9a3a2-701a-4aa3-b6eb-2d73a5ef771b",
+      "municipality": "0181",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "5a08ef48-269f-458e-87ac-e50bec9d2ff6",
+      "municipality": "0181",
+      "selection_stratum": "complex",
+      "insamlingslage": "Ospecificerad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "5fa6995f-6be3-464f-bf8b-64990a30e4b5",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "62b981d5-bd01-42ee-9008-6fff0a4187b0",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "69a8ebf1-fce6-461e-aaff-0e561ca8d4b7",
+      "municipality": "0181",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "6dc207a1-f3fa-42de-86c5-48707f5c25a7",
+      "municipality": "0181",
+      "selection_stratum": "short",
+      "insamlingslage": "Ospecificerad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "6dc90ac8-8984-4764-aa8a-0d08f7a51ec0",
+      "municipality": "0181",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "6e095fa1-011f-43a2-b07c-56021e31009a",
+      "municipality": "0181",
+      "selection_stratum": "complex",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "72778d5e-fa53-4871-b752-7daaff98bf3b",
+      "municipality": "0181",
+      "selection_stratum": "complex",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "72ce61a4-db43-4b28-a51f-01d1d4289cd2",
+      "municipality": "0181",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "75f221a9-e110-4ebf-b363-be524ba49ab0",
+      "municipality": "0181",
+      "selection_stratum": "complex",
+      "insamlingslage": "Fasad",
+      "status": "needs_review",
+      "reasons": [
+        "area_change_fraction_exceeded"
+      ],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "79879172-0675-4c3b-9cff-0b6543755690",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "7cbf40e2-0424-4e70-84c7-69c1ec168e24",
+      "municipality": "0181",
+      "selection_stratum": "complex",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "7fbc2d44-cb69-45fb-bc15-581c1e2191c8",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "810a6746-a8cc-46e8-bd70-ecfe14db731e",
+      "municipality": "0181",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "81faeb8c-03c2-4571-ab9a-df9d9a9a426a",
+      "municipality": "0181",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "826df4cf-876e-4361-abfb-5e58679e6c4f",
+      "municipality": "0181",
+      "selection_stratum": "short",
+      "insamlingslage": "Ospecificerad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "82af7cc7-33a0-4a13-bce7-62179b08892d",
+      "municipality": "0181",
+      "selection_stratum": "short",
+      "insamlingslage": "Ospecificerad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "89a0ad71-f4b1-4b05-8b92-3060fc40570a",
+      "municipality": "0181",
+      "selection_stratum": "complex",
+      "insamlingslage": "Ospecificerad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "900fef5c-1b66-4a62-963e-b4d6642419b9",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "941c303a-2b14-4c8a-9150-05bb8af0e342",
+      "municipality": "0181",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "94509962-3377-4b6a-a873-f37c199aabb9",
+      "municipality": "0181",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "979fc45c-dbdf-48ea-acb9-8942e33a5bb8",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "981c757b-edb2-4ca6-a8c3-446cc6dd7f45",
+      "municipality": "0181",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "9b2d617f-8284-4ecb-8e59-8bab78b9236e",
+      "municipality": "0181",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "9b395fab-f883-49c2-ad3c-ac0385ea27f0",
+      "municipality": "0181",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "9d9878fa-8955-4514-a72c-cf3bae4e7842",
+      "municipality": "0181",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "9e2b542c-3d68-4328-84c0-983abc1e5531",
+      "municipality": "0181",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "a06ab763-8735-424e-9e97-e09a858f99d3",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "a61492ea-df59-4e1d-8db7-74005ed15e4e",
+      "municipality": "0181",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "a7a76d7f-e73f-49dc-8e7f-ee9ff4cfd093",
+      "municipality": "0181",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "a8c533ff-5357-455f-a30b-98d3007feba3",
+      "municipality": "0181",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "a92afb24-fc17-42e9-ab42-02c1a83b6c85",
+      "municipality": "0181",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "ac1c0754-9d6f-44c5-905d-7b7d6d688b74",
+      "municipality": "0181",
+      "selection_stratum": "complex",
+      "insamlingslage": "Ospecificerad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "b0cf1619-39da-4c31-a6b0-4a8ff75c30c3",
+      "municipality": "0181",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "b0d798d2-4642-4875-b030-46f8d12a6329",
+      "municipality": "0181",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "needs_review",
+      "reasons": [
+        "area_change_fraction_exceeded"
+      ],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "b458851b-afff-4ad1-8ba1-978173fdabb6",
+      "municipality": "0181",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "b566247c-2bfc-42c5-ad05-f8e2534b85ca",
+      "municipality": "0181",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "c0d19045-836e-4fc2-bc66-607a9da1ac2d",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Ospecificerad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "c0defbdc-d6f4-4a13-994f-e4e720a53262",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "c7b1db52-264a-4d60-8d2a-820b06021e1b",
+      "municipality": "0181",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "cb4d0bdf-5beb-46e4-9a04-3a1d498edf96",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "cc8d4074-8066-4c76-90e1-de963385341c",
+      "municipality": "0181",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "ce2e977a-bff4-488e-b2e1-36954096e91d",
+      "municipality": "0181",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "d208771a-dafe-46fd-b91b-33e16884ddcf",
+      "municipality": "0181",
+      "selection_stratum": "short",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "d8fe555e-d8e2-4941-8d87-a0834754a4e0",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "dad10160-18fa-4e1e-8fb7-96fbd3f1b885",
+      "municipality": "0181",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "dba946af-05c6-44b7-bc93-4634deed0298",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Ospecificerad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "e423bbd0-c0c8-441f-81f4-b2e3b868100f",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "e8744403-9cad-481a-9c91-4d5be0f2e2d0",
+      "municipality": "0181",
+      "selection_stratum": "complex",
+      "insamlingslage": "Ospecificerad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "ebff871a-d7db-4bf5-81f5-18e9c9642c2e",
+      "municipality": "0181",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "edbe90d8-472c-439f-a226-e97f2764c745",
+      "municipality": "0181",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "f2f9bf38-89ff-4155-9049-dc911bbfca45",
+      "municipality": "0181",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "f5dcf3fa-3a6c-4323-8a07-c92a22c95950",
+      "municipality": "0181",
+      "selection_stratum": "short",
+      "insamlingslage": "Ospecificerad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "f7b810a9-7d9e-42e7-b4e8-b423ddbdd409",
+      "municipality": "0181",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "f99738e7-42fa-4aeb-aca9-dd977c2197bb",
+      "municipality": "0181",
+      "selection_stratum": "short",
+      "insamlingslage": "Ospecificerad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "fa116e81-debe-43ab-8c8b-3d02d21ecfcb",
+      "municipality": "0181",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "fadba577-6497-4066-91fb-357c0f3b1f2e",
+      "municipality": "0181",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "fb07c8e9-9dff-4b5c-94b3-c9eb8ec0c48e",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "fc42af0f-d4d4-4da5-b3b9-8c01e5b12be8",
+      "municipality": "0181",
+      "selection_stratum": "general",
+      "insamlingslage": "Ospecificerad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "fe3299f5-592a-453c-9e89-d2a3b74c7518",
+      "municipality": "0181",
+      "selection_stratum": "short",
+      "insamlingslage": "Ospecificerad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "00bba425-2877-497b-a764-898ae346a9fe",
+      "municipality": "1480",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "0324d609-2e98-48bb-bf31-18d846cbb889",
+      "municipality": "1480",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "068b86b9-ade2-4d87-be3f-b86fd3514458",
+      "municipality": "1480",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "0a4698dc-0345-481f-ba5b-fe93d3cfced1",
+      "municipality": "1480",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "0d50ea1b-77d4-4bab-8b4e-bfaed55c8e47",
+      "municipality": "1480",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "10789d69-5a3b-4f15-a133-e1c4f8407900",
+      "municipality": "1480",
+      "selection_stratum": "general",
+      "insamlingslage": "Illustrativt l\u00e4ge",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "1182be86-3fe1-4029-b82f-c31766d73636",
+      "municipality": "1480",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "needs_review",
+      "reasons": [
+        "area_change_fraction_exceeded"
+      ],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "1672daf6-db34-48e9-b11b-92ed321d3ce9",
+      "municipality": "1480",
+      "selection_stratum": "short",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "183f31f2-1a83-4792-999d-c0d300a965e9",
+      "municipality": "1480",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "18b0fbb8-7826-4d8d-a663-d7e64f980c9a",
+      "municipality": "1480",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "1eda0a2c-f118-4fea-bc37-2d6b25e220cc",
+      "municipality": "1480",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "225b564a-d7c3-46be-bc4e-ac61beadcfc3",
+      "municipality": "1480",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "23868236-c588-4dc3-aa81-5dc84675944d",
+      "municipality": "1480",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "25d534fc-5024-4544-92e7-1361140c8b92",
+      "municipality": "1480",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "25eb8656-7a43-4ae4-a106-50059b016744",
+      "municipality": "1480",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "27482b70-e1f5-4a9f-bc6b-f8445547f21c",
+      "municipality": "1480",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "needs_review",
+      "reasons": [
+        "area_change_fraction_exceeded"
+      ],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "2880e5b8-51f6-4885-b17e-11a8c4828e54",
+      "municipality": "1480",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "2883552c-c20c-4d0a-832b-3791503f9744",
+      "municipality": "1480",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "28ba7840-7e78-46d9-beeb-4b0581ab19bc",
+      "municipality": "1480",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "2904b0dc-942a-4fe3-8d93-2e37e8319047",
+      "municipality": "1480",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "2957e696-c34f-4e4f-9261-8adf55c74ceb",
+      "municipality": "1480",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "2a836096-ea41-4168-b434-648bc61aa1dd",
+      "municipality": "1480",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "2ca508c0-3772-4294-a7f7-341a7d76db3f",
+      "municipality": "1480",
+      "selection_stratum": "general",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "2f2409eb-b636-493b-849d-8f21ee638878",
+      "municipality": "1480",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "33df59a7-b383-4181-ace0-8a143e9d17ac",
+      "municipality": "1480",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "3c9085ae-d6ba-44ed-8541-7ea65320996c",
+      "municipality": "1480",
+      "selection_stratum": "short",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "3ed3f853-0505-494e-b9f2-569feba59131",
+      "municipality": "1480",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "418ba472-08ba-4aa3-8257-838ebc9d6556",
+      "municipality": "1480",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "41fa8840-f2bb-4155-bec0-1d7f68e7b567",
+      "municipality": "1480",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "4242c72b-a77f-49af-9063-7bc73f992417",
+      "municipality": "1480",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "4405f196-42bc-4e24-89a6-32781f31562b",
+      "municipality": "1480",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "470e677b-f97f-49be-ba5b-dac9b50b7c92",
+      "municipality": "1480",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "47e9ecc0-378d-44e9-94d0-87482bc6ee10",
+      "municipality": "1480",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "4b3350dd-28b2-4b77-8abb-c7aeaede2830",
+      "municipality": "1480",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "4d20a5d8-9bd4-478e-b4b7-32aa53da4458",
+      "municipality": "1480",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "4e40feab-71e2-4a52-be14-ba7149d49f38",
+      "municipality": "1480",
+      "selection_stratum": "holes",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "4e5647e4-e8fd-4df3-8cf1-64eae89ed770",
+      "municipality": "1480",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "4e5e490f-72b6-4933-8f86-d1e6664826da",
+      "municipality": "1480",
+      "selection_stratum": "short",
+      "insamlingslage": "Ospecificerad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "4f80e628-9ca8-4812-a623-7fdece38380d",
+      "municipality": "1480",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "52bc5995-5351-4f41-acdb-c86a42ae0201",
+      "municipality": "1480",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "543edb1b-48dd-4ba6-9d18-4b4699a6cce8",
+      "municipality": "1480",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "needs_review",
+      "reasons": [
+        "area_change_fraction_exceeded"
+      ],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "54a4ffd0-e8b2-4ce1-9435-4d49adb09f76",
+      "municipality": "1480",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "58ad9a21-fab7-4023-8a03-f25ad90906cf",
+      "municipality": "1480",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "5bc27cd6-7f4e-4e94-8a30-96d62790ca50",
+      "municipality": "1480",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "5bdd1d5f-b65c-47dd-a226-e30422b3ebe2",
+      "municipality": "1480",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "5c5c3962-087e-4a23-803a-216d0ae6d47b",
+      "municipality": "1480",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "5e110325-f393-4516-ae77-338c8b9a71fb",
+      "municipality": "1480",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "6524bb98-3492-4ccf-8d37-0f90d212390f",
+      "municipality": "1480",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "6903239f-c460-421f-b50d-d07faf81705c",
+      "municipality": "1480",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "6b291571-986d-4424-bf3f-baffe6185b82",
+      "municipality": "1480",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "needs_review",
+      "reasons": [
+        "area_change_fraction_exceeded"
+      ],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "6e945cea-b3ef-426f-a20c-fb366bc3a6f0",
+      "municipality": "1480",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "701adab7-35d2-4774-b2d8-585238c16203",
+      "municipality": "1480",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "72fa7ec6-340a-414f-a5b8-07598be9f3ec",
+      "municipality": "1480",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "76883f65-fa71-4c93-8654-a0f9f1e9587f",
+      "municipality": "1480",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "839e472d-524a-4693-9af1-0e77c2ea6eac",
+      "municipality": "1480",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "850fcf97-4102-4c6a-8fdf-b3f910e7e141",
+      "municipality": "1480",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "8c7a4e93-5f89-43e4-a77c-c4a9aa1893c4",
+      "municipality": "1480",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "8f4edfc9-9c1a-444a-95d5-d3ef59bc3fb0",
+      "municipality": "1480",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "8f859982-d043-4c57-aed4-90caca7fb4c6",
+      "municipality": "1480",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "8fbe5ab5-2dbd-4a17-8ea3-0e2fa06cb6a3",
+      "municipality": "1480",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "957c669c-05b4-4d09-90b6-b40f1f78adf3",
+      "municipality": "1480",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "99a850cf-937c-4a01-adb4-438e24b68b42",
+      "municipality": "1480",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "9b3db293-e3d4-4d53-b045-7486a1f2a12a",
+      "municipality": "1480",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "a94cadc1-3fc2-4f75-afb8-588c0f796183",
+      "municipality": "1480",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "aa4428ec-ef6a-44d7-99aa-c64fa342d58a",
+      "municipality": "1480",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "ab727f77-e7b1-49e9-8c26-16d108e258ba",
+      "municipality": "1480",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "aca6d566-b1b3-466f-8278-fdde6bcd74f7",
+      "municipality": "1480",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "b7d0cb59-8c25-42a1-9346-986aea325705",
+      "municipality": "1480",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "b90887b1-8185-4250-9bff-aa490d813be5",
+      "municipality": "1480",
+      "selection_stratum": "holes",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "bbf8033d-db4d-4b39-b5c4-a6c76b26f53f",
+      "municipality": "1480",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "bc3aea8f-ad52-4089-841f-bb5a226cb7f7",
+      "municipality": "1480",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "c7d8412d-055c-4ee6-9ec8-b016327872e0",
+      "municipality": "1480",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "c8761dd3-1904-4b6f-868e-327855ab7bb6",
+      "municipality": "1480",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "ca307c0e-0baa-41fc-ac45-65bfbfcdb55f",
+      "municipality": "1480",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "cdfa92d0-27b5-4e83-8e03-46aa070df0e9",
+      "municipality": "1480",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "cf7bbe7f-ab1c-4434-9667-87c8bdc60731",
+      "municipality": "1480",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "cfa9430b-27da-49f0-9ad3-06a53c536565",
+      "municipality": "1480",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "d218a983-1a78-4020-89af-d3746ed39fdd",
+      "municipality": "1480",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "d438d175-7061-4648-aba0-1a70c290af67",
+      "municipality": "1480",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "d629008d-d998-4cf9-bd39-aa4d4dc5036c",
+      "municipality": "1480",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "d63f414e-206c-484e-ac4c-6baadfd4fc77",
+      "municipality": "1480",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "d6b74871-ed0c-4543-b85f-8fa346391502",
+      "municipality": "1480",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "d7cadcbe-4840-4e6a-9f6f-a1097c3670b1",
+      "municipality": "1480",
+      "selection_stratum": "general",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "dff63d1b-8d42-4f20-a484-2b4fa119b109",
+      "municipality": "1480",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "e0f24d82-1b40-4090-83f9-8fe606042599",
+      "municipality": "1480",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "e7980c2f-92d8-4382-afb7-860863c2eb00",
+      "municipality": "1480",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "ea6fb1fc-3b3c-4add-836c-7d2614f5c692",
+      "municipality": "1480",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "ece7ede1-4ad9-4307-b009-ad1d14c69155",
+      "municipality": "1480",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "ee331f99-1fbd-4d87-b3ba-5d4d5cd712ae",
+      "municipality": "1480",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "needs_review",
+      "reasons": [
+        "area_change_fraction_exceeded"
+      ],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "f027ee0e-81ee-49b9-8b8c-9c6094ec9d3b",
+      "municipality": "1480",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "f247f70c-d4c5-404c-ab5e-7b899f2e67fc",
+      "municipality": "1480",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "needs_review",
+      "reasons": [
+        "area_change_fraction_exceeded"
+      ],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "f603e98f-dce1-43d3-a529-29fac4cd105b",
+      "municipality": "1480",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "f7e62f96-74db-4fbf-896e-ede7312f3b89",
+      "municipality": "1480",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "f8b5f3db-1114-4de2-beab-c0776faa0a77",
+      "municipality": "1480",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "f8f2f1b1-294e-45a5-bfe9-52e0179009a3",
+      "municipality": "1480",
+      "selection_stratum": "complex",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "fab5200a-5727-4001-b02f-d78f1b0a759e",
+      "municipality": "1480",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "fd608e89-44e0-44f7-8623-f4f6bd309569",
+      "municipality": "1480",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "fe513324-d9dd-432d-890b-5b78d3b0a765",
+      "municipality": "1480",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "needs_review",
+      "reasons": [
+        "area_change_fraction_exceeded"
+      ],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "ff4f0b71-6ecd-4ef4-9799-5ef62d582397",
+      "municipality": "1480",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "needs_review",
+      "reasons": [
+        "area_change_fraction_exceeded"
+      ],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "ffcf2f1c-ff96-4083-a39c-c39cea142343",
+      "municipality": "1480",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "needs_review",
+      "reasons": [
+        "area_change_fraction_exceeded"
+      ],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "05fd421d-6804-47e2-a559-cd27edbf4256",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "061e6e3e-fcdd-49d6-8c76-da8b393cebf1",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "06849bf8-b2bf-406d-9547-323f6f0129d2",
+      "municipality": "2584",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "08cb8163-826c-477b-a2ba-74ec7c8c126e",
+      "municipality": "2584",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "0a4c3338-872b-4c7d-9a89-91abc5840ea8",
+      "municipality": "2584",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "0dfff1b9-7711-4ea2-a602-0e5f02440b66",
+      "municipality": "2584",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "0f7f18ed-fe2b-431d-8aa9-4158654e3674",
+      "municipality": "2584",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "needs_review",
+      "reasons": [
+        "area_change_fraction_exceeded"
+      ],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "13423073-9c28-4ec5-ac23-60f236505ce3",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "141d675b-afdf-49ac-a2dc-2665abfd876e",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "1512fb45-fefb-47b0-84bb-1932936c66e5",
+      "municipality": "2584",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "needs_review",
+      "reasons": [
+        "area_change_fraction_exceeded"
+      ],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "164cfc65-1517-4a22-b615-237aa0071ce7",
+      "municipality": "2584",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "1743844a-9c5e-426f-8e0f-494f9ea09c4c",
+      "municipality": "2584",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "1c186381-afdc-4064-b33d-76f889cff2e8",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "204e55ac-b3eb-423b-a59f-1868a5aa4e3f",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "21be74ff-1e31-4537-ab6d-e85b47f3a1e4",
+      "municipality": "2584",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "221782d4-fb2e-46cc-a479-ca85d75b5205",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "223f5e9d-44a1-4081-bfc5-8ac68673f97b",
+      "municipality": "2584",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "needs_review",
+      "reasons": [
+        "area_change_fraction_exceeded"
+      ],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "26af1b54-42c3-4c02-a815-c83955459042",
+      "municipality": "2584",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "2953529b-1981-49cf-9c3f-0f90b9fe5ce8",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "2b86c101-7827-4428-a865-0d0165e6a141",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "2bbac534-1f12-4d81-8e94-bab34dd0766f",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "2c959f8b-4627-4e87-8fbf-037269804520",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "30d1ddd6-a5ca-439f-84bb-48af405f5568",
+      "municipality": "2584",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "needs_review",
+      "reasons": [
+        "area_change_fraction_exceeded"
+      ],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "31d4724c-9d3e-443b-a3d1-934ff9277d65",
+      "municipality": "2584",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "35de0e54-3f00-42d1-9505-6220da320d65",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "3887b179-a930-460b-a260-aceadcd22a2f",
+      "municipality": "2584",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "390c6106-9ffb-4890-92e4-f08e059e4716",
+      "municipality": "2584",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "399aa36b-6b42-4a68-8fef-275ddd380b02",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "3ca475e5-e30d-48cf-8319-d2a0f81de528",
+      "municipality": "2584",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "4087923a-3808-4e59-91a3-6757b87782f8",
+      "municipality": "2584",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "489f43da-193e-4590-8942-3685029169f4",
+      "municipality": "2584",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "4d79f2f1-d75a-4200-8f6e-1b84af8a0fc5",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "4f7aa624-6ff1-4302-b6aa-611b308a28f8",
+      "municipality": "2584",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "needs_review",
+      "reasons": [
+        "area_change_fraction_exceeded"
+      ],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "547a83be-a5f0-4d2a-911c-0c53ee77b650",
+      "municipality": "2584",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "54be3890-0a14-4387-a33b-492d58a0dd15",
+      "municipality": "2584",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "56daacf6-0f7b-459c-925d-392296d984fc",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "57425b5d-a56d-433f-b88f-215471e2623b",
+      "municipality": "2584",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "needs_review",
+      "reasons": [
+        "area_change_fraction_exceeded"
+      ],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "57d0e215-a7c6-4a8a-b9e8-a90a0260dada",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "5a8e0763-dfb1-4117-a76e-602ffbd5a841",
+      "municipality": "2584",
+      "selection_stratum": "complex",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "5ac174a4-c591-4714-9a7b-456afc30616b",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "5e67b872-f2a5-4bca-8aeb-1fea70708170",
+      "municipality": "2584",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "needs_review",
+      "reasons": [
+        "area_change_fraction_exceeded"
+      ],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "5f12f6e2-6fd6-4938-932c-ddc2a98c33a8",
+      "municipality": "2584",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "63115fa2-4928-4f21-93b3-bc66a8d439d3",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "66db7be3-0bac-45fa-8f81-281f2df5c1f6",
+      "municipality": "2584",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "68625eae-99e9-4a5a-a46c-9eaf63a7a3b1",
+      "municipality": "2584",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "6f817fa0-41a0-476a-a94b-c2dad4e2891a",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "713b7cda-2862-43f0-9898-a1d2e59326f5",
+      "municipality": "2584",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "71fb8162-436b-43a7-b5cc-323e1be2318a",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "7298c23c-0d25-464c-bdd2-56cf009ddb2a",
+      "municipality": "2584",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "75d5108f-98fb-4d3b-af93-b611728a04ff",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "77134f08-38ea-447c-9939-1f35e70384cb",
+      "municipality": "2584",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "7977a1a5-b51c-4223-bf84-aa13164c6186",
+      "municipality": "2584",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "needs_review",
+      "reasons": [
+        "area_change_fraction_exceeded"
+      ],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "7b6ef3da-67c4-45bc-9927-b59b4b7b6f7d",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "7dd7cbf4-4630-4fa5-97d4-7f3f62247d19",
+      "municipality": "2584",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "7e6c261c-1eca-4205-a3f0-fe32a254f9af",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "8287de1d-e5e1-4add-8787-f8ff7bf87f17",
+      "municipality": "2584",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "84794d1e-7042-479a-ba34-402b88e28a5e",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "87010c60-1749-4fed-9f98-3cd6888e6cfc",
+      "municipality": "2584",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "8db1da56-7ec6-4825-96b1-90a6dace301a",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "91ae3b7d-a8dd-4924-b334-10570b390cf2",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "9472603a-35f5-46f8-9f73-65fbda584033",
+      "municipality": "2584",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "9a0fd2bb-0631-4b95-97ca-7e92fe8d44ce",
+      "municipality": "2584",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "9b6ffbe3-cc70-45c6-bedc-cd3a6f8df442",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "9c9f7b2e-1797-4f98-bed1-a67ce66109db",
+      "municipality": "2584",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "9fdabe0d-9cce-4ec5-a8f7-18b42ab61037",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "a00333fd-a8a3-4e31-9d2a-446a6d4012d6",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "a0c225ac-0f6e-42ec-b7a6-9c92c3371f01",
+      "municipality": "2584",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "a9562e2e-e0de-46a3-85ba-6a4065b16ac4",
+      "municipality": "2584",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "needs_review",
+      "reasons": [
+        "area_change_fraction_exceeded"
+      ],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "abaece0d-c64d-40ab-a6c5-112ad2ebf453",
+      "municipality": "2584",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "ac1b4293-99b7-435b-ba49-e25d7f7fce2c",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "b3cae648-726c-4fec-9713-aa1944373293",
+      "municipality": "2584",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "b5bc877b-6637-4e78-9c49-566f6bf34b8f",
+      "municipality": "2584",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "b6a0894f-c209-4976-beee-2bbe93476b1b",
+      "municipality": "2584",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "b83d1a43-8e85-4bbc-bbb8-3bda638f770b",
+      "municipality": "2584",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "b9cbfddd-19f7-4707-8a09-ff9f74337393",
+      "municipality": "2584",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "bd2fc6f6-3736-4fde-ba3a-6318fa96d628",
+      "municipality": "2584",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "be8a539f-3b6b-4b2b-912a-1f618c0a4b1c",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "bf7143e0-b656-40d4-8089-b6aee6f786d3",
+      "municipality": "2584",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "bfafc773-92c4-4411-b9f6-247ab86e54a9",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "c09a764a-e48b-4b57-8e75-2c1799019c7b",
+      "municipality": "2584",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "c5f185bd-8a2e-4196-833b-337e0ff1f89c",
+      "municipality": "2584",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "c737b554-de2d-48c6-91c8-0a4ac1fd3e4d",
+      "municipality": "2584",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "needs_review",
+      "reasons": [
+        "area_change_fraction_exceeded"
+      ],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "c75013f0-4e98-4500-b44f-8a3d0cc2035d",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "c8a8dcef-552e-49f4-88db-520f9da2713e",
+      "municipality": "2584",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "ca3e7d8f-6de5-4250-8a3c-c7de3b309e6b",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "cacb8a16-d7a1-44f0-b500-9bc52c4d30a6",
+      "municipality": "2584",
+      "selection_stratum": "roof_edge",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "ccef88a9-778d-46e9-9e2c-2eb2a4340bce",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "cd523056-e8b3-4d34-91e4-747c3e7afb82",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "d051610b-705c-474f-8e36-2e5a7026c441",
+      "municipality": "2584",
+      "selection_stratum": "holes",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "d8483ad3-e896-4701-83da-0ce9c171c1a0",
+      "municipality": "2584",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "d96d2e81-1edf-4630-827e-c1b490753855",
+      "municipality": "2584",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "needs_review",
+      "reasons": [
+        "area_change_fraction_exceeded"
+      ],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "de89a217-4967-462a-b55c-fe741eac5fad",
+      "municipality": "2584",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "e0a515db-2237-42ec-81ee-2a438fb063bf",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Fasad",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "e293469d-47ba-47f6-8cc2-2d1298267f40",
+      "municipality": "2584",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "e8b9d418-9a27-4d5b-b7cc-a4b61ef21860",
+      "municipality": "2584",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "ea8abfd6-9070-4a7b-ad4d-f62e39a18f60",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "eb630a80-937b-478f-9aff-1319cfd649e3",
+      "municipality": "2584",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "f5fdb034-0cf1-406e-9e46-829263b4762f",
+      "municipality": "2584",
+      "selection_stratum": "general",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "fa117c5a-60e3-47bf-bc94-c91494b598e7",
+      "municipality": "2584",
+      "selection_stratum": "short",
+      "insamlingslage": "Takkant",
+      "status": "accepted",
+      "reasons": [],
+      "upstream_geometry_repaired": false
+    },
+    {
+      "building_id": "fff692c8-d4f9-431b-b9b8-0d7aaa6792c6",
+      "municipality": "2584",
+      "selection_stratum": "complex",
+      "insamlingslage": "Takkant",
+      "status": "needs_review",
+      "reasons": [
+        "area_change_fraction_exceeded"
+      ],
+      "upstream_geometry_repaired": false
+    }
+  ],
+  "source_fingerprint": {
+    "mtime_ns": 1788454137974436118,
+    "path": "/Users/ssanjay/GitHub/epc_join/data/footprint/byggnad_riks.gpkg",
+    "sha256": "29976ea5f084a74a988a19596227853fddccdf62a433181e67bb6ee8b77224b7",
+    "size": 3808100352
+  },
+  "source_fingerprint_origin": "epc_join release manifest; whole national file hash was not recomputed during bounded corpus reads",
+  "upstream_code_sha256": "0dca68a5f7221cec5ec50468cb557f9e1d025728bf1261ef0cba6d4f67991495"
+}

@@ -39,10 +39,13 @@ def test_internal_mass_preserves_layers_and_capacity(building, energyplus):
     assert sum(capacity(h.layers) for h in halves) == pytest.approx(capacity(assembly.layers))
     assert halves[0].layers[-1].material == assembly.layers[0].material
     assert halves[1].layers[-1].material == assembly.layers[-1].material
-    b = building.updated(envelope=building.envelope.updated(intermediate_floor=assembly))
+    b = building.updated(
+        envelope=building.envelope.updated(intermediate_floor=assembly),
+        geometry=building.geometry.updated(zoning=ZoningSpec(mode="whole_building")),
+    )
     model, report = EnergyPlusCompiler(energyplus).compile(b)
     masses = model["InternalMass"]
-    assert len(masses) == 2 * (b.geometry.floors - 1)
+    assert len(masses) == 2 * (b.geometry.parts[0].floors - 1)
     total_capacity = 0
     for mass in masses.values():
         assert mass["surface_area"] == b.geometry.footprint_area_m2
@@ -51,7 +54,7 @@ def test_internal_mass_preserves_layers_and_capacity(building, energyplus):
         ).layers
         total_capacity += mass["surface_area"] * capacity(layers)
     assert total_capacity == pytest.approx(
-        b.geometry.footprint_area_m2 * (b.geometry.floors - 1) * capacity(assembly.layers)
+        b.geometry.footprint_area_m2 * (b.geometry.parts[0].floors - 1) * capacity(assembly.layers)
     )
 
 
@@ -69,11 +72,13 @@ def test_shape_utilities():
 @pytest.mark.parametrize("roof", ["compact", "cold_attic"])
 def test_model(building, energyplus, zoning, roof):
     b = building.updated(
-        geometry=building.geometry.updated(zoning=zoning),
-        envelope=building.envelope.updated(roof_topology=roof),
+        geometry=building.geometry.updated(
+            zoning=ZoningSpec(mode=zoning), roof=RoofSpec(topology=roof)
+        ),
     )
     model, report = EnergyPlusCompiler(energyplus).compile(b)
-    assert "Site:GroundTemperature:BuildingSurface" not in model
+    assert "Site:GroundTemperature:BuildingSurface" in model
+    assert "Foundation:Kiva" not in model
     assert report.data["conditioned_floor_area_m2"] == 1800
     assert (
         sum(z["floor_area_m2"] for z in report.data["zones"].values() if z["conditioned"]) == 1800
@@ -87,7 +92,7 @@ def test_model(building, energyplus, zoning, roof):
 
 def test_rotation(building, energyplus):
     b = building.updated(
-        facade=building.facade.updated(overrides=(FacadeOverride(facade_id="c0.r0.e0", wwr=0.3),))
+        facade=building.facade.updated(overrides=(FacadeOverride(facade_id="main.r0.e0", wwr=0.3),))
     )
     compiler = EnergyPlusCompiler(energyplus)
     _, r0 = compiler.compile(b)
@@ -106,11 +111,17 @@ def test_holes_multipolygon(building, energyplus):
         holes=(((10, 10), (20, 10), (20, 20), (10, 20)),),
     )
     other = Footprint(exterior=((50, 0), (60, 0), (60, 10), (50, 10)))
-    b = building.updated(geometry=building.geometry.updated(footprints=(hole, other)))
+    b = building.updated(
+        geometry=building.geometry.updated(
+            parts=(
+                building.geometry.parts[0].updated(footprint=hole),
+                building.geometry.parts[0].updated(identifier="other", footprint=other),
+            )
+        )
+    )
     _, report = EnergyPlusCompiler(energyplus).compile(b)
     assert report.data["footprint_area_m2"] == 900
-    assert sum(f["area_m2"] for f in report.data["foundations"]) == pytest.approx(900)
-    assert sum(f["exposed_perimeter_m"] for f in report.data["foundations"]) == pytest.approx(200)
+    assert sum(f["area_m2"] for f in report.data["ground_surfaces"]) == pytest.approx(900)
 
 
 def test_compile_to_disk(building, energyplus, tmp_path):

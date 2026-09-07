@@ -1,32 +1,37 @@
 # epsm_core
 
-Explicit building specifications and direct EnergyPlus 24.2 epJSON simulation for urban building energy modelling. Python 3.11+, with Pydantic, Shapely, NumPy and JSON Schema validation. PVWatts V8 is an optional PySAM stage.
+A pre-1.0 building-energy modelling library for automated urban building energy modelling. The development version is **0.1.0.dev0**; content hashes distinguish simulation inputs and implementations.
 
-```sh
-python -m pip install -e '.[dev,pv]'
-export ENERGYPLUS_EXE=/path/to/EnergyPlus/energyplus
-epsm-core validate building.json
-epsm-core compile building.json output/model
-epsm-core run building.json output/run
-epsm-core export-idf building.json output/debug
-pytest
-```
+Start with a metric footprint and storeys, choose procedural facade and zoning assumptions, add neighbouring buildings, and inspect the geometry before simulation. EPSM preserves concave outlines, courtyards and disconnected parts. Per-storey zoning is the default; perimeter/core zoning is available explicitly. Generated apartment layouts are experimental.
 
-EnergyPlus 24.2 and its adjacent `Energy+.schema.epJSON` are required to compile or run. EPW files are supplied locally and checksummed. Importing the package does not load material registries or contact a network. `epsm-core schema` prints the sole persisted building schema.
+![Workflow from known footprint and storeys through geometry inspection to a complete building specification and simulation.](docs/figures/workflow.svg)
+
+Geometry inspection is the first checkpoint; constructions, weather and operations complete the input before simulation. The [38 notebook lessons](demo/README.md) explain each API step with code, plots and guided documentation figures, from one building to diverse stock samples.
 
 ```python
-from epsm_core import BuildingSpec, EnergyPlusRunner
-spec = BuildingSpec.model_validate_json(open("building.json").read())
-result = EnergyPlusRunner().run(spec, "output/run")
-print(result.scalars["space_heating_demand_eui_kwh_m2"])
+from epsm_core import Footprint, GeometrySpec, ZoningSpec, synthetic_context
+
+geometry = GeometrySpec.from_footprint(
+    Footprint.rectangle(30, 20), storeys=3, storey_height_m=3,
+    zoning=ZoningSpec(mode="perimeter_core", depth_m=4.5),
+)
+context = synthetic_context(geometry, preset="urban_lowrise_dense", seed=0)
+with geometry.view("output/preview", context=context) as preview:
+    print(preview.url)
+    input("Press Enter to stop the preview. ")
 ```
 
-`BuildingSpec` combines geometry, facade, climate, envelope, airflow, use, context, delivery, renewables and provenance. Inputs are frozen and validated. Use `spec.updated(...)` for a validated replacement. `BuildingBuilder` combines caller-owned assumption profiles with known observations. `apply_renovation` returns a new spec and a recorded physical change.
+Geometry inspection needs no EnergyPlus installation or weather. Simulation uses a validated immutable `BuildingSpec`, a local EPW, and EnergyPlus 24.2. Python 3.11 or later is required.
 
-Supported geometry includes concave polygons, courtyards and disconnected components. Choose whole-building or per-storey zoning. Kiva handles slabs and full basements; cold attics are unconditioned zones with insulation on the top-floor ceiling. `DistrictPlan` runs buildings independently with neighbors as shading context.
+```sh
+python -m pip install -e '.[dev,geometry]'
+python examples/building.py data/weather/SWE_VG_Gothenburg-Landvetter.AP.025260_TMYx.2004-2018.epw output/building.json
+epsm-core validate output/building.json
+epsm-core --energyplus /path/to/energyplus run output/building.json output/run
+```
 
-Standard targets are space-heating demand, DHW load, and their combined ideal thermal load. Cooling, FVP delivery and PV generation have distinct outputs. Runs retain hourly signals with EnergyPlus names and units, and require zero severe/fatal errors, 8760 valid hours and annual/hourly agreement within 0.1%.
+Read [usage](docs/usage.md), the [geometry feature contract](docs/geometry.md), [API guide](docs/api.md), and [architecture and physics](docs/architecture.md).
 
-Read [architecture and physics](docs/architecture.md), [usage examples](docs/usage.md), and [implementation status](docs/implementation-status.md). The material/archetype adapter belongs to `EPSM_data`; EPC ingestion, the 10,000-run study, storage and ML belong to the sibling `epsm_workflows` repository.
+The package owns building inputs, geometry, compilation, execution and results. `epsm_data` supplies physical catalogues; `epsm_workflows` owns ingestion, studies, storage and batch policy. Importing core does not discover datasets or use the network.
 
-The old `pbgenerator` API has been removed. Existing v1 datasets remain scientific comparison data.
+Maintain source in `src/`, tests in `tests/`, and executable examples in `examples/`. External inputs belong in ignored `data/`; generated artifacts belong in ignored `output/`. Historical evidence is kept separately in `ARCHIVE/`. Current tests and examples do not depend on archived studies.

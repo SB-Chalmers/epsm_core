@@ -1,103 +1,41 @@
 # Architecture and physical assumptions
 
-`epsm_core` accepts one immutable `BuildingSpec`, compiles it directly to EnergyPlus
-24.2 epJSON, runs an isolated process, and reads validated scalar and hourly results.
-The compiler has no database, archetype, Honeybee, Ladybug or network dependency.
-`epsm_workflows` owns study orchestration/storage/analysis. `epsm_data` owns material
-and renovation catalogues and its optional adapter imports core when called.
+EPSM owns one immutable building input and one deterministic resolution path. `epsm_data` supplies material/catalogue adapters; `epsm_workflows` owns national ingestion, studies, storage and batch policy. Core has no database or network dependency for geometry construction.
 
-## Geometry and UBEM
+## Geometry pipeline
 
-One run simulates one target building. A target may have multiple disconnected
-polygon components; each has its own thermal zone in whole-building mode. The
-per-storey option creates a zone at every level in each component. Whole-building
-zones explicitly carry full Atemp and volume; intermediate slabs appear as separate
-internal-mass faces for each storey. Each face uses the corresponding physical half
-of the slab, ordered from the adiabatic midplane to the exposed finish. This preserves
-total material heat capacity and exposed area. Aggregating all slabs into one dominant
-radiating surface is prohibited: campaign checks found incomplete view factors and
-11–12% heating sensitivity in two cases. Incomplete-view-factor warnings now reject a
-run. The EnergyPlus floor/space area warning is expected for this simplified
-zoning mode and is retained in diagnostics.
+Domain input types are separated from geometry algorithms. Physical parts define the external envelope and storeys. Thermal partitioning retains original part/storey/facade ownership. The shared cell graph constructs reciprocal boundaries using planar contact intersections; computational exposure bands do not create physical slabs.
 
-Coordinates are in metres. The compiler translates target/context by the same source
-origin. Clockwise orientation rotates only the target; context retains its geographic
-position. Facade IDs `cN.rN.eN` refer to component/ring/edge before rotation. WWR follows
-those IDs. Courtyard walls are exterior, and courtyard area is excluded from Atemp.
-Horizontal surfaces containing holes are tessellated with constrained Delaunay
-triangulation, checked for area conservation. World coordinates and outward normals
-are emitted explicitly.
+Window placement is resolved on original exposed facade/storey runs, independently of thermal subdivision. Logical openings can be split into thermal panes, while their physical shading remains whole. The resolved graph, openings and shading feed compilation, takeoffs and engine-independent inspection. Context resolution uses the same metric frame and produces shading only.
 
-DistrictPlan requires georeferenced, already-oriented footprints in one shared metric
-CRS. It adds other target footprints as shading and runs each building independently.
-There is no inter-building airflow, heat transfer, district plant coupling or urban
-weather feedback. Overlapping components are rejected rather than silently repaired.
+![Geometry data flow: physical massing feeds independent logical opening placement and thermal subdivision; resolved geometry feeds compilation, quantities and preview, while context feeds shading and preview.](figures/geometry-pipeline.svg)
 
-## Kiva
+*Conceptual data dependencies of the shared pipeline, not the order of Python function calls. In particular, the graph can be constructed first while logical window placement remains independent of its thermal cuts. Context has no path into physical material quantities. [Editable flowchart](figures/geometry-pipeline.mmd).*
 
-The only ground model is EnergyPlus Foundation:Kiva. Slab-on-grade and a single uniform
-full-depth basement per component are supported, including unconditioned basements.
-No exposed-ground EPW temperature is assigned below the building. Soil defaults are
-explicit serialized inputs and are not claimed to represent a particular Swedish site.
+Geometry preparation is explicit and audited. Normalization, precision changes, repair and simplification have distinct outputs and bounded checks. No convex-hull, rectangle or largest-component substitution is used. Invalid parts, roofs and unsupported conditions fail explicitly. Requested procedural fallback is recorded as an effective zoning change.
 
-EnergyPlus 24.2 requires distinct foundation objects for tessellated floor patches.
-Courtyard models therefore use multiple Kiva instances within a component. Artificial
-tessellation edges are marked unexposed; courtyard and outer edges are exposed.
-The compilation report records this area/perimeter approximation. Annual simulation
-acceptance proves object compatibility, not agreement with a full 3D soil solver.
-Simple concave footprints retain a single floor polygon and segment-specific perimeter.
-Both otherwise unused numeric perimeter fields are explicitly supplied to work around
-EnergyPlus 24.2 epJSON extensible-field counting; its resulting ignored-field warnings
-are retained. See the [EnergyPlus Kiva reference](https://bigladdersoftware.com/epx/docs/24-2/input-output-reference/group-advanced-surface-concepts.html#foundationkiva).
+The compiler validates the EnergyPlus schema, surface planarity, outward normals, closed volumes, reciprocal faces/constructions, opening containment and shade geometry. Accepted geometry does not establish empirical building accuracy.
 
-## Constructions and roof boundary
+## Thermal boundaries and constructions
 
-Layers are ordered outside to inside. Surface film resistance is a nominal U-value
-reporting convention; EnergyPlus computes film coefficients dynamically. Target-U
-helpers solve a selected layer thickness and reject infeasible targets. Thermal-bridge
-uplift scales layer conductivity while preserving thickness and heat capacity, giving
-the requested nominal-U uplift under the stated film convention. It is an equivalent
-conductance approximation, not explicit 2D junction modelling.
+Construction layers are ordered outside to inside. Nominal surface resistances support U-value reporting; EnergyPlus calculates convection dynamically. Thermal-bridge uplift is an equivalent conductance adjustment preserving layer mass and heat capacity, not junction geometry.
 
-Compact roofs carry insulation directly. Cold attics use an unconditioned zone with
-no HVAC/gains; insulation is in the top-floor ceiling and its reversed adjacent floor.
-The exterior weather shell is stored separately. No assumption of attic ventilation
-is made; the current attic is a sealed unconditioned buffer.
+Virtual zoning boundaries use air boundaries and add no physical mass. Intermediate slabs are physical reciprocal floor/ceiling pairs across zones. When floors are inside one thermal zone, two internal-mass half-layer faces preserve the slab heat capacity. Takeoffs count each physical slab once.
 
-## Loads, ventilation, delivery and PV
+Ground slabs and below-grade basement walls use EnergyPlus `Ground` boundaries with explicit monthly surface temperatures. The default 18°C is an uncalibrated modelling assumption, not an EPW-derived soil model. There is no soil mesh or foundation solver. Unconditioned basements require explicit basement-ceiling constructions.
 
-S represents prescribed operating self-draught exchange, not wind/stack pressure
-modelling. F/FT/FTX mechanical flow uses Ideal Loads outdoor air, with sensible/latent
-recovery on FTX. Envelope leakage is a separate constant operating ACH term. F and FT
-can have identical ideal demand. Effective outdoor-air ACH reports physical air volume,
-without reducing the flow by heat-recovery effectiveness. Fan consumption is not
-calculated in these ideal-demand models.
+Compact roofs carry their thermal boundary directly. Cold attics are sealed unconditioned buffers: insulation is assigned to the occupied ceiling and the exterior weather shell is separate. Pitched roof geometry does not imply occupied attic space or attic ventilation.
 
-Supply temperatures are Ideal Loads limits; thermostat schedules describe room/return
-conditions. Cooling, humidification and dehumidification are disabled by default.
-Daily schedule profiles repeat over the 8760-hour non-leap calendar in standard time.
-Occupant gains use explicit activity and fractional schedules. DHW uses prescribed
-55 C hot water, 10 C cold water and an annual thermal load normalized to the schedule.
+## Operations and results
 
-`space_heating_demand_kwh` is ideal supply-air heating, including outdoor-air treatment.
-`dhw_load_kwh` is water heating. `ideal_thermal_load_kwh` is their sum; cooling is a
-separate output. These quantities are not purchased/site energy.
+Natural exchange and leakage are prescribed operating flows, not wind/stack pressure calculations. Mechanical airflow uses Ideal Loads outdoor air, with configured sensible/latent recovery. Fan electricity is not inferred. Common-space operations exist for experimental apartment layouts and must remain distinct from virtual perimeter zoning.
 
-FVP is a downstream hourly delivery estimate for F ventilation. The sensible exhaust
-availability bounds evaporator extraction using explicit exhaust minimum temperature,
-flow, rated capacity and constant COP; priority determines DHW versus space allocation.
-It does not model latent extraction, frosting, part-load COP or a plant loop. Its heat,
-electricity, extraction and backup input are reported separately with a conservation
-test. PVWatts uses the optional PySAM V8 backend and the same EPW; output AC power is
-integrated over each one-hour interval. No self-consumption or net-site-energy value
-is inferred from thermal demand.
+Heating demand is ideal supply-air heating, including outdoor-air treatment. DHW is a prescribed thermal load. Cooling demand is separate. These are thermal demands, not purchased energy. Optional FVP delivery estimates and PVWatts generation have separate outputs and assumptions.
 
-## Validation and artifacts
+Daily schedules repeat on a validated local-standard-time annual calendar. Runs require complete finite hourly series, accepted engine diagnostics, and annual/hourly energy agreement within 0.1%. Unrecognized warnings and severe/fatal errors prevent acceptance. Narrow structured warning rules retain their explicit conditions and occurrence limits; geometry or convergence errors are not bypassed.
 
-Schema validation precedes execution. EnergyPlus input processing is the native
-preflight; no template expansion or intermediate IDF is used. Every run retains
-building JSON, epJSON, compilation report, SQL, process log and `.err` diagnostics.
-Nonzero exit, severe/fatal errors, missing targets, nonfinite/negative energy,
-incomplete hours and annual/hourly disagreement prevent successful completion.
-Other warnings are counted and preserved. The campaign layer separately owns resume and
-atomic Parquet/catalogue transactions.
+## Reproducibility
+
+The fixed development package version is a label. A run identity includes physical inputs, recursive source content, compiler settings, engine binary/schema and backend identities. Compilation also records the current generated input-schema hash. Old experimental building formats have no compatibility loader.
+
+Each run writes input, model, compilation report, diagnostics, process output, SQL and validated result summaries to an explicit empty output directory. Zoning diagnostics identify requested/effective mode and substitution reasons. Archived studies are historical evidence; current code, tests and examples do not load them.

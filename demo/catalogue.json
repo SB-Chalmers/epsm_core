@@ -1,0 +1,264 @@
+[
+  {
+    "path": "00_quickstart/01_environment_and_learning_map.ipynb",
+    "title": "Environment and learning map",
+    "prerequisites": []
+  },
+  {
+    "path": "00_quickstart/02_first_building_to_results.ipynb",
+    "title": "One building, from assumptions to results",
+    "prerequisites": [
+      "local EPW",
+      "EnergyPlus 24.2"
+    ]
+  },
+  {
+    "path": "01_geometry/01_footprint_diversity_and_preparation.ipynb",
+    "title": "Footprint diversity and explicit preparation",
+    "prerequisites": []
+  },
+  {
+    "path": "01_geometry/02_massing_storeys_basements_and_party_walls.ipynb",
+    "title": "Massing, storeys, basements and party walls",
+    "prerequisites": []
+  },
+  {
+    "path": "01_geometry/03_thermal_zoning.ipynb",
+    "title": "Thermal zoning and preserved quantities",
+    "prerequisites": []
+  },
+  {
+    "path": "01_geometry/04_roofs_and_straight_skeleton.ipynb",
+    "title": "Roofs, attics and straight skeleton",
+    "prerequisites": []
+  },
+  {
+    "path": "01_geometry/05_facades_windows_and_shading.ipynb",
+    "title": "Facades, windows and attached shading",
+    "prerequisites": [
+      "local EPW"
+    ]
+  },
+  {
+    "path": "01_geometry/06_experimental_apartment_layouts.ipynb",
+    "title": "Experimental apartment layouts",
+    "prerequisites": [
+      "local EPW"
+    ]
+  },
+  {
+    "path": "01_geometry/07_neighbourhood_context.ipynb",
+    "title": "Neighbourhood context and solar access",
+    "prerequisites": []
+  },
+  {
+    "path": "02_weather/01_epw_metadata_and_calendar.ipynb",
+    "title": "EPW metadata and the simulation calendar",
+    "prerequisites": [
+      "local EPW"
+    ]
+  },
+  {
+    "path": "02_weather/02_swedish_climate_diversity.ipynb",
+    "title": "Swedish climate diversity",
+    "prerequisites": [
+      "local EPW"
+    ]
+  },
+  {
+    "path": "02_weather/03_climate_and_ground_sensitivity.ipynb",
+    "title": "Climate and ground-temperature sensitivity",
+    "prerequisites": [
+      "local EPW",
+      "EnergyPlus 24.2"
+    ]
+  },
+  {
+    "path": "03_construction/01_materials_layers_and_envelopes.ipynb",
+    "title": "Materials, layers and envelope roles",
+    "prerequisites": []
+  },
+  {
+    "path": "03_construction/02_glazing_and_thermal_mass.ipynb",
+    "title": "Glazing performance and thermal mass",
+    "prerequisites": [
+      "local EPW",
+      "EnergyPlus 24.2"
+    ]
+  },
+  {
+    "path": "03_construction/03_physical_quantity_takeoff.ipynb",
+    "title": "Physical quantity takeoff",
+    "prerequisites": [
+      "local EPW"
+    ]
+  },
+  {
+    "path": "03_schedule_and_occupancy/01_schedules_and_calendars.ipynb",
+    "title": "Daily schedules and annual calendars",
+    "prerequisites": []
+  },
+  {
+    "path": "03_schedule_and_occupancy/02_occupancy_gains_setpoints_and_dhw.ipynb",
+    "title": "Occupancy, gains, setpoints and DHW",
+    "prerequisites": [
+      "local EPW",
+      "EnergyPlus 24.2"
+    ]
+  },
+  {
+    "path": "03_schedule_and_occupancy/03_dwelling_and_common_space_operations.ipynb",
+    "title": "Dwelling and common-space operations",
+    "prerequisites": [
+      "local EPW",
+      "EnergyPlus 24.2"
+    ]
+  },
+  {
+    "path": "04_systems/01_airflow_and_heat_recovery.ipynb",
+    "title": "Airflow and sensible heat recovery",
+    "prerequisites": [
+      "local EPW",
+      "EnergyPlus 24.2"
+    ]
+  },
+  {
+    "path": "04_systems/02_delivery_and_exhaust_air_heat_pumps.ipynb",
+    "title": "Delivery and exhaust-air heat pumps",
+    "prerequisites": [
+      "local EPW",
+      "EnergyPlus 24.2"
+    ]
+  },
+  {
+    "path": "04_systems/03_photovoltaics.ipynb",
+    "title": "PVWatts generation from explicit PV inputs",
+    "prerequisites": [
+      "local EPW",
+      "PySAM"
+    ]
+  },
+  {
+    "path": "05_renovation/01_individual_measures.ipynb",
+    "title": "Individual renovation measures",
+    "prerequisites": [
+      "local EPW"
+    ]
+  },
+  {
+    "path": "05_renovation/02_packages_and_building_diversity.ipynb",
+    "title": "Renovation packages across contrasting buildings",
+    "prerequisites": [
+      "local EPW",
+      "EnergyPlus 24.2"
+    ]
+  },
+  {
+    "path": "05_renovation/03_provenance_and_quantity_changes.ipynb",
+    "title": "Renovation provenance and quantity changes",
+    "prerequisites": [
+      "local EPW"
+    ]
+  },
+  {
+    "path": "06_io/01_specifications_schema_and_roundtrips.ipynb",
+    "title": "Specifications, schema and JSON roundtrips",
+    "prerequisites": [
+      "local EPW"
+    ]
+  },
+  {
+    "path": "06_io/02_compilation_and_engine_exports.ipynb",
+    "title": "Compilation reports and engine exports",
+    "prerequisites": [
+      "local EPW",
+      "EnergyPlus 24.2"
+    ]
+  },
+  {
+    "path": "06_io/03_execution_artifacts_and_failures.ipynb",
+    "title": "Execution artifacts and failure evidence",
+    "prerequisites": [
+      "local EPW",
+      "EnergyPlus 24.2"
+    ]
+  },
+  {
+    "path": "07_visualise/01_embedded_geometry_widget.ipynb",
+    "title": "Embedded 3D geometry widget",
+    "prerequisites": []
+  },
+  {
+    "path": "07_visualise/02_compiled_model_inspection.ipynb",
+    "title": "Inspect actual compiled surfaces",
+    "prerequisites": [
+      "local EPW",
+      "EnergyPlus 24.2"
+    ]
+  },
+  {
+    "path": "07_visualise/03_comparative_geometry_review.ipynb",
+    "title": "Independent comparative geometry review",
+    "prerequisites": []
+  },
+  {
+    "path": "08_batch/01_district_context_and_parallel_runs.ipynb",
+    "title": "District context and bounded parallel runs",
+    "prerequisites": [
+      "local EPW",
+      "EnergyPlus 24.2"
+    ]
+  },
+  {
+    "path": "08_batch/02_building_stock_diversity_matrix.ipynb",
+    "title": "A building-stock diversity matrix",
+    "prerequisites": [
+      "local EPW"
+    ]
+  },
+  {
+    "path": "08_batch/03_diversity_capstone.ipynb",
+    "title": "Diversity capstone: six buildings and matched retrofits",
+    "prerequisites": [
+      "local EPW",
+      "EnergyPlus 24.2"
+    ]
+  },
+  {
+    "path": "09_results/01_scalars_hourly_signals_and_units.ipynb",
+    "title": "Scalars, hourly signals and units",
+    "prerequisites": [
+      "local EPW",
+      "EnergyPlus 24.2"
+    ]
+  },
+  {
+    "path": "09_results/02_comparisons_and_aggregation.ipynb",
+    "title": "Comparisons and illustrative stock aggregation",
+    "prerequisites": [
+      "local EPW",
+      "EnergyPlus 24.2"
+    ]
+  },
+  {
+    "path": "09_results/03_quality_sensitivity_and_interpretation.ipynb",
+    "title": "Quality, sensitivity and interpretation",
+    "prerequisites": [
+      "local EPW",
+      "EnergyPlus 24.2"
+    ]
+  },
+  {
+    "path": "01_geometry/08_real_footprint_corpus_review.ipynb",
+    "title": "Real-footprint corpus review and acceptance",
+    "prerequisites": []
+  },
+  {
+    "path": "05_renovation/04_measure_interactions.ipynb",
+    "title": "Why renovation savings are not additive",
+    "prerequisites": [
+      "local EPW",
+      "EnergyPlus 24.2"
+    ]
+  }
+]

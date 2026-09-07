@@ -1,5 +1,5 @@
-from pathlib import Path
 import os
+from pathlib import Path
 
 import pytest
 
@@ -18,10 +18,11 @@ def energyplus():
 @pytest.fixture
 def building(tmp_path):
     epw = (
-        Path(__file__).parents[2] / "epw/SWE_VG_Gothenburg-Landvetter.AP.025260_TMYx.2004-2018.epw"
+        Path(__file__).parents[2]
+        / "data/weather/SWE_VG_Gothenburg-Landvetter.AP.025260_TMYx.2004-2018.epw"
     )
     if not epw.exists():
-        epw=tmp_path/"unit-test-weather.epw"
+        epw = tmp_path / "unit-test-weather.epw"
         epw.write_text("LOCATION,Unit test,Test,SWE,TEST,000000,57,12,1,20\n")
     concrete = MaterialSpec(
         name="concrete", conductivity_w_mk=1.7, density_kg_m3=2300, specific_heat_j_kgk=880
@@ -34,7 +35,13 @@ def building(tmp_path):
     return BuildingSpec(
         identifier="test",
         geometry=GeometrySpec(
-            footprints=(Footprint.rectangle(30, 20),), floors=3, floor_height_m=2.8
+            parts=(
+                BuildingPart(
+                    identifier="main",
+                    footprint=Footprint.rectangle(30, 20),
+                    storey_elevations_m=(0, 2.8, 5.6, 8.4),
+                ),
+            )
         ),
         facade=FacadeSpec(
             default_wwr=0.2, glazing=GlazingSpec(u_value_w_m2k=1.8, solar_heat_gain_coefficient=0.6)
@@ -47,7 +54,7 @@ def building(tmp_path):
             intermediate_floor=slab,
             weather_shell=slab,
             basement_wall=insulated,
-            roof_topology="compact",
+            basement_ceiling=insulated,
         ),
         airflow=AirflowSpec(
             topology="FTX",

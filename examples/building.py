@@ -6,6 +6,7 @@ from pathlib import Path
 from epsm_core import (
     AirflowSpec,
     BuildingBuilder,
+    BuildingPart,
     ConstructionSpec,
     EnvelopeSpec,
     FacadeSpec,
@@ -44,11 +45,17 @@ def example_spec(epw):
         intermediate_floor=slab,
         weather_shell=slab,
         basement_wall=insulated,
-        roof_topology="compact",
+        basement_ceiling=insulated,
     )
     assumptions = dict(
         geometry=GeometrySpec(
-            footprints=(Footprint.rectangle(30, 20),), floors=3, floor_height_m=2.8
+            parts=(
+                BuildingPart(
+                    identifier="main",
+                    footprint=Footprint.rectangle(30, 20),
+                    storey_elevations_m=(0, 2.8, 5.6, 8.4),
+                ),
+            )
         ).model_dump(),
         envelope=envelope.model_dump(),
         facade=FacadeSpec(
@@ -77,4 +84,5 @@ if __name__ == "__main__":
     parser.add_argument("epw")
     parser.add_argument("output", type=Path)
     args = parser.parse_args()
+    args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(example_spec(args.epw).model_dump_json(indent=2))
