@@ -75,7 +75,32 @@ Apartment generation requires explicit residential use and dwelling/common parti
 | `urban_lowrise_dense` | 32 m | 20–26 m | 6–15 m | 10 m |
 | `urban_highrise_dense` | 32 m | 20–26 m | 24–60 m | 10 m |
 
-The default radius is 100 m, seed is zero and generated-building cap is 128. Parameters are configurable. The two urban presets have identical horizontal geometry for the same seed/settings. Generated contexts avoid target courtyards and existing neighbours. Reports include actual counts and assumptions. Workload-limit violations raise errors instead of silently truncating the scene.
+The default radius remains 100 m pending multi-radius convergence validation; it is
+the maximum minimum distance between target and neighbour footprints, not a centroid
+distance. Seed is zero and the generated-building cap is 128. The versioned generator
+uses signed grid coordinates and near-to-far acceptance: increasing radius preserves
+every existing nearby building and identifier. The two urban presets have identical
+horizontal geometry for the same seed/settings. Synthetic context avoids courtyard
+voids; explicit context is preserved. Limits raise rather than silently truncate.
+
+Context extrusions include walls, roofs and bottom caps. Read-only closure, outward
+orientation and manifold checks qualify opaque static shells for global mirror
+suppression. Any standalone façade shade keeps automatic mirroring enabled. Proven
+invisible faces may be omitted from simulation; the full physical context remains
+available to the viewer. The proof checks every receiver vertex against the outward
+face plane and is conservative for every ray direction, including low solar angles.
+
+Physical geometry uses exterior footprint dimensions and interior partition centerlines.
+Generators own winding and convex horizontal decomposition. Shared coordinates are
+interned on the existing 1e-8 m source-plane grid once; scene rotation preserves those
+identities. Serializers only rotate vertex sequences cyclically. Validation never repairs
+geometry. Roof heat-transfer surfaces cover the zone-contact area; façade overhangs
+are separate shading geometry.
+
+The minimum generated face edge is 0.010001 m. Short chamfered-shade probes against
+the pinned EnergyPlus 24.2 binary confirmed vertex dropping below 0.01 m; the
+application adds a 1 µm margin. Degenerate and redundant collinear face vertices
+are rejected. This tolerance is independent of source-coordinate quantization.
 
 | Custom neighbour | Rural |
 | --- | --- |

@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-06
+# Date modified: 2026-09-11
 # Changelog:
+#   2026-09-11 - Display complete physical context and remove recovered-mesh rendering.
 #   2026-09-06 - Document viewer interfaces, examples, constraints and processing rationale.
 
 """Offline epJSON viewer, serving an explicit artifact allowlist on loopback only.
@@ -242,6 +243,19 @@ def viewer_data(model, report=None, diagnostics=None, preparation=None):
         render_object(name, obj, "opening", parent=obj["building_surface_name"])
     for name, obj in model.get("Shading:Building:Detailed", {}).items():
         render_object(name, obj, report.get("shading", {}).get(name, {}).get("kind", "context"))
+    # Retain the complete physical context in previews. Hidden extrusion faces
+    # are omitted only from direct-shadow calculation, not from scene geometry.
+    for hidden in report.get("context", {}).get("visibility", {}).get("hidden", []):
+        if hidden["name"] in model.get("Shading:Building:Detailed", {}):
+            continue
+        obj = dict(
+            vertices=[
+                dict(vertex_x_coordinate=x, vertex_y_coordinate=y, vertex_z_coordinate=z)
+                for x, y, z in hidden["vertices"]
+            ]
+        )
+        render_object(hidden["name"], obj, "context")
+        objects[-1]["metadata"]["shadow_export"] = hidden["reason"]
     # 4. Mark physical slab visuals explicitly so they cannot be mistaken for thermal faces.
     for mass in report.get("internal_mass", []):
         for i, v in enumerate(mass.get("vertices", [])):
@@ -652,8 +666,10 @@ def widget_epjson(path, *, height=600):
         report = json.loads(report["report_json"])
     return scene_widget(
         viewer_data(
-            json.loads(path.read_text()), report,
-            adjacent("diagnostics.json"), adjacent("geometry-preparation.json"),
+            json.loads(path.read_text()),
+            report,
+            adjacent("diagnostics.json"),
+            adjacent("geometry-preparation.json"),
         ),
         height=height,
     )

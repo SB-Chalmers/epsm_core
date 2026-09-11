@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-06
+# Date modified: 2026-09-11
 # Changelog:
+#   2026-09-11 - Validate lean SQL outputs and reconcile engine geometry and energy totals.
 #   2026-09-06 - Document results interfaces, examples, constraints and processing rationale.
 
 """Validated hourly EnergyPlus SQL results, retaining every requested signal.
@@ -19,7 +20,7 @@ Notes
 -----
 SQL extraction excludes warmup and non-weather environments, checks every hourly
 calendar and reconciles requested annual energy sums. Raw signals retain their reported
-units; derived demand uses kWh. Missing ground-conduction evidence prevents acceptance.
+units; derived demand uses kWh. Required outputs and geometry totals must reconcile.
 
 Examples
 --------
@@ -38,6 +39,7 @@ from pathlib import Path
 import numpy as np
 
 from .compiler import ENERGY_VARIABLES
+from .failures import GEOMETRY_INVARIANT_FAILURE, MISSING_EXPECTED_OUTPUT, ResultValidationError
 from .weather import hourly_axis
 
 
@@ -113,8 +115,7 @@ def read_results(sql_path, spec, report, diagnostics):
     Raises
     ------
     ValueError
-        Rejected conditions: SQL contains no hourly results; Missing ground-contact surface
-        conduction output.
+        Rejected conditions include missing outputs, invalid calendars and geometry totals.
 
     Notes
     -----
@@ -150,7 +151,7 @@ def read_results(sql_path, spec, report, diagnostics):
         expected_calendar.append((stamp.month, stamp.day, stamp.hour + 1, 0, 60))
     # 2. Select weather-run rows only, excluding warmup and preserving per-signal time order.
     # NOTE: sqlite3 can create a missing path; callers must supply an existing completed SQL file.
-    with sqlite3.connect(sql_path) as db:
+    with sqlite3.connect(Path(sql_path).resolve().as_uri() + "?mode=ro", uri=True) as db:
         definitions = {
             row[0]: row[1:]
             for row in db.execute(
@@ -182,7 +183,25 @@ def read_results(sql_path, spec, report, diagnostics):
                 annual[name] = annual.get(name, 0) + values.sum()
     # 3. Require actual hourly output before deriving aggregate demand.
     if not hourly:
-        raise ValueError("SQL contains no hourly results")
+        raise ResultValidationError(MISSING_EXPECTED_OUTPUT, "SQL contains no hourly results")
+    for obj in report.data.get("simulation_configuration", {}).get("Output:Variable", {}).values():
+        if obj["reporting_frequency"] == "Hourly" and not any(
+            name.upper() == obj["variable_name"].upper()
+            and (obj["key_value"] == "*" or key.upper() == obj["key_value"].upper())
+            for name, key in (signal.split("::", 1) for signal in hourly)
+        ):
+            raise ResultValidationError(
+                MISSING_EXPECTED_OUTPUT, f"Missing expected EnergyPlus output: {obj}"
+            )
+    for request in report.data.get("compiler_settings", {}).get("hourly_outputs", []):
+        if not any(
+            name.upper() == request["name"].upper()
+            and (request["key"] == "*" or key.upper() == request["key"].upper())
+            for name, key in (signal.split("::", 1) for signal in hourly)
+        ):
+            raise ResultValidationError(
+                MISSING_EXPECTED_OUTPUT, f"Missing requested EnergyPlus output: {request}"
+            )
     # 4. Convert Joules to kWh and independently reconcile annual totals for each demand signal.
     scalar = {}
     for name, output in zip(
@@ -190,7 +209,9 @@ def read_results(sql_path, spec, report, diagnostics):
     ):
         signals = [v for k, v in hourly.items() if k.startswith(name + "::")]
         if not signals:
-            raise ValueError(f"Missing required EnergyPlus signal: {name}")
+            raise ResultValidationError(
+                MISSING_EXPECTED_OUTPUT, f"Missing required EnergyPlus signal: {name}"
+            )
         values = np.sum(signals, axis=0) / 3.6e6
         if np.any(values < -1e-6):
             raise ValueError(f"Negative energy in {name}")
@@ -198,6 +219,8 @@ def read_results(sql_path, spec, report, diagnostics):
         if name not in annual or not np.isclose(total, annual[name] / 3.6e6, rtol=0.001, atol=1e-6):
             raise ValueError(f"Annual/hourly disagreement for {name}")
         scalar[output + "_kwh"] = total
+        if output != "dhw_load":
+            scalar["peak_hourly_average_" + output + "_kw"] = float(values.max())
         scalar[output + "_eui_kwh_m2"] = total / report.data["conditioned_floor_area_m2"]
         hourly[output + "_kwh"] = values
         units[output + "_kwh"] = "kWh"
@@ -207,7 +230,47 @@ def read_results(sql_path, spec, report, diagnostics):
     )
     hourly["ideal_thermal_load_kwh"] = hourly["space_heating_demand_kwh"] + hourly["dhw_load_kwh"]
     units["ideal_thermal_load_kwh"] = "kWh"
-    # 5. Require conduction evidence for every reported ground-contact surface.
+    # 5. Independently reconcile the engine's initialized geometry with the compiler.
+    with sqlite3.connect(Path(sql_path).resolve().as_uri() + "?mode=ro", uri=True) as db:
+        engine_zones = {
+            name.upper(): (volume, area)
+            for name, volume, area in db.execute("SELECT ZoneName,Volume,FloorArea FROM Zones")
+        }
+        for zone, expected in report.data["zones"].items():
+            if zone.upper() not in engine_zones or not np.allclose(
+                engine_zones[zone.upper()],
+                (expected["volume_m3"], expected["floor_area_m2"]),
+                rtol=1e-8,
+                atol=1e-6,
+            ):
+                raise ResultValidationError(
+                    GEOMETRY_INVARIANT_FAILURE,
+                    f"EnergyPlus area/volume differs from compiler: {zone}",
+                )
+        engine_surfaces = {
+            name.upper(): area
+            for name, area in db.execute("SELECT SurfaceName,GrossArea FROM Surfaces")
+        }
+        for name, expected in report.data["surfaces"].items():
+            if name.upper() not in engine_surfaces or not np.isclose(
+                engine_surfaces[name.upper()], expected["area_m2"], rtol=1e-8, atol=1e-6
+            ):
+                raise ResultValidationError(
+                    GEOMETRY_INVARIANT_FAILURE,
+                    f"EnergyPlus surface area differs from compiler: {name}",
+                )
+        for mass in report.data.get("internal_mass", []):
+            for face in ("a", "b"):
+                name = (mass["name"] + "_" + face).upper()
+                if name not in engine_surfaces or not np.isclose(
+                    engine_surfaces[name], mass["area_m2"], rtol=1e-8, atol=1e-6
+                ):
+                    raise ResultValidationError(
+                        GEOMETRY_INVARIANT_FAILURE,
+                        f"EnergyPlus thermal mass area differs from compiler: {name}",
+                    )
+    diagnostics["geometry_totals"] = "engine_area_volume_reconciled"
+    # 6. Ground-conduction evidence is optional and never inferred when absent.
     ground_names = {f["surface"].upper() for f in report.data["ground_surfaces"]}
     ground = [
         v / 3.6e6
@@ -215,9 +278,20 @@ def read_results(sql_path, spec, report, diagnostics):
         if key.startswith("Surface Inside Face Conduction Heat Transfer Energy::")
         and key.split("::", 1)[1] in ground_names
     ]
-    if len(ground) != len(ground_names):
-        raise ValueError("Missing ground-contact surface conduction output")
-    scalar["annual_absolute_ground_transfer_kwh"] = float(sum(np.abs(v).sum() for v in ground))
+    # Ground transfer is validation-only. Report it only with complete evidence.
+    if ground and len(ground) == len(ground_names):
+        scalar["annual_absolute_ground_transfer_kwh"] = float(sum(np.abs(v).sum() for v in ground))
+    temperatures = [v for key, v in hourly.items() if key.startswith("Zone Mean Air Temperature::")]
+    if temperatures:
+        scalar["maximum_hourly_average_zone_temperature_c"] = float(
+            max(v.max() for v in temperatures)
+        )
+    for variable, output in (
+        ("Zone Heating Setpoint Not Met Time", "heating_unmet_zone_hours"),
+        ("Zone Cooling Setpoint Not Met Time", "cooling_unmet_zone_hours"),
+    ):
+        if variable in annual:
+            scalar[output] = float(annual[variable])
     return SimulationResult(
         report.run_id,
         scalar,

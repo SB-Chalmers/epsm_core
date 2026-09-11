@@ -249,10 +249,10 @@ def test_overhang_analytical_projection(building, energyplus):
     metadata = report.data["shading"]
     name = next(n for n, s in metadata.items() if s["kind"] == "overhang")
     v = vertices(model["Shading:Building:Detailed"][name])
-    u = v[1] - v[0]
-    u /= np.linalg.norm(u)
-    outward = np.cross(u, [0, 0, 1])
-    projection = (v[2] - v[1]) @ outward
+    # Export starts at the declared upper-left vertex. Measure physical depth
+    # independently of the cyclic start index of this horizontal polygon.
+    edge_lengths = np.linalg.norm(np.roll(v, -1, axis=0) - v, axis=1)
+    projection = min(edge_lengths)
     assert projection == pytest.approx(0.6)
     assert projection / np.tan(np.radians(45)) == pytest.approx(0.6)
 

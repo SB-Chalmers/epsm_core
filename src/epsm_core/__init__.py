@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-06
+# Date modified: 2026-09-11
 # Changelog:
+#   2026-09-11 - Export the typed HourlyOutputRequest API.
 #   2026-09-06 - Document __init__ interfaces, examples, constraints and processing rationale.
 
 """Building specifications and EnergyPlus simulation, without implicit data loading.
@@ -96,6 +97,7 @@ __all__ = [
     "synthetic_context",
     "preview_geometry",
     "CompilerSettings",
+    "HourlyOutputRequest",
     "RoofSpec",
     "WindowLayoutSpec",
     "WindowPattern",
@@ -157,4 +159,4 @@ __all__ = [
 
 from .context import synthetic_context
 from .inspection import preview_geometry
-from .settings import CompilerSettings
+from .settings import CompilerSettings, HourlyOutputRequest

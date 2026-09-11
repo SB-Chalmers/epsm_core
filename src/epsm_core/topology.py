@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-06
+# Date modified: 2026-09-11
 # Changelog:
+#   2026-09-11 - Pool shared vertices during generation for exact surface adjacency.
 #   2026-09-06 - Document topology interfaces, examples, constraints and processing rationale.
 
 """Shared cell-to-surface topology for physical parts and generated thermal zones.
@@ -206,6 +207,29 @@ class Surface:
 
 
 @dataclass
+class VertexPool:
+    """Shared coordinate identities assigned during generation, never serialization.
+
+    Source-plane x/y coordinates use the existing 1e-8 m generation grid once.
+    Rotated coordinates are retained exactly using a pool with quantize=False.
+    """
+
+    quantize: bool = True
+    coordinates: dict = field(default_factory=dict)
+
+    def ring(self, points):
+        result = []
+        for x, y, z in points:
+            key = (
+                (round(float(x), 8), round(float(y), 8), float(z))
+                if self.quantize
+                else (float(x), float(y), float(z))
+            )
+            result.append(self.coordinates.setdefault(key, key))
+        return result
+
+
+@dataclass
 class SurfaceGraph:
     """Resolved mutable thermal topology and its assumption reports.
 
@@ -254,6 +278,7 @@ class SurfaceGraph:
     approximations: list
     layout_report: dict = field(default_factory=dict)
     zoning_report: dict = field(default_factory=dict)
+    vertex_pool: VertexPool = field(default_factory=VertexPool)
 
 
 def with_geometry(spec, geometry):
@@ -701,8 +726,13 @@ def build_surface_graph(spec, polygons):
 
             return [(x * c - y * s, x * s + y * c, z) for x, y, z in vertices]
 
+        rotated_pool = VertexPool(quantize=False)
+        transformed = {
+            point: tuple(transform([point])[0]) for point in graph.vertex_pool.coordinates
+        }
         for surface in graph.surfaces:
-            surface.vertices = transform(surface.vertices)
+            surface.vertices = rotated_pool.ring([transformed[tuple(p)] for p in surface.vertices])
+        graph.vertex_pool = rotated_pool
         for mass in graph.internal_mass:
             mass["vertices"] = [transform(patch) for patch in mass["vertices"]]
         return graph
@@ -961,6 +991,8 @@ def graph_from_cells(spec, polygons, cells):
     points = [Point(p) for p in sorted(coordinates)]
     point_tree = STRtree(points)
 
+    vertex_pool = VertexPool()
+
     def add(cell, vertices, kind, role, boundary, suffix, **kwargs):
         """Create a surface carrying physical ownership and assumption annotations.
 
@@ -1016,7 +1048,7 @@ def graph_from_cells(spec, polygons, cells):
         surface = Surface(
             f"{cell.identifier}_{suffix}",
             cell.zone,
-            [(round(x, 8), round(y, 8), z) for x, y, z in vertices],
+            vertex_pool.ring(vertices),
             kind,
             role,
             boundary,
@@ -1207,10 +1239,10 @@ def graph_from_cells(spec, polygons, cells):
         approximations.append(
             "EnergyPlus approximate interior view factors in a nonconvex or unequal-height enclosure"
         )
-    graph = SurfaceGraph(surfaces, zones, masses, valid_facades, approximations)
+    graph = SurfaceGraph(
+        surfaces, zones, masses, valid_facades, approximations, vertex_pool=vertex_pool
+    )
     from .roofs import apply_roofs
 
     graph = apply_roofs(spec, polygons, graph)
-    for surface in graph.surfaces:
-        surface.vertices = [(round(x, 8), round(y, 8), z) for x, y, z in surface.vertices]
     return graph

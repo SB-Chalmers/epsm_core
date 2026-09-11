@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-06
+# Date modified: 2026-09-11
 # Changelog:
+#   2026-09-11 - Require read-only geometry validation before serialization.
 #   2026-09-06 - Document pipeline interfaces, examples, constraints and processing rationale.
 
 """Shared geometry resolution for compilation, quantities and inspection.
@@ -36,6 +37,7 @@ from dataclasses import dataclass
 
 from .facades import panelize_receiving_walls, resolve_openings, shading_geometry
 from .geometry import local_polygons
+from .surface_checks import validate_surfaces
 from .topology import build_surface_graph
 
 
@@ -154,4 +156,38 @@ def resolve_geometry(spec, *, panelize=False):
     if panelize and shading:
         graph = panelize_receiving_walls(graph, openings)
         openings, facades = resolve_openings(spec, graph)
+
+    # Assert physical geometry before any serializer receives it. This view
+    # references source coordinates and does not rotate or repair the graph.
+    def coordinates(points):
+        return [
+            {f"vertex_{axis}_coordinate": value for axis, value in zip("xyz", point)}
+            for point in points
+        ]
+
+    validate_surfaces(
+        {
+            "BuildingSurface:Detailed": {
+                face.name: dict(
+                    zone_name=face.zone,
+                    surface_type=face.kind,
+                    construction_name=face.construction,
+                    outside_boundary_condition=face.boundary,
+                    outside_boundary_condition_object=face.adjacent,
+                    vertices=coordinates(face.vertices),
+                )
+                for face in graph.surfaces
+            },
+            "FenestrationSurface:Detailed": {
+                opening.name: dict(
+                    building_surface_name=opening.parent, vertices=coordinates(opening.vertices)
+                )
+                for opening in openings
+            },
+            "Shading:Building:Detailed": {
+                shade["name"]: dict(vertices=coordinates(shade["vertices"])) for shade in shading
+            },
+        },
+        graph.zones,
+    )
     return ResolvedGeometry(polygons, origin, graph, openings, facades, shading)

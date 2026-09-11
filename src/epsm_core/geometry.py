@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-06
+# Date modified: 2026-09-11
 # Changelog:
+#   2026-09-11 - Generate outward-wound surfaces and prove horizontal decomposition conservation.
 #   2026-09-06 - Document geometry interfaces, examples, constraints and processing rationale.
 
 """Deterministic planar geometry, extrusion and facade identity.
@@ -84,7 +85,7 @@ def local_polygons(geometry):
 
 
 def horizontal_patches(polygon):
-    """Produce hole-free horizontal patches while conserving net area.
+    """Produce convex horizontal patches while conserving net area.
 
     Parameters
     ----------
@@ -103,8 +104,9 @@ def horizontal_patches(polygon):
 
     Notes
     -----
-    Courtyards require constrained Delaunay triangulation; an area mismatch above relative
-    1e-9 is rejected.
+    Courtyards, concave polygons and faces with more than four vertices use
+    constrained Delaunay triangulation; an area mismatch above relative 1e-9
+    is rejected. This changes face tessellation, never thermal zoning.
 
     Examples
     --------
@@ -117,15 +119,37 @@ def horizontal_patches(polygon):
         patches = horizontal_patches(box(0, 0, 10, 8))
         assert sum(p.area for p in patches) == 80
     """
-    # 1. Produce hole-free horizontal patches while conserving net area.
-    if not polygon.interiors:
+    # 1. Produce convex horizontal patches while conserving net area.
+    # EnergyPlus polygon clipping requires convex receiving surfaces. Keeping
+    # concave flat roofs intact produces invalid shadows and explosive overlap
+    # calculations. Split only horizontal faces; thermal cells/zones stay intact.
+    # Bound convex faces too, avoiding the engine's overlap vertex limit.
+    ring = list(polygon.exterior.coords)[:-1]
+    collinear = any(
+        abs((b[0] - a[0]) * (c[1] - b[1]) - (b[1] - a[1]) * (c[0] - b[0])) <= 1e-12
+        for a, b, c in zip(ring, ring[1:] + ring[:1], ring[2:] + ring[:2])
+    )
+    if (
+        not polygon.interiors
+        and len(polygon.exterior.coords) <= 5
+        and polygon.equals(polygon.convex_hull)
+        and not collinear
+    ):
         return [orient(polygon, sign=1)]
     triangles = constrained_delaunay_triangles(polygon)
     patches = sorted(
         (orient(p, sign=1) for p in triangles.geoms),
         key=lambda p: (p.centroid.x, p.centroid.y, p.area),
     )
-    if abs(sum(p.area for p in patches) - polygon.area) > polygon.area * 1e-9:
+    from shapely.ops import unary_union
+
+    tolerance = max(1e-9, polygon.area * 1e-9)
+    union = unary_union(patches)
+    if (
+        abs(sum(p.area for p in patches) - polygon.area) > tolerance
+        or abs(sum(p.area for p in patches) - union.area) > tolerance
+        or union.symmetric_difference(polygon).area > tolerance
+    ):
         raise ValueError("Tessellation failed area conservation")
     return patches
 

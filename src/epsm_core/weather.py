@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-06
+# Date modified: 2026-09-11
 # Changelog:
+#   2026-09-11 - Validate required EPW fields without climate-specific substitutions.
 #   2026-09-06 - Document weather interfaces, examples, constraints and processing rationale.
 
 """Local EPW metadata and checksum handling. Never fetches weather implicitly.
@@ -32,6 +33,7 @@ Example::
 
 import csv
 import hashlib
+import math
 from pathlib import Path
 
 from .specs import ClimateSpec
@@ -213,9 +215,29 @@ def validate_epw_calendar(path, year):
         reader = csv.reader(stream)
         headers = [next(reader) for _ in range(8)]
         axis = []
-        for row in reader:
-            if len(row) < 5:
+        for row_number, row in enumerate(reader, 9):
+            if len(row) < 35:
                 raise ValueError("Malformed EPW hourly row")
+            # Required physical inputs cannot use EPW missing-value sentinels.
+            # Other optional EPW fields retain their documented engine handling.
+            for column, name, lower, upper in (
+                (6, "dry bulb", -70, 70),
+                (7, "dew point", -70, 70),
+                (8, "relative humidity", 0, 110),
+                (9, "pressure", 31000, 120000),
+                (14, "direct normal solar", 0, 9998),
+                (15, "diffuse solar", 0, 9998),
+                (20, "wind direction", 0, 360),
+                (21, "wind speed", 0, 40),
+            ):
+                try:
+                    value = float(row[column])
+                except ValueError as error:
+                    raise ValueError(f"Invalid EPW {name} at row {row_number}") from error
+                if not math.isfinite(value) or not lower <= value <= upper:
+                    raise ValueError(
+                        f"Missing or invalid EPW {name} at row {row_number}: {row[column]}"
+                    )
             month, day, hour, minute = map(int, row[1:5])
             if not 1 <= hour <= 24 or minute not in (0, 60):
                 raise ValueError(

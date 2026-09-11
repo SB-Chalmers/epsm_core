@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from epsm_core import (
     AddInsulation,
@@ -80,7 +81,6 @@ def test_hash_physics(building, energyplus):
     original = compiler.run_id(building)
     changes = [
         building.updated(airflow=building.airflow.updated(envelope_infiltration_ach=0.3)),
-        building.updated(climate=building.climate.updated(weather_sha256="f" * 64)),
         building.updated(
             geometry=building.geometry.updated(
                 parts=(
@@ -93,3 +93,5 @@ def test_hash_physics(building, energyplus):
         building.updated(envelope=building.envelope.updated(thermal_bridge_uplift_fraction=0.2)),
     ]
     assert all(compiler.run_id(b) != original for b in changes)
+    with pytest.raises(ValueError, match="EPW checksum"):
+        compiler.run_id(building.updated(climate=building.climate.updated(weather_sha256="f" * 64)))

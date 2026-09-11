@@ -96,3 +96,16 @@ def test_sql_calendar_rejects_invalid_intervals(building, tmp_path, bad_column, 
         db.execute(f"UPDATE Time SET {bad_column}=? WHERE TimeIndex=2", (bad_value,))
     with pytest.raises(ValueError, match="calendar hours"):
         read_results(path, building, None, {})
+
+
+@pytest.mark.parametrize("message", [
+    "DeterminePolygonOverlap: Too many figures [>10000000] detected in an overlap calculation.",
+    "Too many vertices [>=15] in a shadow overlap",
+])
+def test_shadow_limits_cannot_be_waived(tmp_path,message):
+    path=tmp_path/"shadow.err"
+    path.write_text(" ** Warning ** "+message+"\n")
+    rule=WarningRule("broad","1","24.2",".*","test",("test",),100)
+    report=error_diagnostics(path,rules=(rule,),conditions=("test",))
+    assert not report["accepted"]
+    assert report["messages"][0]["category"]=="shadow_overlap_limit"

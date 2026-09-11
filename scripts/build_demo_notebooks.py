@@ -391,7 +391,8 @@ bars({city:r.scalars["space_heating_demand_eui_kwh_m2"] for city,r in results.it
 ('Disclose ground assumptions', 'The default monthly ground temperatures are an uncalibrated engine assumption. Supply an explicit source for an alternative; constant deep-ground temperatures are not outdoor air temperatures.', '''
 ground = GroundTemperatureSpec(monthly_temperatures_c=(15.,)*12, source="illustrative constant 15C sensitivity")
 changed = base.updated(envelope=base.envelope.updated(ground_temperature=ground))
-cold_ground = runner.run(changed, OUT / "ground15")
+ground_runner = EnergyPlusRunner(engine(), settings=CompilerSettings(hourly_outputs=(HourlyOutputRequest(name="Surface Inside Face Conduction Heat Transfer Energy"),)))
+cold_ground = ground_runner.run(changed, OUT / "ground15")
 pd.DataFrame({"default":base.envelope.ground_temperature.monthly_temperatures_c,"illustrative":ground.monthly_temperatures_c},index=range(1,13)).plot(ylabel="°C",xlabel="month",title="Ground boundary assumptions")
 plt.show()
 '''),
@@ -702,9 +703,9 @@ preview(b,"Serialized building")
 ''')], needs=WEATHER, lesson='Archive immutable specifications alongside simulation results. A human-readable identifier alone is not enough to establish which inputs produced a result.')
 nb('06_io','02_compilation_and_engine_exports','Compilation reports and engine exports',
    'Inspect epJSON, compilation settings and IDF export as explicit boundaries of the simulation pipeline.', [
-('Compile with explicit settings', 'CompilerSettings changes engine controls and participates in run identity. A high shadow-figure limit is not a replacement for a bounded context selection.', '''
+('Compile with explicit settings', 'CompilerSettings adds keyed hourly outputs and participates in run identity. Physical simulation settings are fixed and validated.', '''
 b=building()
-settings=CompilerSettings(shadow_max_figures=1000000)
+settings=CompilerSettings(hourly_outputs=(HourlyOutputRequest(name="Site Outdoor Air Drybulb Temperature"),))
 compiler=EnergyPlusCompiler(engine(),settings=settings)
 model,report=compiler.compile(b)
 assert isinstance(report,CompilationReport)

@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-06
+# Date modified: 2026-09-11
 # Changelog:
+#   2026-09-11 - Reject geometry repairs and classify shadow limits and missing outputs.
 #   2026-09-06 - Document diagnostics interfaces, examples, constraints and processing rationale.
 
 """Fail-closed EnergyPlus diagnostics with explicit, versioned warning exceptions.
@@ -176,7 +177,23 @@ def category(text):
     # 1. Classify an EnergyPlus diagnostic by ordered textual patterns.
     text = text.lower()
     for name, pattern in (
+        (
+            "missing_output",
+            r"requested.*(?:variables|meters).*not generated|(?:output:variable|output:meter).*not found",
+        ),
         ("incomplete_view_factors", r"view factors? (?:not complete|.*incomplete)"),
+        (
+            "shadow_overlap_limit",
+            r"too many (?:vertices|figures).*shadow|(?:shadow|overlap).*too many (?:vertices|figures)|too many (?:vertices|figures)",
+        ),
+        (
+            "geometry_repair",
+            r"(?:drop|remov|revers)\w*.*vert(?:ex|ices)|vert(?:ex|ices).*?(?:drop|remov|revers)|(?:floor|roof).*?(?:upside.down|revers)",
+        ),
+        (
+            "geometry_mismatch",
+            r"(?:subsurface|base surface).*?(?:normal|facing).*?(?:differ|mismatch)|interzone.*?(?:area|azimuth).*?(?:differ|mismatch)",
+        ),
         ("convergence_failure", r"converg.*(?:fail|not)|(?:fail|not).*converg"),
         (
             "discarded_surface",
@@ -196,6 +213,10 @@ def category(text):
 
 
 ALWAYS_FAIL = {
+    "missing_output",
+    "shadow_overlap_limit",
+    "geometry_repair",
+    "geometry_mismatch",
     "incomplete_view_factors",
     "convergence_failure",
     "discarded_surface",
@@ -341,6 +362,17 @@ WHOLE_BUILDING_AREA_RULE = WarningRule(
     rationale="The explicit Space area includes intermediate physical slabs represented by InternalMass. "
     "The compiler reconciles this area to the geometric base floors plus each physical slab once.",
     expected_conditions=("whole_building_zoning", "space_area_equals_base_plus_physical_slabs"),
+    max_occurrences=1,
+)
+
+# DisplayExtraWarnings spells the same compiler-proven area convention per space.
+WHOLE_BUILDING_AREA_DETAIL_RULE = WarningRule(
+    identifier="explicit_whole_building_space_area_detail",
+    version="1",
+    engine_version="24.2",
+    pattern=r'GetSurfaceData: Entered Floor Area for Space="[^"]+" is [0-9.]+% different from the calculated Floor Area\.',
+    rationale=WHOLE_BUILDING_AREA_RULE.rationale,
+    expected_conditions=WHOLE_BUILDING_AREA_RULE.expected_conditions,
     max_occurrences=1,
 )
 

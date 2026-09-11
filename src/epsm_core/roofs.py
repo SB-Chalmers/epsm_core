@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-06
+# Date modified: 2026-09-11
 # Changelog:
+#   2026-09-11 - Generate pitched roof shells using shared vertices and open backend rings.
 #   2026-09-06 - Document roofs interfaces, examples, constraints and processing rationale.
 
 """Validated pitched attic shells; skeleton failures never become flat roofs.
@@ -217,6 +218,10 @@ def roof_faces(polygon, roof, base, orientation=0):
     if roof.shape == "hip":
         sk = skeleton(polygon)
         for indices in sk.get_faces():
+            # The backend supplies closed index rings. Our physical face
+            # representation is open; interpret that contract at generation.
+            if indices and indices[0] == indices[-1]:
+                indices = indices[:-1]
             v = [
                 [sk.nodes[i].position.x, sk.nodes[i].position.y, base + sk.nodes[i].time * slope]
                 for i in indices
@@ -447,7 +452,7 @@ def apply_roofs(spec, polygons, graph):
                 Surface(
                     f"{part.identifier}_attic_{kind}_{index}",
                     zone,
-                    v,
+                    graph.vertex_pool.ring(v),
                     kind,
                     "weather_shell",
                     "Outdoors",

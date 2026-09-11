@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-06
+# Date modified: 2026-09-11
 # Changelog:
+#   2026-09-11 - Assert geometry invariants, exact adjacency and validated edge tolerances.
 #   2026-09-06 - Document surface_checks interfaces, examples, constraints and processing rationale.
 
 """Engine-independent checks of emitted epJSON surfaces and openings.
@@ -40,6 +41,9 @@ from collections import defaultdict
 
 import numpy as np
 from shapely.geometry import Polygon
+
+# Pinned 24.2 GetVertices probes reject distances <0.01 m. Keep a 1 µm margin.
+MIN_EDGE_M = 0.010001
 
 
 def vertices(obj):
@@ -129,7 +133,22 @@ def properties(v):
     """
 
     # 1. Validate a planar polygon and compute its area and unit normal.
-    normal = np.sum(np.cross(v, np.roll(v, -1, axis=0)), axis=0) / 2
+    v = np.asarray(v, dtype=float)
+    if v.ndim != 2 or v.shape[1] != 3 or len(v) < 3 or not np.isfinite(v).all():
+        raise ValueError("Nonfinite or zero-area surface")
+    edges = np.roll(v, -1, axis=0) - v
+    lengths = np.linalg.norm(edges, axis=1)
+    if np.any(lengths < MIN_EDGE_M):
+        raise ValueError(
+            f"Near-coincident consecutive surface vertices; minimum edge {MIN_EDGE_M} m"
+        )
+    if np.any(
+        np.linalg.norm(np.cross(edges, np.roll(edges, 1, axis=0)), axis=1)
+        <= 1e-10 * lengths * np.roll(lengths, 1)
+    ):
+        raise ValueError("Collinear surface vertex contributes no boundary")
+    local = v - v[0]
+    normal = np.sum(np.cross(local, np.roll(local, -1, axis=0)), axis=0) / 2
     area = np.linalg.norm(normal)
     if not np.isfinite(v).all() or area <= 1e-8:
         raise ValueError("Nonfinite or zero-area surface")
@@ -216,10 +235,28 @@ def validate_surfaces(model, zones):
     # 1. Validate closed zones, reciprocal faces, construction order and openings.
     surfaces = model.get("BuildingSurface:Detailed", {})
     by_zone = defaultdict(list)
+    signatures = {}
     volumes, area_vectors = defaultdict(float), defaultdict(lambda: np.zeros(3))
     for name, obj in surfaces.items():
+        if obj["zone_name"] not in zones:
+            raise ValueError(f"Surface has unknown zone: {name}")
         v = vertices(obj)
         area, normal, drop = properties(v)
+        signature = (obj["zone_name"], tuple(sorted(map(tuple, v))))
+        if signature in signatures:
+            raise ValueError(f"Duplicate thermal surfaces: {signatures[signature]} and {name}")
+        signatures[signature] = name
+        kind = obj.get("surface_type")
+        if kind == "Floor" and normal[2] >= -1e-8:
+            raise ValueError(f"Floor normal is not downward: {name}")
+        if kind in ("Roof", "Ceiling") and normal[2] <= 1e-8:
+            raise ValueError(f"Roof/ceiling normal is not upward: {name}")
+        if np.ptp(v[:, 2]) < 1e-6:
+            polygon = Polygon(v[:, :2])
+            if len(v) > 4 or polygon.convex_hull.area - polygon.area > 1e-8:
+                raise ValueError(
+                    f"Horizontal receiving surface must be convex with <=4 vertices: {name}"
+                )
         by_zone[obj["zone_name"]].append((name, v))
         volumes[obj["zone_name"]] += area * np.dot(v[0], normal) / 3
         area_vectors[obj["zone_name"]] += normal * area
@@ -230,8 +267,7 @@ def validate_surfaces(model, zones):
                 raise ValueError(f"Nonreciprocal adjacency: {name}")
             w = vertices(other)
             if len(v) != len(w) or not any(
-                np.allclose(v, np.roll(w[::-1], i, axis=0), rtol=0, atol=1e-6)
-                for i in range(len(v))
+                np.array_equal(v, np.roll(w[::-1], i, axis=0)) for i in range(len(v))
             ):
                 raise ValueError(f"Adjacency vertices or normals mismatch: {name}")
             c, d = obj["construction_name"], other["construction_name"]
@@ -266,6 +302,8 @@ def validate_surfaces(model, zones):
 
             if layers(c) != layers(d)[::-1]:
                 raise ValueError(f"Reciprocal constructions not reversed: {name}")
+    if set(by_zone) != set(zones):
+        raise ValueError("Zone lacks generated boundary surfaces")
     # 2. Reconcile oriented volume, area-vector closure and split-edge incidence per zone.
     for zone, faces in by_zone.items():
         if volumes[zone] <= 0 or not close(volumes[zone], zones[zone]["volume_m3"]):
@@ -285,10 +323,16 @@ def validate_surfaces(model, zones):
                     raise ValueError(f"Collapsed edge: {name}")
                 t = (points - a) @ direction / (length * length)
                 distance = np.linalg.norm(points - a - t[:, None] * direction, axis=1)
-                ts = sorted(set([0.0, 1.0, *t[(distance < 1e-7) & (t > 1e-8) & (t < 1 - 1e-8)]]))
+                # Reuse actual vertices when noding. Reconstructing b as a + (b-a),
+                # or projecting an existing T-junction, can cross a decimal rounding
+                # midpoint and assign opposite faces different edge identities.
+                nodes = {0.0: tuple(np.round(a, 7)), 1.0: tuple(np.round(b, 7))}
+                mask = (distance < 1e-7) & (t > 1e-8) & (t < 1 - 1e-8)
+                for position, point in zip(t[mask], points[mask]):
+                    nodes[float(position)] = tuple(np.round(point, 7))
+                ts = sorted(nodes)
                 for start, end in zip(ts, ts[1:]):
-                    u = tuple(np.round(a + start * direction, 7))
-                    w = tuple(np.round(a + end * direction, 7))
+                    u, w = nodes[start], nodes[end]
                     if u != w:  # Equivalent split parameters can differ by floating-point noise.
                         incidence[tuple(sorted((u, w)))].append((u, w))
         if any(len(pair) != 2 or pair[0] != pair[1][::-1] for pair in incidence.values()):
@@ -296,8 +340,16 @@ def validate_surfaces(model, zones):
                 f"Zone has open, overlapping or inconsistently oriented boundary edges: {zone}"
             )
     # 3. Validate shading polygons even though they do not enclose thermal zones.
-    for obj in model.get("Shading:Building:Detailed", {}).values():
-        properties(vertices(obj))
+    shade_signatures = {}
+    for name, obj in model.get("Shading:Building:Detailed", {}).items():
+        points = vertices(obj)
+        properties(points)
+        signature = tuple(sorted(tuple(p) for p in np.round(points, 8)))
+        if signature in shade_signatures:
+            raise ValueError(
+                f"Duplicate shading surfaces: {shade_signatures[signature]} and {name}"
+            )
+        shade_signatures[signature] = name
     # 4. Require coplanar contained windows and reject overlaps within each parent.
     openings = defaultdict(list)
     for name, obj in model.get("FenestrationSurface:Detailed", {}).items():
@@ -306,7 +358,9 @@ def validate_surfaces(model, zones):
             raise ValueError(f"Window missing parent: {name}")
         v, w = vertices(parent), vertices(obj)
         _, normal, drop = properties(v)
-        properties(w)
+        _, window_normal, _ = properties(w)
+        if np.dot(normal, window_normal) < 1 - 1e-8:
+            raise ValueError(f"Window normal differs from parent surface: {name}")
         if np.max(abs((w - v[0]) @ normal)) > 1e-6 or not Polygon(
             np.delete(v, drop, axis=1)
         ).covers(Polygon(np.delete(w, drop, axis=1))):

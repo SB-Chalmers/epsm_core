@@ -1,5 +1,5 @@
 /*
- * File: viewer_assets/viewer.js
+ * File: viewer_assets/renderer.js
  * Purpose: Inspect resolved geometry and simulation evidence using local Three.js assets.
  * SPDX-License-Identifier: MIT
  * Copyright (c) 2026 Sanjay Somanath
@@ -10,8 +10,9 @@
  * Research Area of Sustainable Built Environments
  * Chalmers University of Technology, Gothenburg
  * Date created: 2026-09-06 (documentation-header creation; not original file creation)
- * Date modified: 2026-09-06
+ * Date modified: 2026-09-11
  * Changelog:
+ *   2026-09-11 - Correct the shared renderer filename in the documentation header.
  *   2026-09-06 - Document scene setup, transforms, controls and inspection helpers.
  */
 

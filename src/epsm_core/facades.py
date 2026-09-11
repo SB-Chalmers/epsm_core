@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-06
+# Date modified: 2026-09-11
 # Changelog:
+#   2026-09-11 - Generate facade openings and shading with shared graph vertices.
 #   2026-09-06 - Document facades interfaces, examples, constraints and processing rationale.
 
 """Deterministic facade-local openings and geometric shading, shared by all consumers.
@@ -840,7 +841,7 @@ def panelize_receiving_walls(graph, openings):
                 replace(
                     face,
                     name=face.name + f"_panel{i}",
-                    vertices=np.asarray(verts).tolist(),
+                    vertices=graph.vertex_pool.ring(verts),
                     area=(b - a) * height,
                 )
             )

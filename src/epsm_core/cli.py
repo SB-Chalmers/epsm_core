@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-06
+# Date modified: 2026-09-11
 # Changelog:
+#   2026-09-11 - Remove the public shadow-figure override; retain explicit viewing.
 #   2026-09-06 - Document cli interfaces, examples, constraints and processing rationale.
 
 """Small CLI over the same public compile/run API.
@@ -37,7 +38,6 @@ from pathlib import Path
 
 from .compiler import EnergyPlusCompiler
 from .runner import EnergyPlusRunner
-from .settings import CompilerSettings
 from .specs import BuildingSpec
 
 
@@ -78,7 +78,6 @@ def main(argv=None):
     # 1. Dispatch schema, validation, compilation, simulation, export or preview commands.
     parser = argparse.ArgumentParser(prog="epsm-core")
     parser.add_argument("--energyplus", help="EnergyPlus 24.2 executable")
-    parser.add_argument("--shadow-max-figures", type=int, default=10000000)
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("schema", help="Print the canonical BuildingSpec JSON Schema")
     for name in ("validate", "compile", "run", "export-idf"):
@@ -113,12 +112,12 @@ def main(argv=None):
         print(building.physical_hash())
     elif args.command == "run":
         result = EnergyPlusRunner(
-            args.energyplus, settings=CompilerSettings(shadow_max_figures=args.shadow_max_figures)
+            args.energyplus
         ).run(building, args.output)
         print(json.dumps(result.scalars, indent=2))
     else:
         compiler = EnergyPlusCompiler(
-            args.energyplus, settings=CompilerSettings(shadow_max_figures=args.shadow_max_figures)
+            args.energyplus
         )
         if args.output.exists() and any(args.output.iterdir()):
             raise FileExistsError("Output directory must be empty")

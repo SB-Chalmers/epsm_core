@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-06
+# Date modified: 2026-09-11
 # Changelog:
+#   2026-09-11 - Remove recovery retries and automatic previews; preserve classified failure evidence.
 #   2026-09-06 - Document runner interfaces, examples, constraints and processing rationale.
 
 """Isolated EnergyPlus execution; completion requires valid SQL and diagnostics.
@@ -34,6 +35,7 @@ Example::
 """
 
 import json
+import os
 import subprocess
 import time
 from pathlib import Path
@@ -43,6 +45,12 @@ import numpy as np
 from .compiler import EnergyPlusCompiler
 from .delivery import fvp_delivery
 from .diagnostics import WHOLE_BUILDING_AREA_RULE, compiler_warning_conditions, error_diagnostics
+from .failures import (
+    ENERGYPLUS_NUMERICAL_FAILURE,
+    EXTERNAL_ENVIRONMENT_FAILURE,
+    SHADOW_COMPLEXITY_LIMIT,
+    engine_failure_code,
+)
 from .pv import run_pvwatts
 from .results import read_results
 
@@ -65,7 +73,9 @@ class SimulationError(RuntimeError):
         error = SimulationError("EnergyPlus timeout; inspect retained diagnostics")
     """
 
-    pass
+    def __init__(self, message, *, code=ENERGYPLUS_NUMERICAL_FAILURE):
+        self.code = code
+        super().__init__(f"{code}: {message}")
 
 
 class EnergyPlusRunner:
@@ -142,6 +152,7 @@ class EnergyPlusRunner:
             Explicit versioned warning exceptions; severe/fatal and always-fail categories
             cannot be waived. Default: ``()``.
 
+
         Returns
         -------
         SimulationResult
@@ -178,23 +189,39 @@ class EnergyPlusRunner:
         from .weather import validate_epw_calendar
 
         compile_start = time.perf_counter()
-        # 2. Emit validated inputs and a preview before launching any simulation process.
-        report = self.compiler.write(spec, directory)
+        # 2. Emit validated inputs before launching the single simulation process.
+        try:
+            report = self.compiler.write(spec, directory)
+        except (ValueError, OSError) as error:
+            directory.mkdir(parents=True, exist_ok=True)
+            (directory / "building.json").write_text(spec.model_dump_json(indent=2))
+            diagnostics = dict(
+                accepted=False,
+                failure="compilation",
+                failure_detail=str(error),
+                failure_code=getattr(error, "code", EXTERNAL_ENVIRONMENT_FAILURE),
+                compiler_sha256=self.compiler.compiler_hash,
+                engine_sha256=self.compiler.engine_hash,
+                schema_sha256=self.compiler.schema_hash,
+                compiler_settings=self.compiler.settings.model_dump(mode="json"),
+            )
+            (directory / "diagnostics.json").write_text(json.dumps(diagnostics, indent=2))
+            raise
         compile_seconds = time.perf_counter() - compile_start
-        from .viewer import write_viewer
-
-        write_viewer(directory / "model.epJSON", directory / "preview")
         try:
             calendar = validate_epw_calendar(spec.climate.epw_path, spec.climate.calendar_year)
             (directory / "calendar.json").write_text(json.dumps(calendar, indent=2))
         except Exception as error:
             diagnostics = dict(
-                accepted=False, failure="weather_calendar", failure_detail=str(error)
+                accepted=False,
+                failure="weather_calendar",
+                failure_detail=str(error),
+                failure_code=EXTERNAL_ENVIRONMENT_FAILURE,
             )
             (directory / "diagnostics.json").write_text(json.dumps(diagnostics, indent=2))
-            write_viewer(directory / "model.epJSON", directory / "preview")
             raise SimulationError(
-                f"Weather calendar rejected; preview at {directory}: {error}"
+                f"Weather calendar rejected; artifacts at {directory}: {error}",
+                code=EXTERNAL_ENVIRONMENT_FAILURE,
             ) from error
         # 3. Run in the isolated artifact directory and retain combined process output.
         command = [
@@ -214,28 +241,69 @@ class EnergyPlusRunner:
                     stdout=log,
                     stderr=subprocess.STDOUT,
                     timeout=timeout_seconds,
+                    env={**os.environ, "OMP_NUM_THREADS": "1", "EP_OMP_NUM_THREADS": "1"},
                 )
             except subprocess.TimeoutExpired as error:
                 diagnostics = error_diagnostics(directory / "eplusout.err")
-                diagnostics.update(accepted=False, failure="timeout")
+                diagnostics.update(
+                    accepted=False, failure="timeout", failure_code=EXTERNAL_ENVIRONMENT_FAILURE
+                )
                 (directory / "diagnostics.json").write_text(json.dumps(diagnostics, indent=2))
-                write_viewer(directory / "model.epJSON", directory / "preview")
-                raise SimulationError(f"EnergyPlus timeout; diagnostics at {directory}") from error
+                raise SimulationError(
+                    f"EnergyPlus timeout; diagnostics at {directory}",
+                    code=EXTERNAL_ENVIRONMENT_FAILURE,
+                ) from error
+            except OSError as error:
+                diagnostics = dict(
+                    accepted=False,
+                    failure="process_start",
+                    failure_code=EXTERNAL_ENVIRONMENT_FAILURE,
+                    failure_detail=str(error),
+                )
+                (directory / "diagnostics.json").write_text(json.dumps(diagnostics, indent=2))
+                raise SimulationError(
+                    f"Could not launch EnergyPlus; artifacts at {directory}: {error}",
+                    code=EXTERNAL_ENVIRONMENT_FAILURE,
+                ) from error
         simulation_seconds = time.perf_counter() - simulation_start
-        # 4. Derive warning exceptions from emitted evidence, then evaluate actual engine
-        # diagnostics.
-        conditions = compiler_warning_conditions(
-            spec, json.loads((directory / "model.epJSON").read_text()), report
-        )
-        diagnostics = error_diagnostics(
-            directory / "eplusout.err",
-            rules=(WHOLE_BUILDING_AREA_RULE, *warning_rules),
-            conditions=conditions,
-        )
-        if result.returncode:
-            diagnostics.update(accepted=False, process_returncode=result.returncode)
+
+        # 4. Validate every attempt under the same strict diagnostic policy.
+        def diagnose(attempt_directory, report, returncode):
+            conditions = compiler_warning_conditions(
+                spec, json.loads((attempt_directory / "model.epJSON").read_text()), report
+            )
+            diagnostics = error_diagnostics(
+                attempt_directory / "eplusout.err",
+                rules=(WHOLE_BUILDING_AREA_RULE, *warning_rules),
+                conditions=conditions,
+            )
+            if returncode:
+                diagnostics.update(accepted=False, process_returncode=returncode)
+            return diagnostics
+
+        diagnostics = diagnose(directory, report, result.returncode)
+        if not diagnostics["accepted"]:
+            diagnostics["failure_code"] = engine_failure_code(diagnostics)
+            if diagnostics["failure_code"] == SHADOW_COMPLEXITY_LIMIT:
+                context = report.data["context"]
+                diagnostics["shadow_complexity"] = dict(
+                    receiving_surfaces=sorted(
+                        {
+                            name
+                            for m in diagnostics["messages"]
+                            if m["category"] == "shadow_overlap_limit"
+                            for name in m["affected_objects"]
+                        }
+                    ),
+                    context_radius_m=context.get("generation", {}).get("radius_m"),
+                    emitted_shading_faces=context["visibility"]["retained_count"]
+                    + context["unqualified_surface_count"],
+                    pruning=context["visibility"]["method"],
+                    mirror_suppression=context["mirror_suppression_eligible"],
+                    recommended_action="Inspect retained model and overlap diagnostics; "
+                    "a valid dense model may exceed PolygonClipping capacity. No retry performed.",
+                )
         (directory / "diagnostics.json").write_text(json.dumps(diagnostics, indent=2))
-        write_viewer(directory / "model.epJSON", directory / "preview")
         if (
             result.returncode
             or not diagnostics["accepted"]
@@ -244,7 +312,8 @@ class EnergyPlusRunner:
             or diagnostics["invalid_view_factor_count"]
         ):
             raise SimulationError(
-                f"EnergyPlus failed: {diagnostics}; see {directory / 'process.log'}"
+                f"EnergyPlus failed: {diagnostics}; see {directory / 'process.log'}",
+                code=diagnostics.get("failure_code", ENERGYPLUS_NUMERICAL_FAILURE),
             )
         try:
             diagnostics["zoning"] = report.data.get("zoning", {})
@@ -252,13 +321,17 @@ class EnergyPlusRunner:
             # SQL results.
             output = read_results(directory / "eplusout.sql", spec, report, diagnostics)
         except Exception as error:
+            failure_code = getattr(error, "code", ENERGYPLUS_NUMERICAL_FAILURE)
             diagnostics.update(
-                accepted=False, failure="result_validation", failure_detail=str(error)
+                accepted=False,
+                failure="result_validation",
+                failure_detail=str(error),
+                failure_code=failure_code,
             )
             (directory / "diagnostics.json").write_text(json.dumps(diagnostics, indent=2))
-            write_viewer(directory / "model.epJSON", directory / "preview")
             raise SimulationError(
-                f"Result validation failed; artifacts at {directory}: {error}"
+                f"Result validation failed; artifacts at {directory}: {error}",
+                code=failure_code,
             ) from error
         output.scalars.update(
             compile_seconds=compile_seconds,
@@ -267,7 +340,9 @@ class EnergyPlusRunner:
             surface_count=len(report.data["surfaces"]),
             logical_window_count=report.data["logical_window_count"],
             thermal_pane_count=report.data["thermal_pane_count"],
-            shading_surface_count=len(report.data["shading"]),
+            shading_surface_count=sum(
+                not s.get("physical_parent") for s in report.data["shading"].values()
+            ),
         )
         try:
             # 6. Account for heat-pump delivery and optional PV only after thermal-demand
@@ -297,7 +372,6 @@ class EnergyPlusRunner:
         except Exception as error:
             diagnostics.update(accepted=False, failure="delivery_or_pv", failure_detail=str(error))
             (directory / "diagnostics.json").write_text(json.dumps(diagnostics, indent=2))
-            write_viewer(directory / "model.epJSON", directory / "preview")
             raise SimulationError(
                 f"Delivery/PV validation failed; artifacts at {directory}: {error}"
             ) from error
@@ -308,7 +382,6 @@ class EnergyPlusRunner:
             empirical_validation="not_evaluated_by_core",
         )
         (directory / "diagnostics.json").write_text(json.dumps(diagnostics, indent=2))
-        write_viewer(directory / "model.epJSON", directory / "preview")
         # Marker is written last and never substitutes for external store validation.
         (directory / "result.json").write_text(
             json.dumps(

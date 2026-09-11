@@ -6,6 +6,7 @@ import pytest
 
 from epsm_core import (
     CompilerSettings,
+    HourlyOutputRequest,
     EnergyPlusCompiler,
     Footprint,
     GeometrySpec,
@@ -42,7 +43,8 @@ def test_nested_source_hash(tmp_path):
 
 def test_engine_settings_change_identity(building, energyplus):
     first = EnergyPlusCompiler(energyplus)
-    second = EnergyPlusCompiler(energyplus, settings=CompilerSettings(shadow_max_figures=200000))
+    second = EnergyPlusCompiler(energyplus, settings=CompilerSettings(hourly_outputs=(
+        HourlyOutputRequest(name="Site Outdoor Air Drybulb Temperature"),)))
     assert first.run_id(building) != second.run_id(building)
     assert first.compiler_hash == second.compiler_hash
 

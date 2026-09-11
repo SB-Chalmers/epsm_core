@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-06
+# Date modified: 2026-09-11
 # Changelog:
+#   2026-09-11 - Serialize without geometry repair; pin simulation settings and lean outputs.
 #   2026-09-06 - Document compiler interfaces, examples, constraints and processing rationale.
 
 """EnergyPlus 24.2 epJSON compilation; no IDF or third-party building schema.
@@ -47,13 +48,15 @@ import jsonschema
 
 from ._version import __version__ as COMPILER_VERSION
 from .constructions import bridge_equivalent, internal_mass_halves
-from .context import resolve_context
+from .context import mirror_suppression_eligibility, resolve_context, visible_context_surfaces
+from .failures import ENERGYPLUS_SCHEMA_FAILURE, GEOMETRY_INVARIANT_FAILURE, CompilationError
 from .pipeline import resolve_geometry
 from .roofs import backend_versions
 from .settings import CompilerSettings
 from .specs import BuildingSpec, Spec
 from .surface_checks import validate_surfaces
-from .weather import file_sha256
+from .vertex_order import serialize_vertices
+from .weather import climate_from_epw, file_sha256
 
 
 def compiler_source_hash(directory=None):
@@ -277,6 +280,14 @@ class EnergyPlusCompiler:
         self.compiler_hash = compiler_source_hash()
 
     def run_id(self, spec):
+        """Compile and bind the identity to the actual serialized model.
+
+        Invalid specifications cannot receive an executable run identity. Use
+        CompilationReport.run_id after compile/write to avoid duplicate compilation.
+        """
+        return self.compile(spec)[1].run_id
+
+    def _input_identity(self, spec):
         """Bind physical inputs to exact compiler, engine, schema and backend identities.
 
         Parameters
@@ -360,6 +371,10 @@ class EnergyPlusCompiler:
         spec = BuildingSpec.model_validate(spec.model_dump())
         if file_sha256(spec.climate.epw_path) != spec.climate.weather_sha256:
             raise ValueError("EPW checksum differs from ClimateSpec")
+        weather_location = climate_from_epw(spec.climate.epw_path)
+        for field in ("latitude_deg", "longitude_deg", "time_zone_hours", "elevation_m"):
+            if getattr(spec.climate, field) != getattr(weather_location, field):
+                raise ValueError(f"Site:Location differs from EPW: {field}")
         model = {}
 
         def add(kind, name, **fields):
@@ -411,7 +426,8 @@ class EnergyPlusCompiler:
             solar_distribution="FullExterior",
             loads_convergence_tolerance_value=0.04,
             temperature_convergence_tolerance_value=0.4,
-            maximum_number_of_warmup_days=50,
+            maximum_number_of_warmup_days=25,
+            minimum_number_of_warmup_days=1,
         )
         add(
             "SimulationControl",
@@ -452,7 +468,7 @@ class EnergyPlusCompiler:
             use_weather_file_daylight_saving_period="No",
             use_weather_file_holidays_and_special_days="No",
         )
-        add("Output:SQLite", "sql", option_type="SimpleAndTabular")
+        add("Output:SQLite", "sql", option_type="Simple")
         add(
             "OutputControl:Files",
             "files",
@@ -462,22 +478,38 @@ class EnergyPlusCompiler:
             output_tabular="No",
             output_csv="No",
         )
-        add("Output:Table:SummaryReports", "summaries", reports=[{"report_name": "AllSummary"}])
-        add("Output:VariableDictionary", "dictionary", key_field="IDF")
-        for index, variable in enumerate(OUTPUT_VARIABLES):
-            if variable.startswith("Zone Ventilation") and spec.airflow.topology != "S":
-                continue
+        requests = {(variable.upper(), "*"): (variable, "*") for variable in OUTPUT_VARIABLES}
+        for request in self.settings.hourly_outputs:
+            requests.setdefault((request.name, request.key), (request.name, request.key))
+        for index, (variable, key) in enumerate(sorted(requests.values())):
             add(
                 "Output:Variable",
                 f"hourly_{index}",
-                key_value="*",
+                key_value=key,
                 variable_name=variable,
                 reporting_frequency="Hourly",
             )
-        for i, variable in enumerate(ENERGY_VARIABLES):
+        for i, variable in enumerate(ENERGY_VARIABLES + (SOLAR_VARIABLE,)):
+            add(
+                "Output:Variable",
+                f"monthly_{i}",
+                key_value="*",
+                variable_name=variable,
+                reporting_frequency="Monthly",
+            )
             add(
                 "Output:Variable",
                 f"annual_{i}",
+                key_value="*",
+                variable_name=variable,
+                reporting_frequency="RunPeriod",
+            )
+        for index, variable in enumerate(
+            ("Zone Heating Setpoint Not Met Time", "Zone Cooling Setpoint Not Met Time")
+        ):
+            add(
+                "Output:Variable",
+                f"unmet_{index}",
                 key_value="*",
                 variable_name=variable,
                 reporting_frequency="RunPeriod",
@@ -705,20 +737,36 @@ class EnergyPlusCompiler:
                 number_of_vertices=len(vertices),
                 vertices=[
                     dict(vertex_x_coordinate=x, vertex_y_coordinate=y, vertex_z_coordinate=z)
-                    for x, y, z in vertices
+                    for x, y, z in serialize_vertices(vertices)
                 ],
             )
 
         add("Construction:AirBoundary", "partition")
         # 5. Share physical geometry with preview/takeoff, then bound shaded-wall complexity.
-        resolved = resolve_geometry(spec, panelize=True)
+        try:
+            resolved = resolve_geometry(spec, panelize=True)
+        except ValueError as error:
+            raise CompilationError(GEOMETRY_INVARIANT_FAILURE, str(error)) from error
         polygons, origin, graph = resolved.polygons, resolved.origin, resolved.graph
         openings, facade_report, shades = (
             resolved.openings,
             resolved.facades,
             list(resolved.shading),
         )
-        context = resolve_context(spec.geometry, spec.context, origin=origin)
+        if not openings:
+            model["Output:Variable"] = {
+                key: obj
+                for key, obj in model["Output:Variable"].items()
+                if obj["variable_name"] != SOLAR_VARIABLE
+            }
+        try:
+            context = resolve_context(spec.geometry, spec.context, origin=origin)
+        except ValueError as error:
+            raise CompilationError(GEOMETRY_INVARIANT_FAILURE, str(error)) from error
+        visible_context, visibility = visible_context_surfaces(
+            context, [v for face in graph.surfaces for v in face.vertices]
+        )
+        visible_context_names = {face.name for face in visible_context}
         for face in context.surfaces:
             shades.append(
                 dict(
@@ -730,12 +778,26 @@ class EnergyPlusCompiler:
                     surface_type=face.kind,
                 )
             )
-        if shades:
+        add(
+            "ShadowCalculation",
+            "detailed_geometry",
+            shading_calculation_method="PolygonClipping",
+            polygon_clipping_algorithm="SutherlandHodgman",
+            shading_calculation_update_frequency_method="Periodic",
+            shading_calculation_update_frequency=20,
+            maximum_figures_in_shadow_overlap_calculations=15000,
+            sky_diffuse_modeling_algorithm="SimpleSkyDiffuseModeling",
+        )
+        # The global flag requires a proof over all detached shading. Qualified
+        # closed opaque shells retain their first ray intersections after pruning;
+        # standalone facade planes require automatic mirroring.
+        mirror_proof = mirror_suppression_eligibility(context, resolved.shading)
+        context_mirroring_disabled = mirror_proof["mirror_suppression_eligible"]
+        if context_mirroring_disabled:
             add(
-                "ShadowCalculation",
-                "detailed_geometry",
-                shading_calculation_method="PolygonClipping",
-                maximum_figures_in_shadow_overlap_calculations=self.settings.shadow_max_figures,
+                "Output:Diagnostics",
+                "oriented_opaque_context",
+                diagnostics=[dict(key="DoNotMirrorDetachedShading")],
             )
         zone_report, ground_report = graph.zones, []
         g = spec.geometry
@@ -867,7 +929,7 @@ class EnergyPlusCompiler:
                 add("Construction", name, outside_layer=name + "_glazing")
             fields = {
                 f"vertex_{j + 1}_{axis}_coordinate": xyz[i]
-                for j, xyz in enumerate(opening.vertices)
+                for j, xyz in enumerate(serialize_vertices(opening.vertices))
                 for i, axis in enumerate("xyz")
             }
             add(
@@ -886,20 +948,28 @@ class EnergyPlusCompiler:
                 incident_solar_multiplier=spec.facade.solar_shading_factor,
             )
         for shade in shades:
+            if shade["kind"] == "context" and shade["name"] not in visible_context_names:
+                continue
             add(
                 "Shading:Building:Detailed",
                 shade["name"],
                 number_of_vertices=len(shade["vertices"]),
                 vertices=[
                     dict(vertex_x_coordinate=x, vertex_y_coordinate=y, vertex_z_coordinate=z)
-                    for x, y, z in shade["vertices"]
+                    for x, y, z in serialize_vertices(shade["vertices"])
                 ],
             )
         unknown = {o.facade_id for o in spec.facade.overrides} - graph.valid_facades
         if unknown:
             raise ValueError(f"Overrides reference unknown facades: {sorted(unknown)}")
         # 10. Validate geometric closure and reciprocal boundaries before schema validation.
-        validation = validate_surfaces(model, zone_report)
+        try:
+            validation = validate_surfaces(model, zone_report)
+        except ValueError as error:
+            raise CompilationError(GEOMETRY_INVARIANT_FAILURE, str(error)) from error
+        validation["vertex_order"] = dict(
+            convention="UpperLeftCorner/Counterclockwise", operation="cyclic_rotation_only"
+        )
         # Only emit referenced constructions/materials: unused warnings are avoidable.
         used = {
             o["construction_name"]
@@ -920,9 +990,10 @@ class EnergyPlusCompiler:
         # 11. Reject invalid engine input before returning an auditable compilation result.
         errors = sorted(self.validator.iter_errors(model), key=lambda e: str(e.path))
         if errors:
-            raise ValueError(
+            raise CompilationError(
+                ENERGYPLUS_SCHEMA_FAILURE,
                 "epJSON schema errors:\n"
-                + "\n".join(f"{list(e.path)}: {e.message}" for e in errors[:20])
+                + "\n".join(f"{list(e.path)}: {e.message}" for e in errors[:20]),
             )
         area = sum(z["floor_area_m2"] for z in zone_report.values() if z["conditioned"])
         volume = sum(z["volume_m3"] for z in zone_report.values() if z["conditioned"])
@@ -974,7 +1045,12 @@ class EnergyPlusCompiler:
             shading={o["name"]: {k: v for k, v in o.items() if k != "vertices"} for o in shades},
             layout=graph.layout_report,
             zoning=getattr(graph, "zoning_report", {}),
-            context=context.report,
+            context={
+                **context.report,
+                "visibility": visibility,
+                "detached_mirroring_disabled": context_mirroring_disabled,
+                **mirror_proof,
+            },
             logical_window_count=resolved.logical_window_count,
             thermal_pane_count=len(openings),
             compiler_settings=self.settings.model_dump(mode="json"),
@@ -982,11 +1058,41 @@ class EnergyPlusCompiler:
                 json.dumps(BuildingSpec.model_json_schema(), sort_keys=True).encode()
             ).hexdigest(),
             geometry_backends=backend_versions(),
+            serialized_geometry_sha256=hashlib.sha256(
+                json.dumps(
+                    {
+                        kind: model.get(kind, {})
+                        for kind in (
+                            "BuildingSurface:Detailed",
+                            "FenestrationSurface:Detailed",
+                            "Shading:Building:Detailed",
+                        )
+                    },
+                    sort_keys=True,
+                ).encode()
+            ).hexdigest(),
+            simulation_configuration={
+                kind: model.get(kind, {})
+                for kind in (
+                    "Building",
+                    "Timestep",
+                    "HeatBalanceAlgorithm",
+                    "ShadowCalculation",
+                    "RunPeriod",
+                    "Output:SQLite",
+                    "Output:Variable",
+                    "Output:Diagnostics",
+                )
+            },
             internal_mass=graph.internal_mass,
             parts=[p.model_dump(mode="json") for p in g.parts],
         )
         return model, CompilationReport(
-            run_id=self.run_id(spec),
+            run_id=hashlib.sha256(
+                json.dumps(
+                    [self._input_identity(spec), model], sort_keys=True, allow_nan=False
+                ).encode()
+            ).hexdigest(),
             compiler_version=COMPILER_VERSION,
             compiler_sha256=self.compiler_hash,
             engine_version=self.version,
@@ -1248,22 +1354,8 @@ ENERGY_VARIABLES = (
     "Zone Ideal Loads Supply Air Total Cooling Energy",
     "Water Use Equipment Heating Energy",
 )
+SOLAR_VARIABLE = "Enclosure Windows Total Transmitted Solar Radiation Energy"
 OUTPUT_VARIABLES = ENERGY_VARIABLES + (
     "Zone Mean Air Temperature",
-    "Zone Air Humidity Ratio",
-    "Zone Infiltration Sensible Heat Loss Energy",
-    "Zone Infiltration Sensible Heat Gain Energy",
-    "Zone Ventilation Sensible Heat Loss Energy",
-    "Zone Ventilation Sensible Heat Gain Energy",
-    "Zone Ideal Loads Outdoor Air Sensible Heating Energy",
-    "Zone Ideal Loads Heat Recovery Sensible Heating Energy",
-    "Zone Ideal Loads Heat Recovery Latent Heating Energy",
-    "Zone Ideal Loads Outdoor Air Mass Flow Rate",
-    "Surface Inside Face Temperature",
-    "Surface Outside Face Temperature",
-    "Surface Inside Face Conduction Heat Transfer Energy",
-    "Enclosure Windows Total Transmitted Solar Radiation Energy",
-    "Zone People Total Heating Energy",
-    "Zone Electric Equipment Total Heating Energy",
-    "Zone Lights Total Heating Energy",
+    SOLAR_VARIABLE,
 )

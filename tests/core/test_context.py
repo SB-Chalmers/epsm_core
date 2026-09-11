@@ -92,7 +92,7 @@ def test_courtyards_are_not_automatically_populated():
             holes=(((-60, -60), (-60, 60), (60, 60), (60, -60)),),
         )
     )
-    context = synthetic_context(target, "urban_lowrise_dense", radius_m=160)
+    context = synthetic_context(target, "urban_lowrise_dense", radius_m=160, max_buildings=512)
     courtyard = Polygon(target.parts[0].footprint.holes[0])
     assert context.buildings
     assert all(not courtyard.intersects(b.footprints[0].polygon) for b in context.buildings)
@@ -135,13 +135,13 @@ def test_resolver_transforms_the_entire_scene_and_preserves_metadata():
     context = ContextSpec(buildings=(neighbour().updated(base_elevation_m=2),))
     resolved = resolve_context(target, context)
     assert resolved.report["building_count"] == 1
-    assert resolved.report["surface_count"] == 5
+    assert resolved.report["surface_count"] == 6
     assert resolved.report["validation"] == "passed"
     points = np.asarray([v for surface in resolved.surfaces for v in surface.vertices])
     assert np.min(points, axis=0) == pytest.approx([0, -60, 2])
     assert np.max(points, axis=0) == pytest.approx([10, -50, 14])
     assert all(s.building_id == "neighbour" for s in resolved.surfaces)
-    assert {s.kind for s in resolved.surfaces} == {"Wall", "Roof"}
+    assert {s.kind for s in resolved.surfaces} == {"Wall", "Roof", "Floor"}
     for surface in resolved.surfaces:
         properties(np.asarray(surface.vertices))
 
@@ -235,18 +235,18 @@ def test_context_only_compilation_uses_shadow_settings_without_adding_physics(bu
 
     context = ContextSpec(buildings=(neighbour(),))
     shaded = building.updated(context=context)
-    compiler = EnergyPlusCompiler(energyplus, settings=CompilerSettings(shadow_max_figures=50_000))
+    compiler = EnergyPlusCompiler(energyplus, settings=CompilerSettings())
     baseline, base_report = compiler.compile(building)
     model, report = compiler.compile(shaded)
     settings = model["ShadowCalculation"]["detailed_geometry"]
-    assert settings["maximum_figures_in_shadow_overlap_calculations"] == 50_000
+    assert settings["maximum_figures_in_shadow_overlap_calculations"] == 15_000
     assert report.data["context"]["building_count"] == 1
-    assert report.data["context"]["surface_count"] == 5
+    assert report.data["context"]["surface_count"] == 6
     assert report.data["conditioned_floor_area_m2"] == base_report.data["conditioned_floor_area_m2"]
     for kind in ("Zone", "People", "Lights", "ElectricEquipment", "WaterUse:Equipment"):
         assert model[kind] == baseline[kind]
     assert quantity_takeoff(shaded) == quantity_takeoff(building)
     objects = viewer_data(model, report.data)["objects"]
     neighbours = [o for o in objects if o["kind"] == "context"]
-    assert len(neighbours) == 5
+    assert len(neighbours) == 6
     assert all(o["metadata"]["building_id"] == "neighbour" for o in neighbours)
