@@ -99,9 +99,12 @@ The core supports Ideal Loads with hourly schedules. Detailed HVAC and fast cont
 need separate validation. The production timestep remains **six per hour**: four
 failed the agreed 0.1°C maximum hourly-average temperature-difference criterion.
 CTF, FullExterior, PolygonClipping/SutherlandHodgman, Periodic/20 days,
-SimpleSkyDiffuseModeling, 15,000 figures and minimum/maximum warmup days 1/25 are explicit.
+SimpleSkyDiffuseModeling, 1,000,000 figures and minimum/maximum warmup days 1/25 are explicit.
 Convergence tolerances remain 0.04 loads and 0.4°C temperature. Each simulation process
 uses one OpenMP thread. Clipping capacity failures never trigger geometry changes or retries.
+The figure allowance is workspace capacity for the unchanged polygon-clipping calculation;
+it was promoted from EnergyPlus's 15,000 default after exact dense-campaign cases exceeded
+that default. Exhausting the larger allowance remains a strict failure.
 
 This is an intentional pre-1.0 API break. Removed controls are `shadow_max_figures`,
 `reporting_profile`, `diagnostic_policy`, `shadow_geometry_recovery`, the CLI

@@ -153,6 +153,10 @@ def test_shadow_capacity_fails_once_and_preserves_model(
     assert not (target / "result.json").exists()
     diagnostics = json.loads((target / "diagnostics.json").read_text())
     assert diagnostics["failure_code"] == "SHADOW_COMPLEXITY_LIMIT"
+    assert (
+        diagnostics["shadow_complexity"]["maximum_figures_in_shadow_overlap_calculations"]
+        == 1_000_000
+    )
 
 
 def test_weather_missing_required_field_fails_without_substitution(building, tmp_path):

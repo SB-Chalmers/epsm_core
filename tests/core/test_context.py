@@ -239,7 +239,7 @@ def test_context_only_compilation_uses_shadow_settings_without_adding_physics(bu
     baseline, base_report = compiler.compile(building)
     model, report = compiler.compile(shaded)
     settings = model["ShadowCalculation"]["detailed_geometry"]
-    assert settings["maximum_figures_in_shadow_overlap_calculations"] == 15_000
+    assert settings["maximum_figures_in_shadow_overlap_calculations"] == 1_000_000
     assert report.data["context"]["building_count"] == 1
     assert report.data["context"]["surface_count"] == 6
     assert report.data["conditioned_floor_area_m2"] == base_report.data["conditioned_floor_area_m2"]

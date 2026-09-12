@@ -56,6 +56,16 @@ Such runs cannot certify convergence. No production limit was silently increased
 was introduced. Further radius certification needs a usable larger reference and
 the remaining tall-obstruction / orientation coverage; 80 m is not approved.
 
+## Dense campaign capacity correction — 2026-09-12
+
+The production compiler now emits a 1,000,000-figure shadow-overlap allowance. The
+previous 15,000 setting was validated only on the simpler frozen performance cases and
+failed exact dense-campaign inputs with 238–375 retained shading faces. Re-running those
+unchanged epJSON models at 1,000,000 completed without shadow warnings and without a
+material local runtime increase. This is the same capacity used by the dense-context
+validation matrix above; PolygonClipping/SutherlandHodgman, geometry pruning, mirroring,
+strict diagnostics and single-attempt execution are unchanged.
+
 ## Geometry and diagnostics evidence
 
 Full-versus-pruned context and matched-capacity mirroring comparisons passed separately

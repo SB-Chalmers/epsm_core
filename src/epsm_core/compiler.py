@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-11
+# Date modified: 2026-09-12
 # Changelog:
+#   2026-09-12 - Raise validated polygon shadow workspace capacity for dense contexts.
 #   2026-09-11 - Serialize without geometry repair; pin simulation settings and lean outputs.
 #   2026-09-06 - Document compiler interfaces, examples, constraints and processing rationale.
 
@@ -57,6 +58,11 @@ from .specs import BuildingSpec, Spec
 from .surface_checks import validate_surfaces
 from .vertex_order import serialize_vertices
 from .weather import climate_from_epw, file_sha256
+
+# PolygonClipping's 15,000-figure EnergyPlus default is too small for validated dense
+# contexts. One million is the capacity used by the archived dense-context campaign;
+# it changes only workspace capacity, not the clipping algorithm or emitted geometry.
+_MAX_SHADOW_OVERLAP_FIGURES = 1_000_000
 
 
 def compiler_source_hash(directory=None):
@@ -785,7 +791,7 @@ class EnergyPlusCompiler:
             polygon_clipping_algorithm="SutherlandHodgman",
             shading_calculation_update_frequency_method="Periodic",
             shading_calculation_update_frequency=20,
-            maximum_figures_in_shadow_overlap_calculations=15000,
+            maximum_figures_in_shadow_overlap_calculations=_MAX_SHADOW_OVERLAP_FIGURES,
             sky_diffuse_modeling_algorithm="SimpleSkyDiffuseModeling",
         )
         # The global flag requires a proof over all detached shading. Qualified

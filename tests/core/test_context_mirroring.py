@@ -38,7 +38,7 @@ def test_outward_opaque_context_avoids_duplicate_back_faces(building, energyplus
         next(iter(model["ShadowCalculation"].values()))[
             "maximum_figures_in_shadow_overlap_calculations"
         ]
-        == 15_000
+        == 1_000_000
     )
     assert (
         next(iter(model["ShadowCalculation"].values()))["polygon_clipping_algorithm"]

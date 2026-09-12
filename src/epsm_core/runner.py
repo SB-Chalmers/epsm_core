@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-11
+# Date modified: 2026-09-12
 # Changelog:
+#   2026-09-12 - Record the configured overlap capacity in shadow-limit diagnostics.
 #   2026-09-11 - Remove recovery retries and automatic previews; preserve classified failure evidence.
 #   2026-09-06 - Document runner interfaces, examples, constraints and processing rationale.
 
@@ -269,8 +270,9 @@ class EnergyPlusRunner:
 
         # 4. Validate every attempt under the same strict diagnostic policy.
         def diagnose(attempt_directory, report, returncode):
+            compiled_model = json.loads((attempt_directory / "model.epJSON").read_text())
             conditions = compiler_warning_conditions(
-                spec, json.loads((attempt_directory / "model.epJSON").read_text()), report
+                spec, compiled_model, report
             )
             diagnostics = error_diagnostics(
                 attempt_directory / "eplusout.err",
@@ -279,14 +281,18 @@ class EnergyPlusRunner:
             )
             if returncode:
                 diagnostics.update(accepted=False, process_returncode=returncode)
-            return diagnostics
+            return diagnostics, compiled_model
 
-        diagnostics = diagnose(directory, report, result.returncode)
+        diagnostics, compiled_model = diagnose(directory, report, result.returncode)
         if not diagnostics["accepted"]:
             diagnostics["failure_code"] = engine_failure_code(diagnostics)
             if diagnostics["failure_code"] == SHADOW_COMPLEXITY_LIMIT:
                 context = report.data["context"]
+                shadow_settings = next(iter(compiled_model["ShadowCalculation"].values()))
                 diagnostics["shadow_complexity"] = dict(
+                    maximum_figures_in_shadow_overlap_calculations=shadow_settings[
+                        "maximum_figures_in_shadow_overlap_calculations"
+                    ],
                     receiving_surfaces=sorted(
                         {
                             name
