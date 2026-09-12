@@ -46,6 +46,8 @@ import subprocess
 from pathlib import Path
 
 import jsonschema
+from shapely import maximum_inscribed_circle
+from shapely.geometry import Polygon
 
 from ._version import __version__ as COMPILER_VERSION
 from .constructions import bridge_equivalent, internal_mass_halves
@@ -63,6 +65,70 @@ from .weather import climate_from_epw, file_sha256
 # contexts. One million is the capacity used by the archived dense-context campaign;
 # it changes only workspace capacity, not the clipping algorithm or emitted geometry.
 _MAX_SHADOW_OVERLAP_FIGURES = 1_000_000
+_SHADOW_OVERLAP_VERTEX_HINT_COUNT = 16
+
+
+def _shadow_overlap_vertex_capacity_hint(surfaces):
+    """Create a solar-inert polygon that enlarges EnergyPlus's vertex workspace.
+
+    Parameters
+    ----------
+    surfaces : iterable of Surface
+        Resolved target thermal surfaces in the local metric frame.
+
+    Returns
+    -------
+    tuple[tuple[float, float, float], ...] or None
+        Sixteen vertices inside a horizontal Ground floor, or ``None`` when no
+        suitable ground receiver exists.
+
+    Notes
+    -----
+    EnergyPlus 24.2 ``InitSolarCalculations`` derives its private ``MaxHCV``
+    shadow-overlap capacity from ``MaxVerticesPerSurface``, rounded so that the
+    allocation plus one is a multiple of 16. With ordinary triangles and quads
+    the capacity remains 15; one 16-sided polygon advances it to 31. Dense
+    overlaps can exceed 15 even when every physical input face is a valid quad.
+
+    The hint is placed coplanar with and strictly inside a Ground surface. Ground
+    surfaces are not solar receivers, and an upward ray from any above-grade
+    receiver cannot meet this contained plane. It therefore changes engine
+    workspace only, not the physical shadow field. The object is emitted as
+    Shading:Site:Detailed so it remains separate from physical context counts.
+    """
+    candidates = []
+    for face in surfaces:
+        vertices = tuple(tuple(map(float, point)) for point in face.vertices)
+        if face.kind != "Floor" or face.boundary != "Ground" or len(vertices) < 3:
+            continue
+        elevations = [point[2] for point in vertices]
+        if max(elevations) - min(elevations) > 1e-6:
+            continue
+        polygon = Polygon([(point[0], point[1]) for point in vertices])
+        if polygon.is_valid and polygon.area > 0:
+            candidates.append((polygon.area, polygon, elevations[0]))
+    if not candidates:
+        return None
+
+    _, polygon, elevation = max(candidates, key=lambda item: item[0])
+    radius_line = maximum_inscribed_circle(polygon)
+    center, boundary = tuple(radius_line.coords)
+    clearance = math.dist(center, boundary)
+    radius = min(1.0, clearance * 0.5)
+    # A 16-gon needs this radius to keep every chord above EnergyPlus's
+    # 0.01 m detailed-surface edge tolerance. Refuse an unsafe hint rather
+    # than silently placing it outside the physical Ground polygon.
+    minimum_radius = 0.010001 / (2 * math.sin(math.pi / _SHADOW_OVERLAP_VERTEX_HINT_COUNT))
+    if radius < minimum_radius:
+        return None
+    return tuple(
+        (
+            center[0] + radius * math.cos(2 * math.pi * i / _SHADOW_OVERLAP_VERTEX_HINT_COUNT),
+            center[1] + radius * math.sin(2 * math.pi * i / _SHADOW_OVERLAP_VERTEX_HINT_COUNT),
+            elevation,
+        )
+        for i in range(_SHADOW_OVERLAP_VERTEX_HINT_COUNT)
+    )
 
 
 def compiler_source_hash(directory=None):
@@ -915,6 +981,22 @@ class EnergyPlusCompiler:
                 ground_report.append(
                     dict(surface=face.name, surface_type=face.kind, area_m2=face.area)
                 )
+        vertex_capacity_hint = (
+            _shadow_overlap_vertex_capacity_hint(graph.surfaces) if visible_context else None
+        )
+        if vertex_capacity_hint is not None:
+            # EnergyPlus sizes its private per-overlap vertex arrays from the
+            # largest input polygon. This contained Ground-plane hint raises
+            # that allocation without modifying any physical context face.
+            add(
+                "Shading:Site:Detailed",
+                "epsm_shadow_overlap_vertex_capacity",
+                number_of_vertices=len(vertex_capacity_hint),
+                vertices=[
+                    dict(vertex_x_coordinate=x, vertex_y_coordinate=y, vertex_z_coordinate=z)
+                    for x, y, z in serialize_vertices(vertex_capacity_hint)
+                ],
+            )
         # 9. Reuse identical glazing systems and attach each thermal pane to its actual wall.
         glazing_names = {spec.facade.glazing.model_dump_json(): "window"}
         for opening in openings:
@@ -1055,6 +1137,16 @@ class EnergyPlusCompiler:
                 **context.report,
                 "visibility": visibility,
                 "detached_mirroring_disabled": context_mirroring_disabled,
+                "shadow_overlap_vertex_capacity": (
+                    {
+                        "method": "contained_ground_polygon",
+                        "surface": "epsm_shadow_overlap_vertex_capacity",
+                        "input_vertices": _SHADOW_OVERLAP_VERTEX_HINT_COUNT,
+                        "energyplus_24_2_capacity": 31,
+                    }
+                    if vertex_capacity_hint is not None
+                    else None
+                ),
                 **mirror_proof,
             },
             logical_window_count=resolved.logical_window_count,
@@ -1072,6 +1164,7 @@ class EnergyPlusCompiler:
                             "BuildingSurface:Detailed",
                             "FenestrationSurface:Detailed",
                             "Shading:Building:Detailed",
+                            "Shading:Site:Detailed",
                         )
                     },
                     sort_keys=True,

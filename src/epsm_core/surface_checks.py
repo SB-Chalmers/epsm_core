@@ -341,15 +341,16 @@ def validate_surfaces(model, zones):
             )
     # 3. Validate shading polygons even though they do not enclose thermal zones.
     shade_signatures = {}
-    for name, obj in model.get("Shading:Building:Detailed", {}).items():
-        points = vertices(obj)
-        properties(points)
-        signature = tuple(sorted(tuple(p) for p in np.round(points, 8)))
-        if signature in shade_signatures:
-            raise ValueError(
-                f"Duplicate shading surfaces: {shade_signatures[signature]} and {name}"
-            )
-        shade_signatures[signature] = name
+    for category in ("Shading:Building:Detailed", "Shading:Site:Detailed"):
+        for name, obj in model.get(category, {}).items():
+            points = vertices(obj)
+            properties(points)
+            signature = tuple(sorted(tuple(p) for p in np.round(points, 8)))
+            if signature in shade_signatures:
+                raise ValueError(
+                    f"Duplicate shading surfaces: {shade_signatures[signature]} and {name}"
+                )
+            shade_signatures[signature] = name
     # 4. Require coplanar contained windows and reject overlaps within each parent.
     openings = defaultdict(list)
     for name, obj in model.get("FenestrationSurface:Detailed", {}).items():

@@ -583,16 +583,38 @@ def resolve_context(
 
 
 def visible_context_surfaces(resolved, receiver_vertices):
-    """Exclude opaque extrusion faces hidden from every thermal receiver.
+    """Return the context faces that can cast solar rays onto thermal receivers.
 
+    Parameters
+    ----------
+    resolved : ContextResolution
+        Complete, validated context extrusions.  In particular, these still
+        contain their bottom caps so that closed-shell and winding invariants
+        can be proved independently of EnergyPlus serialization.
+    receiver_vertices : iterable of tuple[float, float, float]
+        Vertices of the target's thermal surfaces in the same local frame.
+
+    Returns
+    -------
+    tuple
+        ``(retained_surfaces, audit)`` where retained surfaces are safe to
+        serialize as detached EnergyPlus shading and audit records every
+        omitted face and its reason.
+
+    Notes
+    -----
     A face whose outward half-space contains no receiver cannot be the first
     intersection of a ray from any receiver with the extrusion. Its silhouette
-    is already covered by the extrusion's entry faces. Keeping both causes
-    redundant projected overlaps, amplified by EnergyPlus's mirrored shades.
+    is already covered by the extrusion's entry faces. In addition, a horizontal
+    bottom cap at or below every receiver cannot intersect an upward ray toward
+    the sun. Such caps are required for topology validation but are not physical
+    shadow casters; serializing them needlessly increases EnergyPlus's recursive
+    polygon-overlap complexity.
 
     Only complete opaque context extrusions from ``resolve_context`` qualify.
-    Closed bottom caps make the proof valid for elevated neighbours too.
-    Keep grazing/coplanar faces within 1e-6 m.
+    Closed bottom caps make the proof valid for elevated neighbours too. Bottom
+    caps above any receiver are retained because an elevated underside can cast
+    a real shadow. Other grazing/coplanar faces are kept within 1e-6 m.
     The full context remains in ``resolved`` and all omissions are auditable.
     No clipping, shadow limit, reflection, or engine setting is changed.
     """
@@ -609,17 +631,32 @@ def visible_context_surfaces(resolved, receiver_vertices):
             reason=proof["reason"],
         )
     retained, hidden = [], []
+    minimum_receiver_z = float(np.min(points[:, 2]))
     for face in resolved.surfaces:
         v = np.asarray(face.vertices)
         _, normal, _ = properties(v)
-        if np.max((points - v[0]) @ normal) < -1e-6:
+        # Sun-up rays travel upward from a receiver. A downward-facing cap at
+        # or below the lowest receiver therefore cannot be intersected. Keep
+        # the cap in ``resolved`` for the closed-shell proof, but do not hand it
+        # to EnergyPlus's bounded polygon-overlap workspace.
+        grade_bottom_cap = (
+            face.kind == "Floor"
+            and np.max(np.abs(v[:, 2] - v[0, 2])) <= 1e-6
+            and v[0, 2] <= minimum_receiver_z + 1e-6
+        )
+        behind_all_receivers = np.max((points - v[0]) @ normal) < -1e-6
+        if grade_bottom_cap or behind_all_receivers:
             hidden.append(
                 dict(
                     name=face.name,
                     building_id=face.building_id,
                     kind=face.kind,
                     vertices=face.vertices,
-                    reason="Behind outward face plane for every receiver",
+                    reason=(
+                        "Bottom cap at or below every receiver cannot cast an upward solar ray"
+                        if grade_bottom_cap
+                        else "Behind outward face plane for every receiver"
+                    ),
                 )
             )
         else:

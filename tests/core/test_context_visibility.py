@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+from shapely.geometry import Polygon
 
 from epsm_core import EnergyPlusCompiler
 from epsm_core.context import resolve_context, visible_context_surfaces
@@ -47,6 +48,51 @@ def test_elevated_closed_context_keeps_visible_bottom(building):
     assert audit["hidden"]
 
 
+def test_grade_bottom_is_audited_but_not_emitted(building, energyplus):
+    """Closed-shell proof caps at target grade must not enter shadow overlap."""
+    spec = building.updated(context=context())
+    resolved = resolve_context(spec.geometry, spec.context)
+    assert any(face.kind == "Floor" for face in resolved.surfaces)
+
+    model, report = EnergyPlusCompiler(energyplus).compile(spec)
+    emitted = set(model["Shading:Building:Detailed"])
+    grade_caps = {face.name for face in resolved.surfaces if face.kind == "Floor"}
+    assert emitted.isdisjoint(grade_caps)
+    omissions = report.data["context"]["visibility"]["hidden"]
+    assert grade_caps <= {
+        item["name"]
+        for item in omissions
+        if item["reason"].startswith("Bottom cap at or below every receiver")
+    }
+    assert report.data["context"]["mirror_suppression_eligible"]
+    hint = model["Shading:Site:Detailed"]["epsm_shadow_overlap_vertex_capacity"]
+    hint_points = [
+        (vertex["vertex_x_coordinate"], vertex["vertex_y_coordinate"])
+        for vertex in hint["vertices"]
+    ]
+    assert hint["number_of_vertices"] == len(hint_points) == 16
+    # The hint is inside the target ground plane, not any context cap. Check
+    # against the emitted target floors to make the physical-inertness proof.
+    target_ground = [
+        Polygon(
+            [
+                (vertex["vertex_x_coordinate"], vertex["vertex_y_coordinate"])
+                for vertex in surface["vertices"]
+            ]
+        )
+        for surface in model["BuildingSurface:Detailed"].values()
+        if surface["surface_type"] == "Floor"
+        and surface["outside_boundary_condition"] == "Ground"
+    ]
+    assert any(polygon.contains(Polygon(hint_points)) for polygon in target_ground)
+    assert report.data["context"]["shadow_overlap_vertex_capacity"] == {
+        "method": "contained_ground_polygon",
+        "surface": "epsm_shadow_overlap_vertex_capacity",
+        "input_vertices": 16,
+        "energyplus_24_2_capacity": 31,
+    }
+
+
 def test_visibility_retains_grazing_faces_and_is_deterministic(building):
     resolved = resolve_context(building.geometry, context())
     points = np.array([(0, 0, 0), (30, 0, 8.4), (30, 20, 8.4)])
@@ -54,11 +100,18 @@ def test_visibility_retains_grazing_faces_and_is_deterministic(building):
     assert (retained, audit) == visible_context_surfaces(resolved, points[::-1])
     grazing = [s for s in resolved.surfaces if all(abs(v[1]) < 1e-8 for v in s.vertices)]
     assert grazing and all(s in retained for s in grazing)
+    omissions = {item["name"]: item for item in audit["hidden"]}
     for s in resolved.surfaces:
         if s not in retained:
             v = np.asarray(s.vertices)
             n = properties(v)[1]
-            assert np.max((points - v[0]) @ n) < -1e-6
+            if s.kind == "Floor":
+                assert v[0, 2] <= np.min(points[:, 2]) + 1e-6
+                assert omissions[s.name]["reason"].startswith(
+                    "Bottom cap at or below every receiver"
+                )
+            else:
+                assert np.max((points - v[0]) @ n) < -1e-6
 
 
 @pytest.mark.parametrize("reverse", [False, True])
