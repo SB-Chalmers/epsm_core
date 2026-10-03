@@ -188,6 +188,8 @@ class BuildingSpec(Spec):
             pairs.append((self.use, self.common_airflow))
         pairs.extend((x.use or self.use, x.airflow or self.airflow) for x in self.zone_uses)
         for use, airflow in pairs:
+            if self.delivery.fvp and airflow.infiltration_coefficients != (1, 0, 0, 0):
+                raise ValueError("FVP accounting requires constant leakage for every zone")
             for obj in (use, airflow):
                 for name in type(obj).model_fields:
                     schedule = getattr(obj, name)
@@ -238,6 +240,8 @@ class BuildingSpec(Spec):
             raise ValueError(
                 "Unconditioned basement requires an explicit thermal-boundary basement_ceiling construction"
             )
+        if self.delivery.fvp and self.airflow.infiltration_coefficients != (1, 0, 0, 0):
+            raise ValueError("FVP accounting requires constant leakage; weather-dependent flow is unsupported")
         if self.delivery.fvp and self.airflow.topology != "F":
             raise ValueError("FVP delivery requires F ventilation")
         if (

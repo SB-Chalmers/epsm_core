@@ -573,6 +573,13 @@ class AirflowSpec(Spec):
     """
 
     # Schedule fractions modulate outdoor air only, never background leakage.
+    # EnergyPlus 24.2 I/O Reference, ZoneInfiltration:DesignFlowRate:
+    # rate = design * schedule * (C + T*abs(deltaT) + V*wind + W*wind**2).
+    # Effective coefficients are scenario inputs, never inferred leakage tests.
+    infiltration_fraction: ScheduleSpec = ScheduleSpec.constant(1)
+    natural_exchange_fraction: ScheduleSpec = ScheduleSpec.constant(1)
+    infiltration_coefficients: tuple[Nonnegative, Nonnegative, Nonnegative, Nonnegative] = (1, 0, 0, 0)
+    infiltration_source: str | None = None
     mechanical_vent_fraction: ScheduleSpec = ScheduleSpec.constant(1)
     heating_availability: ScheduleSpec = ScheduleSpec.constant(1)
     cooling_availability: ScheduleSpec = ScheduleSpec.constant(1)
@@ -616,9 +623,13 @@ class AirflowSpec(Spec):
             assert airflow.compatible() is airflow
         """
 
-        for name in ("mechanical_vent_fraction", "heating_availability", "cooling_availability"):
+        for name in ("infiltration_fraction", "natural_exchange_fraction", "mechanical_vent_fraction", "heating_availability", "cooling_availability"):
             if any(not 0 <= v <= 1 for v in getattr(self, name).all_values):
                 raise ValueError(f"{name} must lie in [0,1]")
+        if self.infiltration_coefficients != (1, 0, 0, 0) and (
+            not self.infiltration_source or not self.infiltration_source.strip()
+        ):
+            raise ValueError("Weather-dependent infiltration requires a documented source")
         # 1. Require ventilation and heat-recovery values consistent with topology.
         if self.topology == "S" and self.mechanical_vent_l_s_m2:
             raise ValueError("S cannot have mechanical outdoor air")

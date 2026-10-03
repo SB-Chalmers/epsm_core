@@ -120,3 +120,10 @@ This bounded roof-model approximation is declared in graph approximations.
 The EnergyPlus 24.2 minimum-edge acceptance threshold remains unchanged. Genuine
 short footprint edges still fail. Shared vertex tuples retain pool identity through
 cyclic ring cleaning. Four existing SE.02 diagnostic geometries now compile.
+
+
+### Independent leakage and natural exchange controls (2026-10-04)
+
+`AirflowSpec.infiltration_fraction` and `natural_exchange_fraction` are independent fraction schedules, each constrained to [0,1]. Their defaults are constant1. `infiltration_coefficients=(C,T,V,W)` multiplies reference design flow by `C + T*abs(zone_temperature-outdoor_temperature) + V*wind_speed + W*wind_speed**2`. The default `(1,0,0,0)` preserves constant-flow behavior. Non-default coefficients require `infiltration_source` and nonnegative values. Reference-flow ACH is not n50; no pressure-test conversion is inferred. FVP delivery accounting rejects weather-dependent coefficients for every applicable zone.
+
+Compiler mean outdoor airflow includes the declared fraction schedules and reports its design-schedule basis; it excludes the weather multiplier, whose annual effect requires simulation. Source: [EnergyPlus 24.2 DesignFlowRate](https://bigladdersoftware.com/epx/docs/24-2/input-output-reference/group-airflow.html). The dedicated infiltration-control tests compile these fields into native EnergyPlus objects.

@@ -698,7 +698,7 @@ class EnergyPlusCompiler:
 
         def emit_airflow_schedules(airflow, prefix=""):
             """Keep outdoor-air and HVAC availability controls independent."""
-            for name in ("mechanical_vent_fraction", "heating_availability", "cooling_availability"):
+            for name in ("infiltration_fraction", "natural_exchange_fraction", "mechanical_vent_fraction", "heating_availability", "cooling_availability"):
                 add("Schedule:Compact", prefix + name, schedule_type_limits_name="any_number",
                     data=getattr(airflow, name).compact_data(spec.climate.calendar_year))
 
@@ -1034,8 +1034,12 @@ class EnergyPlusCompiler:
                     emit_airflow_schedules(airflow, prefix)
                 mean_fraction = sum(airflow.mechanical_vent_fraction.hourly(spec.climate.calendar_year)) / spec.climate.hours_in_year
                 data["mean_outdoor_air_m3_s"] = (
-                    (airflow.envelope_infiltration_ach + airflow.natural_exchange_ach) * data["volume_m3"] / 3600
+                    (airflow.envelope_infiltration_ach * sum(airflow.infiltration_fraction.hourly(spec.climate.calendar_year)) / spec.climate.hours_in_year
+                     + airflow.natural_exchange_ach * sum(airflow.natural_exchange_fraction.hourly(spec.climate.calendar_year)) / spec.climate.hours_in_year) * data["volume_m3"] / 3600
                     + load_area * airflow.mechanical_vent_l_s_m2 * mean_fraction / 1000)
+                # The design/schedule mean above excludes weather multipliers.
+                # It is an actual constant-flow mean only for the default coefficients.
+                data["outdoor_air_mean_basis"] = "design_schedule_excludes_weather_multiplier"
                 data["airflow_input"] = airflow.model_dump(mode="json")
                 data["load_reference_area_m2"] = load_area
                 data["operation_sources"] = [x.source for x in assignments]
@@ -1406,20 +1410,20 @@ class EnergyPlusCompiler:
             "ZoneInfiltration:DesignFlowRate",
             zone + "_envelope_leakage",
             zone_or_zonelist_or_space_or_spacelist_name=zone,
-            schedule_name="on",
+            schedule_name=schedule_prefix + "infiltration_fraction",
             design_flow_rate_calculation_method="AirChanges/Hour",
             air_changes_per_hour=a.envelope_infiltration_ach,
-            constant_term_coefficient=1,
-            temperature_term_coefficient=0,
-            velocity_term_coefficient=0,
-            velocity_squared_term_coefficient=0,
+            constant_term_coefficient=a.infiltration_coefficients[0],
+            temperature_term_coefficient=a.infiltration_coefficients[1],
+            velocity_term_coefficient=a.infiltration_coefficients[2],
+            velocity_squared_term_coefficient=a.infiltration_coefficients[3],
         )
         if a.topology == "S":
             add(
                 "ZoneVentilation:DesignFlowRate",
                 zone + "_natural_exchange",
                 zone_or_zonelist_or_space_or_spacelist_name=zone,
-                schedule_name="on",
+                schedule_name=schedule_prefix + "natural_exchange_fraction",
                 design_flow_rate_calculation_method="AirChanges/Hour",
                 air_changes_per_hour=a.natural_exchange_ach,
                 ventilation_type="Natural",
