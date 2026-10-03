@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 import pytest
 
@@ -14,7 +16,7 @@ from epsm_core import (
 from epsm_core.facades import window_rectangles
 from epsm_core.quantities import quantity_takeoff
 from epsm_core.specs import ZoningSpec
-from epsm_core.surface_checks import vertices
+from epsm_core.surface_checks import MIN_GENERATED_EDGE_M, vertices
 from epsm_core.viewer import viewer_data
 
 
@@ -64,6 +66,63 @@ def test_window_dimensions_and_failure():
         window_rectangles(0.4, 2, 0.3, WindowLayoutSpec(mode="wwr"))
 
 
+def test_scaled_windows_omit_edges_below_engine_limit():
+    """Scaled mode keeps tiny facade runs opaque instead of emitting unsafe edges."""
+    wwr = 0.08788
+    layout = WindowLayoutSpec(mode="scaled")
+    rectangles, label = window_rectangles(0.03272, 2.8, wwr, layout)
+
+    assert label == "scaled"
+    assert rectangles == []
+
+    safe_length = MIN_GENERATED_EDGE_M / math.sqrt(wwr)
+    rectangles, _ = window_rectangles(safe_length, 2.8, wwr, layout)
+    assert rectangles
+    assert rectangles[0][2] - rectangles[0][0] == pytest.approx(MIN_GENERATED_EDGE_M)
+
+
+def test_scaled_window_suppression_is_reported(building, energyplus):
+    """The facade audit explains why a requested window was not generated."""
+    footprint = Footprint(
+        exterior=(
+            (0, 0),
+            (30, 0),
+            (30, 20),
+            (10.03272, 20),
+            (10.03272, 19),
+            (10, 19),
+            (10, 20),
+            (0, 20),
+        )
+    )
+    part = building.geometry.parts[0].updated(footprint=footprint)
+    requested_wwr = 0.08788
+    candidate = building.updated(
+        geometry=building.geometry.updated(parts=(part,)),
+        facade=building.facade.updated(
+            default_wwr=requested_wwr,
+            layout=WindowLayoutSpec(mode="scaled"),
+        ),
+    )
+
+    _, report = EnergyPlusCompiler(energyplus).compile(candidate)
+    suppressed = [
+        facade
+        for facade in report.data["facades"]
+        if facade["opening_suppression_reason"] is not None
+    ]
+
+    assert suppressed
+    assert all(facade["requested_wwr"] == pytest.approx(requested_wwr) for facade in suppressed)
+    assert all(facade["local_wwr"] == 0 for facade in suppressed)
+    assert all(facade["window_area_m2"] == 0 for facade in suppressed)
+    assert all(
+        "safety limit for EnergyPlus" in facade["opening_suppression_reason"]
+        for facade in suppressed
+    )
+    assert report.data["validation"]["status"] == "passed"
+
+
 def test_facade_compilation_and_quantities(building, energyplus):
     b = residential_building(building)
     c = EnergyPlusCompiler(energyplus)
@@ -107,6 +166,9 @@ def test_pitched_roofs(building, energyplus, shape, courtyard):
     b = b.updated(
         geometry=b.geometry.updated(parts=(part,), roof=RoofSpec(shape=shape)),
     )
+    if courtyard:
+        from epsm_core import GroundTemperatureSpec
+        b = b.updated(envelope=b.envelope.updated(ground_temperature=GroundTemperatureSpec()))
     m, r = EnergyPlusCompiler(energyplus).compile(b)
     assert r.data["validation"]["status"] == "passed"
     assert any(z.get("roof_shape") == shape for z in r.data["zones"].values())

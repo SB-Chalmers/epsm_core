@@ -6,7 +6,21 @@ Install Python 3.11+ and the package. The optional geometry extra supplies the s
 python -m pip install -e '.[dev,geometry]'
 ```
 
-Put local EPWs in `data/weather/`. EPSM does not download weather or discover material/operational assumptions. For simulation, supply an EnergyPlus 24.2 executable and its adjacent `Energy+.schema.epJSON`.
+Put local EPWs in `data/weather/`. EPSM does not download weather or discover material assumptions. With no explicit `BuildingBuilder` profile, it loads the bundled, version-pinned Sveby residential normal-use specification. For simulation, supply an EnergyPlus 24.2 executable and its adjacent `Energy+.schema.epJSON`.
+
+## Default residential operations
+
+`BuildingBuilder()` uses Sveby *Brukarindata bostader* 2.0 by default. The stored profile supplies residential setpoints, occupancy, internal gains, annual DHW, common-space temperature, the fallback solar-shading factor and minimum mechanical outdoor air. Physical inputs—including weather, envelope constructions, ventilation topology, leakage and heat-recovery performance—remain explicit.
+
+```python
+from epsm_core import BuildingBuilder, load_sveby_spec
+
+sveby = load_sveby_spec()          # no network access; reads the bundled JSON profile
+print(sveby.profile_id)
+builder = BuildingBuilder()        # selects that same profile
+```
+
+Sveby specifies occupancy by apartment size rather than one universal density. Until apartment counts and Atemp are supplied, the batteries-included profile uses the separately labelled EPSM density fallback. Inspect `sveby.completion_default_fields` to identify such model-completion assumptions. Monthly DHW/electricity profiles, kitchen boost flow and the post-simulation window-airing correction are retained in the stored source profile but are not silently approximated by the current compiler.
 
 ## Start with geometry
 

@@ -1,7 +1,13 @@
 import pytest
-
 from epsm_core.runner import EnergyPlusRunner
-from epsm_core.specs import BuildingPart, Footprint, PartyWall, RoofSpec, ZoningSpec
+from epsm_core.specs import (
+    BuildingPart,
+    Footprint,
+    GroundTemperatureSpec,
+    PartyWall,
+    RoofSpec,
+    ZoningSpec,
+)
 
 
 @pytest.mark.energyplus
@@ -76,6 +82,8 @@ def test_annual(building, energyplus, tmp_path, variant):
         )
     directory = tmp_path / variant
     b = building.updated(geometry=g)
+    if variant == "courtyard":
+        b = b.updated(envelope=b.envelope.updated(ground_temperature=GroundTemperatureSpec()))
     output = EnergyPlusRunner(energyplus).run(b, directory)
     scalars, diagnostics = output.scalars, output.diagnostics
     assert (directory / "result.json").exists()

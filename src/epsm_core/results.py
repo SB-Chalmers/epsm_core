@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-11
+# Date modified: 2026-10-03
 # Changelog:
+#   2026-10-03 - Add documented calendar, operational and archetype-application support.
 #   2026-09-11 - Validate lean SQL outputs and reconcile engine geometry and energy totals.
 #   2026-09-06 - Document results interfaces, examples, constraints and processing rationale.
 
@@ -269,6 +270,16 @@ def read_results(sql_path, spec, report, diagnostics):
                         GEOMETRY_INVARIANT_FAILURE,
                         f"EnergyPlus thermal mass area differs from compiler: {name}",
                     )
+    # Calendar-resolved monthly totals expose seasonal mismatch without fitting it away.
+    months = axis.astype("datetime64[M]").astype(int) % 12 + 1
+    diagnostics["monthly_energy_kwh"] = {
+        name: [float(values[months == month].sum()) for month in range(1, 13)]
+        for name, values in hourly.items()
+        if name in ("space_heating_demand_kwh", "cooling_demand_kwh", "dhw_load_kwh")}
+    reference_area = report.data.get("load_reference_area_m2", spec.load_reference_area_m2
+                                     or report.data["conditioned_floor_area_m2"])
+    scalar["space_heating_eui_on_load_reference_area_kwh_m2"] = scalar["space_heating_demand_kwh"] / reference_area
+    diagnostics["load_reference_area_m2"] = reference_area
     diagnostics["geometry_totals"] = "engine_area_volume_reconciled"
     # 6. Ground-conduction evidence is optional and never inferred when absent.
     ground_names = {f["surface"].upper() for f in report.data["ground_surfaces"]}

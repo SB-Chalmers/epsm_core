@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-06
+# Date modified: 2026-10-03
 # Changelog:
+#   2026-10-03 - Add calendar schedules, scheduled ventilation and explicit gain fractions.
 #   2026-09-06 - Document physics interfaces, examples, constraints and processing rationale.
 
 """Physics input specifications.
@@ -38,6 +39,7 @@ from typing import Annotated, Literal
 from pydantic import Field, model_validator
 
 from .base import Fraction, Nonnegative, Positive, Spec
+from .schedules import ScheduleSpec
 
 
 class ClimateSpec(Spec):
@@ -370,7 +372,33 @@ class GroundTemperatureSpec(Spec):
     monthly_temperatures_c: Annotated[tuple[float, ...], Field(min_length=12, max_length=12)] = (
         18.0,
     ) * 12
-    source: Annotated[str, Field(min_length=1)] = "energyplus_24_2_default_18C_uncalibrated"
+    source: Annotated[str, Field(min_length=1, pattern=r"\S")] = "energyplus_24_2_default_18C_uncalibrated"
+
+
+class FoundationSpec(Spec):
+    """Ground heat-transfer method and explicit, uncalibrated Kiva assumptions.
+
+    Kiva uses existing envelope constructions and geometry. The default soil and
+    footing properties are EnergyPlus 24.2 defaults, not site measurements. The
+    exposed fraction scales the geometric exterior perimeter, never zone partitions.
+    Optional footing material thickness defines its width in EnergyPlus.
+    """
+
+    method: Literal["kiva", "prescribed_temperature"] = "kiva"
+    soil_conductivity_w_mk: Positive = 1.73
+    soil_density_kg_m3: Positive = 1842.0
+    soil_specific_heat_j_kgk: Positive = 419.0
+    exposed_perimeter_fraction: Fraction = 1.0
+    wall_height_above_grade_m: Nonnegative = 0.0
+    wall_depth_below_slab_m: Nonnegative = 0.0
+    footing_depth_m: Positive = 0.3
+    footing_material: MaterialSpec | None = None
+    footing_width_m: Positive = 0.3
+    footing_wall: ConstructionSpec | None = None
+    deep_ground_boundary: Literal["ZeroFlux", "GroundWater"] = "ZeroFlux"
+    deep_ground_depth_m: Positive = 40.0
+    far_field_width_m: Positive = 40.0
+    source: Annotated[str, Field(min_length=1, pattern=r"\S")] = "energyplus_24_2_kiva_unmeasured_defaults"
 
 
 class EnvelopeSpec(Spec):
@@ -408,9 +436,10 @@ class EnvelopeSpec(Spec):
     thermal_bridge_uplift_fraction : Nonnegative
         Nonnegative fractional U-value increase represented through equivalent
         conductivities. Nonnegative when supplied. Default: ``0``.
-    ground_temperature : GroundTemperatureSpec
-        Explicit monthly outside-boundary temperatures for ground-contact constructions.
-        Default: ``GroundTemperatureSpec()``.
+    foundation : FoundationSpec
+        Ground heat-transfer method and assumptions. Default: Kiva.
+    ground_temperature : GroundTemperatureSpec | None
+        Explicit legacy monthly boundary; supplying it selects prescribed temperatures.
 
     Raises
     ------
@@ -462,7 +491,31 @@ class EnvelopeSpec(Spec):
     dwelling_partition: ConstructionSpec | None = None
     common_partition: ConstructionSpec | None = None
     thermal_bridge_uplift_fraction: Nonnegative = 0
-    ground_temperature: GroundTemperatureSpec = GroundTemperatureSpec()
+    foundation: FoundationSpec = Field(default_factory=FoundationSpec)
+    ground_temperature: GroundTemperatureSpec | None = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def migrate_ground_boundary(cls, values):
+        if isinstance(values, dict):
+            values = dict(values)
+            if values.get("ground_temperature") is not None and "foundation" not in values:
+                values["foundation"] = {"method": "prescribed_temperature"}
+        return values
+
+    @model_validator(mode="after")
+    def validate_ground_boundary(self):
+        if self.foundation.method == "kiva" and self.ground_temperature is not None:
+            raise ValueError("Kiva conflicts with prescribed ground temperatures")
+        if self.foundation.method == "prescribed_temperature" and self.ground_temperature is None:
+            raise ValueError("Prescribed ground treatment requires ground_temperature")
+        return self
+
+    def updated(self, **changes):
+        # An explicit legacy profile continues to select the legacy method.
+        if changes.get("ground_temperature") is not None and "foundation" not in changes:
+            changes["foundation"] = FoundationSpec(method="prescribed_temperature")
+        return super().updated(**changes)
 
 
 class AirflowSpec(Spec):
@@ -519,6 +572,10 @@ class AirflowSpec(Spec):
         )
     """
 
+    # Schedule fractions modulate outdoor air only, never background leakage.
+    mechanical_vent_fraction: ScheduleSpec = ScheduleSpec.constant(1)
+    heating_availability: ScheduleSpec = ScheduleSpec.constant(1)
+    cooling_availability: ScheduleSpec = ScheduleSpec.constant(1)
     topology: Literal["S", "F", "FT", "FTX"]
     envelope_infiltration_ach: Nonnegative
     natural_exchange_ach: Nonnegative = 0
@@ -559,6 +616,9 @@ class AirflowSpec(Spec):
             assert airflow.compatible() is airflow
         """
 
+        for name in ("mechanical_vent_fraction", "heating_availability", "cooling_availability"):
+            if any(not 0 <= v <= 1 for v in getattr(self, name).all_values):
+                raise ValueError(f"{name} must lie in [0,1]")
         # 1. Require ventilation and heat-recovery values consistent with topology.
         if self.topology == "S" and self.mechanical_vent_l_s_m2:
             raise ValueError("S cannot have mechanical outdoor air")
@@ -569,68 +629,6 @@ class AirflowSpec(Spec):
         ):
             raise ValueError("Air-to-air recovery requires FTX")
         return self
-
-
-class ScheduleSpec(Spec):
-    """One 24-hour daily profile repeated throughout the simulation year.
-
-    Attributes
-    ----------
-    values : tuple[float, ...]
-        Exactly 24 finite hourly values, repeated daily; units follow the consuming field.
-        Minimum length 24. Maximum length 24. Required at construction.
-
-    Raises
-    ------
-    pydantic.ValidationError
-        If fields, finite-value requirements or the model relationships described below are
-        invalid.
-
-    Notes
-    -----
-    Units come from the consuming field. Values are finite; fractional bounds and thermostat
-    relationships are validated by UseSpec, not by this generic schedule.
-
-    Examples
-    --------
-    Example::
-
-        from epsm_core.specs.physics import ScheduleSpec
-
-        schedule = ScheduleSpec.constant(21)
-    """
-
-    values: Annotated[tuple[float, ...], Field(min_length=24, max_length=24)]
-
-    @classmethod
-    def constant(cls, value: float):
-        """Construct a daily schedule with the same value for all 24 hours.
-
-        Parameters
-        ----------
-        value : float
-            Scalar or JSON-compatible value consumed by this operation.
-
-        Returns
-        -------
-        ScheduleSpec
-            Constant hourly daily profile.
-
-        Notes
-        -----
-        Units depend on the consuming field, such as degrees Celsius or a dimensionless
-        fraction. UseSpec validates fractional schedules when attached.
-
-        Examples
-        --------
-        Example::
-
-            from epsm_core.specs.physics import ScheduleSpec
-
-            assert ScheduleSpec.constant(21).values == (21.0,) * 24
-        """
-
-        return cls(values=(value,) * 24)
 
 
 class UseSpec(Spec):
@@ -669,8 +667,9 @@ class UseSpec(Spec):
         Heat release per occupant in watts. Strictly positive when supplied. Default:
         ``120``.
     equipment_gain_w_m2 : Nonnegative
-        Design internal heat gain per conditioned square metre, in watts. Nonnegative when
-        supplied. Required at construction.
+        Design equipment electrical input per load-reference square metre, in watts.
+        equipment_heat_fraction gives the zone heat share; its default of one preserves
+        the legacy available-heat interpretation. Required at construction.
     lighting_gain_w_m2 : Nonnegative
         Design internal heat gain per conditioned square metre, in watts. Nonnegative when
         supplied. Default: ``0``.
@@ -705,6 +704,9 @@ class UseSpec(Spec):
         )
     """
 
+    # EnergyPlus ElectricEquipment Fraction Lost distinguishes electrical input from
+    # zone heat (Sveby office 1.0 Table 2.2: 70% available heat). Default preserves API.
+    equipment_heat_fraction: Fraction = 1
     occupancy_category: Literal["unspecified", "residential", "non_residential"] = "unspecified"
     heating_setpoint: ScheduleSpec
     cooling_setpoint: ScheduleSpec = ScheduleSpec.constant(30)
@@ -762,12 +764,25 @@ class UseSpec(Spec):
             "lighting_fraction",
             "dhw_fraction",
         ):
-            if any(not 0 <= v <= 1 for v in getattr(self, name).values):
+            if any(not 0 <= v <= 1 for v in getattr(self, name).all_values):
                 raise ValueError(f"{name} must lie in [0,1]")
-        if self.dhw_kwh_m2_year and not sum(self.dhw_fraction.values):
+        if self.dhw_kwh_m2_year and not sum(self.dhw_fraction.all_values):
             raise ValueError("Nonzero DHW demand requires a nonzero schedule")
-        if any(h >= c for h, c in zip(self.heating_setpoint.values, self.cooling_setpoint.values)):
-            raise ValueError("Heating setpoint must remain below cooling setpoint")
+        years = self.heating_setpoint.declared_years | self.cooling_setpoint.declared_years
+        if len(years) > 1:
+            raise ValueError("Setpoint calendars must refer to the same year")
+        # Undated profiles need only seven aligned weekdays; dated/annual
+        # profiles are checked on their actual Gregorian axis (including leap day).
+        if years:
+            year = next(iter(years))
+            pairs = zip(self.heating_setpoint.hourly(year), self.cooling_setpoint.hourly(year))
+        else:
+            heat = self.heating_setpoint.weekday_values or (self.heating_setpoint.values,) * 7
+            cool = self.cooling_setpoint.weekday_values or (self.cooling_setpoint.values,) * 7
+            pairs = ((h, c) for hd, cd in zip(heat, cool) for h, c in zip(hd, cd))
+        for h, c in pairs:
+            if h >= c:
+                raise ValueError("Heating setpoint must remain below cooling setpoint")
         return self
 
 
@@ -817,6 +832,38 @@ class FVPSpec(Spec):
     backup_efficiency: Annotated[float, Field(gt=0, le=1)] = 1
 
 
+class HeatingDeliverySpec(Spec):
+    """Declared space-heat carrier model with separately reported net losses.
+
+    Constant efficiency is useful thermal output / carrier input. Heat-pump COP
+    is an explicit caller curve in local standard time, not inferred from EPC
+    electricity. Net distribution losses exclude heat already represented in the
+    building demand. See heating_delivery.py for dimensions and energy boundary.
+    This does not claim detailed HVAC or fan-heat coupling.
+    """
+
+    carrier: Literal["district_heat", "electric_direct", "fuel", "heat_pump"]
+    efficiency: Annotated[float, Field(gt=0, le=1)] = 1
+    heat_pump_cop: ScheduleSpec | None = None
+    net_distribution_loss_kwh_m2_year: Nonnegative = 0
+    loss_fraction: ScheduleSpec = ScheduleSpec.constant(1)
+    specific_fan_power_w_per_l_s: Nonnegative | None = None
+    source: Annotated[str, Field(min_length=1, pattern=r"\S")]
+
+    @model_validator(mode="after")
+    def boundary(self):
+        """Require a COP only for heat pumps and a physical loss fraction."""
+        if (self.carrier == "heat_pump") != (self.heat_pump_cop is not None):
+            raise ValueError("Heat-pump delivery requires an explicit COP; other carriers forbid it")
+        if self.heat_pump_cop is not None and min(self.heat_pump_cop.all_values) <= 0:
+            raise ValueError("Declared heat-pump COP must be positive")
+        if any(not 0 <= v <= 1 for v in self.loss_fraction.all_values):
+            raise ValueError("Loss fraction must lie in [0,1]")
+        if self.net_distribution_loss_kwh_m2_year and not sum(self.loss_fraction.all_values):
+            raise ValueError("Net distribution losses require an active schedule")
+        return self
+
+
 class DeliverySpec(Spec):
     """Optional downstream conversion from ideal loads to delivered energy.
 
@@ -848,6 +895,14 @@ class DeliverySpec(Spec):
     """
 
     fvp: FVPSpec | None = None
+    heating: HeatingDeliverySpec | None = None
+
+    @model_validator(mode="after")
+    def exclusive(self):
+        """Do not apply two incompatible delivery conversions to the same heat."""
+        if self.fvp is not None and self.heating is not None:
+            raise ValueError("FVP and general heating delivery are mutually exclusive")
+        return self
 
 
 class PVSpec(Spec):

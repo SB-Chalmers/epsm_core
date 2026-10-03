@@ -82,7 +82,7 @@ def test_grade_bottom_is_audited_but_not_emitted(building, energyplus):
         )
         for surface in model["BuildingSurface:Detailed"].values()
         if surface["surface_type"] == "Floor"
-        and surface["outside_boundary_condition"] == "Ground"
+        and surface["outside_boundary_condition"] in {"Ground", "Foundation"}
     ]
     assert any(polygon.contains(Polygon(hint_points)) for polygon in target_ground)
     assert report.data["context"]["shadow_overlap_vertex_capacity"] == {

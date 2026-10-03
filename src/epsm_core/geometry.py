@@ -11,6 +11,7 @@
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
 # Date modified: 2026-09-11
 # Changelog:
+#   2026-10-03 - Preserve source facade identities under perimeter precision rounding.
 #   2026-09-11 - Generate outward-wound surfaces and prove horizontal decomposition conservation.
 #   2026-09-06 - Document geometry interfaces, examples, constraints and processing rationale.
 
@@ -80,6 +81,13 @@ def local_polygons(geometry):
         min(p.polygon.bounds[1] for p in geometry.footprints),
     )
     polygons = [translate(p.polygon, -origin[0], -origin[1]) for p in geometry.footprints]
+    if geometry.zoning.mode == "perimeter_core":
+        from shapely import set_precision
+        # Quantize the whole physical scene once, before any partition intersection.
+        # Pointwise rounding retains ring start/winding and source facade IDs.
+        # GEOS valid-output rounding may reorder the ring and swap facade identities
+        # between zoning modes (test_api logical-window contract).
+        polygons = [set_precision(p, 1e-8, mode="pointwise") for p in polygons]
     # Positive azimuth is clockwise from north, matching EnergyPlus conventions.
     return [rotate(p, -geometry.orientation_deg, origin=(0, 0)) for p in polygons], origin
 

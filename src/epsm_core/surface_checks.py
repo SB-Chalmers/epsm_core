@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-11
+# Date modified: 2026-09-13
 # Changelog:
+#   2026-09-13 - Share a small safety margin for geometry created by Core.
 #   2026-09-11 - Assert geometry invariants, exact adjacency and validated edge tolerances.
 #   2026-09-06 - Document surface_checks interfaces, examples, constraints and processing rationale.
 
@@ -38,12 +39,16 @@ Example::
 """
 
 from collections import defaultdict
+from itertools import product
 
 import numpy as np
 from shapely.geometry import Polygon
 
 # Pinned 24.2 GetVertices probes reject distances <0.01 m. Keep a 1 µm margin.
 MIN_EDGE_M = 0.010001
+# Geometry generators use a slightly larger margin so coordinate serialization cannot
+# move a valid edge back onto the engine boundary.
+MIN_GENERATED_EDGE_M = 0.01001
 
 
 def vertices(obj):
@@ -251,7 +256,11 @@ def validate_surfaces(model, zones):
             raise ValueError(f"Floor normal is not downward: {name}")
         if kind in ("Roof", "Ceiling") and normal[2] <= 1e-8:
             raise ValueError(f"Roof/ceiling normal is not upward: {name}")
-        if np.ptp(v[:, 2]) < 1e-6:
+        # Kiva consumes one complete slab polygon, including concave outlines.
+        # Other horizontal receivers retain the convex tessellation requirement.
+        if np.ptp(v[:, 2]) < 1e-6 and not (
+            kind == "Floor" and obj["outside_boundary_condition"] == "Foundation"
+        ):
             polygon = Polygon(v[:, :2])
             if len(v) > 4 or polygon.convex_hull.area - polygon.area > 1e-8:
                 raise ValueError(
@@ -315,6 +324,20 @@ def validate_surfaces(model, zones):
         # Node collinear 3-D boundary segments at all zone vertices, including T junctions.
         points = np.unique(np.concatenate([v for _, v in faces]), axis=0)
         incidence = defaultdict(list)
+        # Canonical identities use the same metric tolerance as edge noding.
+        # Decimal rounding alone can split coincident vertices across a midpoint.
+        buckets, identities = defaultdict(list), {}
+        for point in points:
+            key = tuple(np.floor(point / 1e-7).astype(int))
+            candidates = [
+                q
+                for delta in product((-1, 0, 1), repeat=3)
+                for q in buckets[tuple(k + d for k, d in zip(key, delta))]
+                if np.linalg.norm(point - np.array(q)) < 1e-7
+            ]
+            identity = min(candidates) if candidates else tuple(point)
+            identities[tuple(point)] = identity
+            buckets[key].append(identity)
         for name, v in faces:
             for a, b in zip(v, np.roll(v, -1, axis=0)):
                 direction = b - a
@@ -326,10 +349,10 @@ def validate_surfaces(model, zones):
                 # Reuse actual vertices when noding. Reconstructing b as a + (b-a),
                 # or projecting an existing T-junction, can cross a decimal rounding
                 # midpoint and assign opposite faces different edge identities.
-                nodes = {0.0: tuple(np.round(a, 7)), 1.0: tuple(np.round(b, 7))}
+                nodes = {0.0: identities[tuple(a)], 1.0: identities[tuple(b)]}
                 mask = (distance < 1e-7) & (t > 1e-8) & (t < 1 - 1e-8)
                 for position, point in zip(t[mask], points[mask]):
-                    nodes[float(position)] = tuple(np.round(point, 7))
+                    nodes[float(position)] = identities[tuple(point)]
                 ts = sorted(nodes)
                 for start, end in zip(ts, ts[1:]):
                     u, w = nodes[start], nodes[end]
@@ -362,9 +385,11 @@ def validate_surfaces(model, zones):
         _, window_normal, _ = properties(w)
         if np.dot(normal, window_normal) < 1 - 1e-8:
             raise ValueError(f"Window normal differs from parent surface: {name}")
+        # Same sub-micrometre tolerance as boundary noding: clipped panes are
+        # lifted from a common facade frame and may differ by nanometres.
         if np.max(abs((w - v[0]) @ normal)) > 1e-6 or not Polygon(
             np.delete(v, drop, axis=1)
-        ).covers(Polygon(np.delete(w, drop, axis=1))):
+        ).buffer(1e-7).covers(Polygon(np.delete(w, drop, axis=1))):
             raise ValueError(f"Window outside parent surface: {name}")
         p = Polygon(np.delete(w, drop, axis=1))
         if any(p.intersection(q).area > 1e-8 for q in openings[obj["building_surface_name"]]):

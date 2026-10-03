@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-11 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-11
+# Date modified: 2026-10-03
 # Changelog:
+#   2026-10-03 - Preserve strict generated-edge checks and pooled vertex identity.
 #   2026-09-11 - Document cyclic-only serialization and vertex-preservation assertions.
 
 """Canonical EnergyPlus vertex order without changing geometry or face normals."""
@@ -41,7 +42,9 @@ def upper_left_vertices(points):
     corner = np.array([xy[:, 0].min(), xy[:, 1].max()])
     distances = np.sum((xy - corner) ** 2, axis=1)
     # A geometric tie uses coordinates, independent of the incoming start index.
-    near = np.flatnonzero(np.isclose(distances, distances.min(), rtol=1e-12, atol=1e-12))
+    near = np.flatnonzero(
+        np.isclose(distances, distances.min(), rtol=1e-12, atol=1e-12)
+    )
     start = min(near, key=lambda i: tuple(v[i]))
     return np.roll(v, -int(start), axis=0)
 
@@ -54,6 +57,38 @@ def serialize_vertices(points):
     """
     original = np.asarray(points, dtype=float)
     ordered = upper_left_vertices(original)
-    if not any(np.array_equal(ordered, np.roll(original, i, axis=0)) for i in range(len(original))):
+    if not any(
+        np.array_equal(ordered, np.roll(original, i, axis=0))
+        for i in range(len(original))
+    ):
         raise ValueError("Serializer changed physical vertices or winding")
     return tuple(tuple(float(value) for value in point) for point in ordered)
+
+
+def clean_generated_ring(points, tolerance_m=1e-8):
+    """Remove redundant cyclic boundary points before serialization.
+
+    Unlike closed-ring Douglas–Peucker simplification, this also examines the
+    starting vertex. Retained coordinates and winding remain unchanged.
+    """
+    result = []
+    for point in points:
+        # Preserve pooled tuple identity; NumPy/list inputs still need immutable values.
+        if not isinstance(point, tuple):
+            point = tuple(float(v) for v in point)
+        if not result or point != result[-1]:
+            result.append(point)
+    if len(result) > 1 and result[0] == result[-1]:
+        result.pop()
+    changed = True
+    while changed and len(result) > 3:
+        changed = False
+        for i in range(len(result)):
+            a, b, c = (np.array(result[j % len(result)]) for j in (i - 1, i, i + 1))
+            ac = c - a
+            t = float((b - a) @ ac / (ac @ ac)) if ac @ ac else -1
+            if 0 <= t <= 1 and np.linalg.norm(b - a - t * ac) < tolerance_m:
+                result.pop(i)
+                changed = True
+                break
+    return tuple(result)

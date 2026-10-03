@@ -8,6 +8,8 @@ Start with a metric footprint and storeys, choose procedural facade and zoning a
 
 Geometry inspection is the first checkpoint; constructions, weather and operations complete the input before simulation. The [38 notebook lessons](demo/README.md) explain each API step with code, plots and guided documentation figures, from one building to diverse stock samples.
 
+Residential operations are batteries-included: `BuildingBuilder()` uses the bundled, version-pinned Sveby 2.0 normal-use profile when no explicit assumption profile is supplied. Physical fabric, weather, leakage and installed systems remain explicit. See [bundled operational standards](docs/standards.md) for the exact values, non-Sveby completion defaults and compliance limitations.
+
 ```python
 from epsm_core import Footprint, GeometrySpec, ZoningSpec, synthetic_context
 
@@ -30,8 +32,17 @@ epsm-core validate output/building.json
 epsm-core --energyplus /path/to/energyplus run output/building.json output/run
 ```
 
-Read [usage](docs/usage.md), the [geometry feature contract](docs/geometry.md), [API guide](docs/api.md), and [architecture and physics](docs/architecture.md).
+Read [usage](docs/usage.md), [bundled operational standards](docs/standards.md), the [geometry feature contract](docs/geometry.md), [API guide](docs/api.md), and [architecture and physics](docs/architecture.md).
 
 The package owns building inputs, geometry, compilation, execution and results. `epsm_data` supplies physical catalogues; `epsm_workflows` owns ingestion, studies, storage and batch policy. Importing core does not discover datasets or use the network.
 
 Maintain source in `src/`, tests in `tests/`, and executable examples in `examples/`. External inputs belong in ignored `data/`; generated artifacts belong in ignored `output/`. Historical evidence is kept separately in `ARCHIVE/`. Current tests and examples do not depend on archived studies.
+
+## Ground heat transfer
+
+New envelopes default to `FoundationSpec(method="kiva")`. Soil and footing assumptions remain configurable and reported. Explicit legacy `GroundTemperatureSpec` profiles retain prescribed-temperature behaviour. See [foundation settings and migration](docs/foundations.md).
+
+Versioned Sveby office and primary/secondary-school profiles, explicit calendars,
+zone operation, Atemp load areas and space-heat delivery accounting are documented
+in [building archetype operation](docs/archetype-operation.md). Source references
+and completion assumptions also live in the implementing scripts and resources.

@@ -1,0 +1,61 @@
+{
+  "parts": [
+    {
+      "identifier": "main",
+      "footprint": {
+        "exterior": [
+          [
+            314888.51433479815,
+            6403549.253723155
+          ],
+          [
+            314901.50415058224,
+            6403546.501613903
+          ],
+          [
+            314913.5398285511,
+            6403603.308093959
+          ],
+          [
+            314900.55001276475,
+            6403606.060203209
+          ]
+        ],
+        "holes": []
+      },
+      "storey_elevations_m": [
+        0.0,
+        2.822261345740743,
+        5.644522691481486,
+        8.46678403722223,
+        11.289045382962971
+      ],
+      "conditioned": true,
+      "roof": null,
+      "height_status": "assumed",
+      "outline_kind": "roof_edge_proxy",
+      "outline_reviewed": false
+    }
+  ],
+  "orientation_deg": 0.0,
+  "footprint_cleanup": {
+    "enabled": true,
+    "tolerance_m": 0.01,
+    "max_area_change_fraction": 0.001,
+    "implementation_version": "footprint-cleanup-1"
+  },
+  "zoning": {
+    "mode": "per_storey"
+  },
+  "roof": {
+    "shape": "gable",
+    "pitch_deg": null,
+    "direction_deg": null,
+    "topology": "cold_attic",
+    "attic_height_m": 1.5
+  },
+  "basement_depth_m": 2.5,
+  "basement_conditioned": true,
+  "source_crs": "EPSG:3006",
+  "party_walls": []
+}

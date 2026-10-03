@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-11
+# Date modified: 2026-10-03
 # Changelog:
+#   2026-10-03 - Preserve strict generated-edge checks and pooled vertex identity.
 #   2026-09-11 - Generate pitched roof shells using shared vertices and open backend rings.
 #   2026-09-06 - Document roofs interfaces, examples, constraints and processing rationale.
 
@@ -44,7 +45,7 @@ from shapely.geometry import LineString, Polygon
 from shapely.ops import split
 
 from .geometry import facade_edges
-from .surface_checks import properties
+from .surface_checks import MIN_GENERATED_EDGE_M, properties
 
 
 def backend_versions():
@@ -119,7 +120,9 @@ def skeleton(polygon):
     try:
         from py_straight_skeleton import compute_skeleton
     except ImportError as exc:
-        raise ValueError("Hip roofs and skeleton circulation require epsm_core[geometry]") from exc
+        raise ValueError(
+            "Hip roofs and skeleton circulation require epsm_core[geometry]"
+        ) from exc
     try:
         from shapely.geometry.polygon import orient
 
@@ -223,7 +226,11 @@ def roof_faces(polygon, roof, base, orientation=0):
             if indices and indices[0] == indices[-1]:
                 indices = indices[:-1]
             v = [
-                [sk.nodes[i].position.x, sk.nodes[i].position.y, base + sk.nodes[i].time * slope]
+                [
+                    sk.nodes[i].position.x,
+                    sk.nodes[i].position.y,
+                    base + sk.nodes[i].time * slope,
+                ]
                 for i in indices
             ]
             if len(v) >= 3:
@@ -273,7 +280,12 @@ def roof_faces(polygon, roof, base, orientation=0):
             distance = np.array([x, y]) @ u - lo
             if roof.shape == "gable":
                 distance = min(distance, hi - lo - distance)
-            return base + max(0, float(distance)) * slope
+            height = max(0, float(distance)) * slope
+            # EPSM Core/EnergyPlus 24.2 generated-edge contract: skewed eaves can
+            # create sub-centimetre vertical wall edges. Collapse only generated
+            # heights below that existing limit, consistently in roof and wall.
+            # Source x/y and projected footprint coverage are never changed.
+            return base if height < MIN_GENERATED_EDGE_M else base + height
 
         patches = [polygon]
         if roof.shape == "gable":
@@ -282,7 +294,10 @@ def roof_faces(polygon, roof, base, orientation=0):
             reach = max(1, polygon.length) * 4
             patches = list(
                 split(
-                    polygon, LineString([center - direction * reach, center + direction * reach])
+                    polygon,
+                    LineString(
+                        [center - direction * reach, center + direction * reach]
+                    ),
                 ).geoms
             )
         for patch in patches:
@@ -316,8 +331,9 @@ def roof_faces(polygon, roof, base, orientation=0):
             for x, y in list(t.exterior.coords)[:-1]:
                 z = (
                     node_heights[(x, y)]
-                    if roof.shape == "hip"
-                    else origin[2] - (n[0] * (x - origin[0]) + n[1] * (y - origin[1])) / n[2]
+                    if (x, y) in node_heights
+                    else origin[2]
+                    - (n[0] * (x - origin[0]) + n[1] * (y - origin[1])) / n[2]
                 )
                 triangle.append([x, y, float(z)])
             if properties(np.array(triangle))[1][2] < 0:
@@ -330,7 +346,9 @@ def roof_faces(polygon, roof, base, orientation=0):
         union.symmetric_difference(polygon).area > max(1e-7, polygon.area * 1e-8)
         or sum(p.area for p in footprints) - union.area > 1e-7
     ):
-        raise ValueError("Roof faces overlap or fail to preserve footprint/courtyard coverage")
+        raise ValueError(
+            "Roof faces overlap or fail to preserve footprint/courtyard coverage"
+        )
     return normalized
 
 
@@ -398,12 +416,26 @@ def apply_roofs(spec, polygons, graph):
                 )
         # 2. Replace only the active part's provisional attic shell, retaining its floor
         # boundary.
-        old = [f for f in graph.surfaces if f.part_id == part.identifier and f.cell_kind == "attic"]
+        old = [
+            f
+            for f in graph.surfaces
+            if f.part_id == part.identifier and f.cell_kind == "attic"
+        ]
         if not old:
             raise ValueError("Pitched roof has no attic cell")
         zone = old[0].zone
         base = part.storey_elevations_m[-1]
         faces = roof_faces(polygon, roof, base, spec.geometry.orientation_deg)
+        if roof.shape in ("gable", "mono_pitch"):
+            graph.approximations.append(
+                {
+                    "kind": "generated_eave_height_resolution",
+                    "part_id": part.identifier,
+                    "maximum_adjustment_m": MIN_GENERATED_EDGE_M,
+                    "source_xy_changed": False,
+                    "basis": "EnergyPlus 24.2 minimum generated edge contract",
+                }
+            )
         graph.surfaces[:] = [
             f
             for f in graph.surfaces

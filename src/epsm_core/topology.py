@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-11
+# Date modified: 2026-10-03
 # Changelog:
+#   2026-10-03 - Add documented calendar, operational and archetype-application support.
 #   2026-09-11 - Pool shared vertices during generation for exact surface adjacency.
 #   2026-09-06 - Document topology interfaces, examples, constraints and processing rationale.
 
@@ -49,6 +50,7 @@ from shapely import STRtree, unary_union
 from shapely.geometry import LineString, Point, Polygon
 
 from .geometry import facade_edges, horizontal_patches, horizontal_vertices, wall_vertices
+from .vertex_order import clean_generated_ring
 from .zoning import GRID, exposed_facades, perimeter_core_partitions, polygon_components
 
 MAX_THERMAL_CELLS = 4096
@@ -225,8 +227,11 @@ class VertexPool:
                 if self.quantize
                 else (float(x), float(y), float(z))
             )
-            result.append(self.coordinates.setdefault(key, key))
-        return result
+            if not result or key != result[-1]:
+                result.append(self.coordinates.setdefault(key, key))
+        if len(result)>1 and result[0] == result[-1]:
+            result.pop()
+        return list(clean_generated_ring(result))
 
 
 @dataclass
@@ -782,6 +787,8 @@ def build_surface_graph(spec, polygons):
                         partitions[(part.identifier, i)] = cache[key]
             graph = graph_from_cells(spec, polygons, building_cells(spec, polygons, partitions))
         graph.zoning_report = dict(
+            source_grid_m=1e-8 if mode == "perimeter_core" else None,
+            partition_corner_alignment_m=0.010001 if mode == "perimeter_core" else None,
             requested_mode=mode,
             effective_mode=mode,
             on_failure=geometry.zoning.on_failure,
@@ -949,6 +956,11 @@ def graph_from_cells(spec, polygons, cells):
         data["volume_m3"] += cell.polygon.area * (cell.top - cell.bottom)
         data["part_ids"] = sorted(set(data["part_ids"] + [cell.part.identifier]))
         data["elevations_m"] = sorted(set(data["elevations_m"] + [cell.bottom, cell.top]))
+        # A whole-building thermal zone can include both main and heated basement
+        # cells. Do not label such an aggregate by whichever cell was visited last.
+        kinds = sorted(set(data.get("physical_zone_kinds", []) + [cell.kind]))
+        data["physical_zone_kinds"] = kinds
+        data["physical_zone_kind"] = kinds[0] if len(kinds) == 1 else "mixed"
         if cell.zone_kind:
             data["zone_kind"] = cell.zone_kind
         if cell.apartment_type:

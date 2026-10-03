@@ -9,8 +9,10 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-12
+# Date modified: 2026-10-03
 # Changelog:
+#   2026-10-03 - Compile explicit calendars, zone operations and load-area accounting.
+#   2026-09-13 - Cache unchanged EPW verification and share generated-edge margins.
 #   2026-09-12 - Raise validated polygon shadow workspace capacity for dense contexts.
 #   2026-09-11 - Serialize without geometry repair; pin simulation settings and lean outputs.
 #   2026-09-06 - Document compiler interfaces, examples, constraints and processing rationale.
@@ -53,11 +55,13 @@ from ._version import __version__ as COMPILER_VERSION
 from .constructions import bridge_equivalent, internal_mass_halves
 from .context import mirror_suppression_eligibility, resolve_context, visible_context_surfaces
 from .failures import ENERGYPLUS_SCHEMA_FAILURE, GEOMETRY_INVARIANT_FAILURE, CompilationError
+from .footprint_cleanup import prepared_footprints
+from .foundations import apply_kiva
 from .pipeline import resolve_geometry
 from .roofs import backend_versions
 from .settings import CompilerSettings
 from .specs import BuildingSpec, Spec
-from .surface_checks import validate_surfaces
+from .surface_checks import MIN_GENERATED_EDGE_M, validate_surfaces
 from .vertex_order import serialize_vertices
 from .weather import climate_from_epw, file_sha256
 
@@ -118,7 +122,9 @@ def _shadow_overlap_vertex_capacity_hint(surfaces):
     # A 16-gon needs this radius to keep every chord above EnergyPlus's
     # 0.01 m detailed-surface edge tolerance. Refuse an unsafe hint rather
     # than silently placing it outside the physical Ground polygon.
-    minimum_radius = 0.010001 / (2 * math.sin(math.pi / _SHADOW_OVERLAP_VERTEX_HINT_COUNT))
+    minimum_radius = MIN_GENERATED_EDGE_M / (
+        2 * math.sin(math.pi / _SHADOW_OVERLAP_VERTEX_HINT_COUNT)
+    )
     if radius < minimum_radius:
         return None
     return tuple(
@@ -350,6 +356,59 @@ class EnergyPlusCompiler:
         self.engine_hash = file_sha256(self.executable)
         self.schema_hash = file_sha256(self.schema_path)
         self.compiler_hash = compiler_source_hash()
+        self._weather_cache = {}
+
+    def _verified_weather(self, climate):
+        """Read and verify an EPW once while the local file stays unchanged.
+
+        Parameters
+        ----------
+        climate : ClimateSpec
+            Expected local path, checksum and site metadata.
+
+        Returns
+        -------
+        ClimateSpec
+            Location metadata and checksum read from the EPW.
+
+        Raises
+        ------
+        OSError
+            If the EPW changes while Core is reading it.
+        ValueError
+            If the EPW checksum does not match the input specification.
+
+        Notes
+        -----
+        The cache belongs to this compiler instance. A file is read again after its
+        identity, size or timestamps change. If it changes during the read, compilation
+        stops instead of caching uncertain weather metadata.
+        """
+        path = Path(climate.epw_path).resolve()
+
+        def signature():
+            stat = path.stat()
+            return (
+                stat.st_dev,
+                stat.st_ino,
+                stat.st_size,
+                stat.st_mtime_ns,
+                stat.st_ctime_ns,
+            )
+
+        before = signature()
+        cached = self._weather_cache.get(path)
+        if cached is not None and cached[0] == before:
+            weather = cached[1]
+        else:
+            weather = climate_from_epw(path)
+            after = signature()
+            if after != before:
+                raise OSError(f"EPW changed while it was being verified: {path}")
+            self._weather_cache[path] = (after, weather)
+        if weather.weather_sha256 != climate.weather_sha256:
+            raise ValueError("EPW checksum differs from ClimateSpec")
+        return weather
 
     def run_id(self, spec):
         """Compile and bind the identity to the actual serialized model.
@@ -441,9 +500,7 @@ class EnergyPlusCompiler:
 
         # 1. Compile a validated building into checked EnergyPlus epJSON and an audit report.
         spec = BuildingSpec.model_validate(spec.model_dump())
-        if file_sha256(spec.climate.epw_path) != spec.climate.weather_sha256:
-            raise ValueError("EPW checksum differs from ClimateSpec")
-        weather_location = climate_from_epw(spec.climate.epw_path)
+        weather_location = self._verified_weather(spec.climate)
         for field in ("latitude_deg", "longitude_deg", "time_zone_hours", "elevation_m"):
             if getattr(spec.climate, field) != getattr(weather_location, field):
                 raise ValueError(f"Site:Location differs from EPW: {field}")
@@ -636,10 +693,16 @@ class EnergyPlusCompiler:
             "lighting_fraction",
             "dhw_fraction",
         ):
-            data = [{"field": "Through: 12/31"}, {"field": "For: AllDays"}]
-            for hour, value in enumerate(getattr(spec.use, name).values, 1):
-                data.extend([{"field": f"Until: {hour:02}:00"}, {"field": value}])
+            data = getattr(spec.use, name).compact_data(spec.climate.calendar_year)
             add("Schedule:Compact", name, schedule_type_limits_name="any_number", data=data)
+
+        def emit_airflow_schedules(airflow, prefix=""):
+            """Keep outdoor-air and HVAC availability controls independent."""
+            for name in ("mechanical_vent_fraction", "heating_availability", "cooling_availability"):
+                add("Schedule:Compact", prefix + name, schedule_type_limits_name="any_number",
+                    data=getattr(airflow, name).compact_data(spec.climate.calendar_year))
+
+        emit_airflow_schedules(spec.airflow)
 
         # 3. Preserve nominal assemblies in the audit while emitting equivalent thermal
         # properties.
@@ -722,30 +785,17 @@ class EnergyPlusCompiler:
         )
         add("Construction", "window", outside_layer="glazing")
 
-        # 4. Emit explicit ground-contact temperatures; weather soil data is not substituted.
+        # 4. Prescribed temperatures are an explicit legacy mode; Kiva is emitted
+        # after all ground faces exist and before geometric/schema validation.
         ground_temperature = spec.envelope.ground_temperature
-        months = (
-            "january",
-            "february",
-            "march",
-            "april",
-            "may",
-            "june",
-            "july",
-            "august",
-            "september",
-            "october",
-            "november",
-            "december",
-        )
-        add(
-            "Site:GroundTemperature:BuildingSurface",
-            "ground_temperature",
-            **{
-                f"{month}_ground_temperature": value
-                for month, value in zip(months, ground_temperature.monthly_temperatures_c)
-            },
-        )
+        foundation_report = dict(method="prescribed_temperature")
+        if ground_temperature is not None:
+            months = ("january", "february", "march", "april", "may", "june",
+                      "july", "august", "september", "october", "november", "december")
+            add("Site:GroundTemperature:BuildingSurface", "ground_temperature",
+                **{f"{month}_ground_temperature": value for month, value in
+                   zip(months, ground_temperature.monthly_temperatures_c)})
+            foundation_report.update(ground_temperature.model_dump(mode="json"))
 
         def surface(name, zone, vertices, kind, construction, boundary, adjacent=""):
             """Encode a graph face with world coordinates and explicit exposure settings.
@@ -895,15 +945,26 @@ class EnergyPlusCompiler:
                 "lighting_fraction",
                 "dhw_fraction",
             ):
-                data = [{"field": "Through: 12/31"}, {"field": "For: AllDays"}]
-                for hour, value in enumerate(getattr(common_use, name).values, 1):
-                    data.extend([{"field": f"Until: {hour:02}:00"}, {"field": value}])
+                data = getattr(common_use, name).compact_data(spec.climate.calendar_year)
                 add(
                     "Schedule:Compact",
                     "common_" + name,
                     schedule_type_limits_name="any_number",
                     data=data,
                 )
+        if has_common:
+            emit_airflow_schedules(spec.common_airflow or spec.airflow, "common_")
+        # Reject misspelled zone selectors rather than quietly using building defaults.
+        for assignment in spec.zone_uses:
+            matches = [name for name, z in zone_report.items() if z["conditioned"] and
+                       (name == assignment.zone_name if assignment.zone_name is not None else
+                        z.get("zone_kind", z.get("physical_zone_kind")) == assignment.zone_kind)]
+            if not matches:
+                raise ValueError(f"Zone-use selector matches no conditioned zone: {assignment}")
+        for exchange in spec.unconditioned_exchange:
+            if not any(not z["conditioned"] and z.get("physical_zone_kind") == exchange.zone_kind
+                       for z in zone_report.values()):
+                raise ValueError(f"Exchange selector matches no unconditioned {exchange.zone_kind}")
         # 6. Separate common circulation area before optionally conserving residential loads.
         residential_area = sum(
             z["floor_area_m2"]
@@ -947,16 +1008,55 @@ class EnergyPlusCompiler:
             )
             if data["conditioned"]:
                 common = data.get("zone_kind") in ("common", "stairwell")
-                self._loads(
-                    add,
-                    zone,
-                    data["floor_area_m2"],
-                    data["volume_m3"],
-                    spec,
-                    use=common_use if common else residential_use,
-                    airflow=(spec.common_airflow or spec.airflow) if common else spec.airflow,
-                    schedule_prefix="common_" if common else "",
-                )
+                use = common_use if common else residential_use
+                airflow = (spec.common_airflow or spec.airflow) if common else spec.airflow
+                prefix = "common_" if common else ""
+                scale = (spec.load_reference_area_m2 / g.conditioned_floor_area_m2
+                         if spec.load_reference_area_m2 is not None else 1)
+                load_area = data["floor_area_m2"] * scale
+                assignments = sorted(
+                    (x for x in spec.zone_uses if x.zone_name == zone or
+                     (x.zone_kind is not None and x.zone_kind ==
+                      data.get("zone_kind", data.get("physical_zone_kind")))),
+                    key=lambda x: x.zone_name is not None)
+                for assignment in assignments:
+                    use = assignment.use or use
+                    airflow = assignment.airflow or airflow
+                    if assignment.reference_area_m2 is not None:
+                        load_area = assignment.reference_area_m2
+                if assignments:
+                    prefix = zone + "_operation_"
+                    constant(prefix + "activity", use.occupant_activity_w)
+                    for name in ("heating_setpoint", "cooling_setpoint", "occupancy_fraction",
+                                 "equipment_fraction", "lighting_fraction", "dhw_fraction"):
+                        add("Schedule:Compact", prefix + name, schedule_type_limits_name="any_number",
+                            data=getattr(use, name).compact_data(spec.climate.calendar_year))
+                    emit_airflow_schedules(airflow, prefix)
+                mean_fraction = sum(airflow.mechanical_vent_fraction.hourly(spec.climate.calendar_year)) / spec.climate.hours_in_year
+                data["mean_outdoor_air_m3_s"] = (
+                    (airflow.envelope_infiltration_ach + airflow.natural_exchange_ach) * data["volume_m3"] / 3600
+                    + load_area * airflow.mechanical_vent_l_s_m2 * mean_fraction / 1000)
+                data["airflow_input"] = airflow.model_dump(mode="json")
+                data["load_reference_area_m2"] = load_area
+                data["operation_sources"] = [x.source for x in assignments]
+                self._loads(add, zone, load_area, data["volume_m3"], spec,
+                            use=use, airflow=airflow, schedule_prefix=prefix)
+            else:
+                for exchange in spec.unconditioned_exchange:
+                    if data.get("physical_zone_kind") == exchange.zone_kind:
+                        schedule = zone + "_unconditioned_exchange"
+                        add("Schedule:Compact", schedule, schedule_type_limits_name="any_number",
+                            data=exchange.fraction.compact_data(spec.climate.calendar_year))
+                        add("ZoneInfiltration:DesignFlowRate", schedule,
+                            zone_or_zonelist_or_space_or_spacelist_name=zone,
+                            schedule_name=schedule, design_flow_rate_calculation_method="AirChanges/Hour",
+                            air_changes_per_hour=exchange.outdoor_air_ach,
+                            constant_term_coefficient=1, temperature_term_coefficient=0,
+                            velocity_term_coefficient=0, velocity_squared_term_coefficient=0)
+                        data["exchange_source"] = exchange.source
+        assigned_area = sum(z.get("load_reference_area_m2", 0) for z in zone_report.values())
+        if spec.load_reference_area_m2 is not None and abs(assigned_area - spec.load_reference_area_m2) > 1e-6:
+            raise ValueError("Zone reference areas must sum to the declared building load reference area")
         # 8. Expose both slab halves while preserving one physical slab's heat capacity.
         for mass in graph.internal_mass:
             for face in ("a", "b"):
@@ -1050,6 +1150,15 @@ class EnergyPlusCompiler:
         unknown = {o.facade_id for o in spec.facade.overrides} - graph.valid_facades
         if unknown:
             raise ValueError(f"Overrides reference unknown facades: {sorted(unknown)}")
+        if spec.envelope.foundation.method == "kiva":
+            foundation_report = apply_kiva(model, spec.envelope, polygons)
+            removed = set(foundation_report["merged_ground_faces"])
+            ground_report = [f for f in ground_report if f["surface"] not in removed]
+            for item in foundation_report["assignments"]:
+                for face in ground_report:
+                    if face["surface"] == item["floor"]:
+                        face["area_m2"] = item["floor_area_m2"]
+
         # 10. Validate geometric closure and reciprocal boundaries before schema validation.
         try:
             validation = validate_surfaces(model, zone_report)
@@ -1064,12 +1173,14 @@ class EnergyPlusCompiler:
             for kind in ("BuildingSurface:Detailed", "FenestrationSurface:Detailed", "InternalMass")
             for o in model.get(kind, {}).values()
         }
+        used.update(o["footing_wall_construction_name"] for o in model.get("Foundation:Kiva", {}).values() if "footing_wall_construction_name" in o)
         for kind in ("Construction", "Construction:AirBoundary"):
             if kind in model:
                 model[kind] = {n: o for n, o in model[kind].items() if n in used}
                 if not model[kind]:
                     del model[kind]
         used_materials = {v for o in model.get("Construction", {}).values() for v in o.values()}
+        used_materials.update(o["footing_material_name"] for o in model.get("Foundation:Kiva", {}).values() if "footing_material_name" in o)
         for kind in ("Material", "WindowMaterial:SimpleGlazingSystem"):
             model[kind] = {n: o for n, o in model.get(kind, {}).items() if n in used_materials}
             if not model[kind]:
@@ -1086,6 +1197,7 @@ class EnergyPlusCompiler:
         area = sum(z["floor_area_m2"] for z in zone_report.values() if z["conditioned"])
         volume = sum(z["volume_m3"] for z in zone_report.values() if z["conditioned"])
         report = dict(
+            footprint_cleanup=prepared_footprints(g)[1],
             origin_m=origin,
             orientation_deg=g.orientation_deg,
             zones=zone_report,
@@ -1111,10 +1223,11 @@ class EnergyPlusCompiler:
             residential_load_scale=load_scale,
             conditioned_floor_area_m2=area,
             conditioned_volume_m3=volume,
-            effective_outdoor_air_ach=spec.airflow.envelope_infiltration_ach
-            + spec.airflow.natural_exchange_ach
-            + 3.6 * spec.airflow.mechanical_vent_l_s_m2 * area / volume,
-            ground_temperature=ground_temperature.model_dump(mode="json"),
+            effective_outdoor_air_ach=3600 * sum(
+                z.get("mean_outdoor_air_m3_s", 0) for z in zone_report.values()) / volume,
+            load_reference_area_m2=sum(z.get("load_reference_area_m2", 0) for z in zone_report.values()),
+            foundation=foundation_report,
+            ground_temperature=(ground_temperature.model_dump(mode="json") if ground_temperature is not None else None),
             approximations=graph.approximations,
             validation=validation,
             surfaces={
@@ -1186,6 +1299,11 @@ class EnergyPlusCompiler:
             internal_mass=graph.internal_mass,
             parts=[p.model_dump(mode="json") for p in g.parts],
         )
+        if spec.envelope.foundation.method == "kiva":
+            for name in foundation_report["merged_ground_faces"]:
+                report["surfaces"].pop(name)
+            for item in foundation_report["assignments"]:
+                report["surfaces"][item["floor"]]["area_m2"] = item["floor_area_m2"]
         return model, CompilationReport(
             run_id=hashlib.sha256(
                 json.dumps(
@@ -1282,6 +1400,7 @@ class EnergyPlusCompiler:
                     else {"design_level": watts * area}
                 ),
                 fraction_radiant=0.3,
+                **({"fraction_lost": 1 - u.equipment_heat_fraction} if obj == "ElectricEquipment" else {}),
             )
         add(
             "ZoneInfiltration:DesignFlowRate",
@@ -1353,15 +1472,15 @@ class EnergyPlusCompiler:
             zone + "_outdoor_air",
             outdoor_air_method="Flow/Zone",
             outdoor_air_flow_per_zone=area * a.mechanical_vent_l_s_m2 / 1000,
-            outdoor_air_schedule_name="on",
+            outdoor_air_schedule_name=schedule_prefix + "mechanical_vent_fraction",
         )
         add(
             "ZoneHVAC:IdealLoadsAirSystem",
             zone + "_ideal",
             availability_schedule_name="on",
             zone_supply_air_node_name=zone + "_supply",
-            heating_availability_schedule_name="on",
-            cooling_availability_schedule_name="on" if u.cooling_enabled else "off",
+            heating_availability_schedule_name=schedule_prefix + "heating_availability",
+            cooling_availability_schedule_name=schedule_prefix + "cooling_availability" if u.cooling_enabled else "off",
             maximum_heating_supply_air_temperature=a.maximum_heating_supply_temperature_c,
             minimum_cooling_supply_air_temperature=a.minimum_cooling_supply_temperature_c,
             heating_limit="NoLimit",
@@ -1383,7 +1502,7 @@ class EnergyPlusCompiler:
         # Fixed 10/55 C water temperatures make the specified thermal DHW load explicit.
         # 2. Calibrate peak water flow so the repeated daily schedule integrates to annual
         # demand.
-        mean = sum(u.dhw_fraction.values) / 24
+        mean = sum(u.dhw_fraction.hourly(spec.climate.calendar_year)) / spec.climate.hours_in_year
         flow = (
             u.dhw_kwh_m2_year
             * area

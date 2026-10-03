@@ -42,7 +42,7 @@ from dataclasses import dataclass
 from math import hypot, isfinite
 
 from shapely import STRtree, set_precision, unary_union
-from shapely.geometry import LineString, Polygon
+from shapely.geometry import LineString, MultiPoint, Polygon
 
 from .geometry import facade_edges
 
@@ -391,6 +391,32 @@ def perimeter_core_partitions(polygon, facades, depth_m=4.5):
     # 6. Preserve all remaining cores and validate complete nonoverlapping coverage.
     core = polygon.difference(unary_union(strips))
     regions.extend(PlanarZone(p, "core") for p in polygon_components(set_precision(core, GRID)))
+    # Collapse sub-centimetre partition/source-corner gaps coherently across
+    # all regions. Physical outline is retained; coverage is checked below.
+    anchors = MultiPoint(
+        [p for ring in (polygon.exterior, *polygon.interiors) for p in ring.coords[:-1]]
+    )
+    anchor_points = [tuple(p.coords[0]) for p in anchors.geoms]
+
+    def aligned_ring(ring):
+        result = []
+        for point in ring.coords:
+            nearest = min(anchor_points, key=lambda a: hypot(a[0] - point[0], a[1] - point[1]))
+            result.append(
+                nearest if hypot(nearest[0] - point[0], nearest[1] - point[1]) < 0.010001 else point
+            )
+        return result
+
+    regions = [
+        PlanarZone(
+            Polygon(
+                aligned_ring(r.polygon.exterior), [aligned_ring(h) for h in r.polygon.interiors]
+            ).simplify(0),
+            r.kind,
+            r.facade_id,
+        )
+        for r in regions
+    ]
     validate_partitions(polygon, [r.polygon for r in regions])
     return tuple(regions)
 

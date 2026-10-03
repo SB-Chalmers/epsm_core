@@ -31,7 +31,7 @@ Input coordinates must already be metric. `source_crs` records their source; it 
 
 ## Windows and attached shading
 
-`WindowLayoutSpec(mode="scaled")` places one area-scaled opening per contiguous rectangular exposure run. `mode="wwr"` solves repeated openings at the requested WWR. `mode="dimensions"` accepts window width, height and centre spacing; achieved WWR becomes an output. Infeasible requested layouts raise an error.
+`WindowLayoutSpec(mode="scaled")` places one area-scaled opening per contiguous rectangular exposure run. If scaling would make either opening edge shorter than the safe EnergyPlus limit, Core leaves that run opaque and records the reason alongside its requested and applied WWR. `mode="wwr"` solves repeated openings at the requested WWR. `mode="dimensions"` accepts window width, height and centre spacing; achieved WWR becomes an output. Infeasible requests in those explicit layout modes raise an error.
 
 Facade defaults apply first, then facade-wide overrides, then storey-specific overrides. Overrides support WWR, layout, glazing properties, reveal depth and overhangs. Advanced low/mid/high pattern controls are modelling assumptions, not descriptions inferred from building age or location.
 

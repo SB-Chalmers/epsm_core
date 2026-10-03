@@ -22,13 +22,15 @@ Construction layers are ordered outside to inside. Nominal surface resistances s
 
 Virtual zoning boundaries use air boundaries and add no physical mass. Intermediate slabs are physical reciprocal floor/ceiling pairs across zones. When floors are inside one thermal zone, two internal-mass half-layer faces preserve the slab heat capacity. Takeoffs count each physical slab once.
 
-Ground slabs and below-grade basement walls use EnergyPlus `Ground` boundaries with explicit monthly surface temperatures. The default 18°C is an uncalibrated modelling assumption, not an EPW-derived soil model. There is no soil mesh or foundation solver. Unconditioned basements require explicit basement-ceiling constructions.
+Ground slabs and below-grade basement walls default to EnergyPlus Kiva. Soil, deep boundary and exposed perimeter assumptions are explicit in `FoundationSpec` and the compilation report. Internal zone edges are excluded from exposed perimeter. Prescribed monthly surface temperatures remain an explicit legacy mode; the former 18°C boundary is no longer the default. Unconditioned basements require explicit basement-ceiling constructions. See [foundation settings and migration](foundations.md).
 
 Compact roofs carry their thermal boundary directly. Cold attics are sealed unconditioned buffers: insulation is assigned to the occupied ceiling and the exterior weather shell is separate. Pitched roof geometry does not imply occupied attic space or attic ventilation.
 
 ## Operations and results
 
 Natural exchange and leakage are prescribed operating flows, not wind/stack pressure calculations. Mechanical airflow uses Ideal Loads outdoor air, with configured sensible/latent recovery. Fan electricity is not inferred. Common-space operations exist for experimental apartment layouts and must remain distinct from virtual perimeter zoning.
+
+The no-argument `BuildingBuilder` loads the bundled Sveby residential normal-use profile. This is a versioned package resource, not a network lookup or physical-archetype catalogue. It supplies use, common-use, shading and minimum mechanical-flow leaves while known building inputs take precedence. Sveby values, EPSM model-completion assumptions and currently unsupported requirements remain separately identifiable. The detailed ownership and compliance boundary is documented in [bundled operational standards](standards.md).
 
 Heating demand is ideal supply-air heating, including outdoor-air treatment. DHW is a prescribed thermal load. Cooling demand is separate. These are thermal demands, not purchased energy. Optional FVP delivery estimates and PVWatts generation have separate outputs and assumptions.
 

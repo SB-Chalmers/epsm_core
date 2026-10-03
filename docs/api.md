@@ -15,11 +15,18 @@ The development package version is `0.1.0.dev0`. Simulation identity combines in
 | `FacadeSpec` | Default glazing, window layout, WWR, overrides and attached shading |
 | `ContextSpec` | Explicit resolved neighbouring buildings and generation metadata |
 | `CompilerSettings` | Engine controls such as maximum shadow figures |
-| `BuildingBuilder` | Caller-owned assumptions merged with known observations |
+| `BuildingBuilder` | Bundled Sveby or caller-owned assumptions merged with known observations |
+| `SvebyResidentialSpec` | Versioned residential normal-use values, mappings and completion-default disclosure |
 | `EnergyPlusCompiler` / `EnergyPlusRunner` | Validated model output / isolated simulation |
 | `quantity_takeoff` | Physical material/equipment quantities, excluding virtual zoning and context |
 
 Definitions live in focused `epsm_core.specs` domain modules and are re-exported from `epsm_core`. Importing them does not load a registry or contact a service.
+
+## Operational standards
+
+`load_sveby_spec()` reads the current bundled residential profile; `load_sveby_residential_v2()` pins version 2.0 explicitly. `BuildingBuilder()` uses the current profile when constructed without arguments. The standard supplies operational leaves only, so weather, fabric, leakage, ventilation topology and installed-system performance remain explicit inputs.
+
+The no-input path contains separately labelled completion defaults for occupant density and cooling availability. It also retains requirements the current compiler cannot emit, rather than silently changing them. See the [operational-standards contract](standards.md) for source mappings, Atemp handling, overrides, provenance and the compliance boundary.
 
 ## Geometry and facade selection
 
@@ -120,3 +127,7 @@ Site coordinates must match the EPW header. No climate-specific substitution is 
 Run identity binds the actual serialized model to the compiler, engine, schema,
 weather and normalized inputs. `compiler.run_id(spec)` therefore compiles and validates
 the specification; use `report.run_id` when a compilation report already exists.
+
+## Ground heat transfer
+
+New envelopes default to `FoundationSpec(method="kiva")`. Soil and footing assumptions remain configurable and reported. Explicit legacy `GroundTemperatureSpec` profiles retain prescribed-temperature behaviour. See [foundation settings and migration](foundations.md).

@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-06
+# Date modified: 2026-10-03
 # Changelog:
+#   2026-10-03 - Add documented calendar, operational and archetype-application support.
 #   2026-09-06 - Document __init__ interfaces, examples, constraints and processing rationale.
 
 """The current building input schema, organized by domain.
@@ -51,17 +52,22 @@ from .geometry import ApartmentLayoutSpec as ApartmentLayoutSpec
 from .geometry import ApartmentType as ApartmentType
 from .geometry import BuildingPart as BuildingPart
 from .geometry import Footprint as Footprint
+from .geometry import FootprintCleanupSpec as FootprintCleanupSpec
 from .geometry import GeometrySpec as GeometrySpec
 from .geometry import PartyWall as PartyWall
 from .geometry import RoofSpec as RoofSpec
 from .geometry import ZoningSpec as ZoningSpec
+from .operations import UnconditionedExchangeSpec as UnconditionedExchangeSpec
+from .operations import ZoneUseSpec as ZoneUseSpec
 from .physics import AirflowSpec as AirflowSpec
 from .physics import ClimateSpec as ClimateSpec
 from .physics import ConstructionSpec as ConstructionSpec
 from .physics import DeliverySpec as DeliverySpec
 from .physics import EnvelopeSpec as EnvelopeSpec
+from .physics import FoundationSpec as FoundationSpec
 from .physics import FVPSpec as FVPSpec
 from .physics import GroundTemperatureSpec as GroundTemperatureSpec
+from .physics import HeatingDeliverySpec as HeatingDeliverySpec
 from .physics import LayerSpec as LayerSpec
 from .physics import MaterialSpec as MaterialSpec
 from .physics import PVSpec as PVSpec
@@ -75,3 +81,4 @@ from .provenance import ProvenanceSpec as ProvenanceSpec
 from .provenance import QuantityChange as QuantityChange
 from .provenance import RenovationRecord as RenovationRecord
 from .provenance import SourceRecord as SourceRecord
+from .schedules import SchedulePeriod as SchedulePeriod

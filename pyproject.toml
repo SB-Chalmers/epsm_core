@@ -37,7 +37,7 @@ select = ["E4", "E7", "E9", "F", "I"]
 "tests/core/*" = ["F403", "F405"]
 
 [tool.setuptools.package-data]
-epsm_core = ["viewer_assets/*"]
+epsm_core = ["viewer_assets/*", "standards_data/*.json"]
 
 [tool.setuptools.dynamic]
 version = {attr = "epsm_core._version.__version__"}

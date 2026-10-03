@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-12
+# Date modified: 2026-10-03
 # Changelog:
+#   2026-10-03 - Add documented calendar, operational and archetype-application support.
 #   2026-09-12 - Record the configured overlap capacity in shadow-limit diagnostics.
 #   2026-09-11 - Remove recovery retries and automatic previews; preserve classified failure evidence.
 #   2026-09-06 - Document runner interfaces, examples, constraints and processing rationale.
@@ -52,6 +53,7 @@ from .failures import (
     SHADOW_COMPLEXITY_LIMIT,
     engine_failure_code,
 )
+from .heating_delivery import heating_delivery
 from .pv import run_pvwatts
 from .results import read_results
 
@@ -368,6 +370,12 @@ class EnergyPlusRunner:
                 output.hourly.update(extra)
                 output.units.update({key: "kWh" for key in extra})
                 output.scalars.update({key: float(value.sum()) for key, value in extra.items()})
+            if spec.delivery.heating:
+                extra = heating_delivery(spec, output.hourly["space_heating_demand_kwh"], report)
+                output.hourly.update(extra)
+                output.units.update({key: "kWh" for key in extra})
+                output.scalars.update({key: float(value.sum()) for key, value in extra.items()})
+                diagnostics["heating_delivery"] = spec.delivery.heating.model_dump(mode="json")
             if spec.renewables.pv_systems:
                 generation = np.zeros(spec.climate.hours_in_year)
                 for pv in spec.renewables.pv_systems:
@@ -383,6 +391,7 @@ class EnergyPlusRunner:
             ) from error
         # 7. Persist assumptions and final diagnostics before writing the completion marker.
         diagnostics["model_assumptions"] = dict(
+            foundation=report.data["foundation"],
             ground_temperature=report.data["ground_temperature"],
             approximations=report.data["approximations"],
             empirical_validation="not_evaluated_by_core",

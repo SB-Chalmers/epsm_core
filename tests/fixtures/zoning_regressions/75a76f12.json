@@ -1,0 +1,107 @@
+{
+  "parts": [
+    {
+      "identifier": "main",
+      "footprint": {
+        "exterior": [
+          [
+            316294.345,
+            6398443.125
+          ],
+          [
+            316296.779,
+            6398436.538
+          ],
+          [
+            316308.618,
+            6398440.873
+          ],
+          [
+            316308.109,
+            6398442.453
+          ],
+          [
+            316321.018,
+            6398471.277
+          ],
+          [
+            316320.766,
+            6398473.464
+          ],
+          [
+            316335.947,
+            6398475.739
+          ],
+          [
+            316367.834,
+            6398480.523
+          ],
+          [
+            316389.163,
+            6398528.019
+          ],
+          [
+            316414.703,
+            6398516.405
+          ],
+          [
+            316419.876,
+            6398528.24
+          ],
+          [
+            316382.453,
+            6398545.09
+          ],
+          [
+            316358.749,
+            6398492.135
+          ],
+          [
+            316313.305,
+            6398485.314
+          ],
+          [
+            316309.648,
+            6398477.175
+          ]
+        ],
+        "holes": []
+      },
+      "storey_elevations_m": [
+        0.0,
+        2.401666666666667,
+        4.803333333333334,
+        7.205,
+        9.606666666666667,
+        12.008333333333335,
+        14.41
+      ],
+      "conditioned": true,
+      "roof": null,
+      "height_status": "assumed",
+      "outline_kind": "roof_edge_proxy",
+      "outline_reviewed": false
+    }
+  ],
+  "orientation_deg": 0.0,
+  "footprint_cleanup": {
+    "enabled": true,
+    "tolerance_m": 0.01,
+    "max_area_change_fraction": 0.001,
+    "implementation_version": "footprint-cleanup-1"
+  },
+  "zoning": {
+    "mode": "per_storey"
+  },
+  "roof": {
+    "shape": "flat",
+    "pitch_deg": null,
+    "direction_deg": null,
+    "topology": "compact",
+    "attic_height_m": 1.5
+  },
+  "basement_depth_m": 0.0,
+  "basement_conditioned": false,
+  "source_crs": "EPSG:3006",
+  "party_walls": []
+}

@@ -1,5 +1,5 @@
 # File: __init__.py
-# Purpose: Building specifications and EnergyPlus simulation, without implicit data loading.
+# Purpose: Building specifications, bundled operational standards and EnergyPlus simulation.
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 Sanjay Somanath
 # License: MIT; see the project-root LICENSE for the full permission and warranty terms.
@@ -9,17 +9,20 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-11
+# Date modified: 2026-10-03
 # Changelog:
+#   2026-10-03 - Add documented calendar, operational and archetype-application support.
+#   2026-09-15 - Export the bundled Sveby residential standard API.
 #   2026-09-11 - Export the typed HourlyOutputRequest API.
 #   2026-09-06 - Document __init__ interfaces, examples, constraints and processing rationale.
 
-"""Building specifications and EnergyPlus simulation, without implicit data loading.
+"""Building specifications, operational standards and EnergyPlus simulation.
 
 Notes
 -----
-The package exposes explicit input specifications and compile/run helpers. Importing the
-package does not read weather or launch EnergyPlus. Geometry inspection can operate
+The package exposes explicit input specifications, a lazily loaded bundled Sveby
+residential profile and compile/run helpers. Importing the package does not read the
+profile or weather and does not launch EnergyPlus. Geometry inspection can operate
 without thermal materials or engine installation.
 
 Examples
@@ -69,10 +72,13 @@ from .specs import (
     FacadeOverride,
     FacadeSpec,
     Footprint,
+    FootprintCleanupSpec,
+    FoundationSpec,
     FVPSpec,
     GeometrySpec,
     GlazingSpec,
     GroundTemperatureSpec,
+    HeatingDeliverySpec,
     LayerSpec,
     MaterialSpec,
     OverhangSpec,
@@ -84,16 +90,22 @@ from .specs import (
     RenewablesSpec,
     RenovationRecord,
     RoofSpec,
+    SchedulePeriod,
     ScheduleSpec,
     SourceRecord,
+    UnconditionedExchangeSpec,
     UseSpec,
     WindowLayoutSpec,
     WindowPattern,
+    ZoneUseSpec,
     ZoningSpec,
 )
+from .standards import SvebyResidentialSpec, load_sveby_residential_v2, load_sveby_spec
 from .weather import climate_from_epw
 
 __all__ = [
+    "SvebyNonResidentialSpec", "load_sveby_office_v1", "load_sveby_school_v1",
+    "FootprintCleanupSpec",
     "synthetic_context",
     "preview_geometry",
     "CompilerSettings",
@@ -110,6 +122,9 @@ __all__ = [
     "prepare_geometry",
     "quantity_takeoff",
     "BuildingBuilder",
+    "SvebyResidentialSpec",
+    "load_sveby_residential_v2",
+    "load_sveby_spec",
     "CompilationReport",
     "EnergyPlusCompiler",
     "EnergyPlusRunner",
@@ -130,6 +145,7 @@ __all__ = [
     "ContextBuilding",
     "ContextSpec",
     "DeliverySpec",
+    "HeatingDeliverySpec",
     "EnvelopeSpec",
     "FacadeOverride",
     "FacadeSpec",
@@ -138,6 +154,7 @@ __all__ = [
     "GeometrySpec",
     "ZoningSpec",
     "GlazingSpec",
+    "FoundationSpec",
     "GroundTemperatureSpec",
     "LayerSpec",
     "MaterialSpec",
@@ -145,8 +162,11 @@ __all__ = [
     "PVSpec",
     "RenewablesSpec",
     "ScheduleSpec",
+    "SchedulePeriod",
     "SourceRecord",
     "UseSpec",
+    "ZoneUseSpec",
+    "UnconditionedExchangeSpec",
     "climate_from_epw",
     "AddInsulation",
     "ChangeAirflow",
@@ -159,4 +179,5 @@ __all__ = [
 
 from .context import synthetic_context
 from .inspection import preview_geometry
+from .nonresidential import SvebyNonResidentialSpec, load_sveby_office_v1, load_sveby_school_v1
 from .settings import CompilerSettings, HourlyOutputRequest

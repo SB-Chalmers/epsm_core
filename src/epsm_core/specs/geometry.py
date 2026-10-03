@@ -1025,6 +1025,14 @@ class PartyWall(Spec):
     assumption_source: str
 
 
+class FootprintCleanupSpec(Spec):
+    """Bounded metric simplification; disable explicitly to preserve source rings."""
+    enabled: bool = True
+    tolerance_m: Nonnegative = 0.01
+    max_area_change_fraction: Fraction = 0.001
+    implementation_version: Literal["footprint-cleanup-1"] = "footprint-cleanup-1"
+
+
 class GeometrySpec(Spec):
     """Physical building parts, metric frame and thermal-geometry controls.
 
@@ -1080,6 +1088,7 @@ class GeometrySpec(Spec):
 
     parts: Annotated[tuple[BuildingPart, ...], Field(min_length=1)]
     orientation_deg: Annotated[float, Field(ge=0, lt=360)] = 0
+    footprint_cleanup: FootprintCleanupSpec = FootprintCleanupSpec()
     zoning: ZoningSpec = ZoningSpec()
     roof: RoofSpec = RoofSpec()
     basement_depth_m: Nonnegative = 0
@@ -1278,7 +1287,9 @@ class GeometrySpec(Spec):
             assert len(geometry.footprints) == len(geometry.parts)
         """
 
-        return tuple(p.footprint for p in self.parts)
+        from ..footprint_cleanup import prepared_footprints
+        polygons, _ = prepared_footprints(self)
+        return tuple(Footprint(exterior=tuple(p.exterior.coords)[:-1], holes=tuple(tuple(r.coords)[:-1] for r in p.interiors)) for p in polygons)
 
     @property
     def footprint_area_m2(self):
@@ -1307,7 +1318,7 @@ class GeometrySpec(Spec):
             assert geometry.footprint_area_m2 == sum(p.area_m2 for p in geometry.footprints)
         """
 
-        return sum(p.footprint.area_m2 for p in self.parts)
+        return sum(f.area_m2 for f in self.footprints)
 
     @property
     def conditioned_floor_area_m2(self):
@@ -1337,8 +1348,8 @@ class GeometrySpec(Spec):
         """
 
         return sum(
-            p.footprint.area_m2 * (p.floors * p.conditioned + int(self.basement_conditioned))
-            for p in self.parts
+            f.area_m2 * (p.floors * p.conditioned + int(self.basement_conditioned))
+            for p, f in zip(self.parts, self.footprints)
         )
 
     @property
@@ -1370,12 +1381,12 @@ class GeometrySpec(Spec):
 
         # 1. Compute conditioned extrusion volume from footprint areas and heights.
         return sum(
-            p.footprint.area_m2
+            f.area_m2
             * (
                 p.storey_elevations_m[-1] * p.conditioned
                 + self.basement_depth_m * self.basement_conditioned
             )
-            for p in self.parts
+            for p, f in zip(self.parts, self.footprints)
         )
 
     def roof_for(self, part: BuildingPart) -> RoofSpec:

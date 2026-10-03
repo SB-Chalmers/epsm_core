@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-06
+# Date modified: 2026-10-03
 # Changelog:
+#   2026-10-03 - Add documented calendar, operational and archetype-application support.
 #   2026-09-06 - Document building interfaces, examples, constraints and processing rationale.
 
 """Building input specifications.
@@ -41,10 +42,11 @@ import json
 
 from pydantic import model_validator
 
-from .base import Spec
+from .base import Positive, Spec
 from .context import ContextSpec
 from .facade import FacadeSpec
 from .geometry import GeometrySpec
+from .operations import UnconditionedExchangeSpec, ZoneUseSpec
 from .physics import AirflowSpec, ClimateSpec, DeliverySpec, EnvelopeSpec, RenewablesSpec, UseSpec
 from .provenance import AssessmentReference, ProvenanceSpec, RenovationRecord
 
@@ -122,6 +124,11 @@ class BuildingSpec(Spec):
         building = BuildingSpec.model_validate_json(Path("building.json").read_text())
     """
 
+    # Sveby uses Atemp for loads/flow; the physical geometry/heat-transfer area stays intact.
+    # Exact zone overrides may specify their own documented area allocation.
+    load_reference_area_m2: Positive | None = None
+    zone_uses: tuple[ZoneUseSpec, ...] = ()
+    unconditioned_exchange: tuple[UnconditionedExchangeSpec, ...] = ()
     identifier: str
     geometry: GeometrySpec
     facade: FacadeSpec
@@ -172,11 +179,47 @@ class BuildingSpec(Spec):
             assert building.compatible() is building
         """
 
+        # Resolve calendars here; a standalone UseSpec has no simulation year.
+        from .schedules import ScheduleSpec
+        pairs = [(self.use, self.airflow)]
+        if self.common_use is not None:
+            pairs.append((self.common_use, self.common_airflow or self.airflow))
+        elif self.common_airflow is not None:
+            pairs.append((self.use, self.common_airflow))
+        pairs.extend((x.use or self.use, x.airflow or self.airflow) for x in self.zone_uses)
+        for use, airflow in pairs:
+            for obj in (use, airflow):
+                for name in type(obj).model_fields:
+                    schedule = getattr(obj, name)
+                    if isinstance(schedule, ScheduleSpec):
+                        schedule.hourly(self.climate.calendar_year)
+            if max(use.heating_setpoint.all_values) >= airflow.maximum_heating_supply_temperature_c:
+                raise ValueError("Zone heating supply limit must exceed its heating setpoint")
+            if use.dhw_kwh_m2_year and not sum(use.dhw_fraction.hourly(self.climate.calendar_year)):
+                raise ValueError("Nonzero DHW requires activity in the simulation year")
+        if self.delivery.heating is not None:
+            heating = self.delivery.heating
+            weights = heating.loss_fraction.hourly(self.climate.calendar_year)
+            if heating.net_distribution_loss_kwh_m2_year and not sum(weights):
+                raise ValueError("Net distribution losses require activity in the simulation year")
+            if heating.heat_pump_cop is not None:
+                heating.heat_pump_cop.hourly(self.climate.calendar_year)
+        selectors = [(x.zone_name, x.zone_kind) for x in self.zone_uses]
+        if len(selectors) != len(set(selectors)):
+            raise ValueError("Duplicate zone-use selectors")
+        kinds = [x.zone_kind for x in self.unconditioned_exchange]
+        if len(kinds) != len(set(kinds)):
+            raise ValueError("Duplicate unconditioned exchange selectors")
+        for exchange in self.unconditioned_exchange:
+            exchange.fraction.hourly(self.climate.calendar_year)
+        if self.delivery.fvp and (self.zone_uses or
+                set(self.airflow.mechanical_vent_fraction.all_values) != {1.0}):
+            raise ValueError("FVP delivery currently requires uniform continuous exhaust flow")
         # 1. Validate cross-system and geometry references on a complete building.
         if self.common_use is not None:
             common_airflow = self.common_airflow or self.airflow
             if (
-                max(self.common_use.heating_setpoint.values)
+                max(self.common_use.heating_setpoint.all_values)
                 >= common_airflow.maximum_heating_supply_temperature_c
             ):
                 raise ValueError("Common heating supply limit must exceed its heating setpoint")
@@ -198,7 +241,7 @@ class BuildingSpec(Spec):
         if self.delivery.fvp and self.airflow.topology != "F":
             raise ValueError("FVP delivery requires F ventilation")
         if (
-            max(self.use.heating_setpoint.values)
+            max(self.use.heating_setpoint.all_values)
             >= self.airflow.maximum_heating_supply_temperature_c
         ):
             raise ValueError("Heating supply limit must exceed the heating setpoint")

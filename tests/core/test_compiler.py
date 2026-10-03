@@ -1,10 +1,13 @@
 import math
+import shutil
 
 import pytest
 
+import epsm_core.compiler as compiler_module
 from epsm_core.compiler import EnergyPlusCompiler
 from epsm_core.constructions import bridge_equivalent, internal_mass_halves, solve_insulation
 from epsm_core.specs import *
+from epsm_core.weather import file_sha256
 
 
 def test_roundtrip_and_validation(building):
@@ -77,8 +80,8 @@ def test_model(building, energyplus, zoning, roof):
         ),
     )
     model, report = EnergyPlusCompiler(energyplus).compile(b)
-    assert "Site:GroundTemperature:BuildingSurface" in model
-    assert "Foundation:Kiva" not in model
+    assert "Site:GroundTemperature:BuildingSurface" not in model
+    assert "Foundation:Kiva" in model
     assert report.data["conditioned_floor_area_m2"] == 1800
     assert (
         sum(z["floor_area_m2"] for z in report.data["zones"].values() if z["conditioned"]) == 1800
@@ -112,6 +115,7 @@ def test_holes_multipolygon(building, energyplus):
     )
     other = Footprint(exterior=((50, 0), (60, 0), (60, 10), (50, 10)))
     b = building.updated(
+        envelope=building.envelope.updated(ground_temperature=GroundTemperatureSpec()),
         geometry=building.geometry.updated(
             parts=(
                 building.geometry.parts[0].updated(footprint=hole),
@@ -128,3 +132,33 @@ def test_compile_to_disk(building, energyplus, tmp_path):
     report = EnergyPlusCompiler(energyplus).write(building, tmp_path)
     assert (tmp_path / "model.epJSON").is_file()
     assert len(report.run_id) == 64
+
+
+def test_compiler_reuses_only_unchanged_weather(monkeypatch, building, energyplus, tmp_path):
+    """One compiler reads an unchanged EPW once and notices later file changes."""
+    weather_path = tmp_path / "weather.epw"
+    shutil.copyfile(building.climate.epw_path, weather_path)
+    climate = building.climate.updated(
+        epw_path=str(weather_path),
+        weather_sha256=file_sha256(weather_path),
+    )
+    candidate = building.updated(climate=climate)
+    actual_reader = compiler_module.climate_from_epw
+    reads = []
+
+    def counted_reader(path):
+        reads.append(path)
+        return actual_reader(path)
+
+    monkeypatch.setattr(compiler_module, "climate_from_epw", counted_reader)
+    compiler = EnergyPlusCompiler(energyplus)
+    compiler.compile(candidate)
+    compiler.compile(candidate)
+
+    assert reads == [weather_path.resolve()]
+
+    with weather_path.open("ab") as stream:
+        stream.write(b"\n")
+    with pytest.raises(ValueError, match="EPW checksum differs"):
+        compiler.compile(candidate)
+    assert reads == [weather_path.resolve(), weather_path.resolve()]

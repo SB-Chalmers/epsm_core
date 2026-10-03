@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-11
+# Date modified: 2026-09-13
 # Changelog:
+#   2026-09-13 - Omit scaled windows that are too small for EnergyPlus and report why.
 #   2026-09-11 - Generate facade openings and shading with shared graph vertices.
 #   2026-09-06 - Document facades interfaces, examples, constraints and processing rationale.
 
@@ -41,6 +42,8 @@ from dataclasses import dataclass
 import numpy as np
 from shapely import unary_union
 from shapely.geometry import Polygon, box
+
+from .surface_checks import MIN_GENERATED_EDGE_M
 
 
 @dataclass(frozen=True)
@@ -172,9 +175,10 @@ def window_rectangles(length, height, wwr, layout):
     Notes
     -----
     Scaled mode preserves WWR by square-root scaling and ignores explicit sill/dimension
-    controls. Dimension mode follows dimensions rather than WWR. WWR mode searches bounded
-    counts and dimensions, rejecting infeasible targets instead of reducing glazing
-    silently.
+    controls when the resulting opening is large enough for EnergyPlus. A smaller scaled
+    opening is omitted, leaving that facade run opaque. Dimension mode follows dimensions
+    rather than WWR. WWR mode searches bounded counts and dimensions, rejecting infeasible
+    targets instead of reducing glazing silently.
 
     Examples
     --------
@@ -207,6 +211,8 @@ def window_rectangles(length, height, wwr, layout):
         if not wwr:
             return [], "scaled"
         f = math.sqrt(wwr)
+        if min(f * length, f * height) < MIN_GENERATED_EDGE_M:
+            return [], "scaled"
         return [
             ((1 - f) * length / 2, (1 - f) * height / 2, (1 + f) * length / 2, (1 + f) * height / 2)
         ], "scaled"
@@ -359,6 +365,7 @@ def resolve_openings(spec, graph):
     -----
     Facade-local coordinates are rounded to 1e-8 m to coalesce rotation noise. A logical
     window can create several thermal panes; nonrectangular pane intersections are rejected.
+    The facade report records why scaled mode leaves an unsafe, undersized run opaque.
 
     Examples
     --------
@@ -484,9 +491,15 @@ def resolve_openings(spec, graph):
                     break
         parts = rectangles
         # 4. Place logical windows on complete rectangular runs, then intersect each parent.
+        suppression_reason = None
         for ri, shape in enumerate(sorted(parts, key=lambda p: p.bounds)):
             x0, y0, x1, y1 = shape.bounds
             rects, label = window_rectangles(x1 - x0, y1 - y0, wwr, layout)
+            if layout.mode == "scaled" and wwr and not rects:
+                suppression_reason = (
+                    "Scaled opening omitted because its width or height would be below "
+                    f"Core's {MIN_GENERATED_EDGE_M:g} m safety limit for EnergyPlus."
+                )
             for wi, (a, b, c, d) in enumerate(rects):
                 opening = box(x0 + a, y0 + b, x0 + c, y0 + d)
                 logical = f"{fid}_floor{storey}_run{ri}_window{wi}"
@@ -544,6 +557,7 @@ def resolve_openings(spec, graph):
                     if layout.mode != "dimensions"
                     else None,
                     window_area_m2=area,
+                    opening_suppression_reason=suppression_reason,
                 )
             )
     return openings, reports

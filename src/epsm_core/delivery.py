@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-06
+# Date modified: 2026-10-03
 # Changelog:
+#   2026-10-03 - Add documented calendar, operational and archetype-application support.
 #   2026-09-06 - Document delivery interfaces, examples, constraints and processing rationale.
 
 """Hourly exhaust-air heat-pump accounting downstream of EnergyPlus demand.
@@ -77,7 +78,8 @@ def fvp_delivery(spec, heating_kwh, dhw_kwh, exhaust_temperature_c):
     if fvp is None:
         return {}
     heating, dhw, temp = np.broadcast_arrays(heating_kwh, dhw_kwh, exhaust_temperature_c)
-    flow_m3_s = spec.airflow.mechanical_vent_l_s_m2 * spec.geometry.conditioned_floor_area_m2 / 1000
+    reference_area = spec.load_reference_area_m2 or spec.geometry.conditioned_floor_area_m2
+    flow_m3_s = spec.airflow.mechanical_vent_l_s_m2 * reference_area / 1000
     # Sensible-only evaporator availability. Latent recovery is deliberately not invented.
     source_kw = 1.2 * 1006 * flow_m3_s * np.maximum(temp - fvp.exhaust_min_temperature_c, 0) / 1000
     available = np.minimum(fvp.capacity_kw, source_kw / (1 - 1 / fvp.cop))
