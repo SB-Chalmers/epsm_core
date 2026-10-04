@@ -11,6 +11,7 @@
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
 # Date modified: 2026-10-04
 # Changelog:
+#   2026-10-04 - Emit audited context above outdoor solar receivers and remove exact aliases.
 #   2026-10-04 - Preserve hourly mixed-programme activity, equipment electricity and heat.
 #   2026-10-03 - Compile explicit calendars, zone operations and load-area accounting.
 #   2026-09-13 - Cache unchanged EPW verification and share generated-edge margins.
@@ -54,8 +55,17 @@ from shapely.geometry import Polygon
 
 from ._version import __version__ as COMPILER_VERSION
 from .constructions import bridge_equivalent, internal_mass_halves
-from .context import mirror_suppression_eligibility, resolve_context, visible_context_surfaces
-from .failures import ENERGYPLUS_SCHEMA_FAILURE, GEOMETRY_INVARIANT_FAILURE, CompilationError
+from .context import (
+    emittable_context_surfaces,
+    mirror_suppression_eligibility,
+    resolve_context,
+    visible_context_surfaces,
+)
+from .failures import (
+    ENERGYPLUS_SCHEMA_FAILURE,
+    GEOMETRY_INVARIANT_FAILURE,
+    CompilationError,
+)
 from .footprint_cleanup import prepared_footprints
 from .foundations import apply_kiva
 from .pipeline import resolve_geometry
@@ -84,7 +94,7 @@ def _shadow_overlap_vertex_capacity_hint(surfaces):
     Returns
     -------
     tuple[tuple[float, float, float], ...] or None
-        Sixteen vertices inside a horizontal Ground floor, or ``None`` when no
+        Sixteen vertices over a horizontal Ground footprint, or ``None`` when no
         suitable ground receiver exists.
 
     Notes
@@ -95,9 +105,13 @@ def _shadow_overlap_vertex_capacity_hint(surfaces):
     the capacity remains 15; one 16-sided polygon advances it to 31. Dense
     overlaps can exceed 15 even when every physical input face is a valid quad.
 
-    The hint is placed coplanar with and strictly inside a Ground surface. Ground
-    surfaces are not solar receivers, and an upward ray from any above-grade
-    receiver cannot meet this contained plane. It therefore changes engine
+    The hint lies strictly inside a Ground footprint, at its floor elevation
+    or at grade when all outdoor receivers are above grade. A basement floor
+    must not place this engine-only object below grade: EnergyPlus 24.2
+    SurfaceGeometry::CalcSurfaceCentroid warns on negative shading centroids
+    (https://github.com/NREL/EnergyPlus/blob/v24.2.0/src/EnergyPlus/SurfaceGeometry.cc).
+    Ground surfaces are not solar receivers, and an upward ray from any
+    receiver above this contained plane cannot meet it. It therefore changes engine
     workspace only, not the physical shadow field. The object is emitted as
     Shading:Site:Detailed so it remains separate from physical context counts.
     """
@@ -116,6 +130,9 @@ def _shadow_overlap_vertex_capacity_hint(surfaces):
         return None
 
     _, polygon, elevation = max(candidates, key=lambda item: item[0])
+    outdoor_z = [v[2] for face in surfaces if face.boundary == "Outdoors" for v in face.vertices]
+    if outdoor_z and min(outdoor_z) >= 0:
+        elevation = max(0.0, elevation)
     radius_line = maximum_inscribed_circle(polygon)
     center, boundary = tuple(radius_line.coords)
     clearance = math.dist(center, boundary)
@@ -898,7 +915,14 @@ class EnergyPlusCompiler:
         visible_context, visibility = visible_context_surfaces(
             context, [v for face in graph.surfaces for v in face.vertices]
         )
-        visible_context_names = {face.name for face in visible_context}
+        # Only outdoor thermal faces receive direct solar radiation. Basement
+        # ground faces must not prevent safe below-datum context clipping.
+        solar_receivers = [v for face in graph.surfaces if face.boundary == "Outdoors"
+                           for v in face.vertices]
+        emitted_context, context_emission = emittable_context_surfaces(
+            visible_context, solar_receivers)
+        emitted_context_by_name = {face.name: face for face in emitted_context}
+        visible_context_names = set(emitted_context_by_name)
         for face in context.surfaces:
             shades.append(
                 dict(
@@ -1152,13 +1176,15 @@ class EnergyPlusCompiler:
         for shade in shades:
             if shade["kind"] == "context" and shade["name"] not in visible_context_names:
                 continue
+            shadow_vertices = (emitted_context_by_name[shade["name"]].vertices
+                               if shade["kind"] == "context" else shade["vertices"])
             add(
                 "Shading:Building:Detailed",
                 shade["name"],
-                number_of_vertices=len(shade["vertices"]),
+                number_of_vertices=len(shadow_vertices),
                 vertices=[
                     dict(vertex_x_coordinate=x, vertex_y_coordinate=y, vertex_z_coordinate=z)
-                    for x, y, z in serialize_vertices(shade["vertices"])
+                    for x, y, z in serialize_vertices(shadow_vertices)
                 ],
             )
         unknown = {o.facade_id for o in spec.facade.overrides} - graph.valid_facades
@@ -1263,6 +1289,7 @@ class EnergyPlusCompiler:
             context={
                 **context.report,
                 "visibility": visibility,
+                "emission": context_emission,
                 "detached_mirroring_disabled": context_mirroring_disabled,
                 "shadow_overlap_vertex_capacity": (
                     {

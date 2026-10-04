@@ -129,3 +129,22 @@ The following plots summarize 27 accepted annual EnergyPlus cases across Gothenb
 *Across nine matched zoning comparisons, annual heating changed by less than 0.1%; hourly heating peaks changed by less than 0.07 kW. Cooling differences are plotted in kWh to keep near-zero Kiruna baselines interpretable. Peaks are hourly averages, not subhourly design loads. These results support per-storey zoning as an economical baseline for these cases; they do not establish that finer zoning is unnecessary for other envelopes, schedules or local comfort questions.*
 
 Roof shape, recess depth, repeated windows and balcony detail were not varied in this 27-case comparison. The geometry illustrations above describe their implementation; they do not assign an energy benefit to each feature. Compare those features with matched physical inputs before choosing their level of detail for a workflow.
+
+### Opaque context emission and terrain datum
+
+Compilation preserves the complete measured neighbour shells for inspection and
+mirror proofs. For static opaque, nonreflecting context, only faces at or above
+the lowest outdoor solar receiver need be emitted: a sun-up ray from any receiver
+cannot intersect geometry below that plane. The compiler clips such faces, retains
+all original vertices above the plane, and records clipping and omissions under
+`context.emission`. Exact opposing coincident faces at touching opaque prisms are
+internal interfaces; duplicate aliases retain one face. Genuine outdoor receivers
+below grade are preserved and are not silently moved to grade.
+
+The 16-vertex engine workspace hint lies inside a ground footprint. For a basement
+with all outdoor receivers above grade it is placed at grade, below the receivers,
+instead of on the negative basement floor. This changes neither the physical
+basement nor its ground heat transfer. EnergyPlus 24.2
+[CalcSurfaceCentroid](https://github.com/NREL/EnergyPlus/blob/v24.2.0/src/EnergyPlus/SurfaceGeometry.cc)
+warns about negative shading centroids; the strict warning policy remains intact.
+See also the [shading Engineering Reference](https://bigladdersoftware.com/epx/docs/24-2/engineering-reference/shading-module.html).

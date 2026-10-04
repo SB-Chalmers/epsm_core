@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-11
+# Date modified: 2026-10-04
 # Changelog:
+#   2026-10-04 - Audit exact internal context interfaces and clip only below solar receivers.
 #   2026-09-11 - Generate nested deterministic context and validate pruning and mirror eligibility.
 #   2026-09-06 - Document context interfaces, examples, constraints and processing rationale.
 
@@ -44,14 +45,19 @@ from __future__ import annotations
 
 import math
 import random
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 import numpy as np
 from shapely import STRtree, unary_union
 from shapely.affinity import rotate, translate
 from shapely.geometry import Polygon, box
 
-from .geometry import facade_edges, horizontal_patches, horizontal_vertices, wall_vertices
+from .geometry import (
+    facade_edges,
+    horizontal_patches,
+    horizontal_vertices,
+    wall_vertices,
+)
 from .specs import ContextBuilding, ContextSpec, Footprint, GeometrySpec
 from .surface_checks import properties, validate_surfaces
 
@@ -667,6 +673,78 @@ def visible_context_surfaces(resolved, receiver_vertices):
         retained_count=len(retained),
         hidden=hidden,
     )
+
+
+def emittable_context_surfaces(surfaces, receiver_vertices):
+    """Prepare opaque direct-solar casters without changing source context shells.
+
+    References: EnergyPlus 24.2 Engineering Reference, shading calculations;
+    https://bigladdersoftware.com/epx/docs/24-2/engineering-reference/shading-module.html
+    Sun-up rays travel upward from an outdoor receiver. Geometry strictly below
+    every such receiver cannot intercept those rays. Clip at their minimum z,
+    retaining every original vertex above that plane and auditing the intersections.
+    Ground/interzone faces are not direct-solar receivers and must be excluded by
+    the caller. This avoids negative-centroid wind-profile warnings for neighbours
+    on lower terrain; it does not relax numerical warning acceptance.
+
+    Exact opposing duplicate faces are internal interfaces of touching validated
+    opaque prisms, so neither is a first ray intersection. Same-oriented aliases
+    retain one deterministic face. Do not apply this helper to reflective or
+    transmitting geometry. The compiler fixes exterior reflections off and keeps
+    complete source shells for topology/mirror proofs and preview.
+    """
+    points = np.asarray(receiver_vertices, dtype=float)
+    if points.ndim != 2 or points.shape[1] != 3 or not len(points) or not np.isfinite(points).all():
+        raise ValueError("Context emission requires finite outdoor receiver vertices")
+    minimum = float(np.min(points[:, 2]))
+    retained, clipped, omitted = [], [], []
+    for face in surfaces:
+        original = face.vertices
+        vertices = []
+        for a, b in zip(original, original[1:] + original[:1]):
+            inside_a, inside_b = a[2] >= minimum, b[2] >= minimum
+            if inside_a:
+                vertices.append(a)
+            if inside_a != inside_b:
+                fraction = (minimum - a[2]) / (b[2] - a[2])
+                vertices.append((a[0] + fraction * (b[0] - a[0]),
+                                 a[1] + fraction * (b[1] - a[1]), minimum))
+        vertices = tuple(dict.fromkeys(vertices))
+        if len(vertices) < 3:
+            omitted.append({"name": face.name, "reason": "Below all outdoor solar receivers"})
+            continue
+        try:
+            properties(vertices)
+        except ValueError:
+            # A face exactly on the clipping boundary can collapse to a line.
+            if max(v[2] for v in original) <= minimum + 1e-8:
+                omitted.append({"name": face.name, "reason": "Zero-area clipping boundary"})
+                continue
+            raise
+        if vertices != original:
+            clipped.append({"name": face.name, "minimum_z_before_m": min(v[2] for v in original),
+                            "minimum_z_after_m": minimum})
+        retained.append(replace(face, vertices=vertices))
+    groups = {}
+    for face in retained:
+        signature = tuple(sorted(tuple(p) for p in np.round(face.vertices, 8)))
+        groups.setdefault(signature, []).append(face)
+    emitted = []
+    for faces in groups.values():
+        if len(faces) == 1:
+            emitted.extend(faces)
+            continue
+        _, first_normal, _ = properties(faces[0].vertices)
+        normals = [properties(f.vertices)[1] for f in faces[1:]]
+        if len(faces) == 2 and float(first_normal @ normals[0]) < -0.999999:
+            omitted.extend({"name": f.name, "reason": "Exact opposing internal opaque interface"} for f in faces)
+        else:
+            emitted.append(faces[0])
+            omitted.extend({"name": f.name, "reason": "Exact coincident opaque face alias", "retained": faces[0].name} for f in faces[1:])
+    return tuple(emitted), {"method": "opaque_solar_receiver_clipping_v1",
+        "minimum_outdoor_receiver_z_m": minimum, "original_visible_count": len(surfaces),
+        "emitted_count": len(emitted), "clipped": clipped, "omitted": omitted,
+        "source_shells_preserved": True, "warning_acceptance_changed": False}
 
 
 def mirror_suppression_eligibility(resolved, standalone_surfaces=()):
