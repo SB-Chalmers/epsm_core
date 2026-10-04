@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-10-03
+# Date modified: 2026-10-04
 # Changelog:
+#   2026-10-04 - Preserve hourly mixed-programme activity, equipment electricity and heat.
 #   2026-10-03 - Add calendar schedules, scheduled ventilation and explicit gain fractions.
 #   2026-09-06 - Document physics interfaces, examples, constraints and processing rationale.
 
@@ -717,6 +718,11 @@ class UseSpec(Spec):
 
     # EnergyPlus ElectricEquipment Fraction Lost distinguishes electrical input from
     # zone heat (Sveby office 1.0 Table 2.2: 70% available heat). Default preserves API.
+    # Mixed programmes can vary activity and sensible equipment heat share hourly.
+    # EnergyPlus People activity is W/person; electrical lost fraction is emitted
+    # as separate radiant/convective/lost loads to preserve both electricity and zone heat.
+    occupant_activity_schedule: ScheduleSpec | None = None
+    equipment_heat_fraction_schedule: ScheduleSpec | None = None
     equipment_heat_fraction: Fraction = 1
     occupancy_category: Literal["unspecified", "residential", "non_residential"] = "unspecified"
     heating_setpoint: ScheduleSpec
@@ -768,6 +774,14 @@ class UseSpec(Spec):
             assert use.schedules() is use
         """
 
+        if self.occupant_activity_schedule is not None and any(
+            v <= 0 for v in self.occupant_activity_schedule.all_values
+        ):
+            raise ValueError("Occupant activity must be positive W/person")
+        if self.equipment_heat_fraction_schedule is not None and any(
+            not 0 <= v <= 1 for v in self.equipment_heat_fraction_schedule.all_values
+        ):
+            raise ValueError("Equipment heat fraction schedule must lie in [0,1]")
         # 1. Validate fractional schedules, DHW activity and the thermostat deadband.
         for name in (
             "occupancy_fraction",

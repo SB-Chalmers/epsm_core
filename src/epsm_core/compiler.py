@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-10-03
+# Date modified: 2026-10-04
 # Changelog:
+#   2026-10-04 - Preserve hourly mixed-programme activity, equipment electricity and heat.
 #   2026-10-03 - Compile explicit calendars, zone operations and load-area accounting.
 #   2026-09-13 - Cache unchanged EPW verification and share generated-edge margins.
 #   2026-09-12 - Raise validated polygon shadow workspace capacity for dense contexts.
@@ -681,7 +682,16 @@ class EnergyPlusCompiler:
         constant("on", 1)
         constant("off", 0)
         constant("thermostat_control", 4)
-        constant("activity", spec.use.occupant_activity_w)
+        def emit_activity(use, prefix=""):
+            """Emit W/person with hourly programme mixing when explicitly supplied."""
+            if use.occupant_activity_schedule is None:
+                constant(prefix + "activity", use.occupant_activity_w)
+            else:
+                add("Schedule:Compact", prefix + "activity",
+                    schedule_type_limits_name="any_number",
+                    data=use.occupant_activity_schedule.compact_data(spec.climate.calendar_year))
+
+        emit_activity(spec.use)
         constant("water_hot", 55)
         constant("water_cold", 10)
         add("ScheduleTypeLimits", "any_number", numeric_type="Continuous")
@@ -936,7 +946,7 @@ class EnergyPlusCompiler:
             z.get("zone_kind") in ("common", "stairwell") for z in zone_report.values()
         )
         if has_common:
-            constant("common_activity", common_use.occupant_activity_w)
+            emit_activity(common_use, "common_")
             for name in (
                 "heating_setpoint",
                 "cooling_setpoint",
@@ -1026,7 +1036,7 @@ class EnergyPlusCompiler:
                         load_area = assignment.reference_area_m2
                 if assignments:
                     prefix = zone + "_operation_"
-                    constant(prefix + "activity", use.occupant_activity_w)
+                    emit_activity(use, prefix)
                     for name in ("heating_setpoint", "cooling_setpoint", "occupancy_fraction",
                                  "equipment_fraction", "lighting_fraction", "dhw_fraction"):
                         add("Schedule:Compact", prefix + name, schedule_type_limits_name="any_number",
@@ -1390,6 +1400,31 @@ class EnergyPlusCompiler:
             ("ElectricEquipment", "equipment", u.equipment_gain_w_m2),
             ("Lights", "lighting", u.lighting_gain_w_m2),
         ):
+            if obj == "ElectricEquipment" and u.equipment_heat_fraction_schedule is not None:
+                # EnergyPlus radiant/lost fractions are constant. Three additive loads
+                # preserve electricity, zone heat and the legacy 30% input-radiant share.
+                # If total heat is below 30%, cap radiation to keep all fractions physical.
+                fractions = u.equipment_fraction.hourly(spec.climate.calendar_year)
+                heat = u.equipment_heat_fraction_schedule.hourly(spec.climate.calendar_year)
+                for suffix in ("_radiant", "_sensible", "_lost"):
+                    name = zone + "_equipment" + suffix
+                    values = [f * (min(0.3, h) if suffix == "_radiant" else
+                                   h - min(0.3, h) if suffix == "_sensible" else 1 - h)
+                              for f, h in zip(fractions, heat)]
+                    schedule = u.equipment_fraction.annual(
+                        values, calendar_year=spec.climate.calendar_year,
+                        source=u.equipment_heat_fraction_schedule.source)
+                    add("Schedule:Compact", name + "_fraction",
+                        schedule_type_limits_name="any_number",
+                        data=schedule.compact_data(spec.climate.calendar_year))
+                    add("ElectricEquipment", name,
+                        zone_or_zonelist_or_space_or_spacelist_name=zone,
+                        schedule_name=name + "_fraction",
+                        design_level_calculation_method="EquipmentLevel",
+                        design_level=watts * area,
+                        fraction_radiant=1 if suffix == "_radiant" else 0,
+                        fraction_lost=1 if suffix == "_lost" else 0)
+                continue
             add(
                 obj,
                 zone + "_" + label,

@@ -165,6 +165,8 @@ __all__ = [
     "SchedulePeriod",
     "SourceRecord",
     "UseSpec",
+    "ProgramBlend",
+    "ProgramComponent",
     "ZoneUseSpec",
     "UnconditionedExchangeSpec",
     "climate_from_epw",
@@ -180,4 +182,8 @@ __all__ = [
 from .context import synthetic_context
 from .inspection import preview_geometry
 from .nonresidential import SvebyNonResidentialSpec, load_sveby_office_v1, load_sveby_school_v1
+
+# Explicit area-weighted mixed-use operation (no implicit spatial allocation).
+from .programs import ProgramBlend as ProgramBlend
+from .programs import ProgramComponent as ProgramComponent
 from .settings import CompilerSettings, HourlyOutputRequest

@@ -46,3 +46,5 @@ Versioned Sveby office and primary/secondary-school profiles, explicit calendars
 zone operation, Atemp load areas and space-heat delivery accounting are documented
 in [building archetype operation](docs/archetype-operation.md). Source references
 and completion assumptions also live in the implementing scripts and resources.
+
+Mixed heated uses can use explicit area fractions with [ProgramBlend](docs/mixed-programmes.md); known spatial programmes retain separate zone assignments.
