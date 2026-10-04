@@ -11,6 +11,7 @@
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
 # Date modified: 2026-10-04
 # Changelog:
+#   2026-10-04 - Preserve infiltration reference-area flow and expose thermal airflow accounting.
 #   2026-10-04 - Emit audited context above outdoor solar receivers and remove exact aliases.
 #   2026-10-04 - Preserve hourly mixed-programme activity, equipment electricity and heat.
 #   2026-10-03 - Compile explicit calendars, zone operations and load-area accounting.
@@ -1067,10 +1068,25 @@ class EnergyPlusCompiler:
                             data=getattr(use, name).compact_data(spec.climate.calendar_year))
                     emit_airflow_schedules(airflow, prefix)
                 mean_fraction = sum(airflow.mechanical_vent_fraction.hourly(spec.climate.calendar_year)) / spec.climate.hours_in_year
-                data["mean_outdoor_air_m3_s"] = (
-                    (airflow.envelope_infiltration_ach * sum(airflow.infiltration_fraction.hourly(spec.climate.calendar_year)) / spec.climate.hours_in_year
-                     + airflow.natural_exchange_ach * sum(airflow.natural_exchange_fraction.hourly(spec.climate.calendar_year)) / spec.climate.hours_in_year) * data["volume_m3"] / 3600
-                    + load_area * airflow.mechanical_vent_l_s_m2 * mean_fraction / 1000)
+                # Design/schedule component budget, not a pressure-coupled balance.
+                # EnergyPlus 24.2 Engineering Reference: Ideal Loads Air System.
+                infiltration_mean = airflow.infiltration_design_flow_m3_s(
+                    reference_area_m2=load_area, volume_m3=data["volume_m3"]
+                ) * sum(airflow.infiltration_fraction.hourly(spec.climate.calendar_year)) / spec.climate.hours_in_year
+                natural_mean = airflow.natural_exchange_ach * data["volume_m3"] / 3600 * sum(
+                    airflow.natural_exchange_fraction.hourly(spec.climate.calendar_year)
+                ) / spec.climate.hours_in_year
+                mechanical_mean = load_area * airflow.mechanical_vent_l_s_m2 * mean_fraction / 1000
+                data["mean_outdoor_air_m3_s"] = infiltration_mean + natural_mean + mechanical_mean
+                data["airflow_accounting"] = {
+                    "infiltration_reference_basis": "load_reference_area" if airflow.envelope_infiltration_l_s_m2 is not None else "core_zone_volume",
+                    "additional_infiltration_mean_m3_s": infiltration_mean,
+                    "natural_exchange_mean_m3_s": natural_mean,
+                    "mechanical_outdoor_air_mean_m3_s": mechanical_mean,
+                    "ventilation_model": "ideal_loads_exhaust_thermal_equivalent" if airflow.topology == "F" else "natural_exchange" if airflow.topology == "S" else "ideal_loads_balanced_thermal_equivalent",
+                    "pressure_coupling": "not_simulated",
+                    "heating_energy_boundary": "supply_air_heating_includes_outdoor_air_conditioning_after_recovery; do_not_add_ventilation_heating_again",
+                }
                 # The design/schedule mean above excludes weather multipliers.
                 # It is an actual constant-flow mean only for the default coefficients.
                 data["outdoor_air_mean_basis"] = "design_schedule_excludes_weather_multiplier"
@@ -1473,8 +1489,14 @@ class EnergyPlusCompiler:
             zone + "_envelope_leakage",
             zone_or_zonelist_or_space_or_spacelist_name=zone,
             schedule_name=schedule_prefix + "infiltration_fraction",
-            design_flow_rate_calculation_method="AirChanges/Hour",
-            air_changes_per_hour=a.envelope_infiltration_ach,
+            # Flow/Zone deliberately uses load-reference area, not EnergyPlus
+            # geometric floor area (which may differ from Atemp/source A_C_ref).
+            **({"design_flow_rate_calculation_method": "Flow/Zone",
+                "design_flow_rate": a.infiltration_design_flow_m3_s(
+                    reference_area_m2=area, volume_m3=volume)}
+               if a.envelope_infiltration_l_s_m2 is not None else
+               {"design_flow_rate_calculation_method": "AirChanges/Hour",
+                "air_changes_per_hour": a.envelope_infiltration_ach}),
             constant_term_coefficient=a.infiltration_coefficients[0],
             temperature_term_coefficient=a.infiltration_coefficients[1],
             velocity_term_coefficient=a.infiltration_coefficients[2],
@@ -1498,6 +1520,15 @@ class EnergyPlusCompiler:
                 velocity_term_coefficient=0,
                 velocity_squared_term_coefficient=0,
             )
+            # Request natural-exchange diagnostics only for zones that emit the
+            # corresponding object; otherwise EnergyPlus has no matching signal.
+            # EnergyPlus 24.2 I/O Reference, Group Airflow, ZoneVentilation outputs.
+            for suffix, variable in (
+                ("flow", "Zone Ventilation Standard Density Volume Flow Rate"),
+                ("heat_loss", "Zone Ventilation Sensible Heat Loss Energy"),
+            ):
+                add("Output:Variable", zone + "_natural_exchange_" + suffix,
+                    key_value=zone, variable_name=variable, reporting_frequency="Hourly")
         add(
             "ThermostatSetpoint:DualSetpoint",
             zone + "_setpoints",
@@ -1555,6 +1586,9 @@ class EnergyPlusCompiler:
             humidification_control_type="None",
             design_specification_outdoor_air_object_name=zone + "_outdoor_air",
             outdoor_air_inlet_node_name=zone + "_outdoor_node",
+            # Outdoor air is prescribed once; heating supply flow also contains
+            # recirculation and must never be interpreted as ventilation flow.
+            demand_controlled_ventilation_type="None",
             outdoor_air_economizer_type="NoEconomizer",
             heat_recovery_type="Enthalpy"
             if a.latent_recovery_effectiveness
@@ -1639,7 +1673,21 @@ ENERGY_VARIABLES = (
     "Water Use Equipment Heating Energy",
 )
 SOLAR_VARIABLE = "Enclosure Windows Total Transmitted Solar Radiation Energy"
-OUTPUT_VARIABLES = ENERGY_VARIABLES + (
+# EnergyPlus 24.2 I/O Reference, ZoneHVAC:IdealLoadsAirSystem outputs.
+# Component signals diagnose the existing supply-coil energy boundary; they are
+# never summed into space_heating_demand a second time. Infiltration is unrecovered.
+AIRFLOW_DIAGNOSTIC_VARIABLES = (
+    "Zone Ideal Loads Supply Air Sensible Heating Energy",
+    "Zone Ideal Loads Zone Sensible Heating Energy",
+    "Zone Ideal Loads Zone Sensible Cooling Energy",
+    "Zone Ideal Loads Outdoor Air Sensible Heating Energy",
+    "Zone Ideal Loads Heat Recovery Sensible Heating Energy",
+    "Zone Ideal Loads Outdoor Air Standard Density Volume Flow Rate",
+    "Zone Ideal Loads Supply Air Standard Density Volume Flow Rate",
+    "Zone Infiltration Standard Density Volume Flow Rate",
+    "Zone Infiltration Sensible Heat Loss Energy",
+)
+OUTPUT_VARIABLES = ENERGY_VARIABLES + AIRFLOW_DIAGNOSTIC_VARIABLES + (
     "Zone Mean Air Temperature",
     SOLAR_VARIABLE,
 )

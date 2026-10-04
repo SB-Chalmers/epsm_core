@@ -11,6 +11,7 @@
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
 # Date modified: 2026-10-04
 # Changelog:
+#   2026-10-04 - Preserve infiltration reference-area flow and expose thermal airflow accounting.
 #   2026-10-04 - Preserve hourly mixed-programme activity, equipment electricity and heat.
 #   2026-10-03 - Add calendar schedules, scheduled ventilation and explicit gain fractions.
 #   2026-09-06 - Document physics interfaces, examples, constraints and processing rationale.
@@ -528,8 +529,14 @@ class AirflowSpec(Spec):
         Thermal or airflow topology selected from the annotated supported values.  Required
         at construction.
     envelope_infiltration_ach : Nonnegative
-        Nonnegative air changes per hour for envelope leakage or natural self-draught
-        exchange. Nonnegative when supplied. Required at construction.
+        Additional envelope infiltration on Core conditioned-zone volume, not total
+        air exchange, n50, or a catalogue reference volume. Required; set to zero
+        when supplying envelope_infiltration_l_s_m2 instead.
+    envelope_infiltration_l_s_m2 : Nonnegative | None
+        Additional infiltration per explicit load-reference area, in L/(s m2).
+        This bypasses ACH/reference-volume ambiguity. Default None retains ACH.
+        TABULA eq.(7), pp.12–13: source ACH * 2.5 / 3.6 gives L/(s m2) of
+        A_C_ref; mapping A_C_ref to Core load-reference area remains caller-owned.
     natural_exchange_ach : Nonnegative
         Nonnegative air changes per hour for envelope leakage or natural self-draught
         exchange. Nonnegative when supplied. Default: ``0``.
@@ -573,7 +580,12 @@ class AirflowSpec(Spec):
         )
     """
 
-    # Schedule fractions modulate outdoor air only, never background leakage.
+    # Mechanical schedules do not modify the independent infiltration schedule.
+    # F uses Ideal Loads outdoor air as a thermal equivalent of exhaust replacement
+    # air. It does not resolve fan/wind/stack pressure coupling. Do not add another
+    # exhaust replacement flow to this ventilation requirement.
+    # EnergyPlus 24.2 Engineering Reference, Ideal Loads Air System and
+    # Infiltration/Ventilation; TABULA CommonCalculationMethod eq.(7), pp.12–13.
     # EnergyPlus 24.2 I/O Reference, ZoneInfiltration:DesignFlowRate:
     # rate = design * schedule * (C + T*abs(deltaT) + V*wind + W*wind**2).
     # Effective coefficients are scenario inputs, never inferred leakage tests.
@@ -586,12 +598,24 @@ class AirflowSpec(Spec):
     cooling_availability: ScheduleSpec = ScheduleSpec.constant(1)
     topology: Literal["S", "F", "FT", "FTX"]
     envelope_infiltration_ach: Nonnegative
+    envelope_infiltration_l_s_m2: Nonnegative | None = None
     natural_exchange_ach: Nonnegative = 0
     mechanical_vent_l_s_m2: Nonnegative = 0
     sensible_recovery_effectiveness: Fraction = 0
     latent_recovery_effectiveness: Fraction = 0
     maximum_heating_supply_temperature_c: float = 50
     minimum_cooling_supply_temperature_c: float = 13
+
+    def infiltration_design_flow_m3_s(self, *, reference_area_m2, volume_m3):
+        """Return additional design infiltration before schedule/weather response.
+
+        Reference: EnergyPlus 24.2 ZoneInfiltration:DesignFlowRate. Area-based
+        input uses the same explicit load-reference area as mechanical flow;
+        ACH uses the emitted Zone volume. Neither represents total exchange.
+        """
+        if self.envelope_infiltration_l_s_m2 is not None:
+            return self.envelope_infiltration_l_s_m2 * reference_area_m2 / 1000
+        return self.envelope_infiltration_ach * volume_m3 / 3600
 
     @model_validator(mode="after")
     def compatible(self):
@@ -631,6 +655,9 @@ class AirflowSpec(Spec):
             not self.infiltration_source or not self.infiltration_source.strip()
         ):
             raise ValueError("Weather-dependent infiltration requires a documented source")
+        # Alternative reference bases must not create two infiltration streams.
+        if self.envelope_infiltration_l_s_m2 is not None and self.envelope_infiltration_ach:
+            raise ValueError("Area-based infiltration requires envelope_infiltration_ach=0")
         # 1. Require ventilation and heat-recovery values consistent with topology.
         if self.topology == "S" and self.mechanical_vent_l_s_m2:
             raise ValueError("S cannot have mechanical outdoor air")

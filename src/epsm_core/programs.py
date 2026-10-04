@@ -188,9 +188,13 @@ class ProgramBlend(Spec):
             "equipment_heat_fraction",
             "equipment_heat_fraction_schedule",
         )
+        area_basis = [a.envelope_infiltration_l_s_m2 is not None for a in air]
+        if any(area_basis) and not all(area_basis):
+            raise ValueError("Different infiltration reference bases require separate zone programmes")
+        infiltration_rate = "envelope_infiltration_l_s_m2" if all(area_basis) else "envelope_infiltration_ach"
         airflow_changes = {}
         for rate, fraction in (
-            ("envelope_infiltration_ach", "infiltration_fraction"),
+            (infiltration_rate, "infiltration_fraction"),
             ("natural_exchange_ach", "natural_exchange_fraction"),
             ("mechanical_vent_l_s_m2", "mechanical_vent_fraction"),
         ):
