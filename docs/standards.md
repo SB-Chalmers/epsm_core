@@ -91,6 +91,71 @@ builder = BuildingBuilder(
 )
 ```
 
+## Type-specific DHW for EPC comparisons
+
+Use `load_dhw_profile` to explicitly select historical BEN normal-use DHW
+assumptions for EPC comparisons. Version `"1"` stores the coefficients from
+BEN BFS 2016:12 with BFS 2017:6 amendments in package data; it does not follow
+changes to regulations or retrieve sources at runtime.
+
+| Building type | Annual useful DHW, kWh/(m² Atemp year) |
+| --- | ---: |
+| `single_family` | 20 |
+| `multi_family` | 25 |
+| `office`, `school`, `non_residential` | 2 |
+
+The source is [BEN, Chapter 2 Tables 2:1–2:7 and Chapter 3](https://www.boverket.se/Resources/constitutiontextstore/BEN/xml/Konsoliderad_BEN_BFS_2016_12.pdf).
+These are normal-use coefficients before production efficiency is applied.
+Purchased energy requires a separate efficiency or DHW COP assumption. VVC
+losses, storage losses and installation-specific savings are not included.
+Select the appropriate reporting basis in the workflow; loading a profile does
+not establish actual consumption or regulatory compliance.
+
+```python
+from epsm_core import load_dhw_profile, load_sveby_spec
+
+profile = load_dhw_profile(
+    "multi_family", purpose="epc_normal_use", version="1"
+)
+use = profile.apply_to(load_sveby_spec().use_spec(calendar_year=2024))
+assert use.dhw_kwh_m2_year == 25
+```
+
+`apply_to` returns a validated replacement. It changes only the annual DHW rate,
+retaining the original DHW timing, occupancy, gains and setpoints. The compiler
+normalizes the retained schedule to the selected annual total, including leap
+years. Set `BuildingSpec.load_reference_area_m2` to the compatible EPC Atemp;
+geometric conditioned area is the fallback when no reference area is supplied.
+Mixed programmes need a profile for each component and explicit area shares,
+using the existing `ProgramBlend` or zone-use APIs.
+
+The profile retains its source URI, source locator, area basis and type-specific
+`profile_id`. `profile.source_record()` returns an **assumed** provenance record
+for `use.dhw_kwh_m2_year`. When updating an existing building, replace the old
+record for that field rather than keeping contradictory provenance:
+
+```python
+provenance = building.provenance.updated(
+    records=tuple(
+        record for record in building.provenance.records
+        if record.field_path != "use.dhw_kwh_m2_year"
+    ) + (profile.source_record(),)
+)
+building = building.updated(
+    use=profile.apply_to(building.use),
+    load_reference_area_m2=epc_atemp_m2,
+    provenance=provenance,
+)
+```
+
+`BuildingBuilder()` and `load_sveby_spec()` continue to supply 21 kWh/m²/year
+from the published residential profile. The Sveby school operational profile
+continues to supply 10; requesting `school` with `purpose="epc_normal_use"`
+explicitly selects the separate BEN comparison assumption of 2. For observed
+annual DHW, use the existing validated override
+`use.updated(dhw_kwh_m2_year=observed_kwh / epc_atemp_m2)` and retain the actual
+measurement or allocation basis in the caller's evidence.
+
 ## Completion defaults
 
 Sveby specifies occupants by apartment size, not one universal person-per-area value. The no-input path therefore retains the previous EPSM demonstration density of `0.017 person/m²` as an explicitly labelled completion assumption. Replace it by calculating the building population from the stored apartment-size table and dividing by the verified Atemp.

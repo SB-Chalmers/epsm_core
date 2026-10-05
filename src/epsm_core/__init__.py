@@ -100,10 +100,13 @@ from .specs import (
     ZoneUseSpec,
     ZoningSpec,
 )
+from .dhw import DHWProfileSpec, load_dhw_profile
 from .standards import SvebyResidentialSpec, load_sveby_residential_v2, load_sveby_spec
 from .weather import climate_from_epw
 
 __all__ = [
+    "DHWProfileSpec",
+    "load_dhw_profile",
     "SvebyNonResidentialSpec", "load_sveby_office_v1", "load_sveby_school_v1",
     "FootprintCleanupSpec",
     "synthetic_context",
