@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-10-03
+# Date modified: 2026-10-05
 # Changelog:
+#   2026-10-05 - Add opt-in, audited context simplification for pure shadow-limit failures.
 #   2026-10-03 - Add documented calendar, operational and archetype-application support.
 #   2026-09-12 - Record the configured overlap capacity in shadow-limit diagnostics.
 #   2026-09-11 - Remove recovery retries and automatic previews; preserve classified failure evidence.
@@ -147,6 +148,7 @@ class EnergyPlusRunner:
         timeout_seconds=1800,
         warning_rules=(),
         review_psychrometric_warnings=True,
+        recover_context_shadows=False,
     ):
         """Compile, execute and validate a simulation before writing its completion marker.
 
@@ -163,6 +165,10 @@ class EnergyPlusRunner:
         review_psychrometric_warnings : bool
             Permit bounded 24.2 psychrometric warnings after full output validation
             for annual heating. False restores warning-strict behavior. Default True.
+        recover_context_shadows : bool
+            Opt in to audited 1 m then 2 m context-only simplification after a
+            pure shadow-capacity failure. Defaults False; supplied outlines remain
+            strict unless enabled. See docs/shadow-recovery.md.
         warning_rules : sequence of WarningRule
             Explicit versioned warning exceptions; severe/fatal and always-fail categories
             cannot be waived. Default: ``()``.
@@ -196,6 +202,28 @@ class EnergyPlusRunner:
 
             result = runner.run(building, "output/new-run", timeout_seconds=1800)
         """
+
+        options = dict(
+            timeout_seconds=timeout_seconds,
+            warning_rules=warning_rules,
+            review_psychrometric_warnings=review_psychrometric_warnings,
+        )
+        if recover_context_shadows:
+            from .shadow_recovery import run_with_context_shadow_recovery
+
+            return run_with_context_shadow_recovery(self._run_once, spec, directory, **options)
+        return self._run_once(spec, directory, **options)
+
+    def _run_once(
+        self,
+        spec,
+        directory,
+        *,
+        timeout_seconds=1800,
+        warning_rules=(),
+        review_psychrometric_warnings=True,
+    ):
+        """Execute one unchanged scene; retries belong to the opt-in public wrapper."""
 
         # 1. Compile, execute and validate a simulation before writing its completion marker.
         directory = Path(directory).resolve()

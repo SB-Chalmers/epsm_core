@@ -294,3 +294,12 @@ The workflow retains the original receipts, footprint overview and close-up
 figures, simplification audit, fresh engine artifacts and `fixed-v5-results.json`
 under the existing campaign's `geometry-review` directory. The existing campaign
 metrics remain frozen; a new campaign is required to apply this Core change.
+
+
+### Optional recovery for dense context shadows
+
+The shadow-capacity cases above can be retried through an explicitly opted-in
+1 m then 2 m context shading approximation. This is separate from the 5 cm
+small-cap cleanup and preserves all thermal target inputs. See
+[context shadow recovery](shadow-recovery.md) for bounds, retained receipts,
+strict warning handling and the required sensitivity review.
