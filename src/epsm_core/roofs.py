@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-10-03
+# Date modified: 2026-10-05
 # Changelog:
+#   2026-10-05 - Reject zero-clearance roof facets before creating duplicate boundaries.
 #   2026-10-03 - Preserve strict generated-edge checks and pooled vertex identity.
 #   2026-09-11 - Generate pitched roof shells using shared vertices and open backend rings.
 #   2026-09-06 - Document roofs interfaces, examples, constraints and processing rationale.
@@ -312,6 +313,15 @@ def roof_faces(polygon, roof, base, orientation=0):
         # facets cannot silently remove a material piece of the roof.
         if Polygon([(x, y) for x, y, _ in v]).area <= 1e-10:
             continue
+        # A whole facet collapsed onto the attic floor has zero clearance and
+        # duplicates a thermal boundary. Do not lift a tiny facet (which can
+        # produce engine-rejected small walls) or delete it and lose roof area.
+        # Preserve the existing edge treatment for facets with positive clearance.
+        if max(point[2] for point in v) - base <= 1e-8:
+            raise ValueError(
+                "Pitched roof facet has zero attic clearance after generated-edge "
+                "handling; run epsm_core.prepare_geometry and review its acceptance"
+            )
         area, normal, _ = properties(np.array(v))
         if normal[2] < 0:
             v = v[::-1]
@@ -434,6 +444,7 @@ def apply_roofs(spec, polygons, graph):
                     "maximum_adjustment_m": MIN_GENERATED_EDGE_M,
                     "source_xy_changed": False,
                     "basis": "EnergyPlus 24.2 minimum generated edge contract",
+                    "operation": "collapse_subminimum_rises_reject_zero_clearance_facets",
                 }
             )
         graph.surfaces[:] = [
