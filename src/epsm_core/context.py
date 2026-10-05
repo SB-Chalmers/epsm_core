@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-10-04
+# Date modified: 2026-10-05
 # Changelog:
+#   2026-10-05 - Coalesce exact convex context caps and audit unresolved tiny patches.
 #   2026-10-04 - Audit exact internal context interfaces and clip only below solar receivers.
 #   2026-09-11 - Generate nested deterministic context and validate pruning and mirror eligibility.
 #   2026-09-06 - Document context interfaces, examples, constraints and processing rationale.
@@ -475,6 +476,98 @@ class ContextResolution:
     report: dict
 
 
+def _context_horizontal_patches(polygon):
+    """Coalesce adjacent cap patches without moving the source boundary.
+
+    Parameters
+    ----------
+    polygon : Polygon
+        One neighbour footprint in the local metric frame, including holes.
+
+    Returns
+    -------
+    tuple[list[Polygon], dict]
+        Deterministically ordered convex patches and tessellation evidence.
+
+    Notes
+    -----
+    Constrained triangulation can create a tiny ear from three nearly collinear
+    source vertices even when every edge exceeds the engine's distance limit.
+    EnergyPlus 24.2 GetSurfaceData warns below 0.001 m2 (SurfaceGeometry.cc).
+    Adjacent patches may instead share one convex face: their exact union must
+    have at most four vertices and pass the existing surface checks and the
+    engine's 1e-6-radian collinearity bound. This keeps the full shadow field,
+    courtyard holes, boundary coordinates and orientation;
+    it never deletes a sliver or substitutes a convex hull. Ordinary coplanar
+    triangles are also coalesced to reduce the shadow-overlap workspace burden.
+    Unmergeable small patches remain visible and subject to strict diagnostics.
+
+    The edge index restricts candidates to shared full edges. Each successful
+    merge removes one patch, so the deterministic passes terminate. Net area,
+    disjointness and footprint coverage are verified before returning.
+    """
+    patches = horizontal_patches(polygon)
+    original_count = len(patches)
+    while True:
+        owners = {}
+        for i, patch in enumerate(patches):
+            ring = list(patch.exterior.coords)[:-1]
+            for a, b in zip(ring, ring[1:] + ring[:1]):
+                owners.setdefault(tuple(sorted((a, b))), []).append(i)
+        used, merged = set(), []
+        pairs = sorted(
+            (tuple(indices) for indices in owners.values() if len(indices) == 2),
+            key=lambda pair: (min(patches[i].area for i in pair), pair),
+        )
+        for i, j in pairs:
+            if i in used or j in used:
+                continue
+            joined = patches[i].union(patches[j])
+            if (
+                not isinstance(joined, Polygon)
+                or joined.interiors
+                or len(joined.exterior.coords) > 5
+                or not joined.equals(joined.convex_hull)
+            ):
+                continue
+            # CheckConvexity removes vertices with turning sine <= 1e-6.
+            # A mathematically convex quad must not invite engine-side repair.
+            ring = np.asarray(joined.exterior.coords[:-1])
+            edges = np.roll(ring, -1, axis=0) - ring
+            previous = np.roll(edges, 1, axis=0)
+            turn = np.abs(edges[:, 0] * previous[:, 1] - edges[:, 1] * previous[:, 0])
+            turn /= np.linalg.norm(edges, axis=1) * np.linalg.norm(previous, axis=1)
+            if np.any(turn <= 1.000001e-6):
+                continue
+            try:
+                properties(horizontal_vertices(joined, 0))
+            except ValueError:
+                continue
+            merged.append(joined)
+            used.update((i, j))
+        if not merged:
+            break
+        patches = [p for i, p in enumerate(patches) if i not in used] + merged
+    patches.sort(key=lambda p: (p.centroid.x, p.centroid.y, p.area))
+    tolerance = max(1e-9, polygon.area * 1e-9)
+    union = unary_union(patches)
+    if (
+        abs(sum(p.area for p in patches) - polygon.area) > tolerance
+        or abs(sum(p.area for p in patches) - union.area) > tolerance
+        or union.symmetric_difference(polygon).area > tolerance
+    ):
+        raise ValueError("Context cap coalescing failed area conservation")
+    return patches, {
+        "method": "exact_convex_cap_coalescing_v1",
+        "original_patch_count": original_count,
+        "emitted_patch_count": len(patches),
+        "merged_patch_count": original_count - len(patches),
+        "remaining_small_patch_count": sum(p.area < 0.001 for p in patches),
+        "symmetric_difference_m2": union.symmetric_difference(polygon).area,
+        "boundary_coordinates_preserved": True,
+    }
+
+
 def resolve_context(
     geometry: GeometrySpec, context: ContextSpec, *, origin=None
 ) -> ContextResolution:
@@ -523,7 +616,7 @@ def resolve_context(
             min(p.footprint.polygon.bounds[1] for p in geometry.parts),
         )
     # 2. Extrude neighbours in the same translated and rotated frame as the target.
-    surfaces, buildings = [], []
+    surfaces, buildings, tessellation = [], [], []
     shared_vertices = {}
     for bi, building in enumerate(context.buildings):
         count = 0
@@ -533,14 +626,18 @@ def resolve_context(
                 -geometry.orientation_deg,
                 origin=(0, 0),
             )
+            patches, patch_audit = _context_horizontal_patches(p)
+            tessellation.append(
+                {"building_id": building.identifier, "footprint_index": pi, **patch_audit}
+            )
             base, top = building.base_elevation_m, building.base_elevation_m + building.height_m
             shapes = [("Wall", wall_vertices(a, b, base, top)) for _, a, b in facade_edges(p, pi)]
             shapes.extend(
-                ("Roof", horizontal_vertices(patch, top)) for patch in horizontal_patches(p)
+                ("Roof", horizontal_vertices(patch, top)) for patch in patches
             )
             shapes.extend(
                 ("Floor", horizontal_vertices(patch, base, upward=False))
-                for patch in horizontal_patches(p)
+                for patch in patches
             )
             for si, (kind, points) in enumerate(shapes):
                 properties(np.asarray(points, dtype=float))
@@ -579,6 +676,7 @@ def resolve_context(
             "generation": context.generation,
             "validation": "passed",
             "representation": "Opaque vertical footprint extrusions for shading only",
+            "cap_tessellation": tessellation,
         },
     )
     if surfaces:

@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-11
+# Date modified: 2026-10-05
 # Changelog:
+#   2026-10-05 - Fan-triangulate convex faces to preserve complete coalesced cap previews.
 #   2026-09-11 - Display complete physical context and remove recovered-mesh rendering.
 #   2026-09-06 - Document viewer interfaces, examples, constraints and processing rationale.
 
@@ -139,9 +140,10 @@ def viewer_data(model, report=None, diagnostics=None, preparation=None):
 
         Notes
         -----
-        Projects into an orthonormal local plane to preserve area; triangle vertices are then
-        lifted to world coordinates. Reads construction and zone details from the enclosing
-        report.
+        Convex faces without openings use a fan of the original world vertices, preserving
+        exact shared boundaries. Other faces and opening cutouts are triangulated in an
+        orthonormal local plane and lifted back to world coordinates. Reads construction
+        and zone details from the enclosing report.
 
         Examples
         --------
@@ -190,9 +192,17 @@ def viewer_data(model, report=None, diagnostics=None, preparation=None):
         if not shape.is_valid:
             raise ValueError(f"Invalid opening coverage for epJSON object {name}")
         triangles = []
-        for triangle in constrained_delaunay_triangles(shape).geoms:
-            for x, y in list(triangle.exterior.coords)[:3]:
-                triangles.extend((v[0] + x * u + y * w).tolist())
+        # A convex face without openings needs no projection round trip.
+        # Reconstructed shared vertices can differ by a few ulps and create
+        # false gaps in courtyard cap coverage. Fan the original world vertices
+        # so neighbouring faces retain exactly identical boundary coordinates.
+        if not holes and isinstance(shape, Polygon) and shape.equals(shape.convex_hull):
+            for i in range(1, len(v) - 1):
+                triangles.extend(v[[0, i, i + 1]].ravel().tolist())
+        else:
+            for triangle in constrained_delaunay_triangles(shape).geoms:
+                for x, y in list(triangle.exterior.coords)[:3]:
+                    triangles.extend((v[0] + x * u + y * w).tolist())
         metadata = dict(report.get("surfaces", {}).get(parent or name, {}))
         metadata.update(report.get("openings", {}).get(name, {}))
         metadata.update(report.get("shading", {}).get(name, {}))

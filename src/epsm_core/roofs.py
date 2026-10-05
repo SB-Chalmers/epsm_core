@@ -11,6 +11,7 @@
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
 # Date modified: 2026-10-05
 # Changelog:
+#   2026-10-05 - Preserve convex gable walls as single faces to avoid short floor T junctions.
 #   2026-10-05 - Reject zero-clearance roof facets before creating duplicate boundaries.
 #   2026-10-03 - Preserve strict generated-edge checks and pooled vertex identity.
 #   2026-09-11 - Generate pitched roof shells using shared vertices and open backend rings.
@@ -47,6 +48,55 @@ from shapely.ops import split
 
 from .geometry import facade_edges
 from .surface_checks import MIN_GENERATED_EDGE_M, properties
+
+
+def _unsplit_convex_attic_wall(candidates, base):
+    """Represent a two-slope gable edge as one exact convex wall when possible.
+
+    Parameters
+    ----------
+    candidates : list[tuple[float, float, float, float]]
+        Boundary nodes sorted by distance along one source facade: distance, x, y, z.
+    base : float
+        Attic floor elevation in metres.
+
+    Returns
+    -------
+    list[list[float]] or None
+        One convex triangle/quad/pentagon, or None to retain segment emission.
+
+    Notes
+    -----
+    A ridge close to a facade endpoint used to create two walls and a short
+    floor-edge T junction. Core's exact edge noding proves closure, but EnergyPlus
+    24.2 isEnclosedVolume inserts missing collinear points with 1 cm tolerances.
+    That can misidentify the short split near other footprint vertices. Keeping
+    the complete convex wall removes that artificial floor split without moving
+    any roof node or changing area, volume, facade identity or constructions.
+    Only one interior roof node is eligible. Concave profiles, redundant vertices
+    and engine-collinear turns retain the original segmented representation.
+    """
+    if len(candidates) != 3:
+        return None
+    first, last = candidates[0], candidates[-1]
+    points = [[first[1], first[2], base], [last[1], last[2], base]]
+    points.extend([x, y, z] for _, x, y, z in reversed(candidates))
+    points = [p for i, p in enumerate(points) if math.dist(p, points[i - 1]) > 1e-8]
+    try:
+        _, _, drop = properties(points)
+    except ValueError:
+        return None
+    projected = np.delete(np.asarray(points), drop, axis=1)
+    polygon = Polygon(projected)
+    if not polygon.equals(polygon.convex_hull):
+        return None
+    edges = np.roll(projected, -1, axis=0) - projected
+    previous = np.roll(edges, 1, axis=0)
+    turn = np.abs(edges[:, 0] * previous[:, 1] - edges[:, 1] * previous[:, 0])
+    turn /= np.linalg.norm(edges, axis=1) * np.linalg.norm(previous, axis=1)
+    if np.any(turn <= 1.000001e-6):
+        return None
+    return points
 
 
 def backend_versions():
@@ -522,6 +572,11 @@ def apply_roofs(spec, polygons, graph):
                 if line.distance(Point(x, y)) < 1e-7:
                     candidates.append((line.project(Point(x, y)), x, y, z))
             candidates = sorted(set(candidates))
+            complete_wall = _unsplit_convex_attic_wall(candidates, base)
+            if complete_wall is not None:
+                add(complete_wall, "Wall", wi, fid)
+                wi += 1
+                continue
             for left, right in zip(candidates, candidates[1:]):
                 _, x0, y0, z0 = left
                 _, x1, y1, z1 = right

@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-11
+# Date modified: 2026-10-05
 # Changelog:
+#   2026-10-05 - Classify very small surface warnings as geometry invariant failures.
 #   2026-09-11 - Reject geometry repairs and classify shadow limits and missing outputs.
 #   2026-09-06 - Document diagnostics interfaces, examples, constraints and processing rationale.
 
@@ -201,7 +202,7 @@ def category(text):
         ),
         (
             "invalid_geometry",
-            r"(?:invalid|degenerate|non.convex|non.planar|zero area|not (?:fully )?enclosed).*|surface.*(?:invalid|not coplanar)",
+            r"(?:invalid|degenerate|non.convex|non.planar|zero area|very small surface area|not (?:fully )?enclosed).*|surface.*(?:invalid|not coplanar)",
         ),
         ("floor_area", r"floor area"),
         ("kiva", r"kiva|foundation"),

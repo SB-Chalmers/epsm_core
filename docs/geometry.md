@@ -148,3 +148,79 @@ basement nor its ground heat transfer. EnergyPlus 24.2
 [CalcSurfaceCentroid](https://github.com/NREL/EnergyPlus/blob/v24.2.0/src/EnergyPlus/SurfaceGeometry.cc)
 warns about negative shading centroids; the strict warning policy remains intact.
 See also the [shading Engineering Reference](https://bigladdersoftware.com/epx/docs/24-2/engineering-reference/shading-module.html).
+
+### Exact context cap coalescing and convex attic walls
+
+The 5 October 2026 national 200-building rerun exposed 13 geometry/shadow
+rejections after roof preparation and weather recovery had allowed more buildings
+to reach EnergyPlus. Twelve of these buildings had previously failed preparation;
+one already had a small-context-face rejection. These are separate from the earlier
+zero-clearance roof, below-datum shading and coincident-context repairs. Those
+repairs were present in the frozen rerun; they did not guarantee that every
+subsequently generated face would satisfy every engine diagnostic.
+
+Ten cases contained small triangles on neighbouring **roof or bottom caps**, not
+thermal envelope surfaces. Constrained Delaunay triangulation can create a small
+ear from three almost-collinear outline vertices despite acceptable edge lengths.
+EnergyPlus 24.2 `GetSurfaceData` warns for areas from 1e-6 up to, but excluding,
+0.001 m². Removing such patches would change solar access and is not a general
+repair. Core instead coalesces adjacent horizontal patches when their **exact
+union** is convex, has at most four vertices, and passes surface validation. The
+full shared-edge index bounds candidate searches; deterministic passes terminate
+because each successful merge removes one patch. Coalescing also reduces ordinary
+cap fragmentation without modifying the shadow-clipping method or workspace limit.
+
+The merge retains boundary coordinates and winding and cannot fill courtyard
+holes. It also checks the engine's 1e-6-radian turning-angle threshold, preventing
+new quads that EnergyPlus would repair by dropping a nearly collinear vertex.
+Coverage, non-overlap and area conservation are checked to the same relative
+1e-9 area tolerance as horizontal decomposition. Both the top and bottom use the
+same decomposition. The viewer directly fan-triangulates convex faces from the original world
+vertices, preserving exact shared coordinates. This avoids projection round-trip
+perturbations that caused a false courtyard-cap coverage gap in preview checks;
+polygons with openings still use constrained triangulation. Complete context shells still undergo closure and mirror
+eligibility checks before visibility pruning and solar-receiver clipping.
+`context.cap_tessellation` records the method `exact_convex_cap_coalescing_v1`,
+original/resolved patch counts, count reductions, remaining patches below 0.001 m²,
+and symmetric-difference area for each neighbour footprint. The patch counts refer
+to one complete cap before visibility and emission clipping.
+
+The enclosure case was `main_attic_2` of anonymised building
+`a5318d1c-ca1f-460b-98f7-9dcafe654629`. A gable ridge crossed one facade about
+33 mm from its endpoint, producing two wall segments and a floor-edge T junction.
+Core's precise edge noding verified the complete shell, but EnergyPlus's enclosure
+test uses 1 cm point/line tolerances when inserting missing collinear points and
+reported the short edge of `MAIN_ATTIC_WALL_37` as unmatched. This is a compatibility
+issue in tessellation, separate from the earlier zero-clearance roof-facet defect.
+
+For a facade with exactly one interior roof node, Core now emits the complete
+wall as one convex triangle, quad or pentagon when it passes the surface and
+engine-turn checks. This removes the artificial floor-edge split while preserving
+ridge nodes, footprint, thermal surface area, volume, facade identity and
+construction. Concave, redundant or otherwise unqualified profiles retain segment
+emission. Directed-edge closure and volume checks remain mandatory for every zone;
+no enclosure warning is waived.
+
+Pinned source reference: EnergyPlus 24.2
+[SurfaceGeometry.cc](https://github.com/NREL/EnergyPlus/blob/v24.2.0/src/EnergyPlus/SurfaceGeometry.cc),
+functions `GetSurfaceData`, `CheckConvexity`, `isEnclosedVolume`, and
+`isPointOnLineBetweenPoints`.
+
+Fresh annual Core runner checks of all 13 retained cases recovered **six**:
+five small-context-face cases and the attic enclosure case. All six passed engine
+diagnostics and full output validation; annual space-heating demand changed by
+at most **0.000136%** against the retained outputs. The remaining **five** small-face
+cases and **two** shadow-overlap-capacity cases still reject. Some residual small
+features cannot be merged without changing the measured boundary or introducing
+engine-collinear vertices. They need a separately assessed preparation or
+retessellation change. The overlap cases still exceed the one-million-figure
+workspace after cap coalescing; increasing capacity, removing neighbours or
+changing the shading method is not qualified by this repair.
+
+Small-area warnings now classify as `invalid_geometry`, producing
+`GEOMETRY_INVARIANT_FAILURE` rather than a generic warning-policy rejection.
+The strict acceptance rules for remaining geometry and shadow warnings are retained.
+Existing frozen study receipts and metrics are unchanged. A new campaign is required
+to apply these source changes. Local replay scripts, original-case comparisons,
+engine artifacts and `fixed-v3-results.json` are retained in the workflow repository
+under `output/national-mf-se02-random-baseline-2026-10-05-v2-roof-weather/geometry-review`.
