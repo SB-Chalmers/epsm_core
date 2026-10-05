@@ -50,6 +50,8 @@ def test_real_small_caps_prepare_closed_shells_without_mutating_source(case):
     cleanup = resolved.report["footprint_cleanup"]
     assert cleanup["applied_count"] == 1
     record = cleanup["footprints"][0]
+    assert record["shared_cleanup"]["version"] == "footprint-cleanup-1"
+    assert record["shared_cleanup"]["parts"][0]["changed"]
     assert record["max_boundary_displacement_m"] <= 0.05
     assert record["symmetric_difference_area_fraction"] <= 0.005
     assert record["perimeter_change_fraction"] <= 0.01
@@ -86,8 +88,7 @@ def test_large_relative_changes_are_declined_even_within_five_centimetres():
     prepared, audit = _prepare_small_context_caps(geometry, context, (0, 0))
     assert prepared[0].equals_exact(p, 0)
     assert audit["applied_count"] == 0
-    assert audit["footprints"][0]["symmetric_difference_area_fraction"] > 0.005
-    assert "bounds" in audit["footprints"][0]["reason"]
+    assert "limits" in audit["footprints"][0]["reason"]
 
 
 def test_new_neighbour_overlap_or_changed_contact_declines_entire_candidate():
@@ -149,3 +150,20 @@ def test_synthetic_generation_preserves_explicit_preparation_optout():
     generated = synthetic_context(geometry, "rural", existing=context, radius_m=60)
     assert generated.simplify_small_caps is False
     assert generated.buildings[0] == context.buildings[0]
+
+
+def test_context_calls_existing_source_footprint_cleanup(monkeypatch):
+    import epsm_core.context as context_module
+    import epsm_core.footprint_cleanup as cleanup_module
+
+    calls = []
+
+    def capture(geometry):
+        calls.append(geometry)
+        return cleanup_module.prepared_footprints(geometry)
+
+    monkeypatch.setattr(context_module, "prepared_footprints", capture)
+    geometry, context = setup_case(CASES[0])
+    result = resolve_context(geometry, context)
+    assert calls and result.report["footprint_cleanup"]["applied_count"] == 1
+    assert all(len(spec.parts) == 1 for spec in calls)

@@ -235,6 +235,15 @@ triangles. The other two exceeded the polygon shadow-overlap workspace; their
 implicated facade steps survived even a 10 cm footprint simplification. These
 are distinct failure mechanisms.
 
+Context preparation reuses the existing `prepared_footprints` implementation
+and `FootprintCleanupSpec` through a one-part specification adapter. This invokes
+the same translation, topology-preserving simplification, zero-tolerance cleanup
+and displacement/area checks used for target footprints. It does not run thermal
+geometry resolution. The committed `footprint-cleanup-1` policy is explicit;
+context adds the exchanged-area, perimeter, courtyard and contact safeguards
+below. Successful footprints also retain the shared cleanup report in
+`context.footprint_cleanup.footprints[*].shared_cleanup`.
+
 `ContextSpec.simplify_small_caps` now defaults to `True`. Core first applies
 exact cap coalescing. Only a footprint that still produces a cap below
 0.001 m² is considered for topology-preserving outline simplification. It tries

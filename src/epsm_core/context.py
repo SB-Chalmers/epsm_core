@@ -11,6 +11,7 @@
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
 # Date modified: 2026-10-05
 # Changelog:
+#   2026-10-05 - Reuse source-footprint cleanup for context; retain bounded cap safeguards.
 #   2026-10-05 - Bound small-cap context simplification and preserve source/contact evidence.
 #   2026-10-05 - Coalesce exact convex context caps and audit unresolved tiny patches.
 #   2026-10-04 - Audit exact internal context interfaces and clip only below solar receivers.
@@ -54,13 +55,14 @@ from shapely import STRtree, unary_union
 from shapely.affinity import rotate, translate
 from shapely.geometry import Polygon, box
 
+from .footprint_cleanup import prepared_footprints
 from .geometry import (
     facade_edges,
     horizontal_patches,
     horizontal_vertices,
     wall_vertices,
 )
-from .specs import ContextBuilding, ContextSpec, Footprint, GeometrySpec
+from .specs import ContextBuilding, ContextSpec, Footprint, FootprintCleanupSpec, GeometrySpec
 from .surface_checks import properties, validate_surfaces
 
 _PRESETS = {
@@ -589,6 +591,11 @@ def _prepare_small_context_caps(geometry, context, origin):
 
     Notes
     -----
+    Calls the existing prepared_footprints implementation through a one-part
+    GeometrySpec adapter; the adapter creates no thermal zones or surfaces.
+    Context uses the committed footprint-cleanup-1 policy, with its existing
+    simplification, topology, displacement and net-area checks. The additional
+    context checks below retain the stronger exchanged-area/contact bounds.
     This is a shading-only approximation, not a thermal-footprint repair. Try
     topology-preserving Douglas-Peucker simplification at 5 mm, 1 cm, 2 cm
     then 5 cm, choosing the smallest successful tolerance, only when exact
@@ -637,7 +644,29 @@ def _prepare_small_context_caps(geometry, context, origin):
         # Prefer the smallest successful tolerance; do not move a boundary
         # by 5 cm when a 5 mm cleanup already removes the small cap.
         for tolerance in (0.005, 0.01, 0.02, 0.05):
-            q = p.simplify(tolerance, preserve_topology=True).simplify(0, preserve_topology=True)
+            # Reuse the same source-footprint cleanup as target geometry. A
+            # one-part adapter supplies only rings and the cleanup settings;
+            # no geometry resolution, zoning or thermal compilation runs here.
+            adapter = GeometrySpec.from_footprint(
+                Footprint(
+                    exterior=tuple(p.exterior.coords),
+                    holes=tuple(tuple(r.coords) for r in p.interiors),
+                ),
+                storeys=1,
+                storey_height_m=building.height_m,
+            ).updated(
+                footprint_cleanup=FootprintCleanupSpec(
+                    tolerance_m=tolerance,
+                    max_area_change_fraction=0.005,
+                    implementation_version="footprint-cleanup-1",
+                )
+            )
+            try:
+                candidates, shared_report = prepared_footprints(adapter)
+            except ValueError as error:
+                record["reason"] = f"Shared footprint cleanup declined candidate: {error}"
+                continue
+            q = candidates[0]
             displacement = p.boundary.hausdorff_distance(q.boundary)
             difference = p.symmetric_difference(q).area / p.area
             perimeter = abs(q.length - p.length) / p.length
@@ -693,6 +722,7 @@ def _prepare_small_context_caps(geometry, context, origin):
                 applied=True,
                 applied_tolerance_m=tolerance,
                 reason="Bounded small-cap footprint simplification",
+                shared_cleanup=shared_report,
                 prepared_small_patch_count=final["remaining_small_patch_count"],
                 original_area_m2=p.area,
                 prepared_area_m2=q.area,
@@ -703,7 +733,7 @@ def _prepare_small_context_caps(geometry, context, origin):
             )
             break
     return prepared, dict(
-        method="bounded_small_context_caps_v1",
+        method="shared_footprint_cleanup_small_context_caps_v1",
         tolerance_m=0.05,
         max_symmetric_difference_fraction=0.005,
         max_perimeter_change_fraction=0.01,
