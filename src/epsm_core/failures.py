@@ -19,6 +19,7 @@ GEOMETRY_INVARIANT_FAILURE = "GEOMETRY_INVARIANT_FAILURE"
 ENERGYPLUS_SCHEMA_FAILURE = "ENERGYPLUS_SCHEMA_FAILURE"
 SHADOW_COMPLEXITY_LIMIT = "SHADOW_COMPLEXITY_LIMIT"
 ENERGYPLUS_NUMERICAL_FAILURE = "ENERGYPLUS_NUMERICAL_FAILURE"
+WARNING_POLICY_REJECTION = "WARNING_POLICY_REJECTION"
 MISSING_EXPECTED_OUTPUT = "MISSING_EXPECTED_OUTPUT"
 EXTERNAL_ENVIRONMENT_FAILURE = "EXTERNAL_ENVIRONMENT_FAILURE"
 
@@ -52,4 +53,13 @@ def engine_failure_code(diagnostics):
         "discarded_surface",
     }:
         return GEOMETRY_INVARIANT_FAILURE
+    if (
+        diagnostics.get("process_returncode")
+        or diagnostics.get("severe_count")
+        or diagnostics.get("fatal_count")
+        or "convergence_failure" in categories
+    ):
+        return ENERGYPLUS_NUMERICAL_FAILURE
+    if diagnostics.get("messages"):
+        return WARNING_POLICY_REJECTION
     return ENERGYPLUS_NUMERICAL_FAILURE

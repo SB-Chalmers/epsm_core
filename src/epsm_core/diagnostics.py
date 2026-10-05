@@ -201,7 +201,7 @@ def category(text):
         ),
         (
             "invalid_geometry",
-            r"(?:invalid|degenerate|non.convex|non.planar|zero area|not enclosed).*|surface.*(?:invalid|not coplanar)",
+            r"(?:invalid|degenerate|non.convex|non.planar|zero area|not (?:fully )?enclosed).*|surface.*(?:invalid|not coplanar)",
         ),
         ("floor_area", r"floor area"),
         ("kiva", r"kiva|foundation"),
@@ -299,7 +299,14 @@ def error_diagnostics(path, *, engine_version="24.2", rules=(), conditions=()):
     # 2. Merge exact recurring messages without counting earlier examples twice.
     merged = {}
     for m in messages:
-        key = (m["severity"], re.sub(r"\s+", " ", m["summary"]).strip().rstrip("."))
+        summary_key = re.sub(r"\s+", " ", m["summary"]).strip().rstrip(".")
+        # EnergyPlus spells the initial example and recurring total differently.
+        # They describe the same local solve; retain both texts but count once.
+        if re.fullmatch(
+            r"WetBulb not converged after (?:101|max) iterations\(PsyTwbFnTdbWPb\)", summary_key
+        ):
+            summary_key = "WetBulb not converged (PsyTwbFnTdbWPb)"
+        key = (m["severity"], summary_key)
         if key in merged:
             old = merged[key]
             old["occurrence_count"] = (

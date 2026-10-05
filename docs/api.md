@@ -131,3 +131,9 @@ the specification; use `report.run_id` when a compilation report already exists.
 ## Ground heat transfer
 
 New envelopes default to `FoundationSpec(method="kiva")`. Soil and footing assumptions remain configurable and reported. Explicit legacy `GroundTemperatureSpec` profiles retain prescribed-temperature behaviour. See [foundation settings and migration](foundations.md).
+
+## Warning acceptance
+
+The runner reviews bounded, known 24.2 psychrometric warnings only after full
+output validation. See [warning acceptance](warning-acceptance.md) for scope,
+limits, retained evidence and `review_psychrometric_warnings=False` strict opt-out.

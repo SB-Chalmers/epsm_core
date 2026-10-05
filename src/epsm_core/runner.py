@@ -56,6 +56,7 @@ from .failures import (
 from .heating_delivery import heating_delivery
 from .pv import run_pvwatts
 from .results import read_results
+from .warning_review import approve_validated_psychrometrics, psychrometric_review_pending
 
 
 class SimulationError(RuntimeError):
@@ -138,7 +139,15 @@ class EnergyPlusRunner:
 
         self.compiler = EnergyPlusCompiler(energyplus, settings=settings)
 
-    def run(self, spec, directory, *, timeout_seconds=1800, warning_rules=()):
+    def run(
+        self,
+        spec,
+        directory,
+        *,
+        timeout_seconds=1800,
+        warning_rules=(),
+        review_psychrometric_warnings=True,
+    ):
         """Compile, execute and validate a simulation before writing its completion marker.
 
         Parameters
@@ -151,6 +160,9 @@ class EnergyPlusRunner:
             behavior.
         timeout_seconds : float
             Maximum wall-clock seconds allowed for the EnergyPlus subprocess. Default: ``1800``.
+        review_psychrometric_warnings : bool
+            Permit bounded 24.2 psychrometric warnings after full output validation
+            for annual heating. False restores warning-strict behavior. Default True.
         warning_rules : sequence of WarningRule
             Explicit versioned warning exceptions; severe/fatal and always-fail categories
             cannot be waived. Default: ``()``.
@@ -273,9 +285,7 @@ class EnergyPlusRunner:
         # 4. Validate every attempt under the same strict diagnostic policy.
         def diagnose(attempt_directory, report, returncode):
             compiled_model = json.loads((attempt_directory / "model.epJSON").read_text())
-            conditions = compiler_warning_conditions(
-                spec, compiled_model, report
-            )
+            conditions = compiler_warning_conditions(spec, compiled_model, report)
             diagnostics = error_diagnostics(
                 attempt_directory / "eplusout.err",
                 rules=(WHOLE_BUILDING_AREA_RULE, *warning_rules),
@@ -286,6 +296,11 @@ class EnergyPlusRunner:
             return diagnostics, compiled_model
 
         diagnostics, compiled_model = diagnose(directory, report, result.returncode)
+        end_path = directory / "eplusout.end"
+        review_pending = review_psychrometric_warnings and psychrometric_review_pending(
+            diagnostics, compiled_model, end_path.read_text() if end_path.exists() else ""
+        )
+        diagnostics.update(policy_version="evidence-2", warning_review_pending=bool(review_pending))
         if not diagnostics["accepted"]:
             diagnostics["failure_code"] = engine_failure_code(diagnostics)
             if diagnostics["failure_code"] == SHADOW_COMPLEXITY_LIMIT:
@@ -314,13 +329,13 @@ class EnergyPlusRunner:
         (directory / "diagnostics.json").write_text(json.dumps(diagnostics, indent=2))
         if (
             result.returncode
-            or not diagnostics["accepted"]
+            or (not diagnostics["accepted"] and not review_pending)
             or diagnostics["fatal_count"]
             or diagnostics["severe_count"]
             or diagnostics["invalid_view_factor_count"]
         ):
             raise SimulationError(
-                f"EnergyPlus failed: {diagnostics}; see {directory / 'process.log'}",
+                f"Simulation acceptance rejected: {diagnostics}; see {directory / 'process.log'}",
                 code=diagnostics.get("failure_code", ENERGYPLUS_NUMERICAL_FAILURE),
             )
         try:
@@ -328,11 +343,16 @@ class EnergyPlusRunner:
             # 5. Require exact hourly calendars and reconciled annual energy before accepting
             # SQL results.
             output = read_results(directory / "eplusout.sql", spec, report, diagnostics)
+            if review_pending:
+                approve_validated_psychrometrics(diagnostics, output, report)
+                diagnostics["warning_review_pending"] = False
         except Exception as error:
             failure_code = getattr(error, "code", ENERGYPLUS_NUMERICAL_FAILURE)
             diagnostics.update(
                 accepted=False,
                 failure="result_validation",
+                warning_review_pending=False,
+                disposition="rejected",
                 failure_detail=str(error),
                 failure_code=failure_code,
             )
@@ -384,7 +404,12 @@ class EnergyPlusRunner:
                 output.units["pv_generation_kwh"] = "kWh"
                 output.scalars["pv_generation_kwh"] = float(generation.sum())
         except Exception as error:
-            diagnostics.update(accepted=False, failure="delivery_or_pv", failure_detail=str(error))
+            diagnostics.update(
+                accepted=False,
+                disposition="rejected",
+                failure="delivery_or_pv",
+                failure_detail=str(error),
+            )
             (directory / "diagnostics.json").write_text(json.dumps(diagnostics, indent=2))
             raise SimulationError(
                 f"Delivery/PV validation failed; artifacts at {directory}: {error}"
