@@ -13,7 +13,7 @@ The development package version is `0.1.0.dev0`. Simulation identity combines in
 | `ZoningSpec` | Mode, perimeter depth, apartment controls and explicit failure policy |
 | `RoofSpec` | Roof geometry and attic topology; optional per-part replacement |
 | `FacadeSpec` | Default glazing, window layout, WWR, overrides and attached shading |
-| `ContextSpec` | Explicit resolved neighbouring buildings and generation metadata |
+| `ContextSpec` | Explicit neighbouring buildings, generation metadata and bounded small-cap preparation (`simplify_small_caps=False` retains exact outlines) |
 | `CompilerSettings` | Engine controls such as maximum shadow figures |
 | `BuildingBuilder` | Bundled Sveby or caller-owned assumptions merged with known observations |
 | `SvebyResidentialSpec` | Versioned residential normal-use values, mappings and completion-default disclosure |

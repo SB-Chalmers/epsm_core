@@ -3,10 +3,7 @@
   "basement_depth_m": 0.0,
   "footprint_cleanup": {
     "enabled": true,
-    "implementation_version": "footprint-cleanup-2",
     "max_area_change_fraction": 0.001,
-    "max_perimeter_change_fraction": 0.01,
-    "max_symmetric_difference_fraction": 0.001,
     "tolerance_m": 0.01
   },
   "orientation_deg": 0.0,

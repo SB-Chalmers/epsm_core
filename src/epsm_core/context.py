@@ -11,6 +11,7 @@
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
 # Date modified: 2026-10-05
 # Changelog:
+#   2026-10-05 - Bound small-cap context simplification and preserve source/contact evidence.
 #   2026-10-05 - Coalesce exact convex context caps and audit unresolved tiny patches.
 #   2026-10-04 - Audit exact internal context interfaces and clip only below solar receivers.
 #   2026-09-11 - Generate nested deterministic context and validate pruning and mirror eligibility.
@@ -378,6 +379,7 @@ def synthetic_context(
     # 4. Retain supplied neighbours and record achieved counts and scenario assumptions.
     result = ContextSpec(
         buildings=(*existing.buildings, *generated),
+        simplify_small_caps=existing.simplify_small_caps,
         generation={
             "preset": preset,
             "generator_version": GENERATOR_VERSION,
@@ -568,6 +570,149 @@ def _context_horizontal_patches(polygon):
     }
 
 
+def _prepare_small_context_caps(geometry, context, origin):
+    """Simplify only context footprints with small cap patches, within fixed bounds.
+
+    Parameters
+    ----------
+    geometry : GeometrySpec
+        Target outlines, used to preserve all source boundary contacts.
+    context : ContextSpec
+        Immutable source footprints; ``simplify_small_caps=False`` opts out.
+    origin : tuple of float
+        Metric translation origin. All geometry operations use this local frame.
+
+    Returns
+    -------
+    tuple
+        Local prepared polygons in source order and a per-footprint audit.
+
+    Notes
+    -----
+    This is a shading-only approximation, not a thermal-footprint repair. Try
+    topology-preserving Douglas-Peucker simplification at 5 mm, 1 cm, 2 cm
+    then 5 cm, choosing the smallest successful tolerance, only when exact
+    cap coalescing still leaves a patch below 0.001 m2. Limit measured boundary
+    Hausdorff displacement to 5 cm, symmetric-difference area to 0.5 percent and
+    perimeter change to 1 percent. Symmetric difference detects both added and
+    removed area rather than allowing cancellation. Preserve each courtyard,
+    every original contact with the target/neighbours, and non-overlap. Reject
+    the whole candidate if any cap or wall is still too small or invalid.
+
+    Original input rings remain unchanged. The complete prepared shell still
+    undergoes the ordinary manifold/area/volume validation in resolve_context.
+    Declined candidates retain the exact outline and ordinary strict failures;
+    no EnergyPlus warning is waived. The report includes both rings and metrics
+    so each approximation can be inspected and reproduced.
+    """
+    source = [
+        translate(f.polygon, -origin[0], -origin[1])
+        for b in context.buildings
+        for f in b.footprints
+    ]
+    target = unary_union(
+        [translate(p.footprint.polygon, -origin[0], -origin[1]) for p in geometry.parts]
+    )
+    prepared, audit = list(source), []
+    flat = [(b, i) for b in context.buildings for i in range(len(b.footprints))]
+    for index, (building, footprint_index) in enumerate(flat):
+        p = source[index]
+        record = dict(
+            building_id=building.identifier, footprint_index=footprint_index, applied=False
+        )
+        audit.append(record)
+        if not context.simplify_small_caps:
+            record["reason"] = "Disabled by ContextSpec.simplify_small_caps"
+            continue
+        try:
+            _, initial = _context_horizontal_patches(p)
+        except ValueError:
+            # An invalid edge is a different failure. Do not infer a repair from
+            # an exception or let simplification hide an unclassified invariant.
+            record["reason"] = "Exact cap tessellation failed; original retained"
+            continue
+        if not initial["remaining_small_patch_count"]:
+            record["reason"] = "No small cap patches after exact coalescing"
+            continue
+        # Prefer the smallest successful tolerance; do not move a boundary
+        # by 5 cm when a 5 mm cleanup already removes the small cap.
+        for tolerance in (0.005, 0.01, 0.02, 0.05):
+            q = p.simplify(tolerance, preserve_topology=True).simplify(0, preserve_topology=True)
+            displacement = p.boundary.hausdorff_distance(q.boundary)
+            difference = p.symmetric_difference(q).area / p.area
+            perimeter = abs(q.length - p.length) / p.length
+            record.update(
+                max_boundary_displacement_m=displacement,
+                symmetric_difference_area_fraction=difference,
+                perimeter_change_fraction=perimeter,
+                original_small_patch_count=initial["remaining_small_patch_count"],
+            )
+            if (
+                q.geom_type != "Polygon"
+                or not q.is_valid
+                or q.area <= 1e-6
+                or displacement > 0.05 + 1e-9
+                or difference > 0.005
+                or perimeter > 0.01
+                or len(q.interiors) != len(p.interiors)
+            ):
+                record["reason"] = (
+                    "Simplification exceeded displacement, area, perimeter or topology bounds"
+                )
+                continue
+            # Match holes individually: a retained hole count alone does not prove
+            # that the same courtyards survived in the same locations.
+            if any(not Polygon(a).equals(Polygon(b)) for a, b in zip(p.interiors, q.interiors)):
+                record["reason"] = "Courtyard boundary changed"
+                continue
+            neighbours = [target] + [v for j, v in enumerate(prepared) if j != index]
+            if any(
+                q.intersection(v).area > _AREA_TOLERANCE
+                or not p.boundary.intersection(v.boundary).equals(
+                    q.boundary.intersection(v.boundary)
+                )
+                for v in neighbours
+            ):
+                record["reason"] = "Target or neighbour contact/overlap changed"
+                continue
+            try:
+                caps, final = _context_horizontal_patches(q)
+                if final["remaining_small_patch_count"]:
+                    raise ValueError("Small cap patches remain")
+                for _, a, b in facade_edges(q, footprint_index):
+                    area, _, _ = properties(wall_vertices(a, b, 0, building.height_m))
+                    if area < 0.001:
+                        raise ValueError("Small wall face remains")
+                for cap in caps:
+                    properties(horizontal_vertices(cap, building.height_m))
+            except ValueError as error:
+                record["reason"] = f"Candidate face validation failed: {error}"
+                continue
+            prepared[index] = q
+            record.update(
+                applied=True,
+                applied_tolerance_m=tolerance,
+                reason="Bounded small-cap footprint simplification",
+                prepared_small_patch_count=final["remaining_small_patch_count"],
+                original_area_m2=p.area,
+                prepared_area_m2=q.area,
+                original_exterior=list(p.exterior.coords),
+                prepared_exterior=list(q.exterior.coords),
+                original_holes=[list(r.coords) for r in p.interiors],
+                prepared_holes=[list(r.coords) for r in q.interiors],
+            )
+            break
+    return prepared, dict(
+        method="bounded_small_context_caps_v1",
+        tolerance_m=0.05,
+        max_symmetric_difference_fraction=0.005,
+        max_perimeter_change_fraction=0.01,
+        source_inputs_preserved=True,
+        applied_count=sum(r["applied"] for r in audit),
+        footprints=audit,
+    )
+
+
 def resolve_context(
     geometry: GeometrySpec, context: ContextSpec, *, origin=None
 ) -> ContextResolution:
@@ -592,6 +737,9 @@ def resolve_context(
     -----
     Applies the same translation then clockwise rotation as the target. Context has no
     thermal zones, constructions or loads. Each extrusion includes an opaque bottom cap.
+    Small-cap neighbours may use bounded footprint preparation unless disabled by
+    ContextSpec.simplify_small_caps. Source rings, prepared rings and measured
+    approximation bounds remain inspectable in report["footprint_cleanup"].
 
     Examples
     --------
@@ -617,15 +765,19 @@ def resolve_context(
         )
     # 2. Extrude neighbours in the same translated and rotated frame as the target.
     surfaces, buildings, tessellation = [], [], []
+    prepared, cleanup = _prepare_small_context_caps(geometry, context, origin)
+    prepared_index = 0
     shared_vertices = {}
     for bi, building in enumerate(context.buildings):
-        count = 0
+        count, prepared_area = 0, 0.0
         for pi, footprint in enumerate(building.footprints):
             p = rotate(
-                translate(footprint.polygon, -origin[0], -origin[1]),
+                prepared[prepared_index],
                 -geometry.orientation_deg,
                 origin=(0, 0),
             )
+            prepared_index += 1
+            prepared_area += p.area
             patches, patch_audit = _context_horizontal_patches(p)
             tessellation.append(
                 {"building_id": building.identifier, "footprint_index": pi, **patch_audit}
@@ -663,7 +815,8 @@ def resolve_context(
                 "base_elevation_m": building.base_elevation_m,
                 "footprint_count": len(building.footprints),
                 "surface_count": count,
-                "volume_m3": sum(p.polygon.area for p in building.footprints) * building.height_m,
+                "volume_m3": prepared_area * building.height_m,
+                "source_volume_m3": sum(p.polygon.area for p in building.footprints) * building.height_m,
             }
         )
     # 3. Return validated shading geometry with explicit representation and generation evidence.
@@ -677,6 +830,7 @@ def resolve_context(
             "validation": "passed",
             "representation": "Opaque vertical footprint extrusions for shading only",
             "cap_tessellation": tessellation,
+            "footprint_cleanup": cleanup,
         },
     )
     if surfaces:

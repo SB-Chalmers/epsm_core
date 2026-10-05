@@ -224,3 +224,64 @@ Existing frozen study receipts and metrics are unchanged. A new campaign is requ
 to apply these source changes. Local replay scripts, original-case comparisons,
 engine artifacts and `fixed-v3-results.json` are retained in the workflow repository
 under `output/national-mf-se02-random-baseline-2026-10-05-v2-roof-weather/geometry-review`.
+
+
+### Bounded preparation of small context caps
+
+The seven cases remaining after exact cap coalescing were plotted from their
+actual target and neighbour footprints. Five contained centimetre-scale notches
+or almost-collinear context outline points that left valid but very small
+triangles. The other two exceeded the polygon shadow-overlap workspace; their
+implicated facade steps survived even a 10 cm footprint simplification. These
+are distinct failure mechanisms.
+
+`ContextSpec.simplify_small_caps` now defaults to `True`. Core first applies
+exact cap coalescing. Only a footprint that still produces a cap below
+0.001 m² is considered for topology-preserving outline simplification. It tries
+5 mm, 1 cm, 2 cm, then 5 cm, retaining the smallest successful tolerance. Ordinary
+context footprints and all thermal target footprints are unchanged. This is a
+bounded shading approximation, not an exact geometry transformation.
+
+Every candidate must satisfy all these checks:
+
+- Measured boundary Hausdorff displacement is at most 5 cm.
+- Symmetric-difference area is at most 0.5% of that footprint's area, accounting
+  for added and removed area together. Perimeter changes by at most 1%.
+- Every courtyard boundary is geometrically unchanged. Target and neighbour
+  boundary contacts are unchanged, and no new plan-area overlap is introduced.
+- Exact cap coalescing leaves no small patches, and all prepared cap and wall
+  faces pass the existing edge, area and planarity checks.
+- The complete extrusion subsequently passes the usual outward manifold,
+  closure, area and volume checks. Compiler and engine result validation remain
+  mandatory; no warning acceptance rule is relaxed.
+
+If a candidate fails, Core tries the next bounded tolerance or retains the
+original footprint with its ordinary strict rejection. Set
+`ContextSpec(simplify_small_caps=False, buildings=...)` for exact input outlines.
+Synthetic generation preserves this setting when supplied an existing context.
+
+`context.footprint_cleanup` records the policy version, bounds, each footprint's
+disposition, the successful tolerance, measured displacement/area/perimeter
+changes and original/prepared rings in the translated local frame. Immutable
+source inputs are retained. Context volume proof uses prepared footprint area;
+`source_volume_m3` separately records the original extrusion volume. Geometry is
+then rotated into the target's local frame as usual.
+
+Fresh annual EnergyPlus 24.2 replays of the retained 13 geometry rejection cases
+recovered all **five** remaining small-face scenes. With the previous cap and
+attic repairs, **11 of 13** now pass engine diagnostics and full annual output
+validation. The maximum absolute change in annual space-heating demand across
+these 11 runs is **0.000136%** relative to the retained original SQL outputs. This
+is local replay evidence, not a refreshed national-cohort calibration result.
+
+The **two shadow-overlap-capacity cases still reject**. A 1 cm context cleanup
+and the ConvexWeilerAtherton clipping alternative did not resolve them. A
+conservative whole-face occlusion probe could not prove any additional faces
+hidden from every outdoor receiver. Raising the workspace or silently removing
+these neighbours has not been qualified. Their multi-metre facade steps need a
+separately validated shadow strategy rather than a larger survey-noise tolerance.
+
+The workflow retains the original receipts, footprint overview and close-up
+figures, simplification audit, fresh engine artifacts and `fixed-v5-results.json`
+under the existing campaign's `geometry-review` directory. The existing campaign
+metrics remain frozen; a new campaign is required to apply this Core change.

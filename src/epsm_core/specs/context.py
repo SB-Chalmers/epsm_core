@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-06
+# Date modified: 2026-10-05
 # Changelog:
+#   2026-10-05 - Add bounded small-cap context footprint preparation and strict opt-out.
 #   2026-09-06 - Document context interfaces, examples, constraints and processing rationale.
 
 """Context input specifications.
@@ -94,6 +95,9 @@ class ContextSpec(Spec):
     buildings : tuple[ContextBuilding, ...]
         Explicit target or context buildings, according to the owning specification.
         Default: ``()``.
+    simplify_small_caps : bool
+        Prepare only small-cap footprints within documented 5 cm, area, perimeter
+        and contact bounds. False retains exact input outlines. Default: ``True``.
     generation : dict
         Inspectable scenario-generation metadata; not an instruction to generate implicit
         geometry.  Default: a fresh dict per instance.
@@ -120,6 +124,7 @@ class ContextSpec(Spec):
     """
 
     buildings: tuple[ContextBuilding, ...] = ()
+    simplify_small_caps: bool = True
 
     generation: dict = Field(default_factory=dict)
 
