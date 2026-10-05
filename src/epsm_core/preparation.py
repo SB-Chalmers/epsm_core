@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-06
+# Date modified: 2026-10-05
 # Changelog:
+#   2026-10-05 - Audit exchanged outline area and component contacts; share metrics and lineage.
 #   2026-09-06 - Document preparation interfaces, examples, constraints and processing rationale.
 
 """Conservative, auditable metric footprint preparation; no EPC or engine dependency.
@@ -51,7 +52,7 @@ class GeometryPolicy:
     ----------
     version : str
         Dataset identity/version or stable item identity, as appropriate to the record.
-        Default: ``'conservative-metric-1'``.
+        Default: ``'conservative-metric-2'``.
     precision_m : float
         Strictly positive coordinate grid in metres used during conservative preparation.
         Default: ``0.001``.
@@ -63,6 +64,8 @@ class GeometryPolicy:
         Maximum relative change in net area or total boundary length.  Default: ``0.005``.
     max_perimeter_fraction : float
         Maximum relative change in net area or total boundary length.  Default: ``0.01``.
+    max_symmetric_difference_fraction : float
+        Maximum removed plus added plan area divided by source area. Default: ``0.005``.
     protected_vertices : tuple[tuple[float, float], ...]
         Source boundary vertices whose containing rings must remain unsimplified.  Default:
         ``()``.
@@ -85,7 +88,7 @@ class GeometryPolicy:
         policy = GeometryPolicy()
     """
 
-    version: str = "conservative-metric-1"
+    version: str = "conservative-metric-2"
     precision_m: float = 0.001
     simplification_m: float = 0.05
     max_displacement_m: float = 0.1
@@ -94,6 +97,7 @@ class GeometryPolicy:
     # Source vertices bounding different facade properties or shared ownership.
     protected_vertices: tuple[tuple[float, float], ...] = ()
     edge_properties: tuple[tuple[str, str], ...] = ()
+    max_symmetric_difference_fraction: float = 0.005
 
     def __post_init__(self):
         """Check finite, nonnegative cleanup limits and strictly positive precision.
@@ -130,6 +134,7 @@ class GeometryPolicy:
             self.max_displacement_m,
             self.max_area_fraction,
             self.max_perimeter_fraction,
+            self.max_symmetric_difference_fraction,
         )
         if not all(np.isfinite(v) and v >= 0 for v in limits) or not self.precision_m:
             raise ValueError(
@@ -502,6 +507,98 @@ def topology(geometry):
     return (len(parts), sum(len(p.interiors) for p in parts), len(contacts))
 
 
+def geometry_change_metrics(source, cleaned):
+    """Measure metric outline changes without assuming energy equivalence.
+
+    Symmetric difference counts removed AND added area, preventing cancellation in
+    net area. It is unavailable for invalid inputs, which must remain review cases.
+    Boundary displacement uses densified Hausdorff distance; acceptance must also
+    check continuous boundary containment. All lengths include courtyard rings.
+    """
+    from shapely import hausdorff_distance
+
+    valid = source.is_valid and cleaned.is_valid and source.area > 0
+    return dict(
+        boundary_displacement_m=float(
+            hausdorff_distance(source.boundary, cleaned.boundary, densify=0.1)
+        ),
+        area_change_fraction=abs(cleaned.area - source.area) / source.area if source.area else None,
+        symmetric_difference_fraction=(
+            source.symmetric_difference(cleaned).area / source.area if valid else None
+        ),
+        perimeter_change_fraction=abs(cleaned.length - source.length) / source.length,
+        source_area_m2=source.area,
+        cleaned_area_m2=cleaned.area,
+        source_perimeter_m=source.length,
+        cleaned_perimeter_m=cleaned.length,
+    )
+
+
+def geometry_edge_lineage(source, cleaned, radius):
+    """Map prepared edges to source runs within a metric search radius.
+
+    IDs are local to each geometry; they are evidence for manual remapping, never
+    permission to apply old facade properties to new edge indices automatically.
+    """
+    original_edges = list(edges(source))
+    tree = STRtree([e for _, e in original_edges])
+    lineage = []
+    for fid, edge in edges(cleaned):
+        matches = []
+        for i in tree.query(edge.buffer(radius)):
+            old_id, old = original_edges[i]
+            # Require positive projected overlap, avoiding adjacent end-only edges.
+            a, b = [edge.project(Point(p)) for p in old.coords]
+            if abs(a - b) > 1e-9 and old.difference(edge.buffer(radius)).length <= 1e-9:
+                matches.append(old_id)
+        exact = any(edge.equals(original_edges[i][1]) for i in tree.query(edge))
+        lineage.append(
+            EdgeLineage(
+                fid,
+                tuple(edge.coords[0]),
+                tuple(edge.coords[-1]),
+                tuple(sorted(matches)),
+                not exact,
+            )
+        )
+    return tuple(lineage)
+
+
+def component_contacts_preserved(source, cleaned, tolerance_m):
+    """Audit contact partners and contact geometry after component reordering.
+
+    Match components by greatest plan overlap, requiring a unique correspondence.
+    Contact counts alone cannot detect a contact switching to another component.
+    Invalid inputs return None: repaired geometry always requires review separately.
+    ``tolerance_m`` bounds precision rounding of shared boundaries, not simplification.
+    """
+    if not source.is_valid or not cleaned.is_valid:
+        return None
+    before, after = polygons(source), polygons(cleaned)
+    if len(before) != len(after):
+        return False
+    order = [max(range(len(after)), key=lambda j: a.intersection(after[j]).area) for a in before]
+    if len(set(order)) != len(before):
+        return False
+    for i, a in enumerate(before):
+        for j in range(i + 1, len(before)):
+            old, new = a.intersection(before[j]), after[order[i]].intersection(after[order[j]])
+            if old.is_empty != new.is_empty:
+                return False
+            if not old.is_empty:
+                if old.geom_type != new.geom_type:
+                    return False
+                if tolerance_m == 0:
+                    if not old.equals(new):
+                        return False
+                elif not (
+                    old.covered_by(new.buffer(tolerance_m, quad_segs=32))
+                    and new.covered_by(old.buffer(tolerance_m, quad_segs=32))
+                ):
+                    return False
+    return True
+
+
 def _simplify(polygon, policy):
     # If a property boundary is present, keep this ring exactly. This conservative
     # choice avoids inventing a facade merge across an override or shared edge.
@@ -706,53 +803,26 @@ def prepare_geometry(raw_geometry, policy=GeometryPolicy()):
     before, after = topology(source), topology(cleaned)
     if before != after:
         reasons.append("topology_changed")
-    # Shapely's function supports densification (the geometry method does not).
-    from shapely import hausdorff_distance
-
-    displacement = float(hausdorff_distance(source.boundary, cleaned.boundary, densify=0.1))
-    metrics = dict(
-        boundary_displacement_m=displacement,
-        area_change_fraction=abs(cleaned.area - source.area) / source.area if source.area else None,
-        perimeter_change_fraction=abs(cleaned.length - source.length) / source.length,
-        source_area_m2=source.area,
-        cleaned_area_m2=cleaned.area,
-        source_perimeter_m=source.length,
-        cleaned_perimeter_m=cleaned.length,
-        source_topology=before,
-        cleaned_topology=after,
-    )
+    metrics = geometry_change_metrics(source, cleaned)
+    metrics.update(source_topology=before, cleaned_topology=after)
+    contacts = component_contacts_preserved(source, cleaned, policy.precision_m * 2**0.5)
+    metrics["component_contacts_preserved"] = contacts
+    if contacts is False:
+        reasons.append("component_contacts_changed")
     for key, limit in (
         ("boundary_displacement_m", policy.max_displacement_m),
         ("area_change_fraction", policy.max_area_fraction),
         ("perimeter_change_fraction", policy.max_perimeter_fraction),
+        ("symmetric_difference_fraction", policy.max_symmetric_difference_fraction),
     ):
-        if metrics[key] is None or metrics[key] > limit + 1e-12:
+        if (metrics[key] is None and source.is_valid) or (
+            metrics[key] is not None and metrics[key] > limit + 1e-12
+        ):
             reasons.append(key + "_exceeded")
     # 8. Map cleaned runs to source edges using positive overlap, not endpoint contact.
-    original_edges = list(edges(source))
-    tree = STRtree([e for _, e in original_edges])
-    lineage = []
-    radius = policy.max_displacement_m + policy.precision_m
-    for fid, edge in edges(cleaned):
-        matches = []
-        for i in tree.query(edge.buffer(radius)):
-            old_id, old = original_edges[i]
-            # Require positive projected overlap, avoiding adjacent end-only edges.
-            a, b = [edge.project(Point(p)) for p in old.coords]
-            if abs(a - b) > 1e-9 and old.difference(edge.buffer(radius)).length <= 1e-9:
-                matches.append(old_id)
-        if not matches:
-            reasons.append("unmapped_edge")
-        exact = any(edge.equals(original_edges[i][1]) for i in tree.query(edge))
-        lineage.append(
-            EdgeLineage(
-                fid,
-                tuple(edge.coords[0]),
-                tuple(edge.coords[-1]),
-                tuple(sorted(matches)),
-                not exact,
-            )
-        )
+    lineage = geometry_edge_lineage(source, cleaned, policy.max_displacement_m + policy.precision_m)
+    if any(not edge.source_edges for edge in lineage):
+        reasons.append("unmapped_edge")
     # 9. Return geometry together with acceptance evidence; shape alone is insufficient.
     return GeometryPreparationResult(
         source,

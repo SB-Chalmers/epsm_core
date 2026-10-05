@@ -17,7 +17,13 @@ def test_raw_corpus(case):
     artifact = json.loads((ROOT / f"{case['municipality']}-{case['building_id']}.json").read_text())
     assert artifact["raw_geometry_verified"]
     result = prepare_geometry(shape(artifact["source_geometry"]))
-    assert result.status == case["status"]
+    # Historical fixtures retain version-1 evidence. Version 2 additionally
+    # quarantines this small footprint: 0.559% exchanged outline vs 0.0069% net area.
+    stricter_v2 = case["building_id"].startswith("9a0fd2bb") and case["municipality"] == "2584"
+    assert result.status == ("needs_review" if stricter_v2 else case["status"])
+    if stricter_v2:
+        assert result.reasons == ("symmetric_difference_fraction_exceeded",)
+        assert result.metrics["symmetric_difference_fraction"] > 0.005
     assert result.cleaned_geometry.equals_exact(shape(artifact["cleaned_geometry"]), 1e-8)
     if result.status == "accepted":
         repeated = prepare_geometry(result.cleaned_geometry)

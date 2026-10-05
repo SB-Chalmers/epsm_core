@@ -1,0 +1,212 @@
+{
+  "Safe removal of survey noise": {
+    "status": "accepted",
+    "reasons": [],
+    "metrics": {
+      "boundary_displacement_m": 0.001,
+      "area_change_fraction": 6.250390649409903e-05,
+      "symmetric_difference_fraction": 6.250390649415588e-05,
+      "perimeter_change_fraction": 5.555555589614121e-09,
+      "source_area_m2": 79.995,
+      "cleaned_area_m2": 80.0,
+      "source_perimeter_m": 36.0000002,
+      "cleaned_perimeter_m": 36.0,
+      "source_topology": [
+        1,
+        0,
+        0
+      ],
+      "cleaned_topology": [
+        1,
+        0,
+        0
+      ],
+      "component_contacts_preserved": true
+    },
+    "policy": {
+      "version": "conservative-metric-2",
+      "precision_m": 0.001,
+      "simplification_m": 0.05,
+      "max_displacement_m": 0.1,
+      "max_area_fraction": 0.005,
+      "max_perimeter_fraction": 0.01,
+      "protected_vertices": [],
+      "edge_properties": [],
+      "max_symmetric_difference_fraction": 0.005
+    }
+  },
+  "Equal net area hides outline changes": {
+    "status": "needs_review",
+    "reasons": [
+      "symmetric_difference_fraction_exceeded"
+    ],
+    "metrics": {
+      "boundary_displacement_m": 0.02,
+      "area_change_fraction": 0.0,
+      "symmetric_difference_fraction": 0.01,
+      "perimeter_change_fraction": 0.000798086628681167,
+      "source_area_m2": 1.0,
+      "cleaned_area_m2": 1.0,
+      "source_perimeter_m": 4.003194896318757,
+      "cleaned_perimeter_m": 4.0,
+      "source_topology": [
+        1,
+        0,
+        0
+      ],
+      "cleaned_topology": [
+        1,
+        0,
+        0
+      ],
+      "component_contacts_preserved": true
+    },
+    "policy": {
+      "version": "conservative-metric-2",
+      "precision_m": 0.001,
+      "simplification_m": 0.05,
+      "max_displacement_m": 0.1,
+      "max_area_fraction": 0.005,
+      "max_perimeter_fraction": 0.01,
+      "protected_vertices": [],
+      "edge_properties": [],
+      "max_symmetric_difference_fraction": 0.005
+    }
+  },
+  "Courtyard retained": {
+    "status": "accepted",
+    "reasons": [],
+    "metrics": {
+      "boundary_displacement_m": 0.0,
+      "area_change_fraction": 0.0,
+      "symmetric_difference_fraction": 0.0,
+      "perimeter_change_fraction": 0.0,
+      "source_area_m2": 300.0,
+      "cleaned_area_m2": 300.0,
+      "source_perimeter_m": 120.0,
+      "cleaned_perimeter_m": 120.0,
+      "source_topology": [
+        1,
+        1,
+        0
+      ],
+      "cleaned_topology": [
+        1,
+        1,
+        0
+      ],
+      "component_contacts_preserved": true
+    },
+    "policy": {
+      "version": "conservative-metric-2",
+      "precision_m": 0.001,
+      "simplification_m": 0.05,
+      "max_displacement_m": 0.1,
+      "max_area_fraction": 0.005,
+      "max_perimeter_fraction": 0.01,
+      "protected_vertices": [],
+      "edge_properties": [],
+      "max_symmetric_difference_fraction": 0.005
+    }
+  },
+  "Facade property boundary protected": {
+    "status": "accepted",
+    "reasons": [],
+    "metrics": {
+      "boundary_displacement_m": 4.440892230849522e-16,
+      "area_change_fraction": 0.0,
+      "symmetric_difference_fraction": 0.0,
+      "perimeter_change_fraction": 0.0,
+      "source_area_m2": 79.995,
+      "cleaned_area_m2": 79.995,
+      "source_perimeter_m": 36.0000002,
+      "cleaned_perimeter_m": 36.0000002,
+      "source_topology": [
+        1,
+        0,
+        0
+      ],
+      "cleaned_topology": [
+        1,
+        0,
+        0
+      ],
+      "component_contacts_preserved": true
+    },
+    "policy": {
+      "version": "conservative-metric-2",
+      "precision_m": 0.001,
+      "simplification_m": 0.05,
+      "max_displacement_m": 0.1,
+      "max_area_fraction": 0.005,
+      "max_perimeter_fraction": 0.01,
+      "protected_vertices": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          5.0,
+          0.001
+        ],
+        [
+          10.0,
+          0.0
+        ]
+      ],
+      "edge_properties": [
+        [
+          "p0.r0.e0",
+          "wwr=.2"
+        ],
+        [
+          "p0.r0.e1",
+          "wwr=.5"
+        ]
+      ],
+      "max_symmetric_difference_fraction": 0.005
+    }
+  },
+  "Real corpus case: now requires review": {
+    "status": "needs_review",
+    "reasons": [
+      "symmetric_difference_fraction_exceeded"
+    ],
+    "metrics": {
+      "boundary_displacement_m": 0.04431919931287164,
+      "area_change_fraction": 6.855831403021904e-05,
+      "symmetric_difference_fraction": 0.005591649347075347,
+      "perimeter_change_fraction": 0.004975176459850617,
+      "source_area_m2": 12.456551499371301,
+      "cleaned_area_m2": 12.457405499540728,
+      "source_perimeter_m": 17.42882810592215,
+      "cleaned_perimeter_m": 17.342116610606784,
+      "source_topology": [
+        1,
+        0,
+        0
+      ],
+      "cleaned_topology": [
+        1,
+        0,
+        0
+      ],
+      "component_contacts_preserved": true
+    },
+    "policy": {
+      "version": "conservative-metric-2",
+      "precision_m": 0.001,
+      "simplification_m": 0.05,
+      "max_displacement_m": 0.1,
+      "max_area_fraction": 0.005,
+      "max_perimeter_fraction": 0.01,
+      "protected_vertices": [],
+      "edge_properties": [],
+      "max_symmetric_difference_fraction": 0.005
+    }
+  },
+  "contact_switch": {
+    "contacts_preserved": false,
+    "description": "Synthetic audit comparison, not a simplifier output"
+  }
+}

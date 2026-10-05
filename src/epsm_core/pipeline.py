@@ -149,11 +149,9 @@ def resolve_geometry(spec, *, panelize=False):
     """
 
     # 1. Resolve a shared surface graph, openings and shading for all consumers.
-    from .footprint_cleanup import prepared_footprints
+    from .footprint_cleanup import prepared_footprints, validate_facade_references
     _, cleanup_report = prepared_footprints(spec.geometry)
-    referenced = {o.facade_id.split(".r")[0] for o in spec.facade.overrides} if hasattr(spec, "facade") else set()
-    if any(p["changed"] and p["part_id"] in referenced for p in cleanup_report["parts"]):
-        raise ValueError("Footprint cleanup would change referenced facade IDs; disable cleanup")
+    validate_facade_references(spec.geometry, getattr(spec, "facade", None), cleanup_report)
     polygons, origin = local_polygons(spec.geometry)
     graph = build_surface_graph(spec, polygons)
     openings, facades = resolve_openings(spec, graph)

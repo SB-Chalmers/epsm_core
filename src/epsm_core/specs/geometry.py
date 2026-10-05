@@ -1030,7 +1030,9 @@ class FootprintCleanupSpec(Spec):
     enabled: bool = True
     tolerance_m: Nonnegative = 0.01
     max_area_change_fraction: Fraction = 0.001
-    implementation_version: Literal["footprint-cleanup-1"] = "footprint-cleanup-1"
+    max_perimeter_change_fraction: Fraction = 0.01
+    max_symmetric_difference_fraction: Fraction = 0.001
+    implementation_version: Literal["footprint-cleanup-1", "footprint-cleanup-2"] = "footprint-cleanup-2"
 
 
 class GeometrySpec(Spec):

@@ -3,6 +3,8 @@
 from pathlib import Path
 
 import pytest
+from shapely.geometry import Polygon
+
 from epsm_core import (
     EnergyPlusCompiler,
     Footprint,
@@ -12,7 +14,6 @@ from epsm_core import (
     ZoningSpec,
 )
 from epsm_core.footprint_cleanup import prepared_footprints
-from shapely.geometry import Polygon
 
 
 def make(points, **kwargs):
@@ -28,7 +29,7 @@ def test_default_cleanup_and_explicit_source_preservation():
     assert len(raw.footprints[0].exterior) == 6
     assert g.conditioned_floor_area_m2 == raw.conditioned_floor_area_m2 == 160
     polygons, report = prepared_footprints(g)
-    assert report["version"] == "footprint-cleanup-1"
+    assert report["version"] == "footprint-cleanup-2"
     assert report["parts"][0]["source_vertices"] == 6
     again = GeometrySpec.from_footprint(polygons[0], storeys=2, storey_height_m=3)
     assert again.footprints == g.footprints
