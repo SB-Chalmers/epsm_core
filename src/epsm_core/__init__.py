@@ -40,6 +40,7 @@ Example::
 from ._version import __version__ as __version__
 from .builder import BuildingBuilder
 from .compiler import CompilationReport, EnergyPlusCompiler
+from .dhw import DHWProfileSpec, load_dhw_profile
 from .district import DistrictPlan
 from .preparation import GeometryPolicy, GeometryPreparationResult, prepare_geometry
 from .pv import run_pvwatts
@@ -100,7 +101,6 @@ from .specs import (
     ZoneUseSpec,
     ZoningSpec,
 )
-from .dhw import DHWProfileSpec, load_dhw_profile
 from .standards import SvebyResidentialSpec, load_sveby_residential_v2, load_sveby_spec
 from .weather import climate_from_epw
 
