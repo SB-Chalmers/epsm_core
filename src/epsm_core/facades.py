@@ -512,6 +512,15 @@ def resolve_openings(spec, graph):
                         raise ValueError(
                             f"Window {logical} crosses a nonrectangular thermal boundary"
                         )
+                    # A valid logical window can leave a sub-centimetre fragment
+                    # when split across thermal parents. EnergyPlus rejects the
+                    # fragment, so omit it rather than emitting invalid vertices.
+                    if min(px1 - px0, py1 - py0) < MIN_GENERATED_EDGE_M:
+                        suppression_reason = (
+                            "Clipped opening fragment omitted because an edge is below "
+                            f"Core's {MIN_GENERATED_EDGE_M:g} m safety limit for EnergyPlus."
+                        )
+                        continue
                     name = logical + "_" + face.name
                     metadata = dict(
                         facade_id=fid,
