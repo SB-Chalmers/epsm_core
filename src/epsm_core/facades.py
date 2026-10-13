@@ -504,9 +504,20 @@ def resolve_openings(spec, graph):
                 opening = box(x0 + a, y0 + b, x0 + c, y0 + d)
                 logical = f"{fid}_floor{storey}_run{ri}_window{wi}"
                 for face in faces:
-                    piece = opening.intersection(shapes[face.name])
+                    parent_shape = shapes[face.name]
+                    piece = opening.intersection(parent_shape)
                     if piece.area < 1e-9:
                         continue
+                    if piece.intersects(parent_shape.boundary):
+                        # EnergyPlus requires subsurfaces to lie strictly within
+                        # their parent. An opening clipped at a thermal split may
+                        # otherwise share the parent's edge and trigger CHKSBS.
+                        piece = piece.intersection(
+                            parent_shape.buffer(-MIN_GENERATED_EDGE_M, join_style=2)
+                        )
+                        if piece.area < 1e-9:
+                            suppression_reason = "Clipped opening fragment omitted after parent-edge clearance"
+                            continue
                     px0, py0, px1, py1 = piece.bounds
                     if abs(piece.area - piece.envelope.area) > 1e-7:
                         raise ValueError(

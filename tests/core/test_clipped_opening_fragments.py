@@ -49,3 +49,8 @@ def test_logical_window_clipped_to_thin_parent_fragment_is_omitted(building):
         for o in openings
     )
     assert any("Clipped opening fragment omitted" in (r["opening_suppression_reason"] or "") for r in reports)
+    for opening in openings:
+        points = np.array(opening.vertices)
+        xs = (points[:, :2] - np.array(start)) @ direction
+        left, right = (0, split) if opening.parent == "left" else (split, length)
+        assert min(xs.min() - left, right - xs.max(), points[:, 2].min(), height - points[:, 2].max()) >= 0.010
