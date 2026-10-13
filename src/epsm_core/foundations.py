@@ -82,7 +82,10 @@ def apply_kiva(model, envelope, footprints):
         exterior_length = exterior.intersection(merged.buffer(1e-8)).length
         if exterior_length < 1e-6:
             exterior_length = 0.0
-        exposed = exterior_length * cfg.exposed_perimeter_fraction
+        # Matching tolerance may make the measured exterior slightly longer
+        # than the emitted floor perimeter. Kiva rejects an exposed value above
+        # that exact serialized floor boundary.
+        exposed = min(exterior_length * cfg.exposed_perimeter_fraction, polygon(floor).length)
         foundation = zone + "_kiva"
         fields = dict(
             wall_height_above_grade=cfg.wall_height_above_grade_m,
