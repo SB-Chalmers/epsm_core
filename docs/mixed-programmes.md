@@ -34,6 +34,17 @@ unheated total area. GIS purpose order supplies no fraction. Missing, unrepresen
 or contradictory EPC shares must be reviewed, not silently normalised. Share counts
 alone cannot locate an office on a particular storey.
 
+`load_generic_other_v1()` supplies a labelled screening fallback when the caller
+cannot identify a non-residential use. Its `use_spec()` assumes 21 C heating,
+weekday 08:00–18:00 occupancy at 0.03 people/m2, 5 W/m2 each of equipment and
+lighting, and 5 kWh/m2/year of DHW. It exposes a 0.7 L/s/m2 ventilation design
+flow and a matching weekday fraction schedule for the caller's `AirflowSpec`.
+These are EPSM completion assumptions, not published Sveby values or claims about
+restaurants, healthcare, hotels, or other specific uses. The caller must record
+the profile ID and original programme name in provenance. `ProgramBlend` itself
+continues to require complete fractions; any minimum-share rule and reassignment
+of omitted area belong to the data adapter and must be documented there.
+
 Design loads are area-weighted. Their schedules are **load-weighted**, so every
 hour preserves people, occupant activity heat, equipment electricity and zone heat,
 lighting and mechanical outdoor-air flow. DHW uses each component's independently

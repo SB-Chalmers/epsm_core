@@ -42,6 +42,7 @@ from .builder import BuildingBuilder
 from .compiler import CompilationReport, EnergyPlusCompiler
 from .dhw import DHWProfileSpec, load_dhw_profile
 from .district import DistrictPlan
+from .generic_programme import GenericOtherProgramme, load_generic_other_v1
 from .preparation import GeometryPolicy, GeometryPreparationResult, prepare_geometry
 from .pv import run_pvwatts
 from .quantities import quantity_takeoff
@@ -107,6 +108,8 @@ from .weather import climate_from_epw
 __all__ = [
     "DHWProfileSpec",
     "load_dhw_profile",
+    "GenericOtherProgramme",
+    "load_generic_other_v1",
     "SvebyNonResidentialSpec", "load_sveby_office_v1", "load_sveby_school_v1",
     "FootprintCleanupSpec",
     "synthetic_context",
