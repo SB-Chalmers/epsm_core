@@ -8,6 +8,7 @@ are rejected explicitly rather than repaired or assigned a different method.
 from __future__ import annotations
 
 from collections import defaultdict
+from math import hypot
 
 from shapely.geometry import Polygon
 from shapely.geometry.polygon import orient
@@ -86,6 +87,23 @@ def apply_kiva(model, envelope, footprints):
         # than the emitted floor perimeter. Kiva rejects an exposed value above
         # that exact serialized floor boundary.
         exposed = min(exterior_length * cfg.exposed_perimeter_fraction, polygon(floor).length)
+        ground_wall_length = 0.0
+        for wall in ground.values():
+            if wall["zone_name"] != zone or wall["surface_type"] != "Wall":
+                continue
+            xy = [
+                (v["vertex_x_coordinate"], v["vertex_y_coordinate"])
+                for v in wall["vertices"]
+            ]
+            ground_wall_length += max(
+                hypot(b[0] - a[0], b[1] - a[1])
+                for a, b in zip(xy, xy[1:] + xy[:1])
+            )
+        # Rotated, segmented basement walls can differ from the exterior by a
+        # fraction of a millimetre. When they agree physically, use the emitted
+        # wall lengths so Kiva's instance weights sum to one without warnings.
+        if ground_wall_length and abs(exposed - ground_wall_length) <= 0.001:
+            exposed = min(ground_wall_length, polygon(floor).length)
         foundation = zone + "_kiva"
         fields = dict(
             wall_height_above_grade=cfg.wall_height_above_grade_m,
