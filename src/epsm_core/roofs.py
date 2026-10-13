@@ -340,7 +340,11 @@ def roof_faces(polygon, roof, base, orientation=0):
 
         patches = [polygon]
         if roof.shape == "gable":
-            center = u * mid
+            # Keep the finite ridge splitter near this footprint. Its projected
+            # offset along u is mid, but the orthogonal coordinate must come from
+            # the polygon rather than the global coordinate origin.
+            centroid = np.array([polygon.centroid.x, polygon.centroid.y])
+            center = centroid + u * (mid - centroid @ u)
             direction = np.array([-u[1], u[0]])
             reach = max(1, polygon.length) * 4
             patches = list(

@@ -3,6 +3,7 @@
 import math
 
 import pytest
+from shapely.affinity import translate
 from shapely.geometry import Polygon, box
 from shapely.ops import unary_union
 
@@ -84,6 +85,21 @@ def test_ordinary_roof_volume_and_coverage_unchanged(shape):
     assert volume == pytest.approx(expected)
     union = unary_union([Polygon([(x, y) for x, y, _ in f]) for f in faces])
     assert union.symmetric_difference(polygon).area < 1e-8
+
+
+def test_gable_split_is_invariant_under_large_metric_translation():
+    local = box(0, 0, 20, 10)
+    mapped = translate(local, xoff=300000, yoff=6500000)
+    roof = RoofSpec(shape="gable", pitch_deg=30)
+    local_faces = roof_faces(local, roof, 0)
+    mapped_faces = roof_faces(mapped, roof, 0)
+    local_rise = max(z for face in local_faces for _, _, z in face)
+    mapped_rise = max(z for face in mapped_faces for _, _, z in face)
+    assert mapped_rise == pytest.approx(local_rise, abs=1e-7)
+    mapped_footprint = unary_union(
+        [Polygon([(x, y) for x, y, _ in face]) for face in mapped_faces]
+    )
+    assert mapped_footprint.symmetric_difference(mapped).area < 1e-7
 
 
 def test_prepared_thin_eave_emits_valid_energyplus_model(building, energyplus):
