@@ -18,3 +18,11 @@ node_modules/
 
 # Historical studies are retained locally, outside the active package.
 /ARCHIVE/
+
+# Local credentials and generated exploration runs.
+.env
+.env.*
+!.env.example
+/results/
+/runs/
+/simulation_results/
