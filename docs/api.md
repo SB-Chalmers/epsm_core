@@ -18,6 +18,7 @@ The package version is `0.2.0`. Simulation identity combines input content, recu
 | `BuildingBuilder` | Bundled Sveby or caller-owned assumptions merged with known observations |
 | `SvebyResidentialSpec` | Versioned residential normal-use values, mappings and completion-default disclosure |
 | `EnergyPlusCompiler` / `EnergyPlusRunner` | Validated model output / isolated simulation |
+| `preflight_energyplus` | Read-only EnergyPlus geometry readiness for a `BuildingSpec` |
 | `quantity_takeoff` | Physical material/equipment quantities, excluding virtual zoning and context |
 
 Definitions live in focused `epsm_core.specs` domain modules and are re-exported from `epsm_core`. Importing them does not load a registry or contact a service.
@@ -85,6 +86,10 @@ only when complete conduction evidence was explicitly requested. Use explicit vi
 APIs for inspection. Campaign sampling, storage and validation outputs belong in orchestration.
 
 `geometry.view(..., facade=..., context=...)` and `building.view(...)` use the geometry-only viewer. Their returned handle is a context manager; closing it stops the local server. Inspection scene artifacts are not EnergyPlus simulation inputs. Compile explicitly when engine preflight is required.
+
+`preflight_energyplus(spec)` checks Kiva floor unions using resolved zones and physical
+construction overrides. It needs no EnergyPlus executable or weather-file read; the
+compiler retains the same validation before applying Kiva objects.
 
 ```python
 # Uses the geometry and resolved context created above; no weather or engine required.

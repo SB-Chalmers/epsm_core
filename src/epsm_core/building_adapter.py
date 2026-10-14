@@ -6,6 +6,8 @@ materials remain in the Building and its physical inventory.
 
 from __future__ import annotations
 
+from types import SimpleNamespace
+
 from epsm_data.domain import Element
 from epsm_data.domain.enums import BuildingElement as Role
 
@@ -55,15 +57,8 @@ def _glazing(window):
                       visible_transmittance=window.vt)
 
 
-def to_spec(building, weather):
-    """Produce the legacy validated engine specification with exact target assignments."""
-    building.readiness().require()
-    if isinstance(weather, Weather):
-        climate = weather.climate
-    elif isinstance(weather, ClimateSpec):
-        climate = weather
-    else:
-        climate = Weather.from_epw(weather).climate
+def _envelope_for_building(building):
+    """Build the nominal envelope from explicit physical assignments."""
     assignments = building.construction_set.elements if building.construction_set else {}
 
     def construction(role, fallback=None):
@@ -79,8 +74,7 @@ def to_spec(building, weather):
     top = construction(Role.TOP_FLOOR)
     ground = construction(Role.BASEMENT_FLOOR, construction(Role.GROUND_FLOOR))
     intermediate = construction(Role.INTERMEDIATE_FLOOR, ground)
-    # Required legacy fields that have no physical instance remain unused engine defaults.
-    envelope = EnvelopeSpec(wall=wall, top=top, ground=ground,
+    return EnvelopeSpec(wall=wall, top=top, ground=ground,
         intermediate_floor=intermediate,
         weather_shell=construction(Role.ROOF, top),
         basement_wall=construction(Role.BASEMENT_WALL, wall),
@@ -88,6 +82,46 @@ def to_spec(building, weather):
         thermal_bridge_uplift_fraction=building.thermal_bridge_uplift_fraction,
         foundation=building.foundation,
         ground_temperature=building.ground_temperature)
+
+
+def _surface_constructions_for_building(building, geometry, facade, envelope, *, resolved=None):
+    """Resolve physical surface overrides identically for adaptation and preflight."""
+    from .pipeline import resolve_geometry
+
+    if resolved is None:
+        resolved = resolve_geometry(SimpleNamespace(geometry=geometry, facade=facade), panelize=True)
+    walls = {(e.facade_id, e.storey): e for e in building.elements if e.role == Role.EXT_WALL}
+    basement = {e.facade_id: e for e in building.elements if e.role == Role.BASEMENT_WALL}
+    horizontal = {(e.part_id, round(e.elevation_m, 8)): e for e in building.elements
+                  if e.elevation_m is not None and e.facade_id is None}
+    surface_constructions = {}
+    for face in resolved.graph.surfaces:
+        physical = None
+        role = face.construction.removesuffix("_reverse").removeprefix("unconditioned_")
+        if face.kind == "Wall":
+            physical = basement.get(face.facade_id) if role == "basement_wall" else \
+                walls.get((face.facade_id, face.storey)) if role == "wall" else None
+        elif len({round(v[2], 8) for v in face.vertices}) == 1:
+            physical = horizontal.get((face.part_id, round(face.vertices[0][2], 8)))
+        if physical is not None:
+            assembly = thermal_construction(physical.construction)
+            baseline = getattr(envelope, role, None)
+            if baseline != assembly:
+                surface_constructions[face.name] = assembly
+    return surface_constructions
+
+
+def to_spec(building, weather):
+    """Produce the legacy validated engine specification with exact target assignments."""
+    building.readiness().require()
+    if isinstance(weather, Weather):
+        climate = weather.climate
+    elif isinstance(weather, ClimateSpec):
+        climate = weather
+    else:
+        climate = Weather.from_epw(weather).climate
+    envelope = _envelope_for_building(building)
+    intermediate = envelope.intermediate_floor
     # Preserve explicit zero-window and shading choices, including facade-wide
     # overrides that have no corresponding physical window instance.
     overrides = {(override.facade_id, override.storey): override
@@ -107,27 +141,13 @@ def to_spec(building, weather):
         load_reference_area_m2=building.effective_load_reference_area_m2,
         use=building.operation, context=building.context, delivery=building.hvac.delivery,
         renewables=building.hvac.renewables, provenance=building.provenance)
+    surface_constructions = _surface_constructions_for_building(
+        building, spec.geometry, spec.facade, envelope)
     from .pipeline import resolve_geometry
 
     resolved = resolve_geometry(spec, panelize=True)
-    walls = {(e.facade_id, e.storey): e for e in building.elements if e.role == Role.EXT_WALL}
-    basement = {e.facade_id: e for e in building.elements if e.role == Role.BASEMENT_WALL}
     horizontal = {(e.part_id, round(e.elevation_m, 8)): e for e in building.elements
                   if e.elevation_m is not None and e.facade_id is None}
-    surface_constructions = {}
-    for face in resolved.graph.surfaces:
-        physical = None
-        role = face.construction.removesuffix("_reverse").removeprefix("unconditioned_")
-        if face.kind == "Wall":
-            physical = basement.get(face.facade_id) if role == "basement_wall" else \
-                walls.get((face.facade_id, face.storey)) if role == "wall" else None
-        elif len({round(v[2], 8) for v in face.vertices}) == 1:
-            physical = horizontal.get((face.part_id, round(face.vertices[0][2], 8)))
-        if physical is not None:
-            assembly = thermal_construction(physical.construction)
-            baseline = getattr(envelope, role, None)
-            if baseline != assembly:
-                surface_constructions[face.name] = assembly
     mass_constructions = {}
     for mass in resolved.graph.internal_mass:
         physical = horizontal.get((mass["part_id"], round(mass["elevation_m"], 8)))
@@ -142,12 +162,15 @@ def to_spec(building, weather):
 def run_building(building, *, weather, directory, energyplus=None, settings=None, **options):
     """Run the real EnergyPlus adapter against an automatically captured snapshot."""
     from .building import BuildingSnapshot
+    from .preflight import preflight_energyplus
     from .runner import EnergyPlusRunner
 
     snapshot = building if isinstance(building, BuildingSnapshot) else building.snapshot()
+    snapshot.to_building().readiness(engine="energyplus").require()
     weather = weather if isinstance(weather, Weather) else Weather.from_epw(weather)
     weather.validate()
     spec = snapshot.to_spec(weather)
+    preflight_energyplus(spec).require()
     result = EnergyPlusRunner(energyplus, settings=settings).run(spec, directory, **options)
     result.diagnostics["building_snapshot_id"] = snapshot.sha256
     result.diagnostics["weather_sha256"] = weather.sha256

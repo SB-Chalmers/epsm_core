@@ -56,6 +56,7 @@ from .dhw import DHWProfileSpec, load_dhw_profile
 from .district import DistrictPlan
 from .generic_programme import GenericOtherProgramme, load_generic_other_v1
 from .inventory import MaterialFlows, MaterialInventory, MaterialQuantity
+from .preflight import preflight_energyplus
 from .preparation import GeometryPolicy, GeometryPreparationResult, prepare_geometry
 from .pv import run_pvwatts
 from .quantities import quantity_takeoff
@@ -123,7 +124,7 @@ __all__ = [
     "Readiness", "RenovationStage", "MaterialFlows", "MaterialInventory", "MaterialQuantity",
     "Weather",
     "Equipment",
-    "run_building", "thermal_construction",
+    "run_building", "thermal_construction", "preflight_energyplus",
     "DHWProfileSpec",
     "load_dhw_profile",
     "GenericOtherProgramme",

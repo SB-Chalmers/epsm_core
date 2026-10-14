@@ -647,6 +647,11 @@ class Building:
                 if any(abs(m.thickness - layer.thickness) > 1e-9
                        for layer in layers for m in layer.materials):
                     unsupported.append(f"{element.identifier}: unequal parallel thermal path depths")
+        if engine == "energyplus" and not missing and not unsupported \
+                and self.foundation is not None and self.foundation.method == "kiva":
+            from .preflight import _preflight_building_kiva
+
+            unsupported.extend(_preflight_building_kiva(self).unsupported)
         return Readiness(tuple(missing), tuple(unsupported))
 
     def _ground_boundary_missing(self):

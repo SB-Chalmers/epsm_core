@@ -30,6 +30,8 @@ def apply_kiva(model, envelope, footprints):
     if not by_zone:
         raise CompilationError(GEOMETRY_INVARIANT_FAILURE, "Kiva requires a ground-contact floor")
 
+    checked = check_kiva_floor_geometry(by_zone, envelope)
+
     def polygon(obj):
         return Polygon(
             [(v["vertex_x_coordinate"], v["vertex_y_coordinate"]) for v in obj["vertices"]]
@@ -40,28 +42,8 @@ def apply_kiva(model, envelope, footprints):
     exterior = unary_union(footprints).boundary
     assignments, removed = [], []
     for zone, floors in sorted(by_zone.items()):
-        constructions = {obj["construction_name"] for _, obj in floors}
-        heights = {round(v["vertex_z_coordinate"], 7) for _, obj in floors for v in obj["vertices"]}
-        if len(constructions) != 1 or len(heights) != 1:
-            raise CompilationError(
-                GEOMETRY_INVARIANT_FAILURE,
-                f"Kiva floor in {zone} must be coplanar with one construction",
-            )
-        merged = unary_union([polygon(obj) for _, obj in floors]).simplify(1e-8)
-        if merged.geom_type != "Polygon" or merged.interiors:
-            raise CompilationError(
-                GEOMETRY_INVARIANT_FAILURE,
-                f"Kiva floor in {zone} cannot contain holes or disconnected components; use explicit prescribed temperatures",
-            )
-        if abs(merged.area - sum(polygon(obj).area for _, obj in floors)) > 1e-6:
-            raise CompilationError(GEOMETRY_INVARIANT_FAILURE, f"Overlapping Kiva floors in {zone}")
+        merged, heights = checked[zone]
         z = next(iter(heights))
-        if cfg.deep_ground_depth_m <= max(0, -z) + sum(
-            layer.thickness_m for layer in envelope.ground.layers
-        ):
-            raise CompilationError(
-                GEOMETRY_INVARIANT_FAILURE, "Kiva deep boundary must be below the slab bottom"
-            )
         name, floor = floors[0]
         if len(floors) > 1:
             # Preserve the downward normal, area and zone volume.
@@ -200,3 +182,46 @@ def apply_kiva(model, envelope, footprints):
         ],
         legacy_18c_boundary_inactive=True,
     )
+
+
+def check_kiva_floor_geometry(by_zone, envelope):
+    """Validate Kiva floor unions shared by preflight and compiler mutation.
+
+    ``by_zone`` maps zone names to ``(name, surface)`` pairs. Surfaces use the same
+    dictionary shape as emitted ``BuildingSurface:Detailed`` objects.
+    """
+    if not by_zone:
+        raise CompilationError(GEOMETRY_INVARIANT_FAILURE, "Kiva requires a ground-contact floor")
+
+    def polygon(obj):
+        return Polygon(
+            [(v["vertex_x_coordinate"], v["vertex_y_coordinate"]) for v in obj["vertices"]]
+        )
+
+    checked = {}
+    for zone, floors in sorted(by_zone.items()):
+        constructions = {obj["construction_name"] for _, obj in floors}
+        heights = {round(v["vertex_z_coordinate"], 7) for _, obj in floors for v in obj["vertices"]}
+        if len(constructions) != 1 or len(heights) != 1:
+            raise CompilationError(
+                GEOMETRY_INVARIANT_FAILURE,
+                f"Kiva floor in {zone} must be coplanar with one construction",
+            )
+        pieces = [polygon(obj) for _, obj in floors]
+        merged = unary_union(pieces).simplify(1e-8)
+        if merged.geom_type != "Polygon" or merged.interiors:
+            raise CompilationError(
+                GEOMETRY_INVARIANT_FAILURE,
+                f"Kiva floor in {zone} cannot contain holes or disconnected components; use explicit prescribed temperatures",
+            )
+        if abs(merged.area - sum(piece.area for piece in pieces)) > 1e-6:
+            raise CompilationError(GEOMETRY_INVARIANT_FAILURE, f"Overlapping Kiva floors in {zone}")
+        z = next(iter(heights))
+        if envelope.foundation.deep_ground_depth_m <= max(0, -z) + sum(
+            layer.thickness_m for layer in envelope.ground.layers
+        ):
+            raise CompilationError(
+                GEOMETRY_INVARIANT_FAILURE, "Kiva deep boundary must be below the slab bottom"
+            )
+        checked[zone] = (merged, heights)
+    return checked
