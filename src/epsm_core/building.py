@@ -16,6 +16,7 @@ from uuid import UUID, uuid4
 from epsm_data.domain import ConstructionSet, Element, WindowElement
 from epsm_data.domain.enums import BuildingElement as ElementRole
 from epsm_data.serialization import construction_set_from_dict, construction_set_to_dict
+from pydantic import TypeAdapter
 
 from ._representation import bounded_summary
 from .inventory import MaterialFlows, material_inventory
@@ -34,6 +35,7 @@ from .specs import (
     SourceRecord,
     UseSpec,
 )
+from .specs.base import Nonnegative
 
 
 def _json(value):
@@ -246,7 +248,8 @@ class BuildingSnapshot:
 
     @classmethod
     def from_dict(cls, data):
-        if data.get("schema") not in {"epsm.building/1", "epsm.building/2", "epsm.building/3"}:
+        if data.get("schema") not in {
+                "epsm.building/1", "epsm.building/2", "epsm.building/3", "epsm.building/4"}:
             raise ValueError("Unsupported Building snapshot schema")
         return cls(_json(data))
 
@@ -350,18 +353,20 @@ class Building:
     def __init__(self, *, preset=None, identifier="building",
                  geometry=None, construction_set=None, facade=None, hvac=None,
                  operation=None, context=None, provenance=None, foundation=None,
-                 ground_temperature=None):
+                 ground_temperature=None, thermal_bridge_uplift_fraction=None):
         self._elements = ()
         self._stages = ()
         self._authoring_links = ()
         self._material_flows = ()
         self._parent_snapshot_id = None
         self.preset = preset
-        self.preset_revision = "2" if preset is not None else None
+        self.preset_revision = "3" if preset is not None else None
         supplied = {name for name, value in (("geometry", geometry),
             ("construction_set", construction_set), ("facade", facade),
             ("hvac", hvac), ("operation", operation), ("foundation", foundation),
-            ("ground_temperature", ground_temperature)) if value is not None}
+            ("ground_temperature", ground_temperature),
+            ("thermal_bridge_uplift_fraction", thermal_bridge_uplift_fraction))
+            if value is not None}
         self.identifier = identifier
         if preset is not None:
             if preset != "illustrative-reference":
@@ -389,6 +394,8 @@ class Building:
                 deep_ground_depth_m=40.0,
                 far_field_width_m=40.0,
             )
+            if thermal_bridge_uplift_fraction is None:
+                thermal_bridge_uplift_fraction = 0.0
             if facade is None:
                 window = construction_set.elements.get(ElementRole.WINDOW)
                 facade = FacadeSpec(default_wwr=.2, glazing=GlazingSpec(
@@ -401,14 +408,15 @@ class Building:
         self.operation = operation
         self.foundation = foundation
         self.ground_temperature = ground_temperature
+        self.thermal_bridge_uplift_fraction = thermal_bridge_uplift_fraction
         self.context = context if context is not None else ContextSpec()
         records = list(ProvenanceSpec.model_validate(provenance or {}).records)
         if preset is not None:
             paths = {r.field_path for r in records}
             records.extend(SourceRecord(field_path=name, status="assumed",
-                source="illustrative-reference@2", assumption_profile="illustrative-reference@2")
+                source="illustrative-reference@3", assumption_profile="illustrative-reference@3")
                 for name in ("geometry", "construction_set", "facade", "hvac", "operation",
-                             "foundation")
+                             "foundation", "thermal_bridge_uplift_fraction")
                 if name not in supplied and name not in paths)
         self.provenance = ProvenanceSpec(records=tuple(records))
 
@@ -434,9 +442,14 @@ class Building:
             value = HVACSystem(**value.to_dict())
         elif name == "identifier" and (not isinstance(value, str) or not value.strip()):
             raise ValueError("identifier must be a nonempty string")
+        elif name == "thermal_bridge_uplift_fraction" and value is not None:
+            value = TypeAdapter(Nonnegative).validate_python(value)
+            if not math.isfinite(value):
+                raise ValueError("thermal_bridge_uplift_fraction must be finite")
         object.__setattr__(self, name, value)
         if name in {"geometry", "construction_set", "facade", "hvac", "operation",
-                    "foundation", "ground_temperature"} and hasattr(self, "provenance"):
+                    "foundation", "ground_temperature", "thermal_bridge_uplift_fraction"} \
+                and hasattr(self, "provenance"):
             object.__setattr__(self, "provenance", ProvenanceSpec(records=tuple(
                 r for r in self.provenance.records if r.field_path != name)))
         if name in {"geometry", "construction_set", "facade"}:
@@ -467,14 +480,16 @@ class Building:
     def from_footprint(cls, footprint, *, storeys=None, storey_height_m=None,
                        storey_elevations_m=None, identifier="building", construction_set=None,
                        facade=None, hvac=None, operation=None, context=None, foundation=None,
-                       ground_temperature=None, **geometry_options):
+                       ground_temperature=None, thermal_bridge_uplift_fraction=None,
+                       **geometry_options):
         geometry = GeometrySpec.from_footprint(
             footprint, storeys=storeys, storey_height_m=storey_height_m,
             storey_elevations_m=storey_elevations_m, **geometry_options)
         return cls.empty(identifier=identifier, geometry=geometry,
                          construction_set=construction_set, facade=facade, hvac=hvac,
                          operation=operation, context=context, foundation=foundation,
-                         ground_temperature=ground_temperature)
+                         ground_temperature=ground_temperature,
+                         thermal_bridge_uplift_fraction=thermal_bridge_uplift_fraction)
 
     @property
     def elements(self):
@@ -546,6 +561,8 @@ class Building:
                 if getattr(self, name) is None:
                     missing.append(name)
             missing.extend(self._ground_boundary_missing())
+            if self.thermal_bridge_uplift_fraction is None:
+                missing.append("thermal_bridge_uplift_fraction")
             if engine == "epsm_rc" and self.geometry is not None:
                 if self.geometry.basement_depth_m or any(not p.conditioned for p in self.geometry.parts):
                     unsupported.append("epsm_rc requires a single conditioned domain without basement")
@@ -614,7 +631,7 @@ class Building:
 
     def _snapshot_data(self):
         return {
-            "schema": "epsm.building/3", "identifier": self.identifier, "preset": self.preset,
+            "schema": "epsm.building/4", "identifier": self.identifier, "preset": self.preset,
             "preset_revision": self.preset_revision,
             "provenance": self.provenance.model_dump(mode="json"),
             "geometry": self.geometry.model_dump(mode="json") if self.geometry else None,
@@ -627,6 +644,7 @@ class Building:
             if self.foundation else None,
             "ground_temperature": self.ground_temperature.model_dump(mode="json", exclude_unset=True)
             if self.ground_temperature else None,
+            "thermal_bridge_uplift_fraction": self.thermal_bridge_uplift_fraction,
             "context": self.context.model_dump(mode="json"),
             "elements": [e.to_dict() for e in self.elements],
         }
@@ -650,6 +668,7 @@ class Building:
         result.operation = data["operation"]
         result.foundation = data.get("foundation")
         result.ground_temperature = data.get("ground_temperature")
+        result.thermal_bridge_uplift_fraction = data.get("thermal_bridge_uplift_fraction")
         result.context = data.get("context", {})
         result.elements = [BuildingElement.from_dict(e) for e in data["elements"]]
         object.__setattr__(result, "preset", data.get("preset"))
