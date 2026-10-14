@@ -1,4 +1,5 @@
 import os
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -15,15 +16,43 @@ def energyplus():
     return path
 
 
+@pytest.fixture(scope="session")
+def synthetic_weather(tmp_path_factory):
+    """Complete non-leap EPW for software tests, separate from every run directory."""
+    path = tmp_path_factory.mktemp("weather-inputs") / "synthetic-2023.epw"
+    headers = [
+        "LOCATION,Unit test,Test,SWE,SYNTHETIC,000000,57,12,1,20",
+        "DESIGN CONDITIONS,0",
+        "TYPICAL/EXTREME PERIODS,0",
+        "GROUND TEMPERATURES,0",
+        "HOLIDAYS/DAYLIGHT SAVINGS,No,0,0,0",
+        "COMMENTS 1,Synthetic constant weather for software tests only",
+        "COMMENTS 2,Not measured or representative weather",
+        "DATA PERIODS,1,1,Data,Sunday,1/1,12/31",
+    ]
+    with path.open("w", encoding="utf-8") as stream:
+        stream.write("\n".join(headers) + "\n")
+        for hour in range(8760):
+            stamp = datetime(2023, 1, 1) + timedelta(hours=hour)
+            row = ["0"] * 35
+            row[:10] = [
+                "2023", str(stamp.month), str(stamp.day), str(stamp.hour + 1), "60",
+                "?", "10", "5", "70", "101325",
+            ]
+            row[12] = "300"  # Horizontal infrared radiation, Wh/m2.
+            row[20:22] = ["180", "2"]  # Wind direction and speed.
+            stream.write(",".join(row) + "\n")
+    return path
+
+
 @pytest.fixture
-def building(tmp_path):
+def building(synthetic_weather):
     epw = (
         Path(__file__).parents[2]
         / "data/weather/SWE_VG_Gothenburg-Landvetter.AP.025260_TMYx.2004-2018.epw"
     )
     if not epw.exists():
-        epw = tmp_path / "unit-test-weather.epw"
-        epw.write_text("LOCATION,Unit test,Test,SWE,TEST,000000,57,12,1,20\n")
+        epw = synthetic_weather
     concrete = MaterialSpec(
         name="concrete", conductivity_w_mk=1.7, density_kg_m3=2300, specific_heat_j_kgk=880
     )

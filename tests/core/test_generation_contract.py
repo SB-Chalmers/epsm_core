@@ -159,12 +159,21 @@ def test_shadow_capacity_fails_once_and_preserves_model(
     )
 
 
-def test_weather_missing_required_field_fails_without_substitution(building, tmp_path):
-    from pathlib import Path
+def test_synthetic_weather_has_complete_calendar_and_leaves_run_directory_empty(
+    synthetic_weather, tmp_path
+):
+    from epsm_core.weather import climate_from_epw, validate_epw_calendar
 
+    climate = climate_from_epw(synthetic_weather)
+    calendar = validate_epw_calendar(synthetic_weather, climate.calendar_year)
+    assert calendar["hour_count"] == 8760
+    assert not list(tmp_path.iterdir())
+
+
+def test_weather_missing_required_field_fails_without_substitution(synthetic_weather, tmp_path):
     from epsm_core.weather import validate_epw_calendar
 
-    lines = Path(building.climate.epw_path).read_text().splitlines()
+    lines = synthetic_weather.read_text().splitlines()
     row = lines[8].split(",")
     row[6] = "99.9"
     lines[8] = ",".join(row)
@@ -172,5 +181,5 @@ def test_weather_missing_required_field_fails_without_substitution(building, tmp
     path.write_text("\n".join(lines) + "\n")
     original = path.read_bytes()
     with pytest.raises(ValueError, match="dry bulb"):
-        validate_epw_calendar(path, building.climate.calendar_year)
+        validate_epw_calendar(path, 2023)
     assert path.read_bytes() == original
