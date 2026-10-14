@@ -241,6 +241,7 @@ class RenovationStage:
     after: BuildingSnapshot
     measure_ids: tuple[str, ...]
     material_flows: MaterialFlows
+    incompatible_measure_ids: tuple[str, ...] = ()
 
 
 class Building:
@@ -400,7 +401,9 @@ class Building:
                 if self.context.buildings:
                     unsupported.append("epsm_rc does not model explicit context shading")
                 if self.facade is not None and (self.facade.balconies
-                        or self.facade.reveal_depth_m or self.facade.overhang.depth_m):
+                        or self.facade.reveal_depth_m or self.facade.overhang.depth_m
+                        or any(o.reveal_depth_m or (o.overhang and o.overhang.depth_m)
+                               for o in self.facade.overrides)):
                     unsupported.append("epsm_rc does not model explicit facade shading geometry")
             for element in self.elements:
                 if not isinstance(element.construction, Element):
@@ -480,7 +483,9 @@ class Building:
         return {"parent_snapshot_id": self.parent_snapshot_id, "stages": [
             {"stage_id": stage.stage_id, "order": stage.order,
              "before": stage.before.to_dict(), "after": stage.after.to_dict(),
-             "measure_ids": list(stage.measure_ids)} for stage in self.stages]}
+             "measure_ids": list(stage.measure_ids),
+             "incompatible_measure_ids": list(stage.incompatible_measure_ids)}
+            for stage in self.stages]}
 
     def restore_lineage(self, data):
         """Restore validated transitions, deriving flows from saved occurrence identities."""
@@ -501,7 +506,8 @@ class Building:
                 MaterialInventory(q for key, q in old.items() if key not in new),
                 MaterialInventory(q for key, q in new.items() if key in old))
             stages.append(RenovationStage(item["stage_id"], order, before, after,
-                                         tuple(item["measure_ids"]), flow))
+                                         tuple(item["measure_ids"]), flow,
+                                         tuple(item.get("incompatible_measure_ids", ()))))
         parent = data.get("parent_snapshot_id")
         if stages and parent != stages[-1].before.sha256:
             raise ValueError("Parent snapshot does not match the final transition")
@@ -520,12 +526,32 @@ class Building:
 
         if not measures:
             raise ValueError("renovate requires at least one measure")
+        selected_ids = [m.measure_id for m in measures if hasattr(m, "measure_id")]
+        if len(set(selected_ids)) != len(selected_ids):
+            raise ValueError("A renovation bundle cannot repeat a measure ID")
+        previous_ids = {identifier for stage in self.stages for identifier in stage.measure_ids}
+        excluded = {identifier for stage in self.stages
+                    for identifier in stage.incompatible_measure_ids}
+        if excluded.intersection(selected_ids):
+            raise ValueError("A selected measure is incompatible with an earlier renovation")
+        available = set(previous_ids)
+        all_ids = previous_ids | set(selected_ids)
+        for measure in measures:
+            if set(getattr(measure, "incompatible_measure_ids", ())).intersection(all_ids):
+                raise ValueError("Incompatible renovation measures selected")
+            required = set(getattr(measure, "requires_measure_ids", ()))
+            if not required <= available:
+                raise ValueError("Renovation prerequisites must occur earlier: "
+                                 + ", ".join(sorted(required - available)))
+            if hasattr(measure, "measure_id"):
+                available.add(measure.measure_id)
         before = self.snapshot()
         old_inventory = {q.occurrence_id: q for q in self.quantities()}
         child = self.copy()
         identifiers = []
         for measure in measures:
-            operations = (measure,) if isinstance(measure, (ConstructionOperation, SystemOperation)) else measure.operations
+            operations = (measure,) if isinstance(measure, (ConstructionOperation, SystemOperation)) \
+                else getattr(measure, "operations", ())
             if not operations:
                 raise ValueError("Renovation measure has no resolved physical operations")
             identifiers.append(getattr(measure, "measure_id", getattr(measure, "action", "measure")))
@@ -575,7 +601,10 @@ class Building:
             MaterialInventory(q for key, q in new_inventory.items() if key not in old_inventory),
             MaterialInventory(q for key, q in old_inventory.items() if key not in new_inventory),
             MaterialInventory(q for key, q in new_inventory.items() if key in old_inventory))
-        stage = RenovationStage(stage_id, order, before, child.snapshot(), tuple(identifiers), flows)
+        incompatible = tuple(sorted({identifier for measure in measures
+                                     for identifier in getattr(measure, "incompatible_measure_ids", ())}))
+        stage = RenovationStage(stage_id, order, before, child.snapshot(), tuple(identifiers), flows,
+                                incompatible)
         child._stages = (*self.stages, stage)
         child._material_flows = (*self.material_flows, flows)
         child._parent_snapshot_id = before.sha256

@@ -116,7 +116,8 @@ def test_targeted_like_for_like_replacement_and_atomic_failure():
     assert building.snapshot().sha256 == before.sha256 and not building.stages
     assert child.parent_snapshot_id == before.sha256
     with pytest.raises(ValueError, match="unknown"):
-        building.renovate(measure(operation, selected.identifier), measure(operation, "missing"))
+        building.renovate(measure(operation, selected.identifier),
+                          replace(measure(operation, "missing"), measure_id="second.bad"))
     assert building.snapshot().sha256 == before.sha256
     restored = Building.from_snapshot(child.snapshot()).restore_lineage(child.lineage_to_dict())
     assert restored.material_flows == child.material_flows
@@ -133,6 +134,31 @@ def test_added_component_retains_existing_occurrences():
     flow = child.material_flows[-1]
     assert len(flow.installed) == 1 and not flow.removed
     assert len(flow.retained) == len(building.quantities())
+
+
+def test_renovation_prerequisites_and_symmetric_incompatibility():
+    building = Building()
+    selected = wall(building)
+    operation = ConstructionOperation("replace_element", selected.role,
+                                      element=selected.construction)
+    first = replace(measure(operation, selected.identifier), measure_id="first")
+    second = replace(first, measure_id="second", requires_measure_ids=("first",))
+    with pytest.raises(ValueError, match="prerequisites"):
+        building.renovate(second)
+    with pytest.raises(ValueError, match="prerequisites"):
+        building.renovate(second, first)
+    with pytest.raises(ValueError, match="repeat"):
+        building.renovate(first, first)
+    assert building.renovate(first, second).stages[-1].measure_ids == ("first", "second")
+    assert len(building.renovate(first).renovate(second).stages) == 2
+    exclusive = replace(first, incompatible_measure_ids=("second",))
+    with pytest.raises(ValueError, match="[Ii]ncompatible"):
+        building.renovate(exclusive, second)
+    child = building.renovate(exclusive)
+    restored = Building.from_snapshot(child.snapshot()).restore_lineage(child.lineage_to_dict())
+    with pytest.raises(ValueError, match="incompatible"):
+        restored.renovate(second)
+    assert not building.stages
 
 
 def test_system_renovation_tracks_count_and_preserves_other_equipment():
@@ -189,3 +215,14 @@ def test_weather_fingerprint_detects_mutation(synthetic_weather, tmp_path):
     path.write_bytes(path.read_bytes() + b"\n")
     with pytest.raises(ValueError, match="changed"):
         weather.validate()
+
+
+def test_rc_readiness_reports_facade_override_shading():
+    from epsm_core import FacadeOverride, OverhangSpec
+
+    building = Building()
+    selected = wall(building)
+    building.facade = building.facade.updated(overrides=(FacadeOverride(
+        facade_id=selected.facade_id, overhang=OverhangSpec(depth_m=1)),))
+    assert not building.readiness(engine="epsm_rc")
+    assert building.readiness(engine="energyplus")
