@@ -17,6 +17,7 @@ from epsm_data.domain import ConstructionSet, Element, WindowElement
 from epsm_data.domain.enums import BuildingElement as ElementRole
 from epsm_data.serialization import construction_set_from_dict, construction_set_to_dict
 
+from ._representation import bounded_summary
 from .inventory import MaterialFlows, material_inventory
 from .specs import (
     AirflowSpec,
@@ -56,6 +57,13 @@ class OperationProfile(UseSpec):
     def with_changes(self, **changes):
         return self.updated(**changes)
 
+    def __repr__(self):
+        return bounded_summary(type(self).__name__, category=self.occupancy_category,
+                               occupants_per_m2=self.occupant_density_per_m2,
+                               equipment_w_m2=self.equipment_gain_w_m2)
+
+    __str__ = __repr__
+
 
 @dataclass(frozen=True)
 class Equipment:
@@ -78,6 +86,12 @@ class Equipment:
         return {"identifier": self.identifier, "product_id": self.product_id, "count": self.count,
                 "description": self.description, "factor_refs": dict(self.factor_refs),
                 "occurrence_id": self.occurrence_id}
+
+    def __repr__(self):
+        return bounded_summary(type(self).__name__, identifier=self.identifier,
+                               product=self.product_id, count=self.count)
+
+    __str__ = __repr__
 
 
 @dataclass(frozen=True)
@@ -103,6 +117,13 @@ class HVACSystem:
 
     def with_changes(self, **changes):
         return replace(self, **changes)
+
+    def __repr__(self):
+        return bounded_summary(type(self).__name__, equipment=len(self.equipment),
+                               heating=self.delivery.heating is not None,
+                               ventilation_l_s_m2=self.airflow.mechanical_vent_l_s_m2)
+
+    __str__ = __repr__
 
     def to_dict(self):
         return {**{name: getattr(self, name).model_dump(mode="json")
@@ -164,6 +185,13 @@ class BuildingElement:
             changes["component_ids"] = ()
         return replace(self, **changes)
 
+    def __repr__(self):
+        return bounded_summary(type(self).__name__, identifier=self.identifier,
+                               role=self.role.value, area_m2=self.area_m2,
+                               components=len(self.component_ids))
+
+    __str__ = __repr__
+
     def to_dict(self):
         return {"identifier": self.identifier, "role": self.role.value,
                 "area_m2": self.area_m2, "construction": _encode_element(self.construction),
@@ -199,6 +227,12 @@ class Readiness:
         return {"ready": self.ready, "missing": list(self.missing),
                 "unsupported": list(self.unsupported)}
 
+    def __repr__(self):
+        return bounded_summary(type(self).__name__, ready=self.ready,
+                               missing=len(self.missing), unsupported=len(self.unsupported))
+
+    __str__ = __repr__
+
 
 @dataclass(frozen=True)
 class BuildingSnapshot:
@@ -232,6 +266,12 @@ class BuildingSnapshot:
     def quantities(self):
         return self.to_building().quantities()
 
+    def __repr__(self):
+        return bounded_summary(type(self).__name__, format="epsm.building/1",
+                               characters=len(self._json))
+
+    __str__ = __repr__
+
 
 @dataclass(frozen=True)
 class RenovationStage:
@@ -242,6 +282,12 @@ class RenovationStage:
     measure_ids: tuple[str, ...]
     material_flows: MaterialFlows
     incompatible_measure_ids: tuple[str, ...] = ()
+
+    def __repr__(self):
+        return bounded_summary(type(self).__name__, stage_id=self.stage_id,
+                               order=self.order, measures=len(self.measure_ids))
+
+    __str__ = __repr__
 
 
 @dataclass(frozen=True)
@@ -275,6 +321,11 @@ class AuthoringLink:
     def to_dict(self):
         return {"after_stage": self.after_stage,
                 "before": self.before.to_dict(), "after": self.after.to_dict()}
+
+    def __repr__(self):
+        return bounded_summary(type(self).__name__, after_stage=self.after_stage)
+
+    __str__ = __repr__
 
 
 def _material_history_requirements(links):
@@ -329,9 +380,11 @@ class Building:
 
     def __setattr__(self, name, value):
         kinds = {"geometry": GeometrySpec, "facade": FacadeSpec,
-                 "operation": UseSpec, "context": ContextSpec}
+                 "operation": OperationProfile, "context": ContextSpec}
         if name in kinds and value is not None:
             kind = kinds[name]
+            if name == "operation" and isinstance(value, UseSpec):
+                value = value.model_dump()
             value = kind.model_validate(value.model_dump() if isinstance(value, kind) else value)
         elif name == "construction_set" and value is not None:
             if not isinstance(value, ConstructionSet):
@@ -352,10 +405,12 @@ class Building:
         return self.identifier
 
     def __repr__(self):
-        return (f"{type(self).__name__}(identifier={self.identifier!r}, "
-                f"parts={len(self.geometry.parts) if self.geometry else 0}, "
-                f"elements={len(self.elements)}, stages={len(self.stages)}, "
-                f"preset={self.preset!r})")
+        return bounded_summary(type(self).__name__, identifier=self.identifier,
+                               parts=len(self.geometry.parts) if self.geometry else 0,
+                               elements=len(self.elements), stages=len(self.stages),
+                               preset=self.preset)
+
+    __str__ = __repr__
 
     @classmethod
     def empty(cls, **kwargs):

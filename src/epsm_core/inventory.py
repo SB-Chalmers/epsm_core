@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from ._representation import bounded_summary
+
 
 @dataclass(frozen=True)
 class MaterialQuantity:
@@ -24,6 +26,12 @@ class MaterialQuantity:
     kind: str = "material"
     factor_refs: tuple[tuple[str, str], ...] = ()
 
+    def __repr__(self):
+        return bounded_summary(type(self).__name__, material=self.material_id,
+                               kind=self.kind, area_m2=self.area_m2, mass_kg=self.mass_kg)
+
+    __str__ = __repr__
+
     def to_dict(self):
         return {
             "occurrence_id": self.occurrence_id,
@@ -43,6 +51,11 @@ class MaterialQuantity:
 
 class MaterialInventory(tuple):
     """Iterable material occurrences with explicit per-material aggregation."""
+
+    def __repr__(self):
+        return bounded_summary(type(self).__name__, occurrences=len(self))
+
+    __str__ = __repr__
 
     def by_material(self):
         result = {}
@@ -76,6 +89,13 @@ class MaterialFlows:
     installed: MaterialInventory
     removed: MaterialInventory
     retained: MaterialInventory
+
+    def __repr__(self):
+        return bounded_summary(type(self).__name__, order=self.order,
+                               installed=len(self.installed), removed=len(self.removed),
+                               retained=len(self.retained))
+
+    __str__ = __repr__
 
     @property
     def transition_id(self):

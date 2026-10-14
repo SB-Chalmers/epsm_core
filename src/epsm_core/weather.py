@@ -37,6 +37,7 @@ import math
 from dataclasses import dataclass
 from pathlib import Path
 
+from ._representation import bounded_summary
 from .specs import ClimateSpec
 
 
@@ -45,6 +46,12 @@ class Weather:
     """Explicit EPW input and content fingerprint, kept outside physical buildings."""
 
     climate: ClimateSpec
+
+    def __repr__(self):
+        return bounded_summary(type(self).__name__, calendar_year=self.calendar_year,
+                               fingerprint=self.sha256)
+
+    __str__ = __repr__
 
     @classmethod
     def from_epw(cls, path, *, calendar_year=2023):

@@ -56,6 +56,60 @@ def test_gradual_authoring_and_readiness():
     assert reference.readiness()
 
 
+def test_operation_assignment_preserves_public_domain_interface():
+    from epsm_core import OperationProfile
+
+    building = Building()
+    assert isinstance(building.operation, OperationProfile)
+    changed = building.operation.with_changes(equipment_gain_w_m2=10)
+    building.operation = changed
+    assert isinstance(building.operation, OperationProfile)
+    assert building.operation.equipment_gain_w_m2 == 10
+    assert building.copy().operation.with_changes(equipment_gain_w_m2=5).equipment_gain_w_m2 == 5
+    before = building.operation
+    with pytest.raises(ValueError):
+        building.operation = building.operation.model_dump() | {"equipment_gain_w_m2": -1}
+    assert building.operation == before
+
+
+@pytest.mark.parametrize("label", ["x" * 500, "'\\\n\x00\u2028\u200b\U0001f600" * 80],
+                         ids=("long", "escaped-unicode"))
+def test_domain_representations_are_bounded_and_do_not_inspect_or_do_io(
+        label, synthetic_weather, monkeypatch):
+    from epsm_core import Equipment, ScheduleSpec
+
+    building = Building(identifier=label)
+    selected = wall(building)
+    operation = ConstructionOperation("replace_element", selected.role,
+                                      element=selected.construction)
+    child = building.renovate(operation)
+    child.operation = child.operation.updated(heating_setpoint=ScheduleSpec.constant(22))
+    snapshot = child.snapshot()
+    inventory = child.quantities()
+    weather = Weather.from_epw(synthetic_weather)
+    objects = [building, Building.empty(identifier=label), snapshot, child.stages[0],
+               child.authoring_links[0], child.hvac, child.operation, child.readiness(),
+               Equipment(label, label), replace(selected, identifier=label),
+               inventory, inventory[0], child.material_flows[0], weather]
+
+    def forbidden(*args, **kwargs):
+        pytest.fail("Representation must not calculate state or access external resources")
+
+    for name in ("snapshot", "quantities", "readiness"):
+        monkeypatch.setattr(Building, name, forbidden)
+    monkeypatch.setattr(BuildingSnapshot, "to_dict", forbidden)
+    monkeypatch.setattr("builtins.open", forbidden)
+    monkeypatch.setattr("pathlib.Path.open", forbidden)
+    monkeypatch.setattr("epsm_core.weather.file_sha256", forbidden)
+    for value in objects:
+        for render in (repr, str):
+            text = render(value)
+            assert len(text) <= 160
+            assert "\n" not in text and "\r" not in text and "\x00" not in text
+            assert type(value).__name__ in text
+    assert building.identifier == label
+
+
 def test_assignment_snapshot_and_subclass_isolation():
     class AppBuilding(Building):
         def __init__(self, **kwargs):

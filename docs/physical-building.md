@@ -24,6 +24,11 @@ incrementally; `readiness('geometry'|'quantities'|'energy'|'lca', engine=...)`
 reports requirements. Construction assignment makes an independent graph copy.
 Shared construction definitions are immutable; use `with_changes()` to derive new
 definitions. `assign_construction(..., element_ids=(...))` edits selected instances.
+Assigned operations remain `OperationProfile` objects, including after copying or
+restoring a snapshot; `building.operation.with_changes(...)` validates replacements.
+Domain representations show only loaded scalar metadata and collection counts,
+stay on one line within 160 characters, and perform no calculation or I/O. Full
+data remain available through the object's attributes and explicit inspection.
 The building ConstructionSet provides role defaults; each physical element holds
 its actual assignment, including targeted renovation overrides.
 Geometry remains authoritative for thermal areas and locations. Manually edited
