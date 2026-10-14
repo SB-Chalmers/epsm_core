@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-11
+# Date modified: 2026-10-14
 # Changelog:
+#   2026-10-14 - Preserve explicit AMY calendars at the public Weather handoff.
 #   2026-09-11 - Validate required EPW fields without climate-specific substitutions.
 #   2026-09-06 - Document weather interfaces, examples, constraints and processing rationale.
 
@@ -54,7 +55,27 @@ class Weather:
     __str__ = __repr__
 
     @classmethod
-    def from_epw(cls, path, *, calendar_year=2023):
+    def from_epw(cls, path, *, calendar_year=None):
+        """Read a local EPW and capture its content identity.
+
+        Parameters
+        ----------
+        path : str or Path
+            Local EPW file. This method reads the file without network access.
+        calendar_year : int, optional
+            Simulation calendar override. When omitted, a single complete-year
+            DATA PERIODS header with explicit years selects its AMY year.
+            Undated or composite TMY periods use 2023. Pass an explicit leap
+            year when using a leap-year TMY; source row years are not inferred.
+
+        Returns
+        -------
+        Weather
+            Captured location, calendar and fingerprint. Call ``validate()``
+            to check the complete hourly calendar before use.
+        """
+        if calendar_year is None:
+            calendar_year = _declared_amy_year(path) or 2023
         return cls(climate_from_epw(path, calendar_year=calendar_year))
 
     @property
@@ -81,6 +102,27 @@ class Weather:
     @classmethod
     def from_dict(cls, value):
         return cls(ClimateSpec.model_validate(value))
+
+
+def _declared_amy_year(path):
+    """Read an unambiguous full-year AMY period without interpreting TMY rows."""
+    with Path(path).open(encoding="utf-8-sig") as stream:
+        headers = [next(csv.reader(stream), []) for _ in range(8)]
+    period = headers[7]
+    if len(period) != 7 or period[:3] != ["DATA PERIODS", "1", "1"]:
+        return None
+    start, end = period[5].split("/"), period[6].split("/")
+    if len(start) != 3 or len(end) != 3:
+        return None
+    try:
+        start_month, start_day, start_year = map(int, start)
+        end_month, end_day, end_year = map(int, end)
+    except ValueError:
+        return None
+    if ((start_month, start_day) == (1, 1) and (end_month, end_day) == (12, 31)
+            and start_year == end_year):
+        return start_year
+    return None
 
 
 def file_sha256(path):
