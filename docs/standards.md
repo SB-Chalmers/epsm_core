@@ -2,7 +2,7 @@
 
 EPSM Core ships a version-pinned copy of the operational inputs from Sveby *Brukarindata bostäder* 2.0, published 11 November 2024. The source profile is package data rather than a network lookup, so the inputs used by a run do not change when the external website changes.
 
-The official source is [Sveby Brukarindata bostäder 2.0](https://www.sveby.org/wp-content/uploads/2024/11/Sveby-brukarindata-bostadshus-2.0-241111.pdf). The bundled machine-readable resource is `src/epsm_core/standards_data/sveby_residential_v2.json`, identified as `sveby.residential.v2.0.2024-11-11`.
+The official source is [Sveby Brukarindata bostäder 2.0](https://www.sveby.org/wp-content/uploads/2024/11/Sveby-brukarindata-bostadshus-2.0-241111.pdf). Data owns the machine-readable resource at `epsm_data/datasets/standards/sveby_residential_v2.json`, identified as `sveby.residential.v2.0.2024-11-11`. Core's existing loader reads that record and supplies numerical schedule and UseSpec factories.
 
 ## Scope and terminology
 

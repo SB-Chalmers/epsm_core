@@ -8,10 +8,20 @@ jobs:
         python: ['3.11', '3.13']
     steps:
       - uses: actions/checkout@v4
+      - name: Check private prerelease dependency access
+        env:
+          EPSM_REPO_TOKEN: ${{ secrets.EPSM_REPO_TOKEN }}
+        run: |
+          if [ -z "$EPSM_REPO_TOKEN" ]; then
+            echo "::error::Set EPSM_REPO_TOKEN with read access to SB-Chalmers/epsm_data. The shared prerelease dependency is not published yet; tests have not run."
+            exit 1
+          fi
       # Shared graph API is developed together until epsm_data 0.4 is published.
       - uses: actions/checkout@v4
         with:
           repository: SB-Chalmers/epsm_data
+          token: ${{ secrets.EPSM_REPO_TOKEN }}
+          persist-credentials: false
           ref: codex/harmonisation
           path: .ci/epsm_data
       - uses: actions/setup-python@v5
