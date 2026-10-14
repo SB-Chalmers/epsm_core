@@ -5,9 +5,10 @@
 preset: a 20 × 12 m, three-storey building with 2.8 m storeys, 20% glazing,
 explicit Data reference constructions/HVAC and the sourced Sveby residential
 operation factory. The reference is illustrative, not calibrated building
-evidence. Its embodied factors are unknown. `from_footprint(...)` starts from
-geometry and accepts explicit `construction_set`, `facade`, `hvac` and `operation`
-arguments.
+evidence. Its embodied factors are unknown. The version-2 preset also names its
+uncalibrated EnergyPlus Kiva soil and boundary assumptions in its provenance.
+`from_footprint(...)` starts from geometry and accepts explicit `construction_set`,
+`facade`, `hvac`, `operation`, `foundation` and `ground_temperature` arguments.
 
 ## Ownership and editing
 
@@ -38,6 +39,39 @@ readiness rejects metadata that differs from the generated geometry. Change the
 geometry or facade configuration to change thermal areas; construction-only
 overrides remain supported. Explicit zero-window facade overrides are preserved
 when assigning per-window thermal properties.
+
+Ground heat transfer is authoring input too. A draft has no foundation method or
+ground temperatures, and energy readiness reports the missing fields. Kiva requires
+an explicit method, source, soil conductivity/density/heat capacity, wall heights,
+exposed-perimeter fraction, deep-boundary choice/depth and far-field width. If a
+footing material is supplied, footing depth and width must also be explicit. The
+prescribed-temperature method requires an explicit method and twelve monthly values
+with a source. Omitted FoundationSpec defaults remain useful as validated value
+defaults, but do not count as authored inputs. The named illustrative preset supplies
+the documented EnergyPlus 24.2 Kiva values explicitly; they are not site measurements.
+
+```python
+from epsm_core import Building, Footprint, FoundationSpec
+
+building = Building.from_footprint(
+    Footprint.rectangle(10, 8),
+    storeys=2,
+    storey_height_m=3,
+    foundation=FoundationSpec(
+        method="kiva",
+        source="study-soil-report-v1",
+        soil_conductivity_w_mk=1.6,
+        soil_density_kg_m3=1800,
+        soil_specific_heat_j_kgk=900,
+        exposed_perimeter_fraction=0.75,
+        wall_height_above_grade_m=0.2,
+        wall_depth_below_slab_m=0.1,
+        deep_ground_boundary="ZeroFlux",
+        deep_ground_depth_m=30,
+        far_field_width_m=25,
+    ),
+)
+```
 
 ## Quantities and ordered interventions
 
@@ -81,12 +115,13 @@ physical intervention must appear in lifecycle flows.
 ## Snapshots, lineage and execution
 
 `snapshot()` stores canonical immutable JSON, including the explicitly selected
-preset revision and provenance, resolved construction values and occurrence
-identities. New snapshots use `epsm.building/2`; `.sha256` identifies the stored
+preset revision and provenance, resolved construction values, occurrence identities
+and only the authored ground fields. New snapshots use `epsm.building/3`; `.sha256` identifies the stored
 state. `.to_dict()` returns a detached copy; `.to_building()` returns an editable
 independent building. Runtime results and evaluation settings are excluded.
-Version-1 snapshots remain readable and retain their original hash while their
-restored state is unchanged. Editing a restored legacy building writes the new
+Version-1 and version-2 snapshots remain readable and retain their original hash
+while their restored state is unchanged. Missing ground inputs stay missing when an
+older snapshot is restored. Editing a restored legacy building writes the new
 snapshot format without resolving the preset again. Ordered history is separately
 saved/restored with `lineage_to_dict()` and `restore_lineage()`.
 

@@ -25,8 +25,10 @@ from .specs import (
     DeliverySpec,
     FacadeSpec,
     Footprint,
+    FoundationSpec,
     GeometrySpec,
     GlazingSpec,
+    GroundTemperatureSpec,
     ProvenanceSpec,
     RenewablesSpec,
     SourceRecord,
@@ -244,7 +246,7 @@ class BuildingSnapshot:
 
     @classmethod
     def from_dict(cls, data):
-        if data.get("schema") not in {"epsm.building/1", "epsm.building/2"}:
+        if data.get("schema") not in {"epsm.building/1", "epsm.building/2", "epsm.building/3"}:
             raise ValueError("Unsupported Building snapshot schema")
         return cls(_json(data))
 
@@ -347,17 +349,19 @@ class Building:
 
     def __init__(self, *, preset=None, identifier="building",
                  geometry=None, construction_set=None, facade=None, hvac=None,
-                 operation=None, context=None, provenance=None):
+                 operation=None, context=None, provenance=None, foundation=None,
+                 ground_temperature=None):
         self._elements = ()
         self._stages = ()
         self._authoring_links = ()
         self._material_flows = ()
         self._parent_snapshot_id = None
         self.preset = preset
-        self.preset_revision = "1" if preset is not None else None
+        self.preset_revision = "2" if preset is not None else None
         supplied = {name for name, value in (("geometry", geometry),
             ("construction_set", construction_set), ("facade", facade),
-            ("hvac", hvac), ("operation", operation)) if value is not None}
+            ("hvac", hvac), ("operation", operation), ("foundation", foundation),
+            ("ground_temperature", ground_temperature)) if value is not None}
         self.identifier = identifier
         if preset is not None:
             if preset != "illustrative-reference":
@@ -372,6 +376,19 @@ class Building:
             hvac = hvac if hvac is not None else HVACSystem.from_template(reference_hvac_template())
             operation = operation if operation is not None else OperationProfile.model_validate(
                 load_sveby_spec().use_spec().model_dump())
+            foundation = foundation if foundation is not None else FoundationSpec(
+                method="kiva",
+                source="energyplus_24_2_kiva_unmeasured_defaults",
+                soil_conductivity_w_mk=1.73,
+                soil_density_kg_m3=1842.0,
+                soil_specific_heat_j_kgk=419.0,
+                exposed_perimeter_fraction=1.0,
+                wall_height_above_grade_m=0.0,
+                wall_depth_below_slab_m=0.0,
+                deep_ground_boundary="ZeroFlux",
+                deep_ground_depth_m=40.0,
+                far_field_width_m=40.0,
+            )
             if facade is None:
                 window = construction_set.elements.get(ElementRole.WINDOW)
                 facade = FacadeSpec(default_wwr=.2, glazing=GlazingSpec(
@@ -382,13 +399,16 @@ class Building:
         self.facade = facade
         self.hvac = hvac
         self.operation = operation
+        self.foundation = foundation
+        self.ground_temperature = ground_temperature
         self.context = context if context is not None else ContextSpec()
         records = list(ProvenanceSpec.model_validate(provenance or {}).records)
         if preset is not None:
             paths = {r.field_path for r in records}
             records.extend(SourceRecord(field_path=name, status="assumed",
-                source="illustrative-reference@1", assumption_profile="illustrative-reference@1")
-                for name in ("geometry", "construction_set", "facade", "hvac", "operation")
+                source="illustrative-reference@2", assumption_profile="illustrative-reference@2")
+                for name in ("geometry", "construction_set", "facade", "hvac", "operation",
+                             "foundation")
                 if name not in supplied and name not in paths)
         self.provenance = ProvenanceSpec(records=tuple(records))
 
@@ -397,11 +417,13 @@ class Building:
             raise AttributeError("Preset identity is retained metadata; create a new Building to select a preset")
         kinds = {"geometry": GeometrySpec, "facade": FacadeSpec,
                  "operation": OperationProfile, "context": ContextSpec, "provenance": ProvenanceSpec}
+        kinds.update({"foundation": FoundationSpec, "ground_temperature": GroundTemperatureSpec})
         if name in kinds and value is not None:
             kind = kinds[name]
             if name == "operation" and isinstance(value, UseSpec):
                 value = value.model_dump()
-            value = kind.model_validate(value.model_dump() if isinstance(value, kind) else value)
+            value = kind.model_validate(
+                value.model_dump(exclude_unset=True) if isinstance(value, kind) else value)
         elif name == "construction_set" and value is not None:
             if not isinstance(value, ConstructionSet):
                 raise TypeError("construction_set must be an EPSM Data ConstructionSet")
@@ -413,7 +435,8 @@ class Building:
         elif name == "identifier" and (not isinstance(value, str) or not value.strip()):
             raise ValueError("identifier must be a nonempty string")
         object.__setattr__(self, name, value)
-        if name in {"geometry", "construction_set", "facade", "hvac", "operation"} and hasattr(self, "provenance"):
+        if name in {"geometry", "construction_set", "facade", "hvac", "operation",
+                    "foundation", "ground_temperature"} and hasattr(self, "provenance"):
             object.__setattr__(self, "provenance", ProvenanceSpec(records=tuple(
                 r for r in self.provenance.records if r.field_path != name)))
         if name in {"geometry", "construction_set", "facade"}:
@@ -443,13 +466,15 @@ class Building:
     @classmethod
     def from_footprint(cls, footprint, *, storeys=None, storey_height_m=None,
                        storey_elevations_m=None, identifier="building", construction_set=None,
-                       facade=None, hvac=None, operation=None, context=None, **geometry_options):
+                       facade=None, hvac=None, operation=None, context=None, foundation=None,
+                       ground_temperature=None, **geometry_options):
         geometry = GeometrySpec.from_footprint(
             footprint, storeys=storeys, storey_height_m=storey_height_m,
             storey_elevations_m=storey_elevations_m, **geometry_options)
         return cls.empty(identifier=identifier, geometry=geometry,
                          construction_set=construction_set, facade=facade, hvac=hvac,
-                         operation=operation, context=context)
+                         operation=operation, context=context, foundation=foundation,
+                         ground_temperature=ground_temperature)
 
     @property
     def elements(self):
@@ -520,6 +545,7 @@ class Building:
             for name in ("hvac", "operation"):
                 if getattr(self, name) is None:
                     missing.append(name)
+            missing.extend(self._ground_boundary_missing())
             if engine == "epsm_rc" and self.geometry is not None:
                 if self.geometry.basement_depth_m or any(not p.conditioned for p in self.geometry.parts):
                     unsupported.append("epsm_rc requires a single conditioned domain without basement")
@@ -545,13 +571,50 @@ class Building:
                     unsupported.append(f"{element.identifier}: unequal parallel thermal path depths")
         return Readiness(tuple(missing), tuple(unsupported))
 
+    def _ground_boundary_missing(self):
+        """Return missing ground inputs without resolving omitted authoring values."""
+        missing = []
+        foundation = self.foundation
+        temperatures = self.ground_temperature
+        if foundation is None:
+            return ("foundation",)
+        supplied = foundation.model_fields_set
+        if "method" not in supplied:
+            missing.append("foundation.method")
+            return tuple(missing)
+        if foundation.method == "kiva":
+            if temperatures is not None:
+                missing.append("Kiva conflicts with prescribed ground temperatures")
+            required = (
+                "source", "soil_conductivity_w_mk", "soil_density_kg_m3",
+                "soil_specific_heat_j_kgk", "exposed_perimeter_fraction",
+                "wall_height_above_grade_m", "wall_depth_below_slab_m",
+                "deep_ground_boundary", "deep_ground_depth_m", "far_field_width_m",
+            )
+            missing.extend(f"foundation.{name}" for name in required if name not in supplied)
+            if foundation.footing_material is not None:
+                missing.extend(f"foundation.{name}" for name in ("footing_depth_m", "footing_width_m")
+                               if name not in supplied)
+        elif foundation.method == "prescribed_temperature":
+            kiva_only = supplied - {"method", "source"}
+            if kiva_only:
+                missing.append("prescribed_temperature cannot include Kiva parameters")
+            if temperatures is None:
+                missing.append("ground_temperature")
+            else:
+                temperature_fields = temperatures.model_fields_set
+                missing.extend(f"ground_temperature.{name}" for name in
+                               ("monthly_temperatures_c", "source")
+                               if name not in temperature_fields)
+        return tuple(missing)
+
     def quantities(self):
         self.readiness("quantities").require()
         return material_inventory(self.elements, self.hvac.equipment if self.hvac else ())
 
     def _snapshot_data(self):
         return {
-            "schema": "epsm.building/2", "identifier": self.identifier, "preset": self.preset,
+            "schema": "epsm.building/3", "identifier": self.identifier, "preset": self.preset,
             "preset_revision": self.preset_revision,
             "provenance": self.provenance.model_dump(mode="json"),
             "geometry": self.geometry.model_dump(mode="json") if self.geometry else None,
@@ -560,6 +623,10 @@ class Building:
             "facade": self.facade.model_dump(mode="json") if self.facade else None,
             "hvac": self.hvac.to_dict() if self.hvac else None,
             "operation": self.operation.model_dump(mode="json") if self.operation else None,
+            "foundation": self.foundation.model_dump(mode="json", exclude_unset=True)
+            if self.foundation else None,
+            "ground_temperature": self.ground_temperature.model_dump(mode="json", exclude_unset=True)
+            if self.ground_temperature else None,
             "context": self.context.model_dump(mode="json"),
             "elements": [e.to_dict() for e in self.elements],
         }
@@ -581,6 +648,8 @@ class Building:
         result.facade = data["facade"]
         result.hvac = HVACSystem(**data["hvac"]) if data["hvac"] else None
         result.operation = data["operation"]
+        result.foundation = data.get("foundation")
+        result.ground_temperature = data.get("ground_temperature")
         result.context = data.get("context", {})
         result.elements = [BuildingElement.from_dict(e) for e in data["elements"]]
         object.__setattr__(result, "preset", data.get("preset"))
