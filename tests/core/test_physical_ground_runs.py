@@ -9,8 +9,9 @@ from epsm_core import (
 
 @pytest.mark.energyplus
 @pytest.mark.parametrize("method", ["kiva", "prescribed_temperature"])
-def test_authored_ground_runs_with_real_energyplus(method, energyplus, synthetic_weather, tmp_path):
-    building = Building(preset="illustrative-reference", geometry=GeometrySpec.from_footprint(
+@pytest.mark.parametrize("uplift", [0.0, 0.12])
+def test_authored_ground_runs_with_real_energyplus(method, uplift, energyplus, synthetic_weather, tmp_path):
+    building = Building(preset="illustrative-reference", thermal_bridge_uplift_fraction=uplift, geometry=GeometrySpec.from_footprint(
         Footprint.rectangle(8, 6), storeys=1, storey_height_m=3))
     if method == "prescribed_temperature":
         building.foundation = FoundationSpec(method=method)

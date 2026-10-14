@@ -85,6 +85,7 @@ def to_spec(building, weather):
         weather_shell=construction(Role.ROOF, top),
         basement_wall=construction(Role.BASEMENT_WALL, wall),
         basement_ceiling=construction(Role.GROUND_FLOOR, ground),
+        thermal_bridge_uplift_fraction=building.thermal_bridge_uplift_fraction,
         foundation=building.foundation,
         ground_temperature=building.ground_temperature)
     # Preserve explicit zero-window and shading choices, including facade-wide
