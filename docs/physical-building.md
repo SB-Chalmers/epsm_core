@@ -5,11 +5,12 @@
 preset: a 20 × 12 m, three-storey building with 2.8 m storeys, 20% glazing,
 explicit Data reference constructions/HVAC and the sourced Sveby residential
 operation factory. The reference is illustrative, not calibrated building
-evidence. Its embodied factors are unknown. The version-3 preset also names its
+evidence. Its embodied factors are unknown. The version-4 preset also names its
 uncalibrated EnergyPlus Kiva soil and boundary assumptions in its provenance.
 `from_footprint(...)` starts from geometry and accepts explicit `construction_set`,
 `facade`, `hvac`, `operation`, `foundation`, `ground_temperature` and
-`thermal_bridge_uplift_fraction` arguments.
+`thermal_bridge_uplift_fraction`, `load_reference_area_m2` and
+`load_reference_area_policy` arguments.
 
 ## Ownership and editing
 
@@ -58,6 +59,16 @@ The compiler represents it by changing equivalent conductivities while retaining
 layer thickness, density and specific heat, so physical material quantities and
 layer heat capacity stay unchanged. The named illustrative preset explicitly supplies
 zero and records that assumption in its provenance.
+
+Loads and area-based airflow need one load-reference area choice. Set a finite
+positive `load_reference_area_m2`, or select
+`load_reference_area_policy="conditioned_floor_area"` to derive it from the current
+geometry. The policy follows later geometry edits. A chosen area scales per-area
+people, equipment, lighting, DHW and area-based airflow inputs; it does not change
+the physical floor area, envelope, volume or material quantities. The illustrative
+preset uses the conditioned-floor-area policy. Supplying an explicit area overrides
+that preset assumption and removes its stale provenance record. If you set an
+explicit policy yourself, clear it before assigning an area.
 
 ```python
 from epsm_core import Building, Footprint, FoundationSpec
@@ -125,11 +136,11 @@ physical intervention must appear in lifecycle flows.
 
 `snapshot()` stores canonical immutable JSON, including the explicitly selected
 preset revision and provenance, resolved construction values, occurrence identities,
-authored ground fields and the optional thermal-bridge input. New snapshots use
-`epsm.building/4`; `.sha256` identifies the stored
+authored ground fields, optional thermal-bridge input and load-reference choice. New
+snapshots use `epsm.building/5`; `.sha256` identifies the stored
 state. `.to_dict()` returns a detached copy; `.to_building()` returns an editable
 independent building. Runtime results and evaluation settings are excluded.
-Version-1 through version-3 snapshots remain readable and retain their original hash
+Version-1 through version-4 snapshots remain readable and retain their original hash
 while their restored state is unchanged. Missing ground inputs stay missing when an
 older snapshot is restored. Editing a restored legacy building writes the new
 snapshot format without resolving the preset again. Ordered history is separately
