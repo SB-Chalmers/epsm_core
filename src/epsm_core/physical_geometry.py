@@ -5,6 +5,8 @@ pitched/attached/apartment thermal APIs remain available, but their physical
 inventories require an explicit future geometry adapter and are reported unready.
 """
 
+from math import isclose
+
 from epsm_data.domain.enums import BuildingElement as Role
 
 
@@ -27,6 +29,32 @@ def geometry_limitations(geometry):
     if geometry.zoning.mode == "apartments":
         issues.append("apartment partitions require physical element assignments")
     return issues
+
+
+def physical_geometry_mismatches(geometry, facade, elements):
+    """Find manual physical metadata that the current engine bridge cannot use.
+
+    Geometry and facade choices determine the emitted areas. Construction edits
+    are independent, but changes to physical IDs, areas and locations must agree
+    with those generated from geometry before a thermal calculation can proceed.
+    """
+    expected = {element.identifier: element
+                for element in physical_elements(geometry, facade, None)}
+    actual = {element.identifier: element for element in elements}
+    issues = []
+    if actual.keys() != expected.keys():
+        issues.append("physical geometry: element identities differ from generated geometry")
+    for identifier in actual.keys() & expected.keys():
+        left, right = actual[identifier], expected[identifier]
+        changed = [name for name in ("role", "part_id", "facade_id", "storey", "elevation_m")
+                   if getattr(left, name) != getattr(right, name)]
+        # Roundtripped finite areas may differ at machine precision; this tolerance
+        # is far below any supported geometric area or physical intervention.
+        if not isclose(left.area_m2, right.area_m2, rel_tol=1e-10, abs_tol=1e-8):
+            changed.append("area_m2")
+        if changed:
+            issues.append(f"physical geometry:{identifier}: differs in {', '.join(changed)}")
+    return tuple(sorted(issues))
 
 
 def physical_elements(geometry, facade, construction_set):

@@ -392,6 +392,11 @@ class Building:
         if self.facade is None:
             missing.append("facade (explicit opening/opaque-area information)")
         if purpose not in {"quantities", "inventory", "lca"}:
+            if self.geometry is not None and self.facade is not None:
+                from .physical_geometry import physical_geometry_mismatches
+
+                unsupported.extend(physical_geometry_mismatches(
+                    self.geometry, self.facade, self.elements))
             for name in ("hvac", "operation"):
                 if getattr(self, name) is None:
                     missing.append(name)
@@ -406,6 +411,10 @@ class Building:
                                for o in self.facade.overrides)):
                     unsupported.append("epsm_rc does not model explicit facade shading geometry")
             for element in self.elements:
+                if (element.role == ElementRole.WINDOW and element.construction is not None
+                        and not isinstance(element.construction, WindowElement)):
+                    unsupported.append(
+                        f"{element.identifier}: layered window thermal representation is unsupported")
                 if not isinstance(element.construction, Element):
                     continue
                 layers = [s.layer for c in element.construction.components for s in c.layers]

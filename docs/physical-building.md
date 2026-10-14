@@ -26,6 +26,12 @@ Shared construction definitions are immutable; use `with_changes()` to derive ne
 definitions. `assign_construction(..., element_ids=(...))` edits selected instances.
 The building ConstructionSet provides role defaults; each physical element holds
 its actual assignment, including targeted renovation overrides.
+Geometry remains authoritative for thermal areas and locations. Manually edited
+physical element metadata can be inspected and used for quantities, but energy
+readiness rejects metadata that differs from the generated geometry. Change the
+geometry or facade configuration to change thermal areas; construction-only
+overrides remain supported. Explicit zero-window facade overrides are preserved
+when assigning per-window thermal properties.
 
 ## Quantities and ordered interventions
 
@@ -91,6 +97,9 @@ cleanup require further physical-ownership adapters. Readiness reports these gap
 the pre-existing complete geometry/numerical APIs remain available. Thermal
 reduction currently requires equal parallel path depths and at most ten emitted
 layers per assembly. RC has additional single-conditioned-domain/shading limits.
+Layered window recipes remain available for material inventory; the current
+thermal bridge requires whole-window U-value, SHGC and visible transmittance
+through `WindowElement`, and readiness reports layered windows as unsupported.
 Unknown nonthermal products and detailed window/equipment material composition
 remain explicit inventory gaps; they are never invented from U-values or counts.
 

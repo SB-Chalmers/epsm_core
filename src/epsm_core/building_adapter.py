@@ -85,17 +85,20 @@ def to_spec(building, weather):
         weather_shell=construction(Role.ROOF, top),
         basement_wall=construction(Role.BASEMENT_WALL, wall),
         basement_ceiling=construction(Role.GROUND_FLOOR, ground))
-    overrides = []
+    # Preserve explicit zero-window and shading choices, including facade-wide
+    # overrides that have no corresponding physical window instance.
+    overrides = {(override.facade_id, override.storey): override
+                 for override in building.facade.overrides}
     for element in building.elements:
         if element.role != Role.WINDOW:
             continue
-        overrides.append(FacadeOverride(
+        overrides[(element.facade_id, element.storey)] = FacadeOverride(
             facade_id=element.facade_id, storey=element.storey,
             glazing=_glazing(element.construction),
             **{field: building.facade.value_for(field, element.facade_id, element.storey)
                for field in ("wwr", "layout", "reveal_depth_m", "overhang")},
-        ))
-    facade = building.facade.updated(overrides=tuple(overrides))
+        )
+    facade = building.facade.updated(overrides=tuple(overrides.values()))
     spec = BuildingSpec(identifier=building.identifier, geometry=building.geometry,
         facade=facade, climate=climate, envelope=envelope, airflow=building.hvac.airflow,
         use=building.operation, context=building.context, delivery=building.hvac.delivery,

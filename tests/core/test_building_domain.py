@@ -4,13 +4,23 @@ from dataclasses import FrozenInstanceError, replace
 from types import SimpleNamespace
 
 import pytest
-from epsm_data import ConstructionOperation, RenovationMeasure, SystemOperation, reference_hvac_template
+from epsm_data import (
+    ConstructionOperation,
+    RenovationMeasure,
+    SystemOperation,
+    reference_hvac_template,
+)
 from epsm_data.domain import LayerMaterial
 from epsm_data.domain.enums import BuildingElement as Role
 
 from epsm_core import (
-    Building, BuildingSnapshot, CompilerSettings, EnergyPlusCompiler, Footprint,
-    Weather, ZoningSpec,
+    Building,
+    BuildingSnapshot,
+    CompilerSettings,
+    EnergyPlusCompiler,
+    Footprint,
+    Weather,
+    ZoningSpec,
 )
 
 
@@ -226,3 +236,57 @@ def test_rc_readiness_reports_facade_override_shading():
         facade_id=selected.facade_id, overhang=OverhangSpec(depth_m=1)),))
     assert not building.readiness(engine="epsm_rc")
     assert building.readiness(engine="energyplus")
+
+
+def test_thermal_bridge_preserves_zero_window_overrides(synthetic_weather):
+    from epsm_core import FacadeOverride, OverhangSpec
+    from epsm_core.pipeline import resolve_geometry
+
+    building = Building()
+    selected = wall(building)
+    building.facade = building.facade.updated(overrides=(FacadeOverride(
+        facade_id=selected.facade_id, storey=selected.storey, wwr=0,
+        overhang=OverhangSpec(depth_m=1)),))
+    spec = building.to_spec(Weather.from_epw(synthetic_weather))
+    assert spec.facade.value_for("wwr", selected.facade_id, selected.storey) == 0
+    assert spec.facade.value_for("overhang", selected.facade_id, selected.storey).depth_m == 1
+    resolved = resolve_geometry(spec, panelize=True)
+    physical_glazing = sum(e.area_m2 for e in building.elements if e.role == Role.WINDOW)
+    assert sum(opening.area for opening in resolved.openings) == pytest.approx(physical_glazing)
+
+
+@pytest.mark.parametrize("changes", [
+    {"area_m2": 99}, {"part_id": "unknown"}, {"facade_id": "unknown"},
+    {"storey": 99}, {"elevation_m": 99}, {"identifier": "unknown"},
+])
+def test_energy_readiness_rejects_physical_metadata_differing_from_geometry(changes):
+    building = Building()
+    selected = wall(building)
+    building.elements = tuple(replace(e, **changes) if e.id == selected.id else e
+                              for e in building.elements)
+    assert building.readiness("quantities")
+    assert not building.readiness(engine="energyplus")
+    assert not building.readiness(engine="epsm_rc")
+    assert any("physical geometry" in issue for issue in building.readiness().unsupported)
+
+
+def test_energy_readiness_rejects_missing_physical_element():
+    building = Building()
+    building.elements = building.elements[1:]
+    assert not building.readiness(engine="energyplus")
+
+
+def test_layered_window_supports_quantities_but_reports_thermal_limit(synthetic_weather):
+    building = Building()
+    opaque = wall(building).construction
+    layered_window = replace(opaque, application=Role.WINDOW, components=tuple(
+        replace(c, application=Role.WINDOW) for c in opaque.components))
+    building.assign_construction(layered_window)
+    assert building.readiness("quantities")
+    assert building.quantities()
+    for engine in ("energyplus", "epsm_rc"):
+        readiness = building.readiness(engine=engine)
+        assert not readiness
+        assert any("layered window" in issue for issue in readiness.unsupported)
+    with pytest.raises(ValueError, match="layered window"):
+        building.to_spec(Weather.from_epw(synthetic_weather))
