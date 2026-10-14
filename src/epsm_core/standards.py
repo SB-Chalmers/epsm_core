@@ -432,7 +432,7 @@ def load_sveby_residential_v2() -> SvebyResidentialSpec:
         standard = load_sveby_residential_v2()
         assert standard.data["version"] == "2.0"
     """
-    resource = files("epsm_core").joinpath("standards_data/sveby_residential_v2.json")
+    resource = files("epsm_data").joinpath("datasets/standards/sveby_residential_v2.json")
     with resource.open("r", encoding="utf-8") as handle:
         return SvebyResidentialSpec(json.load(handle))
 

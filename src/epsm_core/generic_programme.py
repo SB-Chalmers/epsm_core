@@ -6,7 +6,9 @@ It should be replaced when the actual use, calendar, and ventilation are known.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+
+from epsm_data import load_generic_other_template
 
 from .specs import ScheduleSpec, UseSpec
 
@@ -31,29 +33,33 @@ class GenericOtherProgramme:
     """
 
     profile_id: str = "epsm.generic_other.v1"
-    mechanical_vent_l_s_m2: float = 0.7
+    mechanical_vent_l_s_m2: float = field(
+        default_factory=lambda: load_generic_other_template()["mechanical_vent_l_s_m2"])
 
     def use_spec(self) -> UseSpec:
-        occupied = _weekday_schedule(8, 18)
-        equipment = _weekday_schedule(8, 18, off=0.2)
+        data = load_generic_other_template()
+        start, end = data["weekday_start_hour"], data["weekday_end_hour"]
+        occupied = _weekday_schedule(start, end)
+        equipment = _weekday_schedule(start, end, off=data["equipment_off_fraction"])
         return UseSpec(
-            occupancy_category="non_residential",
-            heating_setpoint=ScheduleSpec.constant(21),
-            cooling_setpoint=ScheduleSpec.constant(30),
-            cooling_enabled=False,
-            occupant_density_per_m2=0.03,
-            occupant_activity_w=108,
+            occupancy_category=data["occupancy_category"],
+            heating_setpoint=ScheduleSpec.constant(data["heating_setpoint_c"]),
+            cooling_setpoint=ScheduleSpec.constant(data["cooling_setpoint_c"]),
+            cooling_enabled=data["cooling_enabled"],
+            occupant_density_per_m2=data["occupant_density_per_m2"],
+            occupant_activity_w=data["occupant_activity_w"],
             occupancy_fraction=occupied,
-            equipment_gain_w_m2=5,
+            equipment_gain_w_m2=data["equipment_gain_w_m2"],
             equipment_fraction=equipment,
-            lighting_gain_w_m2=5,
+            lighting_gain_w_m2=data["lighting_gain_w_m2"],
             lighting_fraction=occupied,
-            dhw_kwh_m2_year=5,
+            dhw_kwh_m2_year=data["dhw_kwh_m2_year"],
             dhw_fraction=occupied,
         )
 
     def ventilation_fraction(self) -> ScheduleSpec:
-        return _weekday_schedule(8, 18)
+        data = load_generic_other_template()
+        return _weekday_schedule(data["weekday_start_hour"], data["weekday_end_hour"])
 
 
 def load_generic_other_v1() -> GenericOtherProgramme:
