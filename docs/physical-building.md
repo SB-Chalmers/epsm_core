@@ -189,9 +189,17 @@ metadata can be supplied as `provenance={...}`. Core does not fetch weather or
 discover sidecars automatically. A complete calendar and preserved quality
 report do not establish local weather accuracy.
 
-`run_building(building, weather=weather, directory=...)` validates weather,
-captures a snapshot, compiles and executes the existing EnergyPlus implementation.
-`building.to_spec(weather)` exposes the migration bridge. Targeted opaque changes
+`readiness(engine="energyplus")` also checks Kiva's resolved ground-floor unions
+without opening weather files or initializing EnergyPlus. `preflight_energyplus(spec)`
+provides the same check for a complete `BuildingSpec`. It rejects per-zone floor
+holes, disconnected pieces, overlaps, non-coplanar floors and mixed constructions;
+prescribed monthly ground temperatures remain available for geometry Kiva cannot
+represent. The compiler repeats these checks as a final defensive guard.
+
+`run_building(building, weather=weather, directory=...)` captures a snapshot and
+checks EnergyPlus readiness before reading weather, then compiles and executes the
+existing EnergyPlus implementation. `building.to_spec(weather)` exposes the
+engine-independent migration bridge. Targeted opaque changes
 reach thermal faces/internal slabs through bounded construction overrides; nominal
 physical inventory continues to use the original Data materials. Parallel thermal
 layers are reduced only within the engine adapter.
