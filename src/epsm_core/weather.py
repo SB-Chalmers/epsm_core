@@ -34,9 +34,46 @@ Example::
 import csv
 import hashlib
 import math
+from dataclasses import dataclass
 from pathlib import Path
 
 from .specs import ClimateSpec
+
+
+@dataclass(frozen=True)
+class Weather:
+    """Explicit EPW input and content fingerprint, kept outside physical buildings."""
+
+    climate: ClimateSpec
+
+    @classmethod
+    def from_epw(cls, path, *, calendar_year=2023):
+        return cls(climate_from_epw(path, calendar_year=calendar_year))
+
+    @property
+    def path(self):
+        return Path(self.climate.epw_path)
+
+    @property
+    def sha256(self):
+        return self.climate.weather_sha256
+
+    @property
+    def calendar_year(self):
+        return self.climate.calendar_year
+
+    def validate(self):
+        if file_sha256(self.path) != self.sha256:
+            raise ValueError("Weather content changed after its fingerprint was captured")
+        validate_epw_calendar(self.path, self.calendar_year)
+        return self
+
+    def to_dict(self):
+        return self.climate.model_dump(mode="json")
+
+    @classmethod
+    def from_dict(cls, value):
+        return cls(ClimateSpec.model_validate(value))
 
 
 def file_sha256(path):

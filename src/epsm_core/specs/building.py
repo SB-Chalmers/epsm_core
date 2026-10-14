@@ -47,7 +47,15 @@ from .context import ContextSpec
 from .facade import FacadeSpec
 from .geometry import GeometrySpec
 from .operations import UnconditionedExchangeSpec, ZoneUseSpec
-from .physics import AirflowSpec, ClimateSpec, DeliverySpec, EnvelopeSpec, RenewablesSpec, UseSpec
+from .physics import (
+    AirflowSpec,
+    ClimateSpec,
+    ConstructionSpec,
+    DeliverySpec,
+    EnvelopeSpec,
+    RenewablesSpec,
+    UseSpec,
+)
 from .provenance import AssessmentReference, ProvenanceSpec, RenovationRecord
 
 
@@ -144,6 +152,10 @@ class BuildingSpec(Spec):
     provenance: ProvenanceSpec = ProvenanceSpec()
     renovations: tuple[RenovationRecord, ...] = ()
     assessment_references: tuple[AssessmentReference, ...] = ()
+    # Migration adapter output: resolved thermal-face assignments from physical elements.
+    # Public authoring stores physical elements, not these solver-dependent identifiers.
+    surface_constructions: dict[str, ConstructionSpec] = {}
+    internal_mass_constructions: dict[str, ConstructionSpec] = {}
 
     @model_validator(mode="after")
     def compatible(self):
@@ -331,6 +343,9 @@ class BuildingSpec(Spec):
             exclude={"identifier", "provenance", "renovations", "assessment_references"},
         )
         data["climate"].pop("epw_path")
+        for name in ("surface_constructions", "internal_mass_constructions"):
+            if not data[name]:
+                data.pop(name)
         return data
 
     def physical_hash(self):
