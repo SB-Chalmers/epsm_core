@@ -94,6 +94,8 @@ def test_older_snapshot_with_no_thermal_bridge_stays_missing():
     data = copy.deepcopy(Building(preset="illustrative-reference").to_dict())
     data["schema"] = "epsm.building/3"
     data.pop("thermal_bridge_uplift_fraction", None)
+    data.pop("load_reference_area_m2", None)
+    data.pop("load_reference_area_policy", None)
     original = BuildingSnapshot.from_dict(data)
 
     restored = original.to_building()
@@ -103,7 +105,7 @@ def test_older_snapshot_with_no_thermal_bridge_stays_missing():
     assert "thermal_bridge_uplift_fraction" not in restored.readiness("quantities").missing
     restored.identifier = "edited"
     edited = restored.snapshot().to_dict()
-    assert edited["schema"] == "epsm.building/4"
+    assert edited["schema"] == "epsm.building/5"
     assert edited["thermal_bridge_uplift_fraction"] is None
 
 

@@ -50,7 +50,8 @@ def test_gradual_authoring_and_readiness():
         construction_set=reference.construction_set, facade=reference.facade,
         hvac=reference.hvac, operation=reference.operation,
         foundation=reference.foundation,
-        thermal_bridge_uplift_fraction=reference.thermal_bridge_uplift_fraction)
+        thermal_bridge_uplift_fraction=reference.thermal_bridge_uplift_fraction,
+        load_reference_area_policy=reference.load_reference_area_policy)
     assert complete.readiness()
     assert "illustrative-reference" in repr(reference)
     with pytest.raises(ValueError):

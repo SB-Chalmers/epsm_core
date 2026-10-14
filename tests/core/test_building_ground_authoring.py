@@ -63,7 +63,7 @@ def test_complete_kiva_inputs_roundtrip_without_injected_defaults():
     building.foundation = config
 
     encoded = building.snapshot().to_dict()
-    assert encoded["schema"] == "epsm.building/4"
+    assert encoded["schema"] == "epsm.building/5"
     assert encoded["foundation"] == config.model_dump(mode="json", exclude_unset=True)
     restored = Building.from_snapshot(building.snapshot())
     assert restored.foundation.model_fields_set == config.model_fields_set
@@ -174,7 +174,7 @@ def test_from_footprint_accepts_ground_inputs_as_building_options():
 
 def test_named_reference_supplies_versioned_ground_defaults():
     building = Building(preset="illustrative-reference")
-    assert building.preset_revision == "3"
+    assert building.preset_revision == "4"
     assert building.foundation is not None
     assert building.foundation.model_fields_set >= {
         "method", "source", "soil_conductivity_w_mk", "soil_density_kg_m3",
@@ -182,7 +182,7 @@ def test_named_reference_supplies_versioned_ground_defaults():
         "wall_depth_below_slab_m", "exposed_perimeter_fraction",
         "deep_ground_boundary", "deep_ground_depth_m", "far_field_width_m",
     }
-    assert all(r.source == "illustrative-reference@3"
+    assert all(r.source == "illustrative-reference@4"
                for r in building.provenance.records)
 
 
@@ -192,6 +192,9 @@ def test_older_snapshots_keep_missing_ground_state_and_origin_identity():
     data["schema"] = "epsm.building/2"
     data.pop("foundation", None)
     data.pop("ground_temperature", None)
+    data.pop("thermal_bridge_uplift_fraction", None)
+    data.pop("load_reference_area_m2", None)
+    data.pop("load_reference_area_policy", None)
     original = BuildingSnapshot.from_dict(data)
 
     restored = original.to_building()

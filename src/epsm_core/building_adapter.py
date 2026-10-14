@@ -104,6 +104,7 @@ def to_spec(building, weather):
     facade = building.facade.updated(overrides=tuple(overrides.values()))
     spec = BuildingSpec(identifier=building.identifier, geometry=building.geometry,
         facade=facade, climate=climate, envelope=envelope, airflow=building.hvac.airflow,
+        load_reference_area_m2=building.effective_load_reference_area_m2,
         use=building.operation, context=building.context, delivery=building.hvac.delivery,
         renewables=building.hvac.renewables, provenance=building.provenance)
     from .pipeline import resolve_geometry

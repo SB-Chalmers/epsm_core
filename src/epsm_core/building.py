@@ -11,6 +11,7 @@ import hashlib
 import json
 import math
 from dataclasses import dataclass, field, replace
+from typing import Literal
 from uuid import UUID, uuid4
 
 from epsm_data.domain import ConstructionSet, Element, WindowElement
@@ -35,7 +36,7 @@ from .specs import (
     SourceRecord,
     UseSpec,
 )
-from .specs.base import Nonnegative
+from .specs.base import Nonnegative, Positive
 
 
 def _json(value):
@@ -249,7 +250,8 @@ class BuildingSnapshot:
     @classmethod
     def from_dict(cls, data):
         if data.get("schema") not in {
-                "epsm.building/1", "epsm.building/2", "epsm.building/3", "epsm.building/4"}:
+                "epsm.building/1", "epsm.building/2", "epsm.building/3", "epsm.building/4",
+                "epsm.building/5"}:
             raise ValueError("Unsupported Building snapshot schema")
         return cls(_json(data))
 
@@ -353,19 +355,25 @@ class Building:
     def __init__(self, *, preset=None, identifier="building",
                  geometry=None, construction_set=None, facade=None, hvac=None,
                  operation=None, context=None, provenance=None, foundation=None,
-                 ground_temperature=None, thermal_bridge_uplift_fraction=None):
+                 ground_temperature=None, thermal_bridge_uplift_fraction=None,
+                 load_reference_area_m2=None,
+                 load_reference_area_policy: Literal["conditioned_floor_area"] | None = None):
+        if load_reference_area_m2 is not None and load_reference_area_policy is not None:
+            raise ValueError("Choose either load_reference_area_m2 or load_reference_area_policy")
         self._elements = ()
         self._stages = ()
         self._authoring_links = ()
         self._material_flows = ()
         self._parent_snapshot_id = None
         self.preset = preset
-        self.preset_revision = "3" if preset is not None else None
+        self.preset_revision = "4" if preset is not None else None
         supplied = {name for name, value in (("geometry", geometry),
             ("construction_set", construction_set), ("facade", facade),
             ("hvac", hvac), ("operation", operation), ("foundation", foundation),
             ("ground_temperature", ground_temperature),
-            ("thermal_bridge_uplift_fraction", thermal_bridge_uplift_fraction))
+            ("thermal_bridge_uplift_fraction", thermal_bridge_uplift_fraction),
+            ("load_reference_area_m2", load_reference_area_m2),
+            ("load_reference_area_policy", load_reference_area_policy))
             if value is not None}
         self.identifier = identifier
         if preset is not None:
@@ -396,6 +404,8 @@ class Building:
             )
             if thermal_bridge_uplift_fraction is None:
                 thermal_bridge_uplift_fraction = 0.0
+            if load_reference_area_m2 is None and load_reference_area_policy is None:
+                load_reference_area_policy = "conditioned_floor_area"
             if facade is None:
                 window = construction_set.elements.get(ElementRole.WINDOW)
                 facade = FacadeSpec(default_wwr=.2, glazing=GlazingSpec(
@@ -409,15 +419,18 @@ class Building:
         self.foundation = foundation
         self.ground_temperature = ground_temperature
         self.thermal_bridge_uplift_fraction = thermal_bridge_uplift_fraction
+        self.load_reference_area_m2 = load_reference_area_m2
+        self.load_reference_area_policy = load_reference_area_policy
         self.context = context if context is not None else ContextSpec()
         records = list(ProvenanceSpec.model_validate(provenance or {}).records)
         if preset is not None:
             paths = {r.field_path for r in records}
             records.extend(SourceRecord(field_path=name, status="assumed",
-                source="illustrative-reference@3", assumption_profile="illustrative-reference@3")
+                source="illustrative-reference@4", assumption_profile="illustrative-reference@4")
                 for name in ("geometry", "construction_set", "facade", "hvac", "operation",
-                             "foundation", "thermal_bridge_uplift_fraction")
-                if name not in supplied and name not in paths)
+                             "foundation", "thermal_bridge_uplift_fraction",
+                             "load_reference_area_policy")
+                if name not in supplied and name not in paths and getattr(self, name) is not None)
         self.provenance = ProvenanceSpec(records=tuple(records))
 
     def __setattr__(self, name, value):
@@ -446,9 +459,32 @@ class Building:
             value = TypeAdapter(Nonnegative).validate_python(value)
             if not math.isfinite(value):
                 raise ValueError("thermal_bridge_uplift_fraction must be finite")
+        elif name == "load_reference_area_m2" and value is not None:
+            value = TypeAdapter(Positive).validate_python(value)
+            if not math.isfinite(value):
+                raise ValueError("load_reference_area_m2 must be finite")
+            current_policy = getattr(self, "load_reference_area_policy", None)
+            if current_policy is not None:
+                assumed_profile = f"{getattr(self, 'preset', None)}@{getattr(self, 'preset_revision', None)}"
+                policy_record = next((r for r in getattr(
+                    self, "provenance", ProvenanceSpec()).records
+                    if r.field_path == "load_reference_area_policy"), None)
+                if not (policy_record and policy_record.status == "assumed"
+                        and policy_record.assumption_profile == assumed_profile):
+                    raise ValueError("Clear the policy before setting an explicit load-reference area")
+                object.__setattr__(self, "load_reference_area_policy", None)
+                if hasattr(self, "provenance"):
+                    object.__setattr__(self, "provenance", ProvenanceSpec(records=tuple(
+                        r for r in self.provenance.records
+                        if r.field_path != "load_reference_area_policy")))
+        elif name == "load_reference_area_policy" and value is not None:
+            value = TypeAdapter(Literal["conditioned_floor_area"]).validate_python(value)
+            if getattr(self, "load_reference_area_m2", None) is not None:
+                raise ValueError("Clear the area before setting a load-reference area policy")
         object.__setattr__(self, name, value)
         if name in {"geometry", "construction_set", "facade", "hvac", "operation",
-                    "foundation", "ground_temperature", "thermal_bridge_uplift_fraction"} \
+                    "foundation", "ground_temperature", "thermal_bridge_uplift_fraction",
+                    "load_reference_area_m2", "load_reference_area_policy"} \
                 and hasattr(self, "provenance"):
             object.__setattr__(self, "provenance", ProvenanceSpec(records=tuple(
                 r for r in self.provenance.records if r.field_path != name)))
@@ -481,6 +517,7 @@ class Building:
                        storey_elevations_m=None, identifier="building", construction_set=None,
                        facade=None, hvac=None, operation=None, context=None, foundation=None,
                        ground_temperature=None, thermal_bridge_uplift_fraction=None,
+                       load_reference_area_m2=None, load_reference_area_policy=None,
                        **geometry_options):
         geometry = GeometrySpec.from_footprint(
             footprint, storeys=storeys, storey_height_m=storey_height_m,
@@ -489,7 +526,27 @@ class Building:
                          construction_set=construction_set, facade=facade, hvac=hvac,
                          operation=operation, context=context, foundation=foundation,
                          ground_temperature=ground_temperature,
-                         thermal_bridge_uplift_fraction=thermal_bridge_uplift_fraction)
+                         thermal_bridge_uplift_fraction=thermal_bridge_uplift_fraction,
+                         load_reference_area_m2=load_reference_area_m2,
+                         load_reference_area_policy=load_reference_area_policy)
+
+    @property
+    def effective_load_reference_area_m2(self):
+        """Return the explicit or policy-resolved load area, separate from physical floor area."""
+        if self.load_reference_area_m2 is not None:
+            return self.load_reference_area_m2
+        if self.load_reference_area_policy == "conditioned_floor_area" and self.geometry is not None:
+            return self.geometry.conditioned_floor_area_m2
+        return None
+
+    @property
+    def load_reference_area_basis(self):
+        """Report whether the load area is explicit, policy-derived or still missing."""
+        if self.load_reference_area_m2 is not None:
+            return "explicit"
+        if self.load_reference_area_policy is not None:
+            return "policy"
+        return "missing"
 
     @property
     def elements(self):
@@ -563,6 +620,10 @@ class Building:
             missing.extend(self._ground_boundary_missing())
             if self.thermal_bridge_uplift_fraction is None:
                 missing.append("thermal_bridge_uplift_fraction")
+            if self.load_reference_area_m2 is None and self.load_reference_area_policy is None:
+                missing.append("load_reference_area_m2 or load_reference_area_policy")
+            elif self.load_reference_area_m2 is not None and self.load_reference_area_policy is not None:
+                unsupported.append("Choose either load_reference_area_m2 or load_reference_area_policy")
             if engine == "epsm_rc" and self.geometry is not None:
                 if self.geometry.basement_depth_m or any(not p.conditioned for p in self.geometry.parts):
                     unsupported.append("epsm_rc requires a single conditioned domain without basement")
@@ -631,7 +692,7 @@ class Building:
 
     def _snapshot_data(self):
         return {
-            "schema": "epsm.building/4", "identifier": self.identifier, "preset": self.preset,
+            "schema": "epsm.building/5", "identifier": self.identifier, "preset": self.preset,
             "preset_revision": self.preset_revision,
             "provenance": self.provenance.model_dump(mode="json"),
             "geometry": self.geometry.model_dump(mode="json") if self.geometry else None,
@@ -645,6 +706,8 @@ class Building:
             "ground_temperature": self.ground_temperature.model_dump(mode="json", exclude_unset=True)
             if self.ground_temperature else None,
             "thermal_bridge_uplift_fraction": self.thermal_bridge_uplift_fraction,
+            "load_reference_area_m2": self.load_reference_area_m2,
+            "load_reference_area_policy": self.load_reference_area_policy,
             "context": self.context.model_dump(mode="json"),
             "elements": [e.to_dict() for e in self.elements],
         }
@@ -669,6 +732,8 @@ class Building:
         result.foundation = data.get("foundation")
         result.ground_temperature = data.get("ground_temperature")
         result.thermal_bridge_uplift_fraction = data.get("thermal_bridge_uplift_fraction")
+        result.load_reference_area_m2 = data.get("load_reference_area_m2")
+        result.load_reference_area_policy = data.get("load_reference_area_policy")
         result.context = data.get("context", {})
         result.elements = [BuildingElement.from_dict(e) for e in data["elements"]]
         object.__setattr__(result, "preset", data.get("preset"))
