@@ -155,6 +155,7 @@ remain explicit inventory gaps; they are never invented from U-values or counts.
 This prerelease requires the matching `epsm_data >= 0.4.0.dev1` source checkout.
 Install Data first, then Core (`pip install -e ../epsm_data -e '.[dev,geometry]'`).
 The development CI checks out Data's `codex/harmonisation` branch. Configure the
-`EPSM_REPO_TOKEN` Actions secret with read access to that private repository; CI
+`EPSM_DATA_DEPLOY_KEY` Actions secret containing a read-only SSH deploy key scoped
+to that private repository; CI
 fails explicitly before testing if the secret is absent. Switch to
 the published dependency when the coordinated release is available.

@@ -10,17 +10,17 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check private prerelease dependency access
         env:
-          EPSM_REPO_TOKEN: ${{ secrets.EPSM_REPO_TOKEN }}
+          EPSM_DATA_DEPLOY_KEY: ${{ secrets.EPSM_DATA_DEPLOY_KEY }}
         run: |
-          if [ -z "$EPSM_REPO_TOKEN" ]; then
-            echo "::error::Set EPSM_REPO_TOKEN with read access to SB-Chalmers/epsm_data. The shared prerelease dependency is not published yet; tests have not run."
+          if [ -z "$EPSM_DATA_DEPLOY_KEY" ]; then
+            echo "::error::Set EPSM_DATA_DEPLOY_KEY to a read-only deploy key for SB-Chalmers/epsm_data. The shared prerelease dependency is not published yet; tests have not run."
             exit 1
           fi
       # Shared graph API is developed together until epsm_data 0.4 is published.
       - uses: actions/checkout@v4
         with:
           repository: SB-Chalmers/epsm_data
-          token: ${{ secrets.EPSM_REPO_TOKEN }}
+          ssh-key: ${{ secrets.EPSM_DATA_DEPLOY_KEY }}
           persist-credentials: false
           ref: codex/harmonisation
           path: .ci/epsm_data
