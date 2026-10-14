@@ -84,7 +84,9 @@ def to_spec(building, weather):
         intermediate_floor=intermediate,
         weather_shell=construction(Role.ROOF, top),
         basement_wall=construction(Role.BASEMENT_WALL, wall),
-        basement_ceiling=construction(Role.GROUND_FLOOR, ground))
+        basement_ceiling=construction(Role.GROUND_FLOOR, ground),
+        foundation=building.foundation,
+        ground_temperature=building.ground_temperature)
     # Preserve explicit zero-window and shading choices, including facade-wide
     # overrides that have no corresponding physical window instance.
     overrides = {(override.facade_id, override.storey): override
