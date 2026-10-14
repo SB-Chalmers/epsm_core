@@ -157,7 +157,7 @@ def test_school_calendar_source_and_activity_counts():
 
 def test_builder_requires_explicit_nonresidential_profile(building):
     with pytest.raises(ValueError, match="Select"):
-        BuildingBuilder().build(
+        BuildingBuilder(building_use="residential").build(
             **building.updated(
                 use=building.use.updated(occupancy_category="non_residential")
             ).model_dump(exclude={"provenance"})

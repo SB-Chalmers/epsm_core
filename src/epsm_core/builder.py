@@ -19,8 +19,8 @@
 
 Notes
 -----
-Default profiles are supplied by the caller and deep-copied. With no arguments, the
-bundled Sveby residential profile supplies normal-use assumptions. Recursive dictionary
+Default profiles are supplied by the caller and deep-copied. With no arguments, no profile is selected. An explicit building_use selects
+the versioned Sveby profile. Recursive dictionary
 merging records measured or assumed provenance for every leaf before validating the
 complete BuildingSpec. No archetype or material catalogue is loaded here.
 
@@ -30,7 +30,7 @@ Example::
 
     from epsm_core import BuildingBuilder
 
-    builder = BuildingBuilder()  # bundled Sveby residential operations
+    builder = BuildingBuilder(building_use="residential")  # bundled Sveby residential operations
 """
 
 from copy import deepcopy
@@ -44,15 +44,15 @@ class BuildingBuilder:
 
     Attributes
     ----------
-    profile : str
+    profile : str or None
         Versioned profile name recorded as the source of assumed leaves.
     assumptions : dict
         Deep-copied nested default profile used by build.
 
     Notes
     -----
-    With no arguments, loads the bundled Sveby residential normal-use profile. Supplying
-    both constructor arguments retains the caller-owned-profile behavior. Assumptions are
+    With no arguments, selects no profile. Selecting building_use loads a named Sveby
+    profile; supplying both custom-profile arguments retains caller-owned behavior. Assumptions are
     copied at construction and the source of every merged leaf is recorded. This builder
     does not load material, weather or physical-archetype catalogues.
 
@@ -62,7 +62,7 @@ class BuildingBuilder:
 
         from epsm_core import BuildingBuilder
 
-        builder = BuildingBuilder()
+        builder = BuildingBuilder(building_use="residential")
         assert builder.profile.startswith("sveby.residential.v2.0")
     """
 
@@ -71,7 +71,7 @@ class BuildingBuilder:
         *,
         assumption_profile: str | None = None,
         assumptions: dict | None = None,
-        building_use: Literal["residential", "office", "school"] = "residential",
+        building_use: Literal["residential", "office", "school"] | None = None,
         calendar_year: int | None = None,
         active_dates=None,
         calendar_source: str | None = None,
@@ -81,14 +81,14 @@ class BuildingBuilder:
         Parameters
         ----------
         assumption_profile : str or None
-            Named and externally managed default profile recorded in provenance. Omit with
-            assumptions to select the bundled Sveby residential profile. Default: ``None``.
+            Named and externally managed default profile recorded in provenance. Supply with
+            assumptions for a custom profile. Default: ``None``.
         assumptions : dict or None
-            Nested default values explicitly supplied by the caller. Omit with
-            assumption_profile to select the bundled Sveby residential profile. Default:
+            Nested default values explicitly supplied by the caller. Supply with
+            assumption_profile for a custom profile. Default:
             ``None``.
 
-        building_use : residential, office or school
+        building_use : residential, office, school or None
             Select the versioned Sveby operational profile. Office and school require
             calendar_year, active_dates and a nonempty calendar_source.
         calendar_year, active_dates, calendar_source
@@ -109,7 +109,7 @@ class BuildingBuilder:
 
         Notes
         -----
-        The no-argument form reads only the bundled Sveby JSON resource. Explicit profiles do
+        The no-argument form selects no assumptions and performs no lookup. Custom profiles do
         not read files or registries. Construction of a validated BuildingSpec is deferred to
         build. Sveby supplies operations, not weather or physical fabric, so those inputs
         remain required when ``build`` is called.
@@ -120,14 +120,22 @@ class BuildingBuilder:
 
             from epsm_core import BuildingBuilder
 
-            standard = BuildingBuilder()
+            standard = BuildingBuilder(building_use="residential")
             custom = BuildingBuilder(
                 assumption_profile="study-v1",
                 assumptions={},
             )
         """
 
+        if building_use not in {None, "residential", "office", "school"}:
+            raise ValueError("Unknown building_use; choose residential, office or school")
+        if assumption_profile is not None and (not isinstance(assumption_profile, str) or not assumption_profile.strip()):
+            raise ValueError("assumption_profile must be a nonempty name")
         if assumption_profile is None and assumptions is None:
+            if building_use is None:
+                self.profile = None
+                self.assumptions = {}
+                return
             if building_use == "residential":
                 from .standards import load_sveby_spec
                 standard = load_sveby_spec()
@@ -144,7 +152,7 @@ class BuildingBuilder:
             raise ValueError(
                 "assumption_profile and assumptions must be supplied together, or both omitted"
             )
-        if (building_use != "residential" and assumption_profile.startswith("sveby.")
+        if (building_use is not None and building_use != "residential" and assumption_profile.startswith("sveby.")
                 and not assumption_profile.startswith(f"sveby.{building_use}.")):
             raise ValueError("Choose a matching operational profile for the requested building use")
         self.profile = assumption_profile
@@ -190,9 +198,9 @@ class BuildingBuilder:
         supplied_use = known.get("use")
         category = (supplied_use.get("occupancy_category") if isinstance(supplied_use, dict)
                     else getattr(supplied_use, "occupancy_category", None))
-        if self.profile.startswith("sveby.residential.") and category == "non_residential":
+        if self.profile is not None and self.profile.startswith("sveby.residential.") and category == "non_residential":
             raise ValueError("Select an office/school or explicit custom assumption profile")
-        if self.profile.startswith(("sveby.office.", "sveby.school.")) and category == "residential":
+        if self.profile is not None and self.profile.startswith(("sveby.office.", "sveby.school.")) and category == "residential":
             raise ValueError("Select an operational profile compatible with residential occupancy")
         # 1. Merge measured inputs over profile defaults and record leaf-level provenance.
         records = []

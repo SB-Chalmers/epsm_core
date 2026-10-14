@@ -1,12 +1,13 @@
 # Physical Building authoring
 
-`Building()` selects the named `illustrative-reference` preset: a 20 × 12 m,
-three-storey building with 2.8 m storeys, 20% glazing, explicit Data reference
-constructions/HVAC and the sourced Sveby residential operation factory. The
-reference is illustrative, not calibrated building evidence. Its embodied factors
-are unknown. `Building.empty()` has no supplied physics. `from_footprint(...)`
-starts from geometry and accepts explicit `construction_set`, `facade`, `hvac`
-and `operation` arguments.
+`Building()` and `Building.empty()` create an unpopulated authoring draft. Select
+`Building(preset="illustrative-reference")` to request the named illustrative
+preset: a 20 × 12 m, three-storey building with 2.8 m storeys, 20% glazing,
+explicit Data reference constructions/HVAC and the sourced Sveby residential
+operation factory. The reference is illustrative, not calibrated building
+evidence. Its embodied factors are unknown. `from_footprint(...)` starts from
+geometry and accepts explicit `construction_set`, `facade`, `hvac` and `operation`
+arguments.
 
 ## Ownership and editing
 
@@ -52,7 +53,7 @@ from epsm_data import ConstructionOperation, RenovationMeasure, SystemOperation
 from epsm_data import reference_hvac_template
 from epsm_data.domain.enums import BuildingElement as Role
 
-building = Building()
+building = Building(preset="illustrative-reference")
 wall = next(e for e in building.elements if e.role == Role.EXT_WALL)
 replacement = RenovationMeasure(
     'wall.replace', 'envelope', 'Replace wall', 'Illustrative replacement', 'wall',
@@ -79,10 +80,14 @@ physical intervention must appear in lifecycle flows.
 
 ## Snapshots, lineage and execution
 
-`snapshot()` stores canonical immutable JSON, including resolved construction
-values and occurrence identities. Its `.sha256` identifies that state. `.to_dict()`
-returns a detached copy; `.to_building()` returns an editable independent building.
-Runtime results and evaluation settings are excluded. Ordered history is separately
+`snapshot()` stores canonical immutable JSON, including the explicitly selected
+preset revision and provenance, resolved construction values and occurrence
+identities. New snapshots use `epsm.building/2`; `.sha256` identifies the stored
+state. `.to_dict()` returns a detached copy; `.to_building()` returns an editable
+independent building. Runtime results and evaluation settings are excluded.
+Version-1 snapshots remain readable and retain their original hash while their
+restored state is unchanged. Editing a restored legacy building writes the new
+snapshot format without resolving the preset again. Ordered history is separately
 saved/restored with `lineage_to_dict()` and `restore_lineage()`.
 
 Authoring edits remain possible after a renovation. `building.authoring_links`
@@ -159,3 +164,14 @@ The development CI checks out Data's `codex/harmonisation` branch. Configure the
 to that private repository; CI
 fails explicitly before testing if the secret is absent. Switch to
 the published dependency when the coordinated release is available.
+
+## Consumer migration after explicit presets
+
+Core now leaves `Building()` and `BuildingBuilder()` unconfigured. Callers that
+intend the illustrative model must select
+`Building(preset="illustrative-reference")`; callers that intend residential
+Sveby assumptions must select `BuildingBuilder(building_use="residential")`.
+RC, LCA and Workflows examples and tests using the former no-argument defaults
+need that explicit selection when upgrading Core. Those consumer changes and
+installed cross-package checks are separate from this Core change; they have
+not been claimed as passing here.

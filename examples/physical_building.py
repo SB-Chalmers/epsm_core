@@ -6,7 +6,7 @@ from epsm_core import Building
 
 
 def main():
-    building = Building()
+    building = Building(preset="illustrative-reference")
     print(building)
     print(building.quantities().by_material())
     child = building.renovate(SystemOperation("replace_hvac", reference_hvac_template()))
