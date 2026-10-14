@@ -2,13 +2,14 @@
 
 There is one current immutable `BuildingSpec` and one generated JSON Schema. Inputs reject unknown fields, nonfinite values and invalid geometry. Use `.updated(...)` for a validated replacement; direct `model_copy(update=...)` does not validate changes.
 
-The package version is `0.2.0`. Simulation identity combines input content, recursive compiler sources, compiler settings, engine/schema and geometry-backend identities. The [physical Building API](physical-building.md) adds gradual authoring and explicit snapshot schema `epsm.building/5`; the existing complete `BuildingSpec` remains the numerical migration contract.
+The package version is `0.2.0`. Simulation identity combines input content, recursive compiler sources, compiler settings, engine/schema and geometry-backend identities. The [physical Building API](physical-building.md) adds gradual authoring and explicit snapshot schema `epsm.building/6`; the existing complete `BuildingSpec` remains the numerical migration contract.
 
 ## Responsibilities
 
 | Interface | Responsibility |
 | --- | --- |
 | `BuildingSpec` | Geometry, facade, climate, envelope, use, airflow, context, delivery and provenance |
+| `GainPartitionSpec` | Explicit or legacy people, equipment and lighting heat-channel fractions |
 | `GeometrySpec` | Parts, storeys, zoning, roof defaults, basement and coordinate metadata |
 | `ZoningSpec` | Mode, perimeter depth, apartment controls and explicit failure policy |
 | `RoofSpec` | Roof geometry and attic topology; optional per-part replacement |
@@ -28,6 +29,14 @@ Definitions live in focused `epsm_core.specs` domain modules and are re-exported
 `load_sveby_spec()` reads the current bundled residential profile; `load_sveby_residential_v2()` pins version 2.0 explicitly. `BuildingBuilder()` has no profile by default; set `building_use="residential"` to select the current bundled profile. The standard supplies operational leaves only, so weather, fabric, leakage, ventilation topology and installed-system performance remain explicit inputs.
 
 The explicit residential profile contains separately labelled completion defaults for occupant density and cooling availability. It also retains requirements the current compiler cannot emit, rather than silently changing them. See the [operational-standards contract](standards.md) for source mappings, Atemp handling, overrides, provenance and the compliance boundary.
+
+`UseSpec.gain_partitions` accepts the exported `GainPartitionSpec`. `None` keeps
+the legacy fallback and is identified as `legacy_default` in per-zone gain
+diagnostics. Select `policy="epsm_legacy_v1"` to name that behavior explicitly or
+`policy="explicit"` to supply custom fractions. Snapshot schema 6 serializes the
+selection; older absent or null values preserve the legacy behavior. The
+[gain-partition guide](physical-building.md#internal-gain-partitions) documents
+the channel definitions and validation budgets.
 
 ## Geometry and facade selection
 

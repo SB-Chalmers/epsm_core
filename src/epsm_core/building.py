@@ -28,6 +28,7 @@ from .specs import (
     FacadeSpec,
     Footprint,
     FoundationSpec,
+    GainPartitionSpec,
     GeometrySpec,
     GlazingSpec,
     GroundTemperatureSpec,
@@ -251,7 +252,7 @@ class BuildingSnapshot:
     def from_dict(cls, data):
         if data.get("schema") not in {
                 "epsm.building/1", "epsm.building/2", "epsm.building/3", "epsm.building/4",
-                "epsm.building/5"}:
+                "epsm.building/5", "epsm.building/6"}:
             raise ValueError("Unsupported Building snapshot schema")
         return cls(_json(data))
 
@@ -366,7 +367,7 @@ class Building:
         self._material_flows = ()
         self._parent_snapshot_id = None
         self.preset = preset
-        self.preset_revision = "4" if preset is not None else None
+        self.preset_revision = "5" if preset is not None else None
         supplied = {name for name, value in (("geometry", geometry),
             ("construction_set", construction_set), ("facade", facade),
             ("hvac", hvac), ("operation", operation), ("foundation", foundation),
@@ -387,8 +388,11 @@ class Building:
                 Footprint.rectangle(20, 12), storeys=3, storey_height_m=2.8)
             construction_set = construction_set if construction_set is not None else reference_construction_set()
             hvac = hvac if hvac is not None else HVACSystem.from_template(reference_hvac_template())
-            operation = operation if operation is not None else OperationProfile.model_validate(
-                load_sveby_spec().use_spec().model_dump())
+            if operation is None:
+                operation = OperationProfile.model_validate({
+                    **load_sveby_spec().use_spec().model_dump(),
+                    "gain_partitions": GainPartitionSpec(policy="epsm_legacy_v1"),
+                })
             foundation = foundation if foundation is not None else FoundationSpec(
                 method="kiva",
                 source="energyplus_24_2_kiva_unmeasured_defaults",
@@ -426,7 +430,7 @@ class Building:
         if preset is not None:
             paths = {r.field_path for r in records}
             records.extend(SourceRecord(field_path=name, status="assumed",
-                source="illustrative-reference@4", assumption_profile="illustrative-reference@4")
+                source="illustrative-reference@5", assumption_profile="illustrative-reference@5")
                 for name in ("geometry", "construction_set", "facade", "hvac", "operation",
                              "foundation", "thermal_bridge_uplift_fraction",
                              "load_reference_area_policy")
@@ -697,7 +701,7 @@ class Building:
 
     def _snapshot_data(self):
         return {
-            "schema": "epsm.building/5", "identifier": self.identifier, "preset": self.preset,
+            "schema": "epsm.building/6", "identifier": self.identifier, "preset": self.preset,
             "preset_revision": self.preset_revision,
             "provenance": self.provenance.model_dump(mode="json"),
             "geometry": self.geometry.model_dump(mode="json") if self.geometry else None,

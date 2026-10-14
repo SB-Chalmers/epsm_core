@@ -69,6 +69,7 @@ from .failures import (
 )
 from .footprint_cleanup import prepared_footprints
 from .foundations import apply_kiva
+from .gains import equipment_partition_fractions, gain_partition_report
 from .pipeline import resolve_geometry
 from .roofs import backend_versions
 from .settings import CompilerSettings
@@ -1115,6 +1116,7 @@ class EnergyPlusCompiler:
                 data["airflow_input"] = airflow.model_dump(mode="json")
                 data["load_reference_area_m2"] = load_area
                 data["operation_sources"] = [x.source for x in assignments]
+                data["gain_partitions"] = gain_partition_report(use, spec.climate.calendar_year)
                 self._loads(add, zone, load_area, data["volume_m3"], spec,
                             use=use, airflow=airflow, schedule_prefix=prefix)
             else:
@@ -1454,6 +1456,8 @@ class EnergyPlusCompiler:
 
         # 1. Emit per-zone schedules references, internal gains, airflow and ideal loads.
         u, a = use or spec.use, airflow or spec.airflow
+        partitions = u.gain_partitions
+        explicit = partitions is not None and partitions.policy == "explicit"
         add(
             "People",
             zone + "_people",
@@ -1461,7 +1465,9 @@ class EnergyPlusCompiler:
             number_of_people_schedule_name=schedule_prefix + "occupancy_fraction",
             number_of_people_calculation_method="People",
             number_of_people=area * u.occupant_density_per_m2,
-            fraction_radiant=0.3,
+            fraction_radiant=partitions.people_fraction_radiant if explicit else .3,
+            **({"sensible_heat_fraction": partitions.people_sensible_heat_fraction}
+               if explicit and partitions.people_sensible_heat_fraction is not None else {}),
             activity_level_schedule_name=schedule_prefix + "activity",
         )
         for obj, label, watts in (
@@ -1469,16 +1475,16 @@ class EnergyPlusCompiler:
             ("Lights", "lighting", u.lighting_gain_w_m2),
         ):
             if obj == "ElectricEquipment" and u.equipment_heat_fraction_schedule is not None:
-                # EnergyPlus radiant/lost fractions are constant. Three additive loads
-                # preserve electricity, zone heat and the legacy 30% input-radiant share.
-                # If total heat is below 30%, cap radiation to keep all fractions physical.
-                fractions = u.equipment_fraction.hourly(spec.climate.calendar_year)
-                heat = u.equipment_heat_fraction_schedule.hourly(spec.climate.calendar_year)
-                for suffix in ("_radiant", "_sensible", "_lost"):
+                # Separate pure channels preserve electrical input and the hourly
+                # heat budget. Legacy names and its scheduled radiation cap remain.
+                activity = u.equipment_fraction.hourly(spec.climate.calendar_year)
+                channels = equipment_partition_fractions(u, spec.climate.calendar_year)
+                names = [("radiant", "_radiant"), ("convective", "_sensible"), ("lost", "_lost")]
+                if explicit:
+                    names.append(("latent", "_latent"))
+                for channel, suffix in names:
                     name = zone + "_equipment" + suffix
-                    values = [f * (min(0.3, h) if suffix == "_radiant" else
-                                   h - min(0.3, h) if suffix == "_sensible" else 1 - h)
-                              for f, h in zip(fractions, heat)]
+                    values = [f * share for f, share in zip(activity, channels[channel])]
                     schedule = u.equipment_fraction.annual(
                         values, calendar_year=spec.climate.calendar_year,
                         source=u.equipment_heat_fraction_schedule.source)
@@ -1490,24 +1496,28 @@ class EnergyPlusCompiler:
                         schedule_name=name + "_fraction",
                         design_level_calculation_method="EquipmentLevel",
                         design_level=watts * area,
-                        fraction_radiant=1 if suffix == "_radiant" else 0,
-                        fraction_lost=1 if suffix == "_lost" else 0)
+                        fraction_radiant=1 if channel == "radiant" else 0,
+                        fraction_lost=1 if channel == "lost" else 0,
+                        **({"fraction_latent": 1 if channel == "latent" else 0} if explicit else {}))
                 continue
+            if obj == "ElectricEquipment":
+                fields = {"fraction_radiant": partitions.equipment_fraction_radiant if explicit else .3,
+                          "fraction_lost": 1 - u.equipment_heat_fraction}
+                if explicit:
+                    fields["fraction_latent"] = partitions.equipment_fraction_latent
+            else:
+                fields = {"fraction_radiant": partitions.lighting_fraction_radiant if explicit else .3}
+                if explicit:
+                    fields.update(fraction_visible=partitions.lighting_fraction_visible,
+                                  return_air_fraction=partitions.lighting_return_air_fraction)
             add(
                 obj,
                 zone + "_" + label,
                 zone_or_zonelist_or_space_or_spacelist_name=zone,
                 schedule_name=schedule_prefix + label + "_fraction",
-                design_level_calculation_method="LightingLevel"
-                if obj == "Lights"
-                else "EquipmentLevel",
-                **(
-                    {"lighting_level": watts * area}
-                    if obj == "Lights"
-                    else {"design_level": watts * area}
-                ),
-                fraction_radiant=0.3,
-                **({"fraction_lost": 1 - u.equipment_heat_fraction} if obj == "ElectricEquipment" else {}),
+                design_level_calculation_method="LightingLevel" if obj == "Lights" else "EquipmentLevel",
+                **({"lighting_level": watts * area} if obj == "Lights" else {"design_level": watts * area}),
+                **fields,
             )
         add(
             "ZoneInfiltration:DesignFlowRate",

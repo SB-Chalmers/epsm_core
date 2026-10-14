@@ -78,7 +78,7 @@ def test_preset_policy_can_be_overridden_by_explicit_area_without_stale_provenan
     assert building.load_reference_area_basis == "policy"
     assert building.effective_load_reference_area_m2 == building.geometry.conditioned_floor_area_m2
     assert any(r.field_path == "load_reference_area_policy"
-               and r.assumption_profile == "illustrative-reference@4"
+               and r.assumption_profile == "illustrative-reference@5"
                for r in building.provenance.records)
 
     building.load_reference_area_m2 = 1000
@@ -175,6 +175,8 @@ def test_old_snapshot_stays_missing_until_edited():
     data["schema"] = "epsm.building/4"
     data.pop("load_reference_area_m2", None)
     data.pop("load_reference_area_policy", None)
+    if data.get("operation") is not None:
+        data["operation"].pop("gain_partitions", None)
     original = BuildingSnapshot.from_dict(data)
     restored = original.to_building()
     assert restored.snapshot().sha256 == original.sha256
@@ -183,6 +185,6 @@ def test_old_snapshot_stays_missing_until_edited():
     assert "load_reference_area_m2 or load_reference_area_policy" in restored.readiness().missing
     restored.identifier = "edited"
     saved = restored.snapshot().to_dict()
-    assert saved["schema"] == "epsm.building/5"
+    assert saved["schema"] == "epsm.building/6"
     assert saved["load_reference_area_m2"] is None
     assert saved["load_reference_area_policy"] is None

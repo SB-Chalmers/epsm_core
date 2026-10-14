@@ -16,6 +16,7 @@ def test_no_argument_authoring_does_not_resolve_assumptions(monkeypatch):
     assert all(getattr(building, name) is None for name in
                ("geometry", "construction_set", "facade", "hvac", "operation",
                 "thermal_bridge_uplift_fraction"))
+    assert building.to_dict()["operation"] is None
     assert {"geometry", "hvac", "operation"} <= set(building.readiness().missing)
     assert Building.from_snapshot(building.snapshot()).to_dict() == building.to_dict()
     builder = BuildingBuilder()
@@ -29,16 +30,16 @@ def test_explicit_preset_records_version_and_preserves_overrides():
                                           storey_height_m=3)
     building = Building(preset="illustrative-reference", geometry=geometry)
     assert building.geometry == geometry
-    assert building.preset_revision == "4"
+    assert building.preset_revision == "5"
     records = building.provenance.records
     assert not any(r.field_path == "geometry" for r in records)
     assert {r.field_path for r in records} == {
         "construction_set", "facade", "hvac", "operation", "foundation",
         "thermal_bridge_uplift_fraction", "load_reference_area_policy",
     }
-    assert all(r.status == "assumed" and r.assumption_profile == "illustrative-reference@4"
+    assert all(r.status == "assumed" and r.assumption_profile == "illustrative-reference@5"
                for r in records)
-    assert building.snapshot().to_dict()["schema"] == "epsm.building/5"
+    assert building.snapshot().to_dict()["schema"] == "epsm.building/6"
     assert building.copy().to_dict() == building.to_dict()
     building.operation = building.operation.with_changes(equipment_gain_w_m2=9)
     assert not any(r.field_path == "operation" for r in building.provenance.records)
@@ -63,6 +64,8 @@ def legacy_snapshot(building):
     data.pop("thermal_bridge_uplift_fraction", None)
     data.pop("load_reference_area_m2", None)
     data.pop("load_reference_area_policy", None)
+    if data.get("operation") is not None:
+        data["operation"].pop("gain_partitions", None)
     return BuildingSnapshot.from_dict(data)
 
 
@@ -75,8 +78,9 @@ def test_legacy_snapshot_keeps_identity_until_an_edit(monkeypatch):
     assert restored.snapshot().sha256 == original.sha256
     assert restored.preset_revision is None
     assert restored.provenance.records == ()
+    assert restored.operation.gain_partitions is None
     restored.identifier = "edited"
-    assert restored.snapshot().to_dict()["schema"] == "epsm.building/5"
+    assert restored.snapshot().to_dict()["schema"] == "epsm.building/6"
     assert original.to_dict()["schema"] == "epsm.building/1"
 
 
@@ -117,7 +121,7 @@ def test_legacy_renovation_lineage_preserves_all_snapshot_references():
     assert restored.snapshot().sha256 == original.sha256
     assert restored.authoring_links == ()
     restored.operation = restored.operation.with_changes(equipment_gain_w_m2=9)
-    assert restored.snapshot().to_dict()["schema"] == "epsm.building/5"
+    assert restored.snapshot().to_dict()["schema"] == "epsm.building/6"
     assert restored.authoring_links[-1].before.sha256 == original.sha256
     assert not restored.authoring_links[-1].changes_material_inventory
 
