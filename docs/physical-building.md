@@ -96,7 +96,39 @@ baseline and derive the alternatives again. Both links and requirements are
 included in lineage serialization and checked on restoration.
 
 Weather is explicit: `Weather.from_epw(path)` captures the content fingerprint and
-calendar. `run_building(building, weather=weather, directory=...)` validates weather,
+calendar. A single full-year AMY `DATA PERIODS` header with explicit dates selects
+that year, including leap years. Undated or composite TMY periods use 2023;
+`calendar_year=...` explicitly selects another calendar. Source row years alone
+do not identify an AMY. The legacy `climate_from_epw()` retains its explicit 2023
+default for existing callers.
+
+Keep weather reconstruction evidence with the calculation. For example, after
+generating weather with `smhi2epw` (a separate installation requiring provider
+access), import its receipt explicitly:
+
+```python
+from epsm_core import Weather
+from smhi2epw import EPWConfig, compile_epw
+
+generated = compile_epw(EPWConfig(
+    year=2024, output_path="gothenburg.epw", station_id=71420,
+    provenance_path="gothenburg.epw.json",
+))
+weather = Weather.from_epw(
+    generated.output_path, provenance_path="gothenburg.epw.json",
+)
+weather.validate()
+print(weather.provenance["result"]["report"])
+```
+
+The receipt must identify the same EPW SHA-256. Its full source and quality
+metadata are copied into `Weather`, survive `to_dict()`/`from_dict()`, and remain
+independent of later edits to the receipt or returned dictionaries. Generic
+metadata can be supplied as `provenance={...}`. Core does not fetch weather or
+discover sidecars automatically. A complete calendar and preserved quality
+report do not establish local weather accuracy.
+
+`run_building(building, weather=weather, directory=...)` validates weather,
 captures a snapshot, compiles and executes the existing EnergyPlus implementation.
 `building.to_spec(weather)` exposes the migration bridge. Targeted opaque changes
 reach thermal faces/internal slabs through bounded construction overrides; nominal
