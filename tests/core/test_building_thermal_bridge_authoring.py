@@ -96,6 +96,8 @@ def test_older_snapshot_with_no_thermal_bridge_stays_missing():
     data.pop("thermal_bridge_uplift_fraction", None)
     data.pop("load_reference_area_m2", None)
     data.pop("load_reference_area_policy", None)
+    if data.get("operation") is not None:
+        data["operation"].pop("gain_partitions", None)
     original = BuildingSnapshot.from_dict(data)
 
     restored = original.to_building()
@@ -105,7 +107,7 @@ def test_older_snapshot_with_no_thermal_bridge_stays_missing():
     assert "thermal_bridge_uplift_fraction" not in restored.readiness("quantities").missing
     restored.identifier = "edited"
     edited = restored.snapshot().to_dict()
-    assert edited["schema"] == "epsm.building/5"
+    assert edited["schema"] == "epsm.building/6"
     assert edited["thermal_bridge_uplift_fraction"] is None
 
 
@@ -120,6 +122,8 @@ def test_explicit_null_legacy_state_retains_identity():
     data = Building(preset="illustrative-reference").to_dict()
     data["schema"] = "epsm.building/3"
     data["thermal_bridge_uplift_fraction"] = None
+    if data.get("operation") is not None:
+        data["operation"].pop("gain_partitions", None)
     original = BuildingSnapshot.from_dict(data)
     restored = original.to_building()
     assert restored.snapshot().sha256 == original.sha256

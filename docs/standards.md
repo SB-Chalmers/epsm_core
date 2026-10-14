@@ -23,9 +23,9 @@ Sveby expresses area-normalised inputs per Atemp. EPSM Core applies area densiti
 | Heating setpoint | 21 °C | Constant `UseSpec.heating_setpoint` |
 | Non-heating/cooling-season setpoint | 25 °C | Constant `UseSpec.cooling_setpoint` |
 | Presence | 17:00–07:00, 14 h/day | Repeated 24-hour occupancy schedule |
-| Person heat | 80 W/person total | `UseSpec.occupant_activity_w` |
+| Person heat | 80 W/person total | `UseSpec.occupant_activity_w`; channel split selected by `UseSpec.gain_partitions` |
 | Household electricity | 21 kWh/(m² Atemp year) | Retained as source metadata |
-| Household electricity available as heat | 70%; 14.7 kWh/(m² year), 1.68 W/m² | `UseSpec.equipment_gain_w_m2` |
+| Household electricity available as heat | 70%; 14.7 kWh/(m² year), 1.68 W/m² | `UseSpec.equipment_gain_w_m2`; radiant/latent/convective split selected by `UseSpec.gain_partitions` |
 | DHW | 21 kWh/(m² Atemp year) | `UseSpec.dhw_kwh_m2_year` |
 | DHW available as internal heat | 0% | Water use is not assigned as a zone gain |
 | Minimum outdoor air | 0.35 L/(s m²) | Partial `AirflowSpec.mechanical_vent_l_s_m2` default |
@@ -37,6 +37,17 @@ Sveby expresses area-normalised inputs per Atemp. EPSM Core applies area densiti
 | Window-airing addition | 4 kWh/(m² Atemp year) | Stored for result normalisation, not emitted as infiltration |
 
 The full apartment-size occupancy table and the official monthly DHW and household-electricity values remain in the JSON resource even where the current Core schema cannot emit them.
+
+Sveby specifies total person heat and useful household electricity, not universal
+EnergyPlus radiant, latent and convective fractions. Core keeps those concerns
+separate: the named illustrative Building preset explicitly selects
+`GainPartitionSpec(policy="epsm_legacy_v1")`; a missing or null policy on an older
+snapshot retains the legacy fallback and appears as `selection="legacy_default"`
+in the per-zone gain diagnostic. A caller can provide reviewed channel fractions
+with `policy="explicit"`. These are modelling inputs rather than additional Sveby
+values. See the [physical Building gain-partition API](physical-building.md#internal-gain-partitions)
+for the legacy values, field meanings, budget checks, diagnostic and serialization
+behavior.
 
 ## Default use
 

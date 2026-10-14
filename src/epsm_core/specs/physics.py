@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-10-04
+# Date modified: 2026-10-14
 # Changelog:
+#   2026-10-14 - Add declared gain partitions and validate electrical/heat budgets.
 #   2026-10-04 - Preserve infiltration reference-area flow and expose thermal airflow accounting.
 #   2026-10-04 - Preserve hourly mixed-programme activity, equipment electricity and heat.
 #   2026-10-03 - Add calendar schedules, scheduled ventilation and explicit gain fractions.
@@ -670,11 +671,57 @@ class AirflowSpec(Spec):
         return self
 
 
+class GainPartitionSpec(Spec):
+    """Declared internal-gain partitions, independent of an engine installation.
+
+    ``epsm_legacy_v1`` retains Core's 30% radiant assumption, zero equipment
+    latent/lighting visible/return-air shares, and EnergyPlus people sensible
+    autocalculation. Custom fields are forbidden under that policy.
+
+    With ``explicit``, all radiant/latent/lighting fractions must be supplied.
+    People radiant is a fraction of sensible heat; a null people sensible
+    fraction explicitly leaves that split to EnergyPlus. Equipment fractions
+    refer to electrical input; the existing heat fraction determines losses.
+    Lighting fractions refer to lighting input; convection is the remainder.
+    """
+
+    policy: Literal["epsm_legacy_v1", "explicit"]
+    people_fraction_radiant: Fraction | None = None
+    people_sensible_heat_fraction: Fraction | None = None
+    equipment_fraction_radiant: Fraction | None = None
+    equipment_fraction_latent: Fraction | None = None
+    lighting_fraction_radiant: Fraction | None = None
+    lighting_fraction_visible: Fraction | None = None
+    lighting_return_air_fraction: Fraction | None = None
+
+    @model_validator(mode="after")
+    def partition_budgets(self):
+        fields = tuple(name for name in type(self).model_fields if name != "policy")
+        if self.policy == "epsm_legacy_v1":
+            if any(getattr(self, name) is not None for name in fields):
+                raise ValueError("Custom fractions require the explicit gain partition policy")
+        else:
+            required = tuple(name for name in fields if name != "people_sensible_heat_fraction")
+            missing = [name for name in required if getattr(self, name) is None]
+            if missing:
+                raise ValueError(f"Explicit gain partitions require supplied fractions: {missing}")
+            # The tolerance accounts only for binary floating-point addition.
+            if self.equipment_fraction_radiant + self.equipment_fraction_latent > 1 + 1e-12:
+                raise ValueError("Equipment radiant and latent fractions must sum to at most one")
+            if (self.lighting_fraction_radiant + self.lighting_fraction_visible
+                    + self.lighting_return_air_fraction > 1 + 1e-12):
+                raise ValueError("Lighting fractions must sum to at most one")
+        return self
+
+
 class UseSpec(Spec):
     """Occupancy, gains, thermostat profiles and annual hot-water demand.
 
     Attributes
     ----------
+    gain_partitions : GainPartitionSpec or None
+        Explicit channel fractions or a selected versioned policy. None retains
+        the reported legacy compatibility treatment, rather than supplied evidence.
     occupancy_category : Literal['unspecified', 'residential', 'non_residential']
         Explicit building-use classification; apartment generation requires residential.
         Default: ``'unspecified'``.
@@ -748,6 +795,7 @@ class UseSpec(Spec):
     # Mixed programmes can vary activity and sensible equipment heat share hourly.
     # EnergyPlus People activity is W/person; electrical lost fraction is emitted
     # as separate radiant/convective/lost loads to preserve both electricity and zone heat.
+    gain_partitions: GainPartitionSpec | None = None
     occupant_activity_schedule: ScheduleSpec | None = None
     equipment_heat_fraction_schedule: ScheduleSpec | None = None
     equipment_heat_fraction: Fraction = 1
@@ -809,6 +857,16 @@ class UseSpec(Spec):
             not 0 <= v <= 1 for v in self.equipment_heat_fraction_schedule.all_values
         ):
             raise ValueError("Equipment heat fraction schedule must lie in [0,1]")
+        partitions = self.gain_partitions
+        if partitions is not None and partitions.policy == "explicit":
+            available = (min(self.equipment_heat_fraction_schedule.all_values)
+                         if self.equipment_heat_fraction_schedule is not None
+                         else self.equipment_heat_fraction)
+            if (partitions.equipment_fraction_radiant + partitions.equipment_fraction_latent
+                    > available + 1e-12):
+                raise ValueError("Equipment radiant/latent partitions exceed available heat fraction")
+        elif self.equipment_heat_fraction_schedule is None and self.equipment_heat_fraction < .3 - 1e-12:
+            raise ValueError("Legacy static radiant fraction exceeds available equipment heat; select explicit partitions")
         # 1. Validate fractional schedules, DHW activity and the thermostat deadband.
         for name in (
             "occupancy_fraction",

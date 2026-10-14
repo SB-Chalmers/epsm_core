@@ -5,7 +5,7 @@
 preset: a 20 × 12 m, three-storey building with 2.8 m storeys, 20% glazing,
 explicit Data reference constructions/HVAC and the sourced Sveby residential
 operation factory. The reference is illustrative, not calibrated building
-evidence. Its embodied factors are unknown. The version-4 preset also names its
+evidence. Its embodied factors are unknown. The version-5 preset also names its
 uncalibrated EnergyPlus Kiva soil and boundary assumptions in its provenance.
 `from_footprint(...)` starts from geometry and accepts explicit `construction_set`,
 `facade`, `hvac`, `operation`, `foundation`, `ground_temperature` and
@@ -41,6 +41,53 @@ readiness rejects metadata that differs from the generated geometry. Change the
 geometry or facade configuration to change thermal areas; construction-only
 overrides remain supported. Explicit zero-window facade overrides are preserved
 when assigning per-window thermal properties.
+
+### Internal-gain partitions
+
+`UseSpec.gain_partitions` selects how people, equipment and lighting gains are
+split into EnergyPlus heat channels. Leaving it `None` preserves the historical
+fallback and is reported as `legacy_default` in each zone's `gain_partitions`
+diagnostic. The named illustrative preset selects `GainPartitionSpec(policy="epsm_legacy_v1")`
+explicitly; this reports `selection="policy"` and records the choice as preset
+provenance. That policy uses 30% radiant people heat with EnergyPlus determining
+the sensible/latent split, caps equipment radiation at 30% of each hour's available
+heat, and assigns 30% of lighting input to radiant heat. Equipment latent, lighting
+visible and lighting return-air fractions are zero. Older snapshots with the field
+absent or null retain the legacy fallback.
+
+For a reviewed custom split, select `policy="explicit"` and provide the channel
+fractions. `people_fraction_radiant` is a fraction of sensible people heat;
+`people_sensible_heat_fraction=None` leaves that value to EnergyPlus's automatic
+calculation. Equipment radiant and latent fractions apply to electrical heat, with
+the remainder assigned to convection. Lighting radiant, visible and return-air
+fractions leave the remainder convective. Fractions that exceed their heat budget
+are rejected: equipment radiant plus latent, and the three lighting fractions, must
+each sum to at most one. Explicit equipment budgets must also fit every hour of the
+selected heat-fraction schedule; Core does not silently cap them. The legacy
+equipment path retains its historical hourly radiant cap.
+
+```python
+from epsm_core import GainPartitionSpec
+
+partitions = GainPartitionSpec(
+    policy="explicit",
+    people_fraction_radiant=0.25,
+    people_sensible_heat_fraction=None,  # EnergyPlus auto-calculates it
+    equipment_fraction_radiant=0.20,
+    equipment_fraction_latent=0.10,
+    lighting_fraction_radiant=0.30,
+    lighting_fraction_visible=0.20,
+    lighting_return_air_fraction=0.10,
+)
+building.operation = building.operation.with_changes(gain_partitions=partitions)
+```
+
+Gain partitions survive `UseSpec` JSON and Building snapshot/copy/renovation
+roundtrips. `ProgramBlend` requires a common gain-partition policy; represent
+components with different policies as separate zone uses instead of averaging the
+channel fractions. The compiled per-zone report includes the effective policy,
+selection (`legacy_default`, `policy` or `explicit`), supplied configuration and
+channel budget at `report.data["zones"][zone]["gain_partitions"]`.
 
 Ground heat transfer is authoring input too. A draft has no foundation method or
 ground temperatures, and energy readiness reports the missing fields. Kiva requires
