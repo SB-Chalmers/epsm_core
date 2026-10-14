@@ -1,6 +1,31 @@
 # epsm_core
 
-A pre-1.0 building-energy modelling library for automated urban building energy modelling. The development version is **0.1.0.dev0**; content hashes distinguish simulation inputs and implementations.
+A pre-1.0 building-energy modelling library for automated urban building energy modelling. The package version is **0.2.0**; content hashes distinguish simulation inputs and implementations.
+
+## Physical Building authoring
+
+The new `Building` API supports gradual authoring, shared `epsm_data` constructions,
+material quantities, independent renovation branches and immutable snapshots.
+The existing `BuildingSpec` and numerical APIs remain available during migration.
+
+```python
+from epsm_core import Building, Weather, run_building
+
+building = Building()  # Explicitly named illustrative-reference preset.
+print(building)
+print(building.quantities().by_material())
+blank = Building.empty()  # Missing data stays missing.
+snapshot = building.snapshot()
+
+# Execution is explicit; weather is separate from the physical building.
+# weather = Weather.from_epw("local.epw")
+# result = run_building(building, weather=weather, directory="output/reference")
+```
+
+See [physical authoring and renovation](docs/physical-building.md) for targeted
+interventions, ownership, supported geometry and migration details. The public
+`epsm.Building` adds database conversion, engine selection and combined energy/LCA
+results while inheriting this same physical model.
 
 Start with a metric footprint and storeys, choose procedural facade and zoning assumptions, add neighbouring buildings, and inspect the geometry before simulation. EPSM preserves concave outlines, courtyards and disconnected parts. Per-storey zoning is the default; perimeter/core zoning is available explicitly. Generated apartment layouts are experimental.
 
@@ -34,7 +59,11 @@ epsm-core --energyplus /path/to/energyplus run output/building.json output/run
 
 Read [usage](docs/usage.md), [bundled operational standards](docs/standards.md), the [geometry feature contract](docs/geometry.md), [API guide](docs/api.md), and [architecture and physics](docs/architecture.md).
 
-The package owns building inputs, geometry, compilation, execution and results. `epsm_data` supplies physical catalogues; `epsm_workflows` owns ingestion, studies, storage and batch policy. Importing core does not discover datasets or use the network.
+The package owns building inputs, geometry, compilation, execution and physical quantities.
+`epsm_data` owns shared construction graph classes, catalogue values and sourced operational
+assumptions. Core factories read those source records when explicitly called. `epsm_db`
+owns building evidence and ingestion; `epsm_workflows` owns execution and optimisation.
+Importing Core does not discover datasets or use the network.
 
 Maintain source in `src/`, tests in `tests/`, and executable examples in `examples/`. External inputs belong in ignored `data/`; generated artifacts belong in ignored `output/`. Historical evidence is kept separately in `ARCHIVE/`. Current tests and examples do not depend on archived studies.
 

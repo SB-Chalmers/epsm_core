@@ -122,7 +122,7 @@ def load_dhw_profile(
         raise ValueError(f"Unsupported DHW profile version: {version!r}")
     if building_type not in expected_rates:
         raise ValueError(f"Unsupported DHW building type: {building_type!r}")
-    resource = files("epsm_core").joinpath("standards_data/dhw_epc_normal_use_v1.json")
+    resource = files("epsm_data").joinpath("datasets/standards/dhw_epc_normal_use_v1.json")
     with resource.open("r", encoding="utf-8") as handle:
         data = json.load(handle)
     expected = {

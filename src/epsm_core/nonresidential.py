@@ -221,7 +221,7 @@ class SvebyNonResidentialSpec:
 
 def _load(name):
     """Read bundled source data without a network or external dataset lookup."""
-    resource = files("epsm_core").joinpath("standards_data", name)
+    resource = files("epsm_data").joinpath("datasets", "standards", name)
     return SvebyNonResidentialSpec(json.loads(resource.read_text(encoding="utf-8")))
 
 
