@@ -77,6 +77,7 @@ from .specs import BuildingSpec, Spec
 from .surface_checks import MIN_GENERATED_EDGE_M, validate_surfaces
 from .vertex_order import serialize_vertices
 from .weather import climate_from_epw, file_sha256
+from .zone_inputs import resolve_zone_operations
 
 # PolygonClipping's 15,000-figure EnergyPlus default is too small for validated dense
 # contexts. One million is the capacity used by the archived dense-context campaign;
@@ -981,15 +982,7 @@ class EnergyPlusCompiler:
             )
         zone_report, ground_report = graph.zones, []
         g = spec.geometry
-        common_use = spec.common_use or spec.use.updated(
-            heating_setpoint=spec.use.heating_setpoint.constant(
-                g.zoning.apartments.common_heating_setpoint_c
-            ),
-            occupant_density_per_m2=0,
-            equipment_gain_w_m2=0,
-            lighting_gain_w_m2=0,
-            dhw_kwh_m2_year=0,
-        )
+        common_use, zone_operations, load_scale = resolve_zone_operations(spec, zone_report)
         has_common = any(
             z.get("zone_kind") in ("common", "stairwell") for z in zone_report.values()
         )
@@ -1012,39 +1005,6 @@ class EnergyPlusCompiler:
                 )
         if has_common:
             emit_airflow_schedules(spec.common_airflow or spec.airflow, "common_")
-        # Reject misspelled zone selectors rather than quietly using building defaults.
-        for assignment in spec.zone_uses:
-            matches = [name for name, z in zone_report.items() if z["conditioned"] and
-                       (name == assignment.zone_name if assignment.zone_name is not None else
-                        z.get("zone_kind", z.get("physical_zone_kind")) == assignment.zone_kind)]
-            if not matches:
-                raise ValueError(f"Zone-use selector matches no conditioned zone: {assignment}")
-        for exchange in spec.unconditioned_exchange:
-            if not any(not z["conditioned"] and z.get("physical_zone_kind") == exchange.zone_kind
-                       for z in zone_report.values()):
-                raise ValueError(f"Exchange selector matches no unconditioned {exchange.zone_kind}")
-        # 6. Separate common circulation area before optionally conserving residential loads.
-        residential_area = sum(
-            z["floor_area_m2"]
-            for z in zone_report.values()
-            if z["conditioned"] and z.get("zone_kind") not in ("common", "stairwell")
-        )
-        load_scale = (
-            g.conditioned_floor_area_m2 / residential_area
-            if has_common and g.zoning.apartments.conserve_residential_loads
-            else 1
-        )
-        residential_use = spec.use.updated(
-            **{
-                name: getattr(spec.use, name) * load_scale
-                for name in (
-                    "occupant_density_per_m2",
-                    "equipment_gain_w_m2",
-                    "lighting_gain_w_m2",
-                    "dhw_kwh_m2_year",
-                )
-            }
-        )
         # 7. Assign explicit area and volume so zoning does not silently change building totals.
         for zone, data in zone_report.items():
             height = max(data["elevations_m"]) - min(data["elevations_m"])
@@ -1065,23 +1025,10 @@ class EnergyPlusCompiler:
                 volume=data["volume_m3"],
             )
             if data["conditioned"]:
-                common = data.get("zone_kind") in ("common", "stairwell")
-                use = common_use if common else residential_use
-                airflow = (spec.common_airflow or spec.airflow) if common else spec.airflow
-                prefix = "common_" if common else ""
-                scale = (spec.load_reference_area_m2 / g.conditioned_floor_area_m2
-                         if spec.load_reference_area_m2 is not None else 1)
-                load_area = data["floor_area_m2"] * scale
-                assignments = sorted(
-                    (x for x in spec.zone_uses if x.zone_name == zone or
-                     (x.zone_kind is not None and x.zone_kind ==
-                      data.get("zone_kind", data.get("physical_zone_kind")))),
-                    key=lambda x: x.zone_name is not None)
-                for assignment in assignments:
-                    use = assignment.use or use
-                    airflow = assignment.airflow or airflow
-                    if assignment.reference_area_m2 is not None:
-                        load_area = assignment.reference_area_m2
+                operation = zone_operations[zone]
+                use, airflow = operation.use, operation.airflow
+                load_area, prefix = operation.load_reference_area_m2, operation.schedule_prefix
+                assignments = operation.assignments
                 if assignments:
                     prefix = zone + "_operation_"
                     emit_activity(use, prefix)

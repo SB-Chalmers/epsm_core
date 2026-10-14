@@ -84,29 +84,48 @@ def _envelope_for_building(building):
         ground_temperature=building.ground_temperature)
 
 
+def _physical_element_owners(building, resolved):
+    """Link thermal panes, faces and internal mass to original physical elements."""
+    walls = {(e.facade_id, e.storey): e for e in building.elements if e.role == Role.EXT_WALL}
+    basement = {e.facade_id: e for e in building.elements if e.role == Role.BASEMENT_WALL}
+    horizontal = {(e.part_id, round(e.elevation_m, 8)): e for e in building.elements
+                  if e.elevation_m is not None and e.facade_id is None}
+    windows = {(element.facade_id, element.storey): element for element in building.elements
+               if element.role == Role.WINDOW}
+    surfaces = {}
+    for face in resolved.graph.surfaces:
+        role = face.construction.removesuffix("_reverse").removeprefix("unconditioned_")
+        physical = None
+        if face.kind == "Wall":
+            physical = basement.get(face.facade_id) if role == "basement_wall" else \
+                walls.get((face.facade_id, face.storey)) if role == "wall" else None
+        elif len({round(vertex[2], 8) for vertex in face.vertices}) == 1:
+            physical = horizontal.get((face.part_id, round(face.vertices[0][2], 8)))
+        if physical is not None:
+            surfaces[face.name] = physical
+    mass = {item["name"]: horizontal[(item["part_id"], round(item["elevation_m"], 8))]
+            for item in resolved.graph.internal_mass
+            if (item["part_id"], round(item["elevation_m"], 8)) in horizontal}
+    openings = {opening.name: windows[(opening.metadata["facade_id"], opening.metadata["storey"])]
+                for opening in resolved.openings
+                if (opening.metadata["facade_id"], opening.metadata["storey"]) in windows}
+    return {"surfaces": surfaces, "internal_mass": mass, "openings": openings}
+
+
 def _surface_constructions_for_building(building, geometry, facade, envelope, *, resolved=None):
     """Resolve physical surface overrides identically for adaptation and preflight."""
     from .pipeline import resolve_geometry
 
     if resolved is None:
         resolved = resolve_geometry(SimpleNamespace(geometry=geometry, facade=facade), panelize=True)
-    walls = {(e.facade_id, e.storey): e for e in building.elements if e.role == Role.EXT_WALL}
-    basement = {e.facade_id: e for e in building.elements if e.role == Role.BASEMENT_WALL}
-    horizontal = {(e.part_id, round(e.elevation_m, 8)): e for e in building.elements
-                  if e.elevation_m is not None and e.facade_id is None}
+    owners = _physical_element_owners(building, resolved)["surfaces"]
     surface_constructions = {}
     for face in resolved.graph.surfaces:
-        physical = None
+        physical = owners.get(face.name)
         role = face.construction.removesuffix("_reverse").removeprefix("unconditioned_")
-        if face.kind == "Wall":
-            physical = basement.get(face.facade_id) if role == "basement_wall" else \
-                walls.get((face.facade_id, face.storey)) if role == "wall" else None
-        elif len({round(v[2], 8) for v in face.vertices}) == 1:
-            physical = horizontal.get((face.part_id, round(face.vertices[0][2], 8)))
         if physical is not None:
             assembly = thermal_construction(physical.construction)
-            baseline = getattr(envelope, role, None)
-            if baseline != assembly:
+            if getattr(envelope, role, None) != assembly:
                 surface_constructions[face.name] = assembly
     return surface_constructions
 
@@ -146,11 +165,10 @@ def to_spec(building, weather):
     from .pipeline import resolve_geometry
 
     resolved = resolve_geometry(spec, panelize=True)
-    horizontal = {(e.part_id, round(e.elevation_m, 8)): e for e in building.elements
-                  if e.elevation_m is not None and e.facade_id is None}
+    owners = _physical_element_owners(building, resolved)["internal_mass"]
     mass_constructions = {}
     for mass in resolved.graph.internal_mass:
-        physical = horizontal.get((mass["part_id"], round(mass["elevation_m"], 8)))
+        physical = owners.get(mass["name"])
         if physical is not None:
             assembly = thermal_construction(physical.construction)
             if assembly != intermediate:

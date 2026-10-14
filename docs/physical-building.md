@@ -117,6 +117,65 @@ preset uses the conditioned-floor-area policy. Supplying an explicit area overri
 that preset assumption and removes its stale provenance record. If you set an
 explicit policy yourself, clear it before assigning an area.
 
+## Resolved input view
+
+`building.resolve(weather)` returns an immutable `ResolvedBuildingInput` view of a
+fully authored physical Building. Resolution requires energy readiness, so it does
+not fill missing operation, construction, foundation, thermal-bridge or area inputs.
+The input may be an already-loaded `Weather` or `ClimateSpec`; resolving it does not
+initialize EnergyPlus or read another weather file. This exported view has its own
+schema, `epsm.resolved_building/1`; it does not change the `epsm.building/6`
+snapshot format.
+
+```python
+resolved = building.resolve(weather)
+print(resolved.source_id, resolved.source_snapshot_id)
+for surface in resolved.surfaces:
+    print(surface["gross_area_m2"], surface["opening_area_m2"], surface["net_area_m2"])
+
+export = resolved.to_dict()  # writable detached data for downstream tools
+```
+
+The view reports per-surface gross, opening and net areas, and openings identify
+both each thermal pane and its logical physical opening. Physical ownership,
+thermal-zone assignments, operation references and boundary relationships remain
+attached to the resolved records. Internal mass is represented once as its physical
+record, not duplicated for the two thermal faces used by the engine.
+
+Geometry coordinates use `local_metric_after_scene_rotation`, matching the existing
+geometry pipeline. The origin is the source geometry's minimum XY before rotation;
+`orientation_deg` records the clockwise angle already applied to the local polygons.
+Consumers must not apply a second scene rotation. Construction records are nominal
+authoring constructions. They do not include thermal-bridge conductance equivalents
+or engine material substitutions.
+
+The source fields distinguish `source_kind` (`building_snapshot` or
+`building_spec`), `source_id`, `source_snapshot_id` and `source_spec_hash`. For
+physical Buildings, `source_id` and `source_snapshot_id` retain the exact snapshot
+SHA-256; `source_spec_hash` identifies the resolved spec, including its supplied
+climate context. For an existing spec, `source_spec_hash` identifies that spec and
+`source_snapshot_id` is `None`. Spec-only resolution retains construction roles and
+assignments, but leaves physical owner IDs absent when no authoring inventory exists.
+
+```python
+from epsm_core import resolve_building
+
+spec_view = resolve_building(spec)  # spec is an existing complete BuildingSpec
+print(spec_view.source_kind, spec_view.source_spec_hash)
+```
+
+The view's `climate` mapping retains the supplied calendar, site, weather identity
+and path as context; resolution does not read the file at that path. The nested maps
+are read-only and sequence data use tuples. Use `.to_dict()` for a detached mutable
+export; changing that export cannot alter the Building or the resolved view. A
+physical Building's snapshot identity remains the exact authoring snapshot hash
+(weather is not part of that snapshot), while `source_spec_hash` includes the
+resolved spec and supplied climate context. This also preserves identity for a
+restored complete schema-5 snapshot. For an existing complete `BuildingSpec`,
+`resolve_building(spec)` provides the same engine-independent view without weather
+file I/O because the climate metadata is already present. This is a resolved-input
+API; it does not imply migration of RC or other consumers.
+
 ```python
 from epsm_core import Building, Footprint, FoundationSpec
 
@@ -184,10 +243,10 @@ physical intervention must appear in lifecycle flows.
 `snapshot()` stores canonical immutable JSON, including the explicitly selected
 preset revision and provenance, resolved construction values, occurrence identities,
 authored ground fields, optional thermal-bridge input and load-reference choice. New
-snapshots use `epsm.building/5`; `.sha256` identifies the stored
+snapshots use `epsm.building/6`; `.sha256` identifies the stored
 state. `.to_dict()` returns a detached copy; `.to_building()` returns an editable
 independent building. Runtime results and evaluation settings are excluded.
-Version-1 through version-4 snapshots remain readable and retain their original hash
+Version-1 through version-5 snapshots remain readable and retain their original hash
 while their restored state is unchanged. Missing ground inputs stay missing when an
 older snapshot is restored. Editing a restored legacy building writes the new
 snapshot format without resolving the preset again. Ordered history is separately

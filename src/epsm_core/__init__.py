@@ -68,6 +68,7 @@ from .renovation import (
     ReplaceGlazing,
     apply_renovation,
 )
+from .resolved import ResolvedBuildingInput, resolve_building
 from .results import SimulationResult
 from .runner import EnergyPlusRunner, SimulationError
 from .specs import (
@@ -122,7 +123,9 @@ from .weather import Weather, climate_from_epw
 
 __all__ = [
     "AuthoringLink", "Building", "BuildingElement", "BuildingSnapshot", "HVACSystem", "OperationProfile",
-    "Readiness", "RenovationStage", "MaterialFlows", "MaterialInventory", "MaterialQuantity",
+    "Readiness",
+    "ResolvedBuildingInput",
+    "resolve_building", "RenovationStage", "MaterialFlows", "MaterialInventory", "MaterialQuantity",
     "Weather",
     "Equipment",
     "run_building", "thermal_construction", "preflight_energyplus",

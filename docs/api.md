@@ -9,6 +9,7 @@ The package version is `0.2.0`. Simulation identity combines input content, recu
 | Interface | Responsibility |
 | --- | --- |
 | `BuildingSpec` | Geometry, facade, climate, envelope, use, airflow, context, delivery and provenance |
+| `ResolvedBuildingInput` | Immutable, engine-independent physical view of resolved inputs |
 | `GainPartitionSpec` | Explicit or legacy people, equipment and lighting heat-channel fractions |
 | `GeometrySpec` | Parts, storeys, zoning, roof defaults, basement and coordinate metadata |
 | `ZoningSpec` | Mode, perimeter depth, apartment controls and explicit failure policy |
@@ -20,9 +21,19 @@ The package version is `0.2.0`. Simulation identity combines input content, recu
 | `SvebyResidentialSpec` | Versioned residential normal-use values, mappings and completion-default disclosure |
 | `EnergyPlusCompiler` / `EnergyPlusRunner` | Validated model output / isolated simulation |
 | `preflight_energyplus` | Read-only EnergyPlus geometry readiness for a `BuildingSpec` |
+| `resolve_building` | Resolve an existing complete `BuildingSpec` without engine or weather-file I/O |
 | `quantity_takeoff` | Physical material/equipment quantities, excluding virtual zoning and context |
 
 Definitions live in focused `epsm_core.specs` domain modules and are re-exported from `epsm_core`. Importing them does not load a registry or contact a service.
+
+`building.resolve(weather)` adapts a fully authored physical Building to the same
+read-only view. `resolve_building(spec)` is the advanced path for an existing
+complete `BuildingSpec`; its climate metadata is already part of the spec, so
+resolution does not require an EnergyPlus installation or read an EPW file. Both
+paths return `ResolvedBuildingInput`, schema `epsm.resolved_building/1`. See the
+[resolved-input guide](physical-building.md#resolved-input-view) for identity,
+geometry, climate context, ownership and export semantics. The view exposes the
+supplied climate metadata without reading its weather path.
 
 ## Operational standards
 
