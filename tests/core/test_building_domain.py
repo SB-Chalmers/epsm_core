@@ -146,6 +146,77 @@ def test_added_component_retains_existing_occurrences():
     assert len(flow.retained) == len(building.quantities())
 
 
+def test_authoring_between_renovations_keeps_roundtrippable_history():
+    from epsm_core import ScheduleSpec
+
+    baseline = Building()
+    selected = wall(baseline)
+    operation = ConstructionOperation("replace_element", selected.role,
+                                      element=selected.construction)
+    child = baseline.renovate(operation)
+    original_after = child.stages[-1].after
+    child.operation = child.operation.updated(heating_setpoint=ScheduleSpec.constant(22))
+    authored = child.snapshot()
+    assert len(child.authoring_links) == 1
+    assert child.authoring_links[0].before == original_after
+    assert child.authoring_links[0].after == authored
+    assert not child.material_history_requirements
+    # A saved current authoring edit and an edit between two stages both roundtrip.
+    current = Building.from_snapshot(authored).restore_lineage(child.lineage_to_dict())
+    assert current.authoring_links == child.authoring_links
+    grandchild = child.renovate(operation)
+    assert len(grandchild.stages) == 2
+    assert len(grandchild.authoring_links) == 1
+    assert grandchild.stages[0].after == original_after
+    assert grandchild.stages[1].before == authored
+    restored = Building.from_snapshot(grandchild.snapshot()).restore_lineage(
+        grandchild.lineage_to_dict())
+    assert restored.stages == grandchild.stages
+    assert restored.authoring_links == grandchild.authoring_links
+    assert not restored.material_history_requirements
+
+
+def test_material_authoring_changes_require_resolution_without_inventing_flows():
+    baseline = Building()
+    selected = wall(baseline)
+    operation = ConstructionOperation("replace_element", selected.role,
+                                      element=selected.construction)
+    child = baseline.renovate(operation)
+    original_flows = child.material_flows
+    child.assign_construction(selected.construction, element_ids=(selected.identifier,))
+    assert child.material_flows == original_flows
+    assert child.material_history_requirements
+    assert child.authoring_links[0].changes_material_inventory
+    restored = Building.from_snapshot(child.snapshot()).restore_lineage(child.lineage_to_dict())
+    assert restored.material_history_requirements == child.material_history_requirements
+    assert restored.material_flows == original_flows
+    grandchild = child.renovate(operation)
+    assert len(grandchild.stages) == 2
+    assert grandchild.material_history_requirements == child.material_history_requirements
+    assert grandchild.authoring_links[0].after == grandchild.stages[1].before
+    restored = Building.from_snapshot(grandchild.snapshot()).restore_lineage(
+        grandchild.lineage_to_dict())
+    assert restored.material_history_requirements == grandchild.material_history_requirements
+
+
+def test_lineage_rejects_missing_authoring_links_and_preserves_previous_state():
+    from epsm_core import ScheduleSpec
+
+    baseline = Building()
+    selected = wall(baseline)
+    operation = ConstructionOperation("replace_element", selected.role,
+                                      element=selected.construction)
+    child = baseline.renovate(operation)
+    child.operation = child.operation.updated(heating_setpoint=ScheduleSpec.constant(22))
+    child = child.renovate(operation)
+    invalid = child.lineage_to_dict()
+    invalid["authoring_links"] = []
+    before = child.lineage_to_dict()
+    with pytest.raises(ValueError, match="authoring link"):
+        child.restore_lineage(invalid)
+    assert child.lineage_to_dict() == before
+
+
 def test_renovation_prerequisites_and_symmetric_incompatibility():
     building = Building()
     selected = wall(building)

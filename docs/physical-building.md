@@ -80,6 +80,16 @@ returns a detached copy; `.to_building()` returns an editable independent buildi
 Runtime results and evaluation settings are excluded. Ordered history is separately
 saved/restored with `lineage_to_dict()` and `restore_lineage()`.
 
+Authoring edits remain possible after a renovation. `building.authoring_links`
+retains before/after snapshots for edits between stages and for the current draft,
+without adding renovation stages or rewriting the original material flows. A
+schedule or naming edit has no material-history requirement. An edit to installed
+identities or quantities appears in `building.material_history_requirements`;
+assessment must report these unresolved changes as incomplete. Resolve physical
+interventions with `renovate()` from the last established state, or revise the
+baseline and derive the alternatives again. Both links and requirements are
+included in lineage serialization and checked on restoration.
+
 Weather is explicit: `Weather.from_epw(path)` captures the content fingerprint and
 calendar. `run_building(building, weather=weather, directory=...)` validates weather,
 captures a snapshot, compiles and executes the existing EnergyPlus implementation.

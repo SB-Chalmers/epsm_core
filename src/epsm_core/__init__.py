@@ -40,6 +40,7 @@ Example::
 from ._version import __version__ as __version__
 from .builder import BuildingBuilder
 from .building import (
+    AuthoringLink,
     Building,
     BuildingElement,
     BuildingSnapshot,
@@ -118,7 +119,7 @@ from .standards import SvebyResidentialSpec, load_sveby_residential_v2, load_sve
 from .weather import Weather, climate_from_epw
 
 __all__ = [
-    "Building", "BuildingElement", "BuildingSnapshot", "HVACSystem", "OperationProfile",
+    "AuthoringLink", "Building", "BuildingElement", "BuildingSnapshot", "HVACSystem", "OperationProfile",
     "Readiness", "RenovationStage", "MaterialFlows", "MaterialInventory", "MaterialQuantity",
     "Weather",
     "Equipment",

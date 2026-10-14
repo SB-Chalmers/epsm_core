@@ -244,6 +244,46 @@ class RenovationStage:
     incompatible_measure_ids: tuple[str, ...] = ()
 
 
+@dataclass(frozen=True)
+class AuthoringLink:
+    """An authoring revision following a renovation, without an assumed intervention.
+
+    Both snapshots are retained. Changing installed identities or quantities
+    requires a physical-history decision before lifecycle assessment is complete;
+    changing an operating schedule does not invent material flows.
+    """
+
+    after_stage: int
+    before: BuildingSnapshot
+    after: BuildingSnapshot
+
+    @property
+    def changes_material_inventory(self):
+        """Whether this revision changed installed physical quantities or identities."""
+        fields = ("occurrence_id", "material_id", "element_id", "component_id", "layer_id",
+                  "area_m2", "volume_m3", "mass_kg", "count", "kind")
+        try:
+            def inventory(snapshot):
+                return sorted(tuple(getattr(row, field) for field in fields)
+                              for row in snapshot.quantities())
+
+            return inventory(self.before) != inventory(self.after)
+        except (ValueError, TypeError):
+            # An incomplete authoring state cannot establish unchanged inventory.
+            return True
+
+    def to_dict(self):
+        return {"after_stage": self.after_stage,
+                "before": self.before.to_dict(), "after": self.after.to_dict()}
+
+
+def _material_history_requirements(links):
+    return tuple(
+        f"material history after renovation step {link.after_stage}: authoring changed "
+        "installed quantities or identities; resolve as an explicit renovation or revise the baseline"
+        for link in links if link.changes_material_inventory)
+
+
 class Building:
     """Editable physical building, with complete validation at method boundaries.
 
@@ -257,6 +297,7 @@ class Building:
                  operation=None, context=None):
         self._elements = ()
         self._stages = ()
+        self._authoring_links = ()
         self._material_flows = ()
         self._parent_snapshot_id = None
         self.preset = preset
@@ -470,6 +511,7 @@ class Building:
     def copy(self):
         child = type(self).from_snapshot(self.snapshot())
         child._stages = self._stages
+        child._authoring_links = self.authoring_links
         child._material_flows = self._material_flows
         child._parent_snapshot_id = self._parent_snapshot_id
         self._copy_runtime_configuration_to(child)
@@ -487,9 +529,33 @@ class Building:
     def parent_snapshot_id(self):
         return self._parent_snapshot_id
 
+    @property
+    def authoring_links(self):
+        """Preserved edits between stages, plus edits after the most recent stage.
+
+        The current editable state is one authoring revision, not another
+        renovation stage. Its material changes are never inferred as installations.
+        """
+        historical = tuple(link for link in self._authoring_links
+                           if link.after_stage < len(self.stages))
+        if self.stages:
+            before, after = self.stages[-1].after, self.snapshot()
+            if before.sha256 != after.sha256:
+                return (*historical, AuthoringLink(len(self.stages), before, after))
+        return historical
+
+    @property
+    def material_history_requirements(self):
+        """Unresolved material-affecting authoring edits, including the current draft."""
+        return _material_history_requirements(self.authoring_links)
+
     def lineage_to_dict(self):
         """Detached ordered history, separate from the physical snapshot."""
-        return {"parent_snapshot_id": self.parent_snapshot_id, "stages": [
+        links = self.authoring_links
+        return {"parent_snapshot_id": self.parent_snapshot_id,
+                "authoring_links": [link.to_dict() for link in links],
+                "material_history_requirements": list(_material_history_requirements(links)),
+                "stages": [
             {"stage_id": stage.stage_id, "order": stage.order,
              "before": stage.before.to_dict(), "after": stage.after.to_dict(),
              "measure_ids": list(stage.measure_ids),
@@ -497,7 +563,11 @@ class Building:
             for stage in self.stages]}
 
     def restore_lineage(self, data):
-        """Restore validated transitions, deriving flows from saved occurrence identities."""
+        """Restore renovation and authoring links without inventing material flows.
+
+        Every discontinuity between renovation snapshots or the current state
+        requires a matching explicit authoring link. A failed restore is atomic.
+        """
         from .inventory import MaterialInventory
 
         stages = []
@@ -506,8 +576,6 @@ class Building:
                 raise ValueError("Lineage stages require contiguous order and nonempty identities")
             before = BuildingSnapshot.from_dict(item["before"])
             after = BuildingSnapshot.from_dict(item["after"])
-            if stages and stages[-1].after.sha256 != before.sha256:
-                raise ValueError("Lineage snapshots do not form an ordered chain")
             old = {q.occurrence_id: q for q in before.quantities()}
             new = {q.occurrence_id: q for q in after.quantities()}
             flow = MaterialFlows(item["stage_id"], order,
@@ -520,7 +588,30 @@ class Building:
         parent = data.get("parent_snapshot_id")
         if stages and parent != stages[-1].before.sha256:
             raise ValueError("Parent snapshot does not match the final transition")
+        links = {}
+        for item in data.get("authoring_links", ()):
+            order = item["after_stage"]
+            if (isinstance(order, bool) or not isinstance(order, int)
+                    or not 1 <= order <= len(stages) or order in links):
+                raise ValueError("Each authoring link must follow one existing renovation stage")
+            links[order] = AuthoringLink(order, BuildingSnapshot.from_dict(item["before"]),
+                                        BuildingSnapshot.from_dict(item["after"]))
+        for index, stage in enumerate(stages):
+            following = stages[index + 1].before if index + 1 < len(stages) else self.snapshot()
+            link = links.get(index + 1)
+            if stage.after.sha256 == following.sha256:
+                if link is not None:
+                    raise ValueError("Unchanged lineage states must not have an authoring link")
+            elif (link is None or link.before.sha256 != stage.after.sha256
+                  or link.after.sha256 != following.sha256):
+                raise ValueError("Lineage discontinuity requires a matching authoring link")
+        ordered_links = tuple(links[order] for order in sorted(links))
+        if ("material_history_requirements" in data
+                and tuple(data["material_history_requirements"])
+                != _material_history_requirements(ordered_links)):
+            raise ValueError("Saved material history requirements differ from the authoring links")
         self._stages = tuple(stages)
+        self._authoring_links = ordered_links
         self._material_flows = tuple(stage.material_flows for stage in stages)
         self._parent_snapshot_id = parent
         return self
