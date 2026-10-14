@@ -273,6 +273,12 @@ class BuildingSnapshot:
     def to_spec(self, weather):
         return self.to_building().to_spec(weather)
 
+    def resolve(self, weather):
+        """Resolve retained physical inputs without initializing an engine."""
+        from .resolved import resolve_snapshot
+
+        return resolve_snapshot(self, weather)
+
     def quantities(self):
         return self.to_building().quantities()
 
@@ -963,6 +969,15 @@ class Building:
         child._material_flows = (*self.material_flows, flows)
         child._parent_snapshot_id = before.sha256
         return child
+
+    def resolve(self, weather):
+        """Capture and resolve a read-only view with explicit weather context.
+
+        Requires complete authoring inputs and delegates to the existing pipeline.
+        Passing Weather or ClimateSpec performs no weather-file I/O; a path is
+        inspected by the existing conversion API. No engine is initialized.
+        """
+        return self.snapshot().resolve(weather)
 
     def to_spec(self, weather):
         """Compile authoring state to the existing numerical Core input contract."""
