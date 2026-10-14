@@ -33,7 +33,7 @@ def test_bundled_sveby_profile_matches_reviewed_values():
     assert use.dhw_kwh_m2_year == 21
 
 
-def test_no_argument_builder_supplies_sveby_operational_defaults(building):
+def test_explicit_residential_builder_supplies_sveby_operational_defaults(building):
     known = building.model_dump(mode="json")
     known.pop("provenance")
     known.pop("use")
@@ -41,7 +41,7 @@ def test_no_argument_builder_supplies_sveby_operational_defaults(building):
     known["facade"].pop("solar_shading_factor")
     known["airflow"].pop("mechanical_vent_l_s_m2")
 
-    resolved = BuildingBuilder().build(**known)
+    resolved = BuildingBuilder(building_use="residential").build(**known)
 
     assert resolved.use.occupancy_category == "residential"
     assert resolved.use.occupant_activity_w == 80
@@ -55,8 +55,8 @@ def test_no_argument_builder_supplies_sveby_operational_defaults(building):
     )
 
 
-def test_default_builder_merges_sveby_with_typed_physical_inputs(building):
-    resolved = BuildingBuilder().build(
+def test_explicit_residential_builder_merges_sveby_with_typed_physical_inputs(building):
+    resolved = BuildingBuilder(building_use="residential").build(
         identifier="typed-inputs",
         geometry=building.geometry,
         climate=building.climate,

@@ -11,7 +11,7 @@ The existing `BuildingSpec` and numerical APIs remain available during migration
 ```python
 from epsm_core import Building, Weather, run_building
 
-building = Building()  # Explicitly named illustrative-reference preset.
+building = Building(preset="illustrative-reference")  # Explicit, named demonstration inputs.
 print(building)
 print(building.quantities().by_material())
 blank = Building.empty()  # Missing data stays missing.
@@ -33,7 +33,7 @@ Start with a metric footprint and storeys, choose procedural facade and zoning a
 
 Geometry inspection is the first checkpoint; constructions, weather and operations complete the input before simulation. The [38 notebook lessons](demo/README.md) explain each API step with code, plots and guided documentation figures, from one building to diverse stock samples.
 
-Residential operations are batteries-included: `BuildingBuilder()` uses the bundled, version-pinned Sveby 2.0 normal-use profile when no explicit assumption profile is supplied. Physical fabric, weather, leakage and installed systems remain explicit. See [bundled operational standards](docs/standards.md) for the exact values, non-Sveby completion defaults and compliance limitations.
+Operational assumptions are explicit: choose `BuildingBuilder(building_use="residential")` to load the bundled, version-pinned Sveby 2.0 normal-use profile. `BuildingBuilder()` supplies no profile. Physical fabric, weather, leakage and installed systems remain explicit. See [bundled operational standards](docs/standards.md) for the exact values, non-Sveby completion defaults and compliance limitations.
 
 ```python
 from epsm_core import Footprint, GeometrySpec, ZoningSpec, synthetic_context

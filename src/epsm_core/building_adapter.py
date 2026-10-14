@@ -102,7 +102,7 @@ def to_spec(building, weather):
     spec = BuildingSpec(identifier=building.identifier, geometry=building.geometry,
         facade=facade, climate=climate, envelope=envelope, airflow=building.hvac.airflow,
         use=building.operation, context=building.context, delivery=building.hvac.delivery,
-        renewables=building.hvac.renewables)
+        renewables=building.hvac.renewables, provenance=building.provenance)
     from .pipeline import resolve_geometry
 
     resolved = resolve_geometry(spec, panelize=True)

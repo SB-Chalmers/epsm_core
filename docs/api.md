@@ -24,9 +24,9 @@ Definitions live in focused `epsm_core.specs` domain modules and are re-exported
 
 ## Operational standards
 
-`load_sveby_spec()` reads the current bundled residential profile; `load_sveby_residential_v2()` pins version 2.0 explicitly. `BuildingBuilder()` uses the current profile when constructed without arguments. The standard supplies operational leaves only, so weather, fabric, leakage, ventilation topology and installed-system performance remain explicit inputs.
+`load_sveby_spec()` reads the current bundled residential profile; `load_sveby_residential_v2()` pins version 2.0 explicitly. `BuildingBuilder()` has no profile by default; set `building_use="residential"` to select the current bundled profile. The standard supplies operational leaves only, so weather, fabric, leakage, ventilation topology and installed-system performance remain explicit inputs.
 
-The no-input path contains separately labelled completion defaults for occupant density and cooling availability. It also retains requirements the current compiler cannot emit, rather than silently changing them. See the [operational-standards contract](standards.md) for source mappings, Atemp handling, overrides, provenance and the compliance boundary.
+The explicit residential profile contains separately labelled completion defaults for occupant density and cooling availability. It also retains requirements the current compiler cannot emit, rather than silently changing them. See the [operational-standards contract](standards.md) for source mappings, Atemp handling, overrides, provenance and the compliance boundary.
 
 ## Geometry and facade selection
 

@@ -18,7 +18,7 @@ ventilation topology and installed-system performance to the building source.
 
 Notes
 -----
-The bundled JSON is read only when a loader or the no-argument ``BuildingBuilder`` is
+The bundled JSON is read only when a loader or an explicitly configured ``BuildingBuilder`` is
 called. Importing :mod:`epsm_core` does not read the resource or contact the network.
 The stored standard contains more information than the current compiler can emit so
 unsupported requirements remain visible instead of being silently approximated.
