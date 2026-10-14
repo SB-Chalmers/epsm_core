@@ -14,7 +14,7 @@ class MaterialQuantity:
     element_id: str
     component_id: str
     layer_id: str
-    area_m2: float
+    area_m2: float | None
     volume_m3: float | None
     mass_kg: float | None
     material: object | None = None
@@ -126,7 +126,7 @@ def material_inventory(elements, equipment=()):
     for item in equipment:
         rows.append(MaterialQuantity(
             item.occurrence_id, item.product_id, "equipment." + item.identifier,
-            item.occurrence_id, "equipment", 0.0, None, None,
+            item.occurrence_id, "equipment", None, None, None,
             material_name=item.description or item.product_id, role="equipment",
             count=item.count, kind="equipment", factor_refs=item.factor_refs,
         ))

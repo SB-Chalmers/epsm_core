@@ -185,6 +185,19 @@ def test_system_renovation_tracks_count_and_preserves_other_equipment():
     assert child.hvac.delivery == building.hvac.delivery
 
 
+def test_equipment_unknown_area_stays_unknown_in_inventory_and_aggregation():
+    inventory = Building().quantities()
+    equipment = [row for row in inventory if row.kind == "equipment"]
+    assert equipment
+    for row in equipment:
+        assert row.count == 1
+        assert row.area_m2 is None
+        assert row.volume_m3 is None and row.mass_kg is None
+        aggregate = inventory.by_material()[row.material_id]
+        assert aggregate["area_m2"] is None
+        assert not aggregate["complete"]
+
+
 def test_targeted_construction_reaches_emitted_surfaces(synthetic_weather):
     building = Building()
     selected = wall(building)
