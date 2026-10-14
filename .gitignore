@@ -26,3 +26,6 @@ node_modules/
 /results/
 /runs/
 /simulation_results/
+
+# Default platform evaluation artifacts
+/outputs/

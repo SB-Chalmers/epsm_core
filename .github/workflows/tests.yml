@@ -1,5 +1,5 @@
 name: Core tests
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 jobs:
   unit:
     runs-on: ubuntu-latest
@@ -8,9 +8,25 @@ jobs:
         python: ['3.11', '3.13']
     steps:
       - uses: actions/checkout@v4
+      - name: Check private prerelease dependency access
+        env:
+          EPSM_DATA_DEPLOY_KEY: ${{ secrets.EPSM_DATA_DEPLOY_KEY }}
+        run: |
+          if [ -z "$EPSM_DATA_DEPLOY_KEY" ]; then
+            echo "::error::Set EPSM_DATA_DEPLOY_KEY to a read-only deploy key for SB-Chalmers/epsm_data. The shared prerelease dependency is not published yet; tests have not run."
+            exit 1
+          fi
+      # Shared graph API is developed together until epsm_data 0.4 is published.
+      - uses: actions/checkout@v4
+        with:
+          repository: SB-Chalmers/epsm_data
+          ssh-key: ${{ secrets.EPSM_DATA_DEPLOY_KEY }}
+          persist-credentials: false
+          ref: dev
+          path: .ci/epsm_data
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - run: python -m pip install -e '.[dev,geometry]'
+      - run: python -m pip install -e .ci/epsm_data -e '.[dev,geometry]'
       - run: ruff check src/epsm_core examples
       - run: pytest -m 'not energyplus'

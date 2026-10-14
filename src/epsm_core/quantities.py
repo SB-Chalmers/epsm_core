@@ -108,13 +108,16 @@ def quantity_takeoff(building):
     # 1. Derive nominal material, glazing and equipment quantities from resolved geometry.
     from .pipeline import resolve_geometry
 
-    resolved = resolve_geometry(building)
+    surface_overrides = getattr(building, "surface_constructions", {})
+    mass_overrides = getattr(building, "internal_mass_constructions", {})
+    resolved = resolve_geometry(building, panelize=bool(surface_overrides))
     graph, openings = resolved.graph, resolved.openings
     opening_areas = defaultdict(float)
     for o in openings:
         opening_areas[o.parent] += o.area
     items = []
     assemblies = defaultdict(float)
+    assembly_values = {}
     glazing_areas = defaultdict(float)
     seen = set()
     # 2. Count reciprocal physical assemblies once and subtract actual pane areas.
@@ -145,13 +148,21 @@ def quantity_takeoff(building):
                     )
                 )
                 glazing_areas[(element_id, glazing_hash)] += glazed
-        assemblies[(element_id, role)] += area
+        assembly = surface_overrides.get(face.name, getattr(building.envelope, role))
+        assembly_key = _hash(assembly.model_dump(mode="json"))
+        assembly_values[assembly_key] = assembly
+        assemblies[(element_id, role, assembly_key)] += area
     # 3. Restore same-zone physical slabs omitted from thermal boundary surfaces.
     for mass in graph.internal_mass:
         # Physical intermediate slab counted once, irrespective of its two radiating faces.
         height = mass["elevation_m"]
+        assembly = mass_overrides.get(
+            mass["name"], building.envelope.intermediate_floor)
+        assembly_key = _hash(assembly.model_dump(mode="json"))
+        assembly_values[assembly_key] = assembly
         assemblies[
-            (f"{mass['part_id']}.horizontal.{height:g}.intermediate_floor", "intermediate_floor")
+            (f"{mass['part_id']}.horizontal.{height:g}.intermediate_floor", "intermediate_floor",
+             assembly_key)
         ] += mass["area_m2"]
     for (element, digest), area in sorted(glazing_areas.items()):
         items.append(
@@ -165,8 +176,8 @@ def quantity_takeoff(building):
             )
         )
     # 4. Use nominal layers to derive volume and mass, independent of thermal-bridge uplift.
-    for (element, role), area in sorted(assemblies.items()):
-        assembly = getattr(building.envelope, role)
+    for (element, role, assembly_key), area in sorted(assemblies.items()):
+        assembly = assembly_values[assembly_key]
         occurrences = defaultdict(int)
         for layer in assembly.layers:
             digest = _hash(layer.model_dump(mode="json"))

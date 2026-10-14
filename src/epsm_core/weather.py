@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-11
+# Date modified: 2026-10-14
 # Changelog:
+#   2026-10-14 - Preserve AMY calendars and immutable source/quality receipts.
 #   2026-09-11 - Validate required EPW fields without climate-specific substitutions.
 #   2026-09-06 - Document weather interfaces, examples, constraints and processing rationale.
 
@@ -33,10 +34,154 @@ Example::
 
 import csv
 import hashlib
+import json
 import math
+from dataclasses import dataclass, field
 from pathlib import Path
 
+from ._representation import bounded_summary
 from .specs import ClimateSpec
+
+
+@dataclass(frozen=True, init=False)
+class Weather:
+    """Explicit EPW, calendar and copied provenance, outside physical buildings.
+
+    ``provenance`` returns a detached JSON dictionary. It can retain acquisition
+    methods, reconstruction warnings and quality reports without importing the
+    weather provider. Construction from a ClimateSpec performs no file I/O.
+    """
+
+    climate: ClimateSpec
+    _provenance_json: str = field(repr=False, default="{}")
+
+    def __init__(self, climate, *, provenance=None):
+        if not isinstance(climate, ClimateSpec):
+            climate = ClimateSpec.model_validate(climate)
+        metadata = {} if provenance is None else provenance
+        if not isinstance(metadata, dict):
+            raise TypeError("Weather provenance must be a JSON dictionary")
+        _validate_metadata_keys(metadata)
+        encoded = json.dumps(metadata, sort_keys=True, allow_nan=False)
+        if "epw_sha256" in metadata and metadata["epw_sha256"] != climate.weather_sha256:
+            raise ValueError("Weather provenance fingerprint does not match the EPW")
+        object.__setattr__(self, "climate", climate)
+        object.__setattr__(self, "_provenance_json", encoded)
+
+    def __repr__(self):
+        return bounded_summary(type(self).__name__, calendar_year=self.calendar_year,
+                               fingerprint=self.sha256)
+
+    __str__ = __repr__
+
+    @classmethod
+    def from_epw(cls, path, *, calendar_year=None, provenance=None, provenance_path=None):
+        """Read a local EPW and capture its content identity.
+
+        Parameters
+        ----------
+        path : str or Path
+            Local EPW file. This method reads the file without network access.
+        calendar_year : int, optional
+            Simulation calendar override. When omitted, a single complete-year
+            DATA PERIODS header with explicit years selects its AMY year.
+            Undated or composite TMY periods use 2023. Pass an explicit leap
+            year when using a leap-year TMY; source row years are not inferred.
+        provenance : dict, optional
+            Portable source and quality metadata, copied into this object.
+            If supplied, ``epw_sha256`` must match the weather fingerprint.
+        provenance_path : str or Path, optional
+            Explicit UTF-8 JSON receipt to read, for example the smhi2epw
+            ``.epw.json`` sidecar. Its ``epw_sha256`` must match this file.
+            Cannot be combined with ``provenance``; sidecars are not discovered
+            implicitly. Capturing a receipt does not establish weather accuracy.
+
+        Returns
+        -------
+        Weather
+            Captured location, calendar and fingerprint. Call ``validate()``
+            to check the complete hourly calendar before use.
+        """
+        if calendar_year is None:
+            calendar_year = _declared_amy_year(path) or 2023
+        if provenance_path is not None:
+            if provenance is not None:
+                raise ValueError("Supply provenance or provenance_path, not both")
+            provenance = json.loads(Path(provenance_path).read_text(encoding="utf-8"))
+            if not isinstance(provenance, dict) or "epw_sha256" not in provenance:
+                raise ValueError("Weather receipt requires an epw_sha256 fingerprint")
+        return cls(climate_from_epw(path, calendar_year=calendar_year), provenance=provenance)
+
+    @property
+    def provenance(self):
+        """Return detached source/quality metadata without reading any files."""
+        return json.loads(self._provenance_json)
+
+    @property
+    def path(self):
+        return Path(self.climate.epw_path)
+
+    @property
+    def sha256(self):
+        return self.climate.weather_sha256
+
+    @property
+    def calendar_year(self):
+        return self.climate.calendar_year
+
+    def validate(self):
+        if file_sha256(self.path) != self.sha256:
+            raise ValueError("Weather content changed after its fingerprint was captured")
+        validate_epw_calendar(self.path, self.calendar_year)
+        return self
+
+    def to_dict(self):
+        """Copy portable metadata, preserving provenance with the EPW identity."""
+        value = self.climate.model_dump(mode="json")
+        if self.provenance:
+            value["provenance"] = self.provenance
+        return value
+
+    @classmethod
+    def from_dict(cls, value):
+        """Restore captured metadata without reading files, including legacy values."""
+        value = dict(value)
+        provenance = value.pop("provenance", None)
+        return cls(ClimateSpec.model_validate(value), provenance=provenance)
+
+
+def _validate_metadata_keys(value):
+    """Reject JSON keys that serialization would silently coerce or collide."""
+    if isinstance(value, dict):
+        if any(not isinstance(key, str) for key in value):
+            raise TypeError("Weather provenance keys must be strings")
+        for nested in value.values():
+            _validate_metadata_keys(nested)
+    elif isinstance(value, (list, tuple)):
+        for nested in value:
+            _validate_metadata_keys(nested)
+
+
+def _declared_amy_year(path):
+    """Read an unambiguous full-year AMY period without interpreting TMY rows."""
+    with Path(path).open(encoding="utf-8-sig") as stream:
+        reader = csv.reader(stream)
+        headers = [next(reader, []) for _ in range(8)]
+    period = headers[7]
+    if len(period) != 7 or period[:3] != ["DATA PERIODS", "1", "1"]:
+        return None
+    start, end = period[5].split("/"), period[6].split("/")
+    if len(start) != 3 or len(end) != 3:
+        return None
+    try:
+        start_month, start_day, start_year = map(int, start)
+        end_month, end_day, end_year = map(int, end)
+    except ValueError:
+        return None
+    if ((start_month, start_day) == (1, 1) and (end_month, end_day) == (12, 31)
+            and start_year == end_year):
+        return start_year
+    return None
 
 
 def file_sha256(path):

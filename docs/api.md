@@ -2,7 +2,7 @@
 
 There is one current immutable `BuildingSpec` and one generated JSON Schema. Inputs reject unknown fields, nonfinite values and invalid geometry. Use `.updated(...)` for a validated replacement; direct `model_copy(update=...)` does not validate changes.
 
-The development package version is `0.1.0.dev0`. Simulation identity combines input content, recursive compiler sources, compiler settings, engine/schema and geometry-backend identities. Routine implementation changes do not require package-version bumps. The provisional numeric building-schema field has been removed; old experimental payloads must be regenerated against the current API.
+The package version is `0.2.0`. Simulation identity combines input content, recursive compiler sources, compiler settings, engine/schema and geometry-backend identities. The [physical Building API](physical-building.md) adds gradual authoring and explicit snapshot schema `epsm.building/1`; the existing complete `BuildingSpec` remains the numerical migration contract.
 
 ## Responsibilities
 

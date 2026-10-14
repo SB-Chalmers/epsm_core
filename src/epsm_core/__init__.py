@@ -39,10 +39,23 @@ Example::
 
 from ._version import __version__ as __version__
 from .builder import BuildingBuilder
+from .building import (
+    AuthoringLink,
+    Building,
+    BuildingElement,
+    BuildingSnapshot,
+    Equipment,
+    HVACSystem,
+    OperationProfile,
+    Readiness,
+    RenovationStage,
+)
+from .building_adapter import run_building, thermal_construction
 from .compiler import CompilationReport, EnergyPlusCompiler
 from .dhw import DHWProfileSpec, load_dhw_profile
 from .district import DistrictPlan
 from .generic_programme import GenericOtherProgramme, load_generic_other_v1
+from .inventory import MaterialFlows, MaterialInventory, MaterialQuantity
 from .preparation import GeometryPolicy, GeometryPreparationResult, prepare_geometry
 from .pv import run_pvwatts
 from .quantities import quantity_takeoff
@@ -103,9 +116,14 @@ from .specs import (
     ZoningSpec,
 )
 from .standards import SvebyResidentialSpec, load_sveby_residential_v2, load_sveby_spec
-from .weather import climate_from_epw
+from .weather import Weather, climate_from_epw
 
 __all__ = [
+    "AuthoringLink", "Building", "BuildingElement", "BuildingSnapshot", "HVACSystem", "OperationProfile",
+    "Readiness", "RenovationStage", "MaterialFlows", "MaterialInventory", "MaterialQuantity",
+    "Weather",
+    "Equipment",
+    "run_building", "thermal_construction",
     "DHWProfileSpec",
     "load_dhw_profile",
     "GenericOtherProgramme",

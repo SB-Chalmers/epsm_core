@@ -734,6 +734,11 @@ class EnergyPlusCompiler:
 
         # 3. Preserve nominal assemblies in the audit while emitting equivalent thermal
         # properties.
+        try:
+            resolved = resolve_geometry(spec, panelize=True)
+        except ValueError as error:
+            raise CompilationError(GEOMETRY_INVARIANT_FAILURE, str(error)) from error
+        graph = resolved.graph
         construction_report = {}
         assemblies = {
             role: getattr(spec.envelope, role)
@@ -764,10 +769,31 @@ class EnergyPlusCompiler:
                     internal_mass_halves(spec.envelope.intermediate_floor),
                 )
             )
+        override_names = {}
+        override_base_roles = {}
+        surfaces_by_name = {face.name: face for face in graph.surfaces}
+        unknown = set(spec.surface_constructions) - surfaces_by_name.keys()
+        if unknown:
+            raise ValueError(f"Unknown surface construction targets: {sorted(unknown)}")
+        for index, (name, assembly) in enumerate(sorted(spec.surface_constructions.items())):
+            label = f"physical_override_{index}"
+            assemblies[label] = assembly
+            override_names[name] = label
+            override_base_roles[label] = surfaces_by_name[name].construction.removesuffix(
+                "_reverse").removeprefix("unconditioned_")
+        mass_override_names = {}
+        mass_names = {mass["name"] for mass in graph.internal_mass}
+        if set(spec.internal_mass_constructions) - mass_names:
+            raise ValueError("Unknown physical internal-mass construction targets")
+        for index, (name, assembly) in enumerate(sorted(spec.internal_mass_constructions.items())):
+            labels = (f"physical_mass_{index}_a", f"physical_mass_{index}_b")
+            assemblies.update(zip(labels, internal_mass_halves(assembly)))
+            mass_override_names[name] = labels
         for role, nominal in assemblies.items():
             uplift = (
                 spec.envelope.thermal_bridge_uplift_fraction
-                if role in ("wall", "top", "ground", "basement_wall", "basement_ceiling")
+                if override_base_roles.get(role, role) in (
+                    "wall", "top", "ground", "basement_wall", "basement_ceiling")
                 else 0
             )
             applied = bridge_equivalent(nominal, uplift)
@@ -893,10 +919,6 @@ class EnergyPlusCompiler:
 
         add("Construction:AirBoundary", "partition")
         # 5. Share physical geometry with preview/takeoff, then bound shaded-wall complexity.
-        try:
-            resolved = resolve_geometry(spec, panelize=True)
-        except ValueError as error:
-            raise CompilationError(GEOMETRY_INVARIANT_FAILURE, str(error)) from error
         polygons, origin, graph = resolved.polygons, resolved.origin, resolved.graph
         openings, facade_report, shades = (
             resolved.openings,
@@ -1117,7 +1139,9 @@ class EnergyPlusCompiler:
                 add(
                     "InternalMass",
                     mass["name"] + "_" + face,
-                    construction_name="internal_slab_face_" + face,
+                    construction_name=(mass_override_names[mass["name"]][0 if face == "a" else 1]
+                                       if mass["name"] in mass_override_names
+                                       else "internal_slab_face_" + face),
                     zone_or_zonelist_name=mass["zone"],
                     surface_area=mass["area_m2"],
                 )
@@ -1127,7 +1151,8 @@ class EnergyPlusCompiler:
                 face.zone,
                 face.vertices,
                 face.kind,
-                face.construction,
+                (override_names[face.name] + ("_reverse" if face.construction.endswith(
+                    "_reverse") else "") if face.name in override_names else face.construction),
                 face.boundary,
                 face.adjacent,
             )
