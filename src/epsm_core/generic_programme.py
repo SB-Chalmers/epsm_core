@@ -35,9 +35,10 @@ class GenericOtherProgramme:
     profile_id: str = "epsm.generic_other.v1"
     mechanical_vent_l_s_m2: float = field(
         default_factory=lambda: load_generic_other_template()["mechanical_vent_l_s_m2"])
+    _data: dict | None = field(default=None, repr=False, compare=False)
 
     def use_spec(self) -> UseSpec:
-        data = load_generic_other_template()
+        data = self._data if self._data is not None else load_generic_other_template()
         start, end = data["weekday_start_hour"], data["weekday_end_hour"]
         occupied = _weekday_schedule(start, end)
         equipment = _weekday_schedule(start, end, off=data["equipment_off_fraction"])
@@ -58,7 +59,7 @@ class GenericOtherProgramme:
         )
 
     def ventilation_fraction(self) -> ScheduleSpec:
-        data = load_generic_other_template()
+        data = self._data if self._data is not None else load_generic_other_template()
         return _weekday_schedule(data["weekday_start_hour"], data["weekday_end_hour"])
 
 

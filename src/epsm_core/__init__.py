@@ -59,6 +59,7 @@ from .generic_programme import GenericOtherProgramme, load_generic_other_v1
 from .inventory import MaterialFlows, MaterialInventory, MaterialQuantity
 from .preflight import preflight_energyplus
 from .preparation import GeometryPolicy, GeometryPreparationResult, prepare_geometry
+from .profile_resolution import ResolvedOperatingProfile, resolve_operating_profile
 from .pv import run_pvwatts
 from .quantities import quantity_takeoff
 from .renovation import (
@@ -125,6 +126,7 @@ from .weather import Weather, climate_from_epw
 __all__ = [
     "AuthoringLink", "Building", "BuildingElement", "BuildingSnapshot", "HVACSystem", "OperationProfile",
     "Readiness",
+    "ResolvedOperatingProfile", "resolve_operating_profile",
     "ResolvedBuildingInput",
     "resolve_building", "RenovationStage", "MaterialFlows", "MaterialInventory", "MaterialQuantity",
     "Weather",
