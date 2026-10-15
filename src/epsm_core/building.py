@@ -37,7 +37,7 @@ from .specs import (
     SourceRecord,
     UseSpec,
 )
-from .specs.base import Nonnegative, Positive
+from .specs.base import Fraction, Nonnegative, Positive
 
 
 def _json(value):
@@ -69,6 +69,38 @@ class OperationProfile(UseSpec):
         return bounded_summary(type(self).__name__, category=self.occupancy_category,
                                occupants_per_m2=self.occupant_density_per_m2,
                                equipment_w_m2=self.equipment_gain_w_m2)
+
+    __str__ = __repr__
+
+
+@dataclass(frozen=True)
+class InputAssignmentReport:
+    """Applied physical inputs, retained choices and supplied roles without targets.
+
+    Construction paths identify physical elements, for example
+    ``construction:main.ground_floor``. Section paths name the supplied argument.
+    This report describes assignment only; use ``Building.readiness()`` for
+    remaining simulation requirements. ``to_dict()`` returns detached plain data.
+    """
+
+    applied: tuple[str, ...] = ()
+    replaced: tuple[str, ...] = ()
+    retained: tuple[str, ...] = ()
+    unmatched: tuple[str, ...] = ()
+
+    def __post_init__(self):
+        for name in ("applied", "replaced", "retained", "unmatched"):
+            object.__setattr__(self, name, tuple(getattr(self, name)))
+
+    def to_dict(self):
+        """Return assignment paths without sharing mutable report state."""
+        return {name: list(getattr(self, name))
+                for name in ("applied", "replaced", "retained", "unmatched")}
+
+    def __repr__(self):
+        return bounded_summary(type(self).__name__, applied=len(self.applied),
+                               replaced=len(self.replaced), retained=len(self.retained),
+                               unmatched=len(self.unmatched))
 
     __str__ = __repr__
 
@@ -582,6 +614,195 @@ class Building:
                         for e in self.elements)
         self.elements = updated
         return self
+
+    def assign_inputs(self, *, construction_set=None, operation=None, hvac=None,
+                      facade_properties=None, thermal_bridge_uplift_fraction=None,
+                      provenance=None, mode="replace"):
+        """Validate and commit resolved inputs together, updating this Building.
+
+        Parameters
+        ----------
+        construction_set : epsm_data.ConstructionSet, optional
+            Replace supplied roles only. ``fill_missing`` assigns only physical
+            elements that currently have no construction, retaining overrides.
+        operation : OperationProfile or mapping, optional
+            Validated occupancy, gains and schedules; no calendar is inferred.
+        hvac : HVACSystem, optional
+            Already resolved systems, including infiltration reference basis.
+        facade_properties : mapping, optional
+            Only ``glazing`` and ``solar_shading_factor`` are accepted. An absent
+            facade stays missing: this operation never guesses opening geometry.
+        thermal_bridge_uplift_fraction : float, optional
+            Nonnegative finite uplift. Zero explicitly assigns no uplift.
+        provenance : ProvenanceSpec or mapping, optional
+            Source records for changed inputs. Existing records for retained
+            fields survive; replacement drops stale records at changed paths.
+        mode : {"replace", "fill_missing"}
+            Replace supplied sections or fill absent sections, respectively.
+            Omitted sections always stay unchanged.
+
+        Returns
+        -------
+        InputAssignmentReport
+            Physical assignment paths and supplied roles with no geometry target.
+
+        Notes
+        -----
+        Every supplied value is validated before committing any change, including
+        inputs retained in ``fill_missing`` mode. Geometry, actual opening areas,
+        element IDs, context, ground configuration and earlier snapshots remain
+        unchanged. Authoring changes do not add renovation stages or material
+        flows; later material changes remain visible in authoring lineage.
+        No catalogue, weather, file or service is loaded.
+        """
+        if mode not in {"replace", "fill_missing"}:
+            raise ValueError("mode must be 'replace' or 'fill_missing'")
+        candidate = Building.from_dict(self._snapshot_data())
+        records = ProvenanceSpec.model_validate(provenance or {}).records
+        supplied = {
+            "operation": operation, "hvac": hvac,
+            "thermal_bridge_uplift_fraction": thermal_bridge_uplift_fraction,
+        }
+        # The detached candidate validates all inputs, even those later retained.
+        for name, value in supplied.items():
+            if value is not None:
+                setattr(candidate, name, value)
+        if construction_set is not None:
+            candidate.construction_set = construction_set
+        properties = dict(facade_properties) if facade_properties is not None else None
+        if properties is not None:
+            if set(properties) - {"glazing", "solar_shading_factor"}:
+                raise ValueError("facade_properties accepts glazing and solar_shading_factor only")
+            if "glazing" in properties:
+                properties["glazing"] = GlazingSpec.model_validate(properties["glazing"])
+            if "solar_shading_factor" in properties:
+                properties["solar_shading_factor"] = TypeAdapter(Fraction).validate_python(
+                    properties["solar_shading_factor"])
+        applied, replaced, retained, unmatched, changed = [], [], [], [], set()
+        updates = {}
+        for name, value in supplied.items():
+            if value is None:
+                continue
+            if mode == "fill_missing" and getattr(self, name) is not None:
+                retained.append(name)
+            else:
+                (applied if getattr(self, name) is None else replaced).append(name)
+                updates[name] = getattr(candidate, name)
+                changed.add(name)
+        if properties is not None:
+            if self.facade is None:
+                unmatched.append("facade_properties")
+            elif mode == "fill_missing":
+                retained.append("facade_properties")
+            else:
+                updates["facade"] = self.facade.updated(**properties)
+                replaced.append("facade_properties")
+                changed.update("facade." + name for name in properties)
+        construction_targets = set()
+        if construction_set is not None:
+            incoming = candidate.construction_set
+            existing = self.construction_set.elements if self.construction_set else {}
+            values = dict(existing)
+            for role, construction in incoming.elements.items():
+                if not any(element.role == role for element in self.elements):
+                    unmatched.append("construction:" + role.value)
+                elif mode == "replace" or role not in values:
+                    values[role] = construction
+                    changed.add("construction_set.elements." + role.value)
+            if values != dict(existing):
+                # A mixed default set is a new authored composition, not the
+                # incoming catalogue snapshot with another snapshot's identity.
+                updates["construction_set"] = ConstructionSet(elements=values)
+            elements = []
+            for element in self.elements:
+                path = "construction:" + element.identifier
+                if element.role not in incoming.elements:
+                    retained.append(path)
+                    elements.append(element)
+                elif mode == "fill_missing" and element.construction is not None:
+                    retained.append(path)
+                    elements.append(element)
+                else:
+                    (applied if element.construction is None else replaced).append(path)
+                    elements.append(element.with_changes(
+                        construction=incoming.elements[element.role]))
+                    path = "elements." + element.identifier + ".construction"
+                    changed.add(path)
+                    construction_targets.add(path)
+            # Copy through the public element validation without regenerating openings.
+            candidate.elements = elements
+            updates["_elements"] = candidate.elements
+        glazing_targets = set()
+        if properties is not None and self.facade is not None and mode == "replace" \
+                and "glazing" in properties:
+            glazing = properties["glazing"]
+            elements = []
+            for element in updates.get("_elements", self.elements):
+                if element.role != ElementRole.WINDOW:
+                    elements.append(element)
+                    continue
+                if not isinstance(element.construction, WindowElement):
+                    raise ValueError("Glazing properties require physical WindowElement constructions")
+                window = element.construction.with_changes(
+                    u_value=glazing.u_value_w_m2k, shgc=glazing.solar_heat_gain_coefficient,
+                    vt=glazing.visible_transmittance)
+                elements.append(element.with_changes(construction=window))
+                path = "elements." + element.identifier + ".construction"
+                changed.add(path)
+                glazing_targets.add(path)
+            candidate.elements = elements
+            updates["_elements"] = candidate.elements
+
+        def affected(path):
+            return any(path == key or path.startswith(key + ".") for key in changed)
+
+        def split_previous(record, value):
+            # Broad provenance is narrowed before partial edits, so unchanged
+            # roles and facade geometry keep their original sources.
+            path = record.field_path
+            if affected(path):
+                return []
+            if not any(key.startswith(path + ".") for key in changed) or not isinstance(value, dict):
+                return [record]
+            return [child for key, item in value.items()
+                    for child in split_previous(record.updated(field_path=path + "." + key), item)]
+
+        state = self._snapshot_data()
+        state["elements"] = {element.identifier: element.to_dict() for element in self.elements}
+
+        def source_value(path):
+            value = state
+            for part in path.split("."):
+                if not isinstance(value, dict) or part not in value:
+                    return None
+                value = value[part]
+            return value
+
+        previous = [child for record in self.provenance.records
+                    for child in split_previous(record, source_value(record.field_path))]
+        for record in records:
+            paths = ([record.field_path] if affected(record.field_path) else
+                     [key for key in changed if key.startswith(record.field_path + ".")])
+            # A construction-set source also describes its actual element assignments.
+            if record.field_path == "construction_set" and construction_set is not None:
+                paths.extend(key for key in changed if key.startswith("elements.")
+                             and key not in glazing_targets)
+                paths.extend(path + "." + name for path in glazing_targets & construction_targets
+                             for name in ("name", "archetype", "application", "boverket_id"))
+            glazing_fields = {"u_value_w_m2k": "u_value",
+                              "solar_heat_gain_coefficient": "shgc",
+                              "visible_transmittance": "vt"}
+            for name, physical_name in glazing_fields.items():
+                if record.field_path in {"facade", "facade.glazing", "facade.glazing." + name}:
+                    paths.extend(path + "." + physical_name for path in glazing_targets)
+            previous.extend(record.updated(field_path=path) for path in sorted(set(paths)))
+        updates["provenance"] = ProvenanceSpec(records=tuple(previous))
+        # Every value is detached and validated above; committing cannot invoke a
+        # setter that rebuilds geometry or removes freshly attached source records.
+        for name, value in updates.items():
+            object.__setattr__(self, name, value)
+        return InputAssignmentReport(tuple(applied), tuple(replaced),
+                                     tuple(retained), tuple(unmatched))
 
     def _rebuild_elements(self, *, reassign=False):
         geometry = getattr(self, "geometry", None)

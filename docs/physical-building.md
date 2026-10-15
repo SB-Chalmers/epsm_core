@@ -42,6 +42,64 @@ geometry or facade configuration to change thermal areas; construction-only
 overrides remain supported. Explicit zero-window facade overrides are preserved
 when assigning per-window thermal properties.
 
+### Assigning resolved inputs together
+
+`building.assign_inputs(...)` updates the draft atomically and returns an
+`InputAssignmentReport`. Pass resolved `construction_set`, `operation`, `hvac`,
+`thermal_bridge_uplift_fraction` and/or `facade_properties` inputs. Construction
+roles without geometric targets are reported as unmatched; no physical elements
+are created. Core does not select a catalogue entry or infer a calendar here.
+
+`mode="replace"` replaces supplied roles and sections. Uncovered physical elements
+keep their constructions and installed component IDs. `mode="fill_missing"`
+fills individual unassigned elements and absent sections, preserving targeted
+overrides and configured operation/HVAC. Every supplied value is validated even
+when fill-missing would retain an existing choice. Invalid inputs leave the whole
+Building unchanged. A completely retained assignment preserves snapshot identity.
+
+```python
+from epsm_core import Building, Footprint
+
+reference = Building(preset="illustrative-reference")
+building = Building.from_footprint(
+    Footprint.rectangle(10, 8), storeys=2, storey_height_m=3,
+    facade=reference.facade,  # caller explicitly selects opening geometry
+)
+report = building.assign_inputs(
+    construction_set=reference.construction_set,
+    operation=reference.operation,
+    mode="fill_missing",
+)
+print(report.to_dict())
+print(building.readiness())  # HVAC, ground, bridge and load-area choices remain
+```
+
+`facade_properties` accepts only `glazing` and `solar_shading_factor`. Geometry,
+WWR, opening placement/layout, orientation and context stay unchanged. An absent
+facade stays missing and properties are reported unmatched. Explicit glazing
+properties update actual `WindowElement` performance as well as facade defaults,
+so the engine receives those values. Existing window constructions must use the
+whole-window representation; missing/layered definitions are not guessed.
+When constructions and explicit glazing are supplied together, explicit glazing
+properties take precedence for actual window performance. Construction-definition
+sources and winning glazing-property sources remain separate in provenance.
+
+Optional `provenance={"records": [...]}` accepts `SourceRecord` records for changed
+inputs. Partial edits narrow broad construction/facade sources to retain evidence
+for untouched fields. Incoming broad sources are attached only to changed paths.
+The report contains applied, replaced, retained and unmatched paths; `readiness()`
+reports simulation requirements. The operation and report rendering are offline.
+Earlier snapshots, renovation stages and material flows stay unchanged. Material
+authoring after renovation remains a history requirement rather than an invented
+intervention. Single-field assignments and `assign_construction()` remain available.
+
+The existing geometry-first basement adapter currently labels a basement bottom
+`GROUND_FLOOR` when no construction set was supplied during geometry creation.
+`assign_inputs` preserves that recorded role and reports a supplied
+`BASEMENT_FLOOR` definition as unmatched. It does not relabel geometry or substitute
+the ground-floor recipe for a basement-floor recipe. Review the physical roles
+before application; correcting the geometry adapter is a separate change.
+
 ### Internal-gain partitions
 
 `UseSpec.gain_partitions` selects how people, equipment and lighting gains are
