@@ -13,14 +13,15 @@ Put local EPWs in `data/weather/`. EPSM does not download weather or discover ma
 `BuildingBuilder(building_use="residential")` selects Sveby *Brukarindata bostader* 2.0. The stored profile supplies residential setpoints, occupancy, internal gains, annual DHW, common-space temperature, the fallback solar-shading factor and minimum mechanical outdoor air. Physical inputs—including weather, envelope constructions, ventilation topology, leakage and heat-recovery performance—remain explicit.
 
 ```python
-from epsm_core import BuildingBuilder, load_sveby_spec
+from epsm_data import select_operating_profile
+from epsm_core import BuildingBuilder
 
-sveby = load_sveby_spec()          # no network access; reads the bundled JSON profile
-print(sveby.profile_id)
+definition = select_operating_profile("multi_family", version="2.0")
+print(definition.profile_id)
 builder = BuildingBuilder(building_use="residential")  # selects that profile
 ```
 
-Sveby specifies occupancy by apartment size rather than one universal density. Until apartment counts and Atemp are supplied, the selected residential profile uses the separately labelled EPSM density fallback. Inspect `sveby.completion_default_fields` to identify such model-completion assumptions. Monthly DHW/electricity profiles, kitchen boost flow and the post-simulation window-airing correction are retained in the stored source profile but are not silently approximated by the current compiler.
+Sveby specifies occupancy by apartment size rather than one universal density. Until apartment counts and Atemp are supplied, the selected residential profile uses the separately labelled EPSM density fallback. Inspect `definition.values["model_completion_defaults"]` to identify such model-completion assumptions. Monthly DHW/electricity profiles, kitchen boost flow and the post-simulation window-airing correction are retained in the stored source profile but are not silently approximated by the current compiler.
 
 ## Start with geometry
 

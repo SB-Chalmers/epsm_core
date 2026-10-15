@@ -23,8 +23,6 @@ from copy import deepcopy
 from datetime import date, timedelta
 from functools import partial
 
-from epsm_data import load_operating_profile
-
 from .specs import ScheduleSpec, UseSpec
 from .standards import _freeze
 
@@ -210,22 +208,3 @@ class SvebyNonResidentialSpec:
                 )
             },
         }
-
-
-def _load(name):
-    """Read bundled source data without a network or external dataset lookup."""
-    return SvebyNonResidentialSpec(load_operating_profile(name.removesuffix(".json")).to_dict()["values"])
-
-
-def load_sveby_office_v1():
-    """Load published office 1.0; revised chapter 5 selects 1.3 L/s/m2 Atemp.
-
-    Table 2.2 retains 1.5. Both values and their discrepancy are recorded in the
-    resource; callers can override the flow when building/source evidence applies.
-    """
-    return _load("sveby_office_v1.json")
-
-
-def load_sveby_school_v1():
-    """Load primary/secondary school 1.0, Table 2.2 and chapter 9."""
-    return _load("sveby_school_v1.json")

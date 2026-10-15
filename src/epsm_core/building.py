@@ -562,9 +562,13 @@ class Building:
         if preset is not None:
             if preset != "illustrative-reference":
                 raise ValueError(f"Unknown Building preset {preset!r}")
-            from epsm_data import reference_construction_set, reference_hvac_template
+            from epsm_data import (
+                reference_construction_set,
+                reference_hvac_template,
+                select_operating_profile,
+            )
 
-            from .standards import load_sveby_spec
+            from .profile_resolution import resolve_operating_profile
 
             geometry = geometry if geometry is not None else GeometrySpec.from_footprint(
                 Footprint.rectangle(20, 12), storeys=3, storey_height_m=2.8)
@@ -572,7 +576,7 @@ class Building:
             hvac = hvac if hvac is not None else HVACSystem.from_template(reference_hvac_template())
             if operation is None:
                 operation = OperationProfile.model_validate({
-                    **load_sveby_spec().use_spec().model_dump(),
+                    **resolve_operating_profile(select_operating_profile("multi_family")).operation.model_dump(),
                     "gain_partitions": GainPartitionSpec(policy="epsm_legacy_v1"),
                 })
             foundation = foundation if foundation is not None else FoundationSpec(

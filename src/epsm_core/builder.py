@@ -136,18 +136,24 @@ class BuildingBuilder:
                 self.profile = None
                 self.assumptions = {}
                 return
+            from epsm_data import select_operating_profile
+
+            from .profile_resolution import resolve_operating_profile
+
+            calendar = None
             if building_use == "residential":
-                from .standards import load_sveby_spec
-                standard = load_sveby_spec()
-                assumptions = standard.building_assumptions(calendar_year=calendar_year)
+                if calendar_year is not None:
+                    calendar = {"calendar_year": calendar_year}
             else:
-                from .nonresidential import load_sveby_office_v1, load_sveby_school_v1
-                standard = (load_sveby_office_v1() if building_use == "office" else load_sveby_school_v1())
                 if calendar_year is None or active_dates is None or calendar_source is None:
                     raise ValueError("Office/school profiles require year, active_dates and calendar_source")
-                assumptions = standard.building_assumptions(calendar_year=calendar_year,
-                    active_dates=active_dates, calendar_source=calendar_source)
-            assumption_profile = standard.profile_id
+                calendar = {"calendar_year": calendar_year, "active_dates": active_dates,
+                            "calendar_source": calendar_source}
+            definition = select_operating_profile(
+                "multi_family" if building_use == "residential" else building_use)
+            resolved = resolve_operating_profile(definition, calendar=calendar)
+            assumptions = resolved.to_dict()["assumptions"]
+            assumption_profile = resolved.profile_id
         elif assumption_profile is None or assumptions is None:
             raise ValueError(
                 "assumption_profile and assumptions must be supplied together, or both omitted"

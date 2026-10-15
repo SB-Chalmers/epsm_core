@@ -61,8 +61,3 @@ class GenericOtherProgramme:
     def ventilation_fraction(self) -> ScheduleSpec:
         data = self._data if self._data is not None else load_generic_other_template()
         return _weekday_schedule(data["weekday_start_hour"], data["weekday_end_hour"])
-
-
-def load_generic_other_v1() -> GenericOtherProgramme:
-    """Return the explicit v1 screening fallback for an unidentified programme."""
-    return GenericOtherProgramme()
