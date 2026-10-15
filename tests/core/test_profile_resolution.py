@@ -116,6 +116,7 @@ def test_custom_overlay_sources_only_authored_fields_and_preserves_prior_tempera
     {"airflow": {"envelope_infiltration_ach": 0.2, "envelope_infiltration_l_s_m2": 0.1}},
     {"airflow": {"mechanical_vent_fraction": {"values": [1.5] * 24}}},
     {"facade": {"default_wwr": 0.99}},
+    {"airflow": {"infiltration_coefficients": (1, 0, 0)}},
 ])
 def test_invalid_custom_inputs_raise_even_when_other_fields_are_missing(assumptions):
     with pytest.raises(ValueError):

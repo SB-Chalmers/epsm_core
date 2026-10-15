@@ -87,7 +87,8 @@ def _validate_partial(kind, values, section):
     try:
         return kind.model_validate(values), ()
     except ValidationError as error:
-        if any(item["type"] != "missing" for item in error.errors()):
+        if any(item["type"] != "missing" or not isinstance(item["loc"][-1], str)
+               for item in error.errors()):
             raise
         validator = (_validate_use_properties if issubclass(kind, UseSpec) else
                      _validate_airflow_properties if kind is AirflowSpec else _validate_facade_properties)
