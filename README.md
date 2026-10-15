@@ -1,6 +1,6 @@
 # epsm_core
 
-A pre-1.0 building-energy modelling library for automated urban building energy modelling. The package version is **0.2.0**; content hashes distinguish simulation inputs and implementations.
+A pre-1.0 building-energy modelling library for automated urban building energy modelling. The package version is **0.3.0**; content hashes distinguish simulation inputs and implementations.
 
 ## Physical Building authoring
 
@@ -77,3 +77,13 @@ in [building archetype operation](docs/archetype-operation.md). Source reference
 and completion assumptions also live in the implementing scripts and resources.
 
 Mixed heated uses can use explicit area fractions with [ProgramBlend](docs/mixed-programmes.md); known spatial programmes retain separate zone assignments.
+
+## Migrating to 0.3.0
+
+`Building()` starts empty; use `preset="illustrative-reference"` only for teaching
+inputs. Author foundation or monthly ground boundaries, thermal-bridge uplift and
+load-reference area explicitly. Inspect `resolve(weather)` for immutable shared
+inputs and use explicit gain partitions where the consumer supports them.
+Core owns geometry and material quantities; engine reductions remain separate.
+This release distinguishes these changes from the earlier 0.2.0 implementation;
+recompute cached studies when their implementation identity changes.
