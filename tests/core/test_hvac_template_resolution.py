@@ -32,6 +32,7 @@ def test_partial_template_reports_missing_airflow_without_inventing_system():
     {"airflow": {"topology": "S", "mechanical_vent_l_s_m2": 0.35}},
     {"airflow": {"topology": "FTX"}, "delivery": {"fvp": {"cop": 3}}},
     {"equipment": [{"identifier": "unit", "factor_refs": [["malformed"]]}]},
+    {"airflow": {"infiltration_coefficients": (1, 0, 0)}},
 ])
 def test_invalid_supplied_section_is_not_masked_by_missing_airflow(values):
     with pytest.raises(ValueError):
