@@ -1,3 +1,9 @@
+# Release 0.4.0 — 15 October 2026
+
+Core consumes shared Data archetypes and operating definitions and assigns validated inputs atomically to physical Buildings. Replace/fill modes retain geometry, material quantities, provenance and renovation lineage; rejected assignments leave the Building unchanged.
+
+This minor release removes migrated redundant profile selectors. Use Data definitions and Core's documented physical converters and calendar builders; see [the profile and assignment guide](docs/archetype-operation.md). Core now requires Data 0.6.0 or later. Physical recipes and scientific algorithms are unchanged by this release preparation.
+
 # Release 0.3.0 — 15 October 2026
 
 Geometry preparation, conversion, compilation, preflight, EnergyPlus execution and result artifacts. Raw engine artifacts keep their existing formats.
