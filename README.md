@@ -1,6 +1,6 @@
 # epsm_core
 
-A pre-1.0 building-energy modelling library for automated urban building energy modelling. The package version is **0.2.0**; content hashes distinguish simulation inputs and implementations.
+A pre-1.0 building-energy modelling library for automated urban building energy modelling. The package version is **0.3.0**; content hashes distinguish simulation inputs and implementations.
 
 ## Physical Building authoring
 
@@ -77,3 +77,37 @@ in [building archetype operation](docs/archetype-operation.md). Source reference
 and completion assumptions also live in the implementing scripts and resources.
 
 Mixed heated uses can use explicit area fractions with [ProgramBlend](docs/mixed-programmes.md); known spatial programmes retain separate zone assignments.
+
+## Migrating to 0.3.0
+
+`Building()` starts empty; use `preset="illustrative-reference"` only for teaching
+inputs. Author foundation or monthly ground boundaries, thermal-bridge uplift and
+load-reference area explicitly. Inspect `resolve(weather)` for immutable shared
+inputs and use explicit gain partitions where the consumer supports them.
+Core owns geometry and material quantities; engine reductions remain separate.
+This release distinguishes these changes from the earlier 0.2.0 implementation;
+recompute cached studies when their implementation identity changes.
+
+## Operation logging
+
+Library calls use Python's standard `logging` module and install no console or
+file output. Instrumented operations accept optional keyword-only `log_context`
+with small identifier mappings; nested events carry operation and parent IDs.
+INFO describes major stages; DEBUG exposes selections, conversions and caches.
+Logging context does not change physical models or scientific cache inputs.
+
+For an application using EPSM's coordinated logging setup:
+
+```python
+from epsm import configure_logging, reset_logging
+
+configure_logging(directory="outputs/example")  # INFO stderr, DEBUG JSONL
+# Run operations here.
+configure_logging(enabled=False)  # Stop console and file logging.
+reset_logging()  # Restore the host application's settings.
+```
+
+EPSM is needed only for this combined configuration, not for ordinary library
+logging. Existing scripts can keep using `logging.basicConfig(level=logging.INFO)`.
+
+The standalone command accepts `--log-level` before its subcommand, including `OFF`. Command results remain on stdout.

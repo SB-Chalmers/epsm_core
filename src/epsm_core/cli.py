@@ -36,6 +36,8 @@ import json
 import subprocess
 from pathlib import Path
 
+from epsm_core._logging import configure_cli
+
 from .compiler import EnergyPlusCompiler
 from .runner import EnergyPlusRunner
 from .specs import BuildingSpec
@@ -77,6 +79,12 @@ def main(argv=None):
 
     # 1. Dispatch schema, validation, compilation, simulation, export or preview commands.
     parser = argparse.ArgumentParser(prog="epsm-core")
+    parser.add_argument(
+        "--log-level",
+        choices=("OFF", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"),
+        default="INFO",
+        help="Status output on stderr",
+    )
     parser.add_argument("--energyplus", help="EnergyPlus 24.2 executable")
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("schema", help="Print the canonical BuildingSpec JSON Schema")
@@ -91,48 +99,45 @@ def main(argv=None):
         "--headless", action="store_true", help="Print loopback URL without launching browser"
     )
     args = parser.parse_args(argv)
-    if args.command == "view":
-        import time
+    with configure_cli(args.log_level, "epsm_core"):
+        if args.command == "view":
+            import time
 
-        from .viewer import view_epjson
+            from .viewer import view_epjson
 
-        with view_epjson(args.epjson, launch_browser=not args.headless) as handle:
-            print(handle.url, flush=True)
-            try:
-                while True:
-                    time.sleep(1)
-            except KeyboardInterrupt:
-                pass
-        return
-    if args.command == "schema":
-        print(json.dumps(BuildingSpec.model_json_schema(), indent=2))
-        return
-    building = BuildingSpec.model_validate_json(args.spec.read_text())
-    if args.command == "validate":
-        print(building.physical_hash())
-    elif args.command == "run":
-        result = EnergyPlusRunner(
-            args.energyplus
-        ).run(building, args.output)
-        print(json.dumps(result.scalars, indent=2))
-    else:
-        compiler = EnergyPlusCompiler(
-            args.energyplus
-        )
-        if args.output.exists() and any(args.output.iterdir()):
-            raise FileExistsError("Output directory must be empty")
-        compiler.write(building, args.output)
-        if args.command == "export-idf":
-            subprocess.run(
-                [
-                    str(compiler.executable),
-                    "--convert-only",
-                    "--output-directory",
-                    str(args.output.resolve()),
-                    str((args.output / "model.epJSON").resolve()),
-                ],
-                check=True,
-            )
+            with view_epjson(args.epjson, launch_browser=not args.headless) as handle:
+                print(handle.url, flush=True)
+                try:
+                    while True:
+                        time.sleep(1)
+                except KeyboardInterrupt:
+                    pass
+            return
+        if args.command == "schema":
+            print(json.dumps(BuildingSpec.model_json_schema(), indent=2))
+            return
+        building = BuildingSpec.model_validate_json(args.spec.read_text())
+        if args.command == "validate":
+            print(building.physical_hash())
+        elif args.command == "run":
+            result = EnergyPlusRunner(args.energyplus).run(building, args.output)
+            print(json.dumps(result.scalars, indent=2))
+        else:
+            compiler = EnergyPlusCompiler(args.energyplus)
+            if args.output.exists() and any(args.output.iterdir()):
+                raise FileExistsError("Output directory must be empty")
+            compiler.write(building, args.output)
+            if args.command == "export-idf":
+                subprocess.run(
+                    [
+                        str(compiler.executable),
+                        "--convert-only",
+                        "--output-directory",
+                        str(args.output.resolve()),
+                        str((args.output / "model.epJSON").resolve()),
+                    ],
+                    check=True,
+                )
 
 
 if __name__ == "__main__":

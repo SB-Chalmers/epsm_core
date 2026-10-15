@@ -329,11 +329,11 @@ remain explicit inventory gaps; they are never invented from U-values or counts.
 
 This release requires `epsm_data >= 0.4.0`.
 Install Data first, then Core (`pip install -e ../epsm_data -e '.[dev,geometry]'`).
-The development CI checks out Data's `codex/harmonisation` branch. Configure the
+CI tests both a recorded Data commit and its current `dev` branch. Configure the
 `EPSM_DATA_DEPLOY_KEY` Actions secret containing a read-only SSH deploy key scoped
 to that private repository; CI
-fails explicitly before testing if the secret is absent. Switch to
-the published dependency when the coordinated release is available.
+fails explicitly before testing if the secret is absent. Use the supported EPSM compatibility manifest to select an exact tested
+combination; private wheels require configured dependency access.
 
 ## Consumer migration after explicit presets
 

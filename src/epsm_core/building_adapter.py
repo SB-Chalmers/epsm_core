@@ -11,6 +11,8 @@ from types import SimpleNamespace
 from epsm_data.domain import Element
 from epsm_data.domain.enums import BuildingElement as Role
 
+from epsm_core._logging import operation as logged_operation
+
 from .specs import (
     BuildingSpec,
     ClimateSpec,
@@ -130,6 +132,7 @@ def _surface_constructions_for_building(building, geometry, facade, envelope, *,
     return surface_constructions
 
 
+@logged_operation("model.convert", level=10)
 def to_spec(building, weather):
     """Produce the legacy validated engine specification with exact target assignments."""
     building.readiness().require()
@@ -177,6 +180,7 @@ def to_spec(building, weather):
                         internal_mass_constructions=mass_constructions)
 
 
+@logged_operation("simulation.building")
 def run_building(building, *, weather, directory, energyplus=None, settings=None, **options):
     """Run the real EnergyPlus adapter against an automatically captured snapshot."""
     from .building import BuildingSnapshot

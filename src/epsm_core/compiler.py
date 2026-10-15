@@ -54,6 +54,8 @@ import jsonschema
 from shapely import maximum_inscribed_circle
 from shapely.geometry import Polygon
 
+from epsm_core._logging import operation as logged_operation
+
 from ._version import __version__ as COMPILER_VERSION
 from .constructions import bridge_equivalent, internal_mass_halves
 from .context import (
@@ -483,6 +485,7 @@ class EnergyPlusCompiler:
         ]
         return hashlib.sha256(json.dumps(payload).encode()).hexdigest()
 
+    @logged_operation("model.compile")
     def compile(self, spec: BuildingSpec):
         """Compile a validated building into checked EnergyPlus epJSON and an audit report.
 
@@ -702,6 +705,7 @@ class EnergyPlusCompiler:
         constant("on", 1)
         constant("off", 0)
         constant("thermostat_control", 4)
+
         def emit_activity(use, prefix=""):
             """Emit W/person with hourly programme mixing when explicitly supplied."""
             if use.occupant_activity_schedule is None:
@@ -1603,6 +1607,7 @@ class EnergyPlusCompiler:
             cold_water_supply_temperature_schedule_name="water_cold",
         )
 
+    @logged_operation("model.write")
     def write(self, spec, directory):
         """Compile and write the model, building specification and compilation report.
 
