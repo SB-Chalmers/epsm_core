@@ -18,7 +18,7 @@ from uuid import UUID, uuid4
 from epsm_data.domain import ConstructionSet, Element, WindowElement
 from epsm_data.domain.enums import BuildingElement as ElementRole
 from epsm_data.serialization import construction_set_from_dict, construction_set_to_dict
-from pydantic import TypeAdapter
+from pydantic import TypeAdapter, ValidationError
 
 from ._representation import bounded_summary
 from .inventory import MaterialFlows, material_inventory
@@ -620,7 +620,7 @@ class Building:
         return self
 
     def assign_inputs(self, *, construction_set=None, operation=None, hvac=None,
-                      facade_properties=None, thermal_bridge_uplift_fraction=None,
+                      facade_properties=None, airflow_properties=None, thermal_bridge_uplift_fraction=None,
                       provenance=None, mode="replace"):
         """Validate and commit resolved inputs together, updating this Building.
 
@@ -633,6 +633,12 @@ class Building:
             Validated occupancy, gains and schedules; no calendar is inferred.
         hvac : HVACSystem, optional
             Already resolved systems, including infiltration reference basis.
+        airflow_properties : mapping, optional
+            Validated AirflowSpec fields except topology. ``replace`` patches only
+            supplied fields on the effective retained/supplied HVAC, preserving
+            delivery and equipment. No system means an unmatched patch.
+            ``fill_missing`` retains all known typed-system values, including zero,
+            even when that system is supplied in this same call.
         facade_properties : mapping, optional
             Only ``glazing`` and ``solar_shading_factor`` are accepted. An absent
             facade stays missing: this operation never guesses opening geometry.
@@ -687,6 +693,17 @@ class Building:
             if "solar_shading_factor" in properties:
                 properties["solar_shading_factor"] = TypeAdapter(Fraction).validate_python(
                     properties["solar_shading_factor"])
+        airflow_patch = dict(airflow_properties) if airflow_properties is not None else None
+        if airflow_patch is not None:
+            if set(airflow_patch) - (set(AirflowSpec.model_fields) - {"topology"}):
+                raise ValueError("airflow_properties accepts AirflowSpec fields except topology")
+            try:
+                AirflowSpec.model_validate(airflow_patch)
+            except ValidationError as error:
+                # An unmatched partial patch may lack topology/infiltration,
+                # but every supplied field must obey model bounds/finiteness.
+                if any(item["type"] != "missing" for item in error.errors()):
+                    raise
         applied, replaced, retained, unmatched, changed = [], [], [], [], set()
         updates = {}
         for name, value in supplied.items():
@@ -764,6 +781,19 @@ class Building:
             updates["_elements"] = candidate.elements
 
         effective_hvac = updates.get("hvac", self.hvac)
+        airflow_changed = set()
+        if airflow_patch is not None:
+            if effective_hvac is None:
+                unmatched.append("airflow_properties")
+            elif mode == "fill_missing":
+                retained.extend("hvac.airflow." + name for name in airflow_patch)
+            else:
+                effective_hvac = effective_hvac.with_changes(
+                    airflow=effective_hvac.airflow.updated(**airflow_patch))
+                updates["hvac"] = effective_hvac
+                airflow_changed = {"hvac.airflow." + name for name in airflow_patch}
+                changed.update(airflow_changed)
+                replaced.extend("hvac.airflow." + name for name in airflow_patch)
         if effective_hvac is not None:
             _validate_operation_hvac(updates.get("operation", self.operation),
                                      effective_hvac.airflow, effective_hvac.delivery)
@@ -771,16 +801,16 @@ class Building:
         def affected(path):
             return any(path == key or path.startswith(key + ".") for key in changed)
 
-        def split_previous(record, value):
+        def split_source(record, value, excluded):
             # Broad provenance is narrowed before partial edits, so unchanged
             # roles and facade geometry keep their original sources.
             path = record.field_path
-            if affected(path):
+            if any(path == key or path.startswith(key + ".") for key in excluded):
                 return []
-            if not any(key.startswith(path + ".") for key in changed) or not isinstance(value, dict):
+            if not any(key.startswith(path + ".") for key in excluded) or not isinstance(value, dict):
                 return [record]
             return [child for key, item in value.items()
-                    for child in split_previous(record.updated(field_path=path + "." + key), item)]
+                    for child in split_source(record.updated(field_path=path + "." + key), item, excluded)]
 
         state = self._snapshot_data()
         state["elements"] = {element.identifier: {
@@ -803,7 +833,7 @@ class Building:
             return value
 
         previous = [child for record in self.provenance.records
-                    for child in split_previous(record, source_value(record.field_path))]
+                    for child in split_source(record, source_value(record.field_path), changed)]
         for record in records:
             paths = ([record.field_path] if affected(record.field_path) else
                      [key for key in changed if key.startswith(record.field_path + ".")])
@@ -820,7 +850,13 @@ class Building:
             for name, physical_name in glazing_fields.items():
                 if record.field_path in {"facade", "facade.glazing", "facade.glazing." + name}:
                     paths.extend(path + "." + physical_name for path in glazing_targets)
-            previous.extend(record.updated(field_path=path) for path in sorted(set(paths)))
+            for path in sorted(set(paths)):
+                item = record.updated(field_path=path)
+                if hvac is not None and airflow_changed and path in {"hvac", "hvac.airflow"}:
+                    values = effective_hvac.to_dict() if path == "hvac" else effective_hvac.airflow.model_dump(mode="json")
+                    previous.extend(split_source(item, values, airflow_changed))
+                else:
+                    previous.append(item)
         updates["provenance"] = ProvenanceSpec(records=tuple(previous))
         # Every value is detached and validated above; committing cannot invoke a
         # setter that rebuilds geometry or removes freshly attached source records.

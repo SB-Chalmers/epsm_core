@@ -7,6 +7,7 @@ from epsm_data.domain.enums import BuildingElement as Role
 
 from epsm_core import (
     Building,
+    Equipment,
     FacadeOverride,
     Footprint,
     FVPSpec,
@@ -281,3 +282,66 @@ def test_known_fvp_flow_contradictions_roll_back(changes, message):
     with pytest.raises(ValueError, match=message):
         building.assign_inputs(hvac=hvac)
     assert building.snapshot().sha256 == before.sha256
+
+
+def test_airflow_leaf_patch_preserves_delivery_equipment_and_other_source_records():
+    building = Building(preset="illustrative-reference")
+    building.hvac = building.hvac.with_changes(equipment=(Equipment("unit", "project:unit"),))
+    source = SourceRecord(field_path="hvac", status="assumed", source="installed-system")
+    building.provenance = {"records": [*building.provenance.records, source]}
+    previous = building.hvac
+    patch_source = SourceRecord(field_path="hvac.airflow.envelope_infiltration_ach",
+                               status="assumed", source="project:leakage")
+    report = building.assign_inputs(airflow_properties={"envelope_infiltration_ach": 0.4},
+                                   provenance={"records": [patch_source]})
+    assert building.hvac.airflow.envelope_infiltration_ach == 0.4
+    assert building.hvac.delivery == previous.delivery and building.hvac.equipment == previous.equipment
+    assert building.hvac.airflow.topology == previous.airflow.topology
+    assert report.replaced == ("hvac.airflow.envelope_infiltration_ach",)
+    records = {r.field_path: r.source for r in building.provenance.records}
+    assert records["hvac.delivery"] == records["hvac.equipment"] == "installed-system"
+    assert records[patch_source.field_path] == "project:leakage"
+
+
+@pytest.mark.parametrize("properties", [
+    {"envelope_infiltration_ach": -1}, {"topology": "F"},
+    {"mechanical_vent_l_s_m2": float("nan")}, {"unknown": 2},
+    {"maximum_heating_supply_temperature_c": float("nan")},
+    {"mechanical_vent_l_s_m2": float("inf")},
+])
+def test_invalid_airflow_patch_rolls_back_even_when_missing_or_retained(properties):
+    for building in (Building.empty(), Building(preset="illustrative-reference")):
+        before = building.snapshot()
+        with pytest.raises(ValueError):
+            building.assign_inputs(airflow_properties=properties, mode="fill_missing")
+        assert building.snapshot().sha256 == before.sha256
+
+
+def test_airflow_patch_without_system_is_unmatched_and_does_not_invent_topology():
+    building = Building.empty()
+    before = building.snapshot()
+    report = building.assign_inputs(airflow_properties={"mechanical_vent_l_s_m2": 0.35})
+    assert report.unmatched == ("airflow_properties",)
+    assert building.snapshot().sha256 == before.sha256 and building.hvac is None
+
+
+def test_same_call_hvac_then_patch_has_explicit_mode_and_source_precedence():
+    hvac = Building(preset="illustrative-reference").hvac
+    hvac = hvac.with_changes(airflow=hvac.airflow.updated(envelope_infiltration_ach=0))
+    building = Building.empty()
+    report = building.assign_inputs(hvac=hvac,
+        airflow_properties={"envelope_infiltration_ach": 0.4}, mode="fill_missing")
+    assert building.hvac.airflow.envelope_infiltration_ach == 0
+    assert "hvac.airflow.envelope_infiltration_ach" in report.retained
+    building = Building.empty()
+    building.assign_inputs(hvac=hvac, airflow_properties={"envelope_infiltration_ach": 0.4},
+        provenance={"records": [
+            SourceRecord(field_path="hvac", status="assumed", source="template"),
+            SourceRecord(field_path="hvac.airflow.envelope_infiltration_ach", status="assumed",
+                         source="explicit-leakage"),
+        ]})
+    assert building.hvac.airflow.envelope_infiltration_ach == 0.4
+    records = {r.field_path: r.source for r in building.provenance.records}
+    assert "hvac" not in records
+    assert records["hvac.delivery"] == "template"
+    assert records["hvac.airflow.envelope_infiltration_ach"] == "explicit-leakage"

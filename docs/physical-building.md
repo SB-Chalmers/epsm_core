@@ -97,6 +97,17 @@ Earlier snapshots, renovation stages and material flows stay unchanged. Material
 authoring after renovation remains a history requirement rather than an invented
 intervention. Single-field assignments and `assign_construction()` remain available.
 
+Use `airflow_properties={...}` for explicit infiltration, ventilation or schedule
+patches without replacing the installed HVAC delivery, equipment or topology.
+Only known `AirflowSpec` fields are accepted, excluding `topology`; select a new
+system through `hvac` when topology must change. `replace` patches supplied leaves
+on the retained or same-call supplied system. Source records use paths such as
+`hvac.airflow.envelope_infiltration_ach`; untouched delivery/equipment sources are
+preserved. Same-call explicit leaf sources take precedence over broad template
+sources. Without HVAC, the patch is unmatched and no system is inferred.
+`fill_missing` retains every typed-system field, including zero, even when the
+system is newly supplied in that call. A model default is not evidence of absence.
+
 The existing geometry-first basement adapter currently labels a basement bottom
 `GROUND_FLOOR` when no construction set was supplied during geometry creation.
 `assign_inputs` preserves that recorded role and reports a supplied
