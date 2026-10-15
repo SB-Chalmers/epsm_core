@@ -607,11 +607,7 @@ class FacadeSpec(Spec):
         """
 
         # 1. Validate unique facade/storey overrides and an opaque-frame WWR margin.
-        ids = [(o.facade_id, o.storey) for o in self.overrides]
-        if len(set(ids)) != len(ids):
-            raise ValueError("Duplicate facade/storey overrides")
-        if max([self.default_wwr, *(o.wwr for o in self.overrides if o.wwr is not None)]) >= 0.95:
-            raise ValueError("WWR must be < 0.95 to retain an opaque frame")
+        _validate_facade_properties({name: getattr(self, name) for name in type(self).model_fields})
         return self
 
     def value_for(self, name, facade_id, storey=None):
@@ -694,3 +690,16 @@ class FacadeSpec(Spec):
         """
 
         return self.value_for("wwr", facade_id, storey)
+
+
+def _validate_facade_properties(values):
+    """Check supplied opening ratios and duplicate overrides on partial/full input."""
+    overrides = tuple(FacadeOverride.model_validate(item) for item in values.get("overrides", ()))
+    keys = [(item.facade_id, item.storey) for item in overrides]
+    if len(set(keys)) != len(keys):
+        raise ValueError("Duplicate facade/storey overrides")
+    ratios = [float(item.wwr) for item in overrides if item.wwr is not None]
+    if "default_wwr" in values:
+        ratios.append(float(values["default_wwr"]))
+    if any(value >= 0.95 for value in ratios):
+        raise ValueError("WWR must be < 0.95 to retain an opaque frame")
