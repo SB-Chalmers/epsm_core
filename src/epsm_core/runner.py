@@ -45,6 +45,9 @@ from pathlib import Path
 
 import numpy as np
 
+from epsm_core._logging import bind_context, context_logger, current_context
+from epsm_core._logging import operation as logged_operation
+
 from .compiler import EnergyPlusCompiler
 from .delivery import fvp_delivery
 from .diagnostics import WHOLE_BUILDING_AREA_RULE, compiler_warning_conditions, error_diagnostics
@@ -140,6 +143,7 @@ class EnergyPlusRunner:
 
         self.compiler = EnergyPlusCompiler(energyplus, settings=settings)
 
+    @logged_operation("simulation")
     def run(
         self,
         spec,
@@ -275,6 +279,19 @@ class EnergyPlusRunner:
             str(directory),
             str(directory / "model.epJSON"),
         ]
+        bind_context(run_id=report.run_id)
+        logger = context_logger(__name__)
+        logger.debug(
+            "Launching EnergyPlus",
+            extra={
+                "epsm_event": "simulation.engine.started",
+                "epsm_details": {
+                    "executable": command[0],
+                    "directory": str(directory),
+                    "stdout_stderr": str(directory / "process.log"),
+                },
+            },
+        )
         simulation_start = time.perf_counter()
         with (directory / "process.log").open("w") as log:
             try:
@@ -309,6 +326,19 @@ class EnergyPlusRunner:
                     code=EXTERNAL_ENVIRONMENT_FAILURE,
                 ) from error
         simulation_seconds = time.perf_counter() - simulation_start
+        logger.log(
+            10 if current_context().get("batch_mode") else 20,
+            "EnergyPlus exited",
+            extra={
+                "epsm_event": "simulation.engine.completed",
+                "epsm_details": {
+                    "returncode": result.returncode,
+                    "duration_s": simulation_seconds,
+                    "process_log": str(directory / "process.log"),
+                    "engine_errors": str(directory / "eplusout.err"),
+                },
+            },
+        )
 
         # 4. Validate every attempt under the same strict diagnostic policy.
         def diagnose(attempt_directory, report, returncode):

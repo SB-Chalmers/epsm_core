@@ -43,6 +43,8 @@ from shapely import STRtree, get_coordinates, make_valid, normalize, set_precisi
 from shapely.geometry import LineString, MultiPolygon, Point, Polygon, mapping
 from shapely.geometry.polygon import orient
 
+from epsm_core._logging import operation as logged_operation
+
 
 @dataclass(frozen=True)
 class GeometryPolicy:
@@ -676,6 +678,7 @@ def _simplify(polygon, policy):
     return Polygon(ring(polygon.exterior), [ring(r) for r in polygon.interiors])
 
 
+@logged_operation("geometry.prepare")
 def prepare_geometry(raw_geometry, policy=GeometryPolicy()):
     """Prepare metric footprints with bounded displacement and explicit review evidence.
 

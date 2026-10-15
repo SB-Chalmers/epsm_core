@@ -87,3 +87,27 @@ inputs and use explicit gain partitions where the consumer supports them.
 Core owns geometry and material quantities; engine reductions remain separate.
 This release distinguishes these changes from the earlier 0.2.0 implementation;
 recompute cached studies when their implementation identity changes.
+
+## Operation logging
+
+Library calls use Python's standard `logging` module and install no console or
+file output. Instrumented operations accept optional keyword-only `log_context`
+with small identifier mappings; nested events carry operation and parent IDs.
+INFO describes major stages; DEBUG exposes selections, conversions and caches.
+Logging context does not change physical models or scientific cache inputs.
+
+For an application using EPSM's coordinated logging setup:
+
+```python
+from epsm import configure_logging, reset_logging
+
+configure_logging(directory="outputs/example")  # INFO stderr, DEBUG JSONL
+# Run operations here.
+configure_logging(enabled=False)  # Stop console and file logging.
+reset_logging()  # Restore the host application's settings.
+```
+
+EPSM is needed only for this combined configuration, not for ordinary library
+logging. Existing scripts can keep using `logging.basicConfig(level=logging.INFO)`.
+
+The standalone command accepts `--log-level` before its subcommand, including `OFF`. Command results remain on stdout.

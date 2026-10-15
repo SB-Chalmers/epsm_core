@@ -19,6 +19,8 @@ from epsm_data.domain.enums import BuildingElement as ElementRole
 from epsm_data.serialization import construction_set_from_dict, construction_set_to_dict
 from pydantic import TypeAdapter
 
+from epsm_core._logging import operation as logged_operation
+
 from ._representation import bounded_summary
 from .inventory import MaterialFlows, material_inventory
 from .specs import (
@@ -270,6 +272,7 @@ class BuildingSnapshot:
     def to_building(self, building_type=None):
         return (building_type or Building).from_dict(self.to_dict())
 
+    @logged_operation("building.spec.convert", level=10)
     def to_spec(self, weather):
         return self.to_building().to_spec(weather)
 
@@ -980,6 +983,7 @@ class Building:
         """
         return self.snapshot().resolve(weather)
 
+    @logged_operation("building.spec.convert", level=10)
     def to_spec(self, weather):
         """Compile authoring state to the existing numerical Core input contract."""
         from .building_adapter import to_spec

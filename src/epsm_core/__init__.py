@@ -37,6 +37,8 @@ Example::
     assert geometry.conditioned_floor_area_m2 == 160
 """
 
+import logging as _stdlib_logging
+
 from ._version import __version__ as __version__
 from .builder import BuildingBuilder
 from .building import (
@@ -212,6 +214,8 @@ __all__ = [
     "run_pvwatts",
 ]
 
+# A library emits no output until its host selects handlers.
+
 from .context import synthetic_context
 from .inspection import preview_geometry
 from .nonresidential import SvebyNonResidentialSpec, load_sveby_office_v1, load_sveby_school_v1
@@ -220,3 +224,5 @@ from .nonresidential import SvebyNonResidentialSpec, load_sveby_office_v1, load_
 from .programs import ProgramBlend as ProgramBlend
 from .programs import ProgramComponent as ProgramComponent
 from .settings import CompilerSettings, HourlyOutputRequest
+
+_stdlib_logging.getLogger("epsm_core").addHandler(_stdlib_logging.NullHandler())
