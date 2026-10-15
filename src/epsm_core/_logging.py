@@ -129,8 +129,11 @@ def operation(event, *, level=logging.INFO, traceback=False):
                 details.update(
                     code=getattr(error, "code", event + ".failed"), error_type=type(error).__name__
                 )
+            event_level = (
+                logging.DEBUG if context.get("batch_mode") and level == logging.INFO else level
+            )
             logger.log(
-                logging.ERROR if error is not None else level,
+                logging.ERROR if error is not None else event_level,
                 "%s %s",
                 event.replace(".", " "),
                 suffix,

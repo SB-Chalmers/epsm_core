@@ -48,3 +48,37 @@ def test_rejected_operation_keeps_context_and_reports_failure(caplog):
     assert records[-1].epsm_context["study_id"] == "logging-test"
     assert records[-1].epsm_details["duration_s"] >= 0
     assert not any(record.exc_info for record in records)
+
+
+def test_district_identity_preparation_inherits_thread_context(monkeypatch, caplog, tmp_path):
+    from types import SimpleNamespace
+
+    import epsm_core.district as district
+    from epsm_core._logging import current_context
+
+    observed = []
+
+    def identity(building):
+        observed.append(current_context().get("study_id"))
+        return building.identifier
+
+    class Runner:
+        compiler = SimpleNamespace(run_id=identity)
+
+        def __init__(self, *args):
+            pass
+
+        def run(self, building, directory):
+            return building.identifier
+
+    monkeypatch.setattr(district, "EnergyPlusRunner", Runner)
+    monkeypatch.setattr(
+        district.DistrictPlan,
+        "resolved_buildings",
+        lambda self: (SimpleNamespace(identifier="first"), SimpleNamespace(identifier="second")),
+    )
+    plan = district.DistrictPlan(buildings=())
+    with caplog.at_level(logging.DEBUG):
+        result = plan.run(tmp_path, workers=2, log_context={"study_id": "district-test"})
+    assert result == {"first": "first", "second": "second"}
+    assert observed == ["district-test", "district-test"]

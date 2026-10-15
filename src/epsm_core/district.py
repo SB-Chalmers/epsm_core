@@ -31,9 +31,10 @@ Example::
 """
 
 from concurrent.futures import ThreadPoolExecutor
+from functools import partial
 from pathlib import Path
 
-from epsm_core._logging import current_context
+from epsm_core._logging import call_with_context, current_context
 from epsm_core._logging import operation as logged_operation
 
 from .geometry import local_polygons
@@ -225,7 +226,9 @@ class DistrictPlan(Spec):
         runner = EnergyPlusRunner(energyplus)
 
         log_context = current_context()
+        log_context["batch_mode"] = True
 
+        @logged_operation("simulation.district.building", level=10)
         def run_one(building):
             """Run one context-resolved building under its compiler-derived identity.
 
@@ -252,9 +255,11 @@ class DistrictPlan(Spec):
             """
 
             run_id = runner.compiler.run_id(building)
-            return building.identifier, runner.run(
-                building, Path(directory) / run_id, log_context=log_context
+            return building.identifier, call_with_context(
+                runner.run, building, Path(directory) / run_id
             )
 
         with ThreadPoolExecutor(max_workers=workers) as pool:
-            return dict(pool.map(run_one, self.resolved_buildings()))
+            return dict(
+                pool.map(partial(run_one, log_context=log_context), self.resolved_buildings())
+            )
