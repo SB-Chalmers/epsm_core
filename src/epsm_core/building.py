@@ -1,6 +1,6 @@
 """Gradual physical building authoring with shared EPSM Data constructions.
 
-``Building()`` chooses the inspectable ``illustrative-reference`` preset.
+``Building()`` preserves missing inputs; select a named preset explicitly.
 ``Building.empty()`` and ``Building.from_footprint()`` do not fill missing physics.
 Catalogue objects are copied on assignment; runtime results are never snapshotted.
 """
@@ -11,11 +11,13 @@ import hashlib
 import json
 import math
 from dataclasses import dataclass, field, replace
+from typing import Literal
 from uuid import UUID, uuid4
 
 from epsm_data.domain import ConstructionSet, Element, WindowElement
 from epsm_data.domain.enums import BuildingElement as ElementRole
 from epsm_data.serialization import construction_set_from_dict, construction_set_to_dict
+from pydantic import TypeAdapter
 
 from ._representation import bounded_summary
 from .inventory import MaterialFlows, material_inventory
@@ -25,11 +27,17 @@ from .specs import (
     DeliverySpec,
     FacadeSpec,
     Footprint,
+    FoundationSpec,
+    GainPartitionSpec,
     GeometrySpec,
     GlazingSpec,
+    GroundTemperatureSpec,
+    ProvenanceSpec,
     RenewablesSpec,
+    SourceRecord,
     UseSpec,
 )
+from .specs.base import Nonnegative, Positive
 
 
 def _json(value):
@@ -242,7 +250,9 @@ class BuildingSnapshot:
 
     @classmethod
     def from_dict(cls, data):
-        if data.get("schema") != "epsm.building/1":
+        if data.get("schema") not in {
+                "epsm.building/1", "epsm.building/2", "epsm.building/3", "epsm.building/4",
+                "epsm.building/5", "epsm.building/6"}:
             raise ValueError("Unsupported Building snapshot schema")
         return cls(_json(data))
 
@@ -263,11 +273,17 @@ class BuildingSnapshot:
     def to_spec(self, weather):
         return self.to_building().to_spec(weather)
 
+    def resolve(self, weather):
+        """Resolve retained physical inputs without initializing an engine."""
+        from .resolved import resolve_snapshot
+
+        return resolve_snapshot(self, weather)
+
     def quantities(self):
         return self.to_building().quantities()
 
     def __repr__(self):
-        return bounded_summary(type(self).__name__, format="epsm.building/1",
+        return bounded_summary(type(self).__name__, format="epsm.building",
                                characters=len(self._json))
 
     __str__ = __repr__
@@ -338,20 +354,34 @@ def _material_history_requirements(links):
 class Building:
     """Editable physical building, with complete validation at method boundaries.
 
-    The no-argument reference is illustrative, not calibrated Swedish evidence.
+    The explicitly selected reference preset is illustrative, not calibrated evidence.
     Geometry/construction/HVAC/operation assignments are validated independently.
     ``readiness()`` describes what remains before a thermal simulation.
     """
 
-    def __init__(self, *, preset="illustrative-reference", identifier="building",
+    def __init__(self, *, preset=None, identifier="building",
                  geometry=None, construction_set=None, facade=None, hvac=None,
-                 operation=None, context=None):
+                 operation=None, context=None, provenance=None, foundation=None,
+                 ground_temperature=None, thermal_bridge_uplift_fraction=None,
+                 load_reference_area_m2=None,
+                 load_reference_area_policy: Literal["conditioned_floor_area"] | None = None):
+        if load_reference_area_m2 is not None and load_reference_area_policy is not None:
+            raise ValueError("Choose either load_reference_area_m2 or load_reference_area_policy")
         self._elements = ()
         self._stages = ()
         self._authoring_links = ()
         self._material_flows = ()
         self._parent_snapshot_id = None
         self.preset = preset
+        self.preset_revision = "5" if preset is not None else None
+        supplied = {name for name, value in (("geometry", geometry),
+            ("construction_set", construction_set), ("facade", facade),
+            ("hvac", hvac), ("operation", operation), ("foundation", foundation),
+            ("ground_temperature", ground_temperature),
+            ("thermal_bridge_uplift_fraction", thermal_bridge_uplift_fraction),
+            ("load_reference_area_m2", load_reference_area_m2),
+            ("load_reference_area_policy", load_reference_area_policy))
+            if value is not None}
         self.identifier = identifier
         if preset is not None:
             if preset != "illustrative-reference":
@@ -360,12 +390,32 @@ class Building:
 
             from .standards import load_sveby_spec
 
-            geometry = geometry or GeometrySpec.from_footprint(
+            geometry = geometry if geometry is not None else GeometrySpec.from_footprint(
                 Footprint.rectangle(20, 12), storeys=3, storey_height_m=2.8)
-            construction_set = construction_set or reference_construction_set()
-            hvac = hvac or HVACSystem.from_template(reference_hvac_template())
-            operation = operation or OperationProfile.model_validate(
-                load_sveby_spec().use_spec().model_dump())
+            construction_set = construction_set if construction_set is not None else reference_construction_set()
+            hvac = hvac if hvac is not None else HVACSystem.from_template(reference_hvac_template())
+            if operation is None:
+                operation = OperationProfile.model_validate({
+                    **load_sveby_spec().use_spec().model_dump(),
+                    "gain_partitions": GainPartitionSpec(policy="epsm_legacy_v1"),
+                })
+            foundation = foundation if foundation is not None else FoundationSpec(
+                method="kiva",
+                source="energyplus_24_2_kiva_unmeasured_defaults",
+                soil_conductivity_w_mk=1.73,
+                soil_density_kg_m3=1842.0,
+                soil_specific_heat_j_kgk=419.0,
+                exposed_perimeter_fraction=1.0,
+                wall_height_above_grade_m=0.0,
+                wall_depth_below_slab_m=0.0,
+                deep_ground_boundary="ZeroFlux",
+                deep_ground_depth_m=40.0,
+                far_field_width_m=40.0,
+            )
+            if thermal_bridge_uplift_fraction is None:
+                thermal_bridge_uplift_fraction = 0.0
+            if load_reference_area_m2 is None and load_reference_area_policy is None:
+                load_reference_area_policy = "conditioned_floor_area"
             if facade is None:
                 window = construction_set.elements.get(ElementRole.WINDOW)
                 facade = FacadeSpec(default_wwr=.2, glazing=GlazingSpec(
@@ -376,16 +426,35 @@ class Building:
         self.facade = facade
         self.hvac = hvac
         self.operation = operation
-        self.context = context or ContextSpec()
+        self.foundation = foundation
+        self.ground_temperature = ground_temperature
+        self.thermal_bridge_uplift_fraction = thermal_bridge_uplift_fraction
+        self.load_reference_area_m2 = load_reference_area_m2
+        self.load_reference_area_policy = load_reference_area_policy
+        self.context = context if context is not None else ContextSpec()
+        records = list(ProvenanceSpec.model_validate(provenance or {}).records)
+        if preset is not None:
+            paths = {r.field_path for r in records}
+            records.extend(SourceRecord(field_path=name, status="assumed",
+                source="illustrative-reference@5", assumption_profile="illustrative-reference@5")
+                for name in ("geometry", "construction_set", "facade", "hvac", "operation",
+                             "foundation", "thermal_bridge_uplift_fraction",
+                             "load_reference_area_policy")
+                if name not in supplied and name not in paths and getattr(self, name) is not None)
+        self.provenance = ProvenanceSpec(records=tuple(records))
 
     def __setattr__(self, name, value):
+        if name in {"preset", "preset_revision"} and hasattr(self, name):
+            raise AttributeError("Preset identity is retained metadata; create a new Building to select a preset")
         kinds = {"geometry": GeometrySpec, "facade": FacadeSpec,
-                 "operation": OperationProfile, "context": ContextSpec}
+                 "operation": OperationProfile, "context": ContextSpec, "provenance": ProvenanceSpec}
+        kinds.update({"foundation": FoundationSpec, "ground_temperature": GroundTemperatureSpec})
         if name in kinds and value is not None:
             kind = kinds[name]
             if name == "operation" and isinstance(value, UseSpec):
                 value = value.model_dump()
-            value = kind.model_validate(value.model_dump() if isinstance(value, kind) else value)
+            value = kind.model_validate(
+                value.model_dump(exclude_unset=True) if isinstance(value, kind) else value)
         elif name == "construction_set" and value is not None:
             if not isinstance(value, ConstructionSet):
                 raise TypeError("construction_set must be an EPSM Data ConstructionSet")
@@ -396,9 +465,47 @@ class Building:
             value = HVACSystem(**value.to_dict())
         elif name == "identifier" and (not isinstance(value, str) or not value.strip()):
             raise ValueError("identifier must be a nonempty string")
+        elif name == "thermal_bridge_uplift_fraction" and value is not None:
+            value = TypeAdapter(Nonnegative).validate_python(value)
+            if not math.isfinite(value):
+                raise ValueError("thermal_bridge_uplift_fraction must be finite")
+        elif name == "load_reference_area_m2" and value is not None:
+            value = TypeAdapter(Positive).validate_python(value)
+            if not math.isfinite(value):
+                raise ValueError("load_reference_area_m2 must be finite")
+            current_policy = getattr(self, "load_reference_area_policy", None)
+            if current_policy is not None:
+                assumed_profile = f"{getattr(self, 'preset', None)}@{getattr(self, 'preset_revision', None)}"
+                policy_record = next((r for r in getattr(
+                    self, "provenance", ProvenanceSpec()).records
+                    if r.field_path == "load_reference_area_policy"), None)
+                if not (policy_record and policy_record.status == "assumed"
+                        and policy_record.assumption_profile == assumed_profile):
+                    raise ValueError("Clear the policy before setting an explicit load-reference area")
+                object.__setattr__(self, "load_reference_area_policy", None)
+                if hasattr(self, "provenance"):
+                    object.__setattr__(self, "provenance", ProvenanceSpec(records=tuple(
+                        r for r in self.provenance.records
+                        if r.field_path != "load_reference_area_policy")))
+        elif name == "load_reference_area_policy" and value is not None:
+            value = TypeAdapter(Literal["conditioned_floor_area"]).validate_python(value)
+            if getattr(self, "load_reference_area_m2", None) is not None:
+                raise ValueError("Clear the area before setting a load-reference area policy")
         object.__setattr__(self, name, value)
+        if name in {"geometry", "construction_set", "facade", "hvac", "operation",
+                    "foundation", "ground_temperature", "thermal_bridge_uplift_fraction",
+                    "load_reference_area_m2", "load_reference_area_policy"} \
+                and hasattr(self, "provenance"):
+            object.__setattr__(self, "provenance", ProvenanceSpec(records=tuple(
+                r for r in self.provenance.records
+                if r.field_path != name and not r.field_path.startswith(name + "."))))
         if name in {"geometry", "construction_set", "facade"}:
             self._rebuild_elements(reassign=name == "construction_set")
+
+    def __delattr__(self, name):
+        if name in {"preset", "preset_revision"}:
+            raise AttributeError("Preset identity cannot be deleted")
+        object.__delattr__(self, name)
 
     @property
     def id(self):
@@ -419,13 +526,38 @@ class Building:
     @classmethod
     def from_footprint(cls, footprint, *, storeys=None, storey_height_m=None,
                        storey_elevations_m=None, identifier="building", construction_set=None,
-                       facade=None, hvac=None, operation=None, context=None, **geometry_options):
+                       facade=None, hvac=None, operation=None, context=None, foundation=None,
+                       ground_temperature=None, thermal_bridge_uplift_fraction=None,
+                       load_reference_area_m2=None, load_reference_area_policy=None,
+                       **geometry_options):
         geometry = GeometrySpec.from_footprint(
             footprint, storeys=storeys, storey_height_m=storey_height_m,
             storey_elevations_m=storey_elevations_m, **geometry_options)
         return cls.empty(identifier=identifier, geometry=geometry,
                          construction_set=construction_set, facade=facade, hvac=hvac,
-                         operation=operation, context=context)
+                         operation=operation, context=context, foundation=foundation,
+                         ground_temperature=ground_temperature,
+                         thermal_bridge_uplift_fraction=thermal_bridge_uplift_fraction,
+                         load_reference_area_m2=load_reference_area_m2,
+                         load_reference_area_policy=load_reference_area_policy)
+
+    @property
+    def effective_load_reference_area_m2(self):
+        """Return the explicit or policy-resolved load area, separate from physical floor area."""
+        if self.load_reference_area_m2 is not None:
+            return self.load_reference_area_m2
+        if self.load_reference_area_policy == "conditioned_floor_area" and self.geometry is not None:
+            return self.geometry.conditioned_floor_area_m2
+        return None
+
+    @property
+    def load_reference_area_basis(self):
+        """Report whether the load area is explicit, policy-derived or still missing."""
+        if self.load_reference_area_m2 is not None:
+            return "explicit"
+        if self.load_reference_area_policy is not None:
+            return "policy"
+        return "missing"
 
     @property
     def elements(self):
@@ -496,6 +628,13 @@ class Building:
             for name in ("hvac", "operation"):
                 if getattr(self, name) is None:
                     missing.append(name)
+            missing.extend(self._ground_boundary_missing())
+            if self.thermal_bridge_uplift_fraction is None:
+                missing.append("thermal_bridge_uplift_fraction")
+            if self.load_reference_area_m2 is None and self.load_reference_area_policy is None:
+                missing.append("load_reference_area_m2 or load_reference_area_policy")
+            elif self.load_reference_area_m2 is not None and self.load_reference_area_policy is not None:
+                unsupported.append("Choose either load_reference_area_m2 or load_reference_area_policy")
             if engine == "epsm_rc" and self.geometry is not None:
                 if self.geometry.basement_depth_m or any(not p.conditioned for p in self.geometry.parts):
                     unsupported.append("epsm_rc requires a single conditioned domain without basement")
@@ -519,24 +658,82 @@ class Building:
                 if any(abs(m.thickness - layer.thickness) > 1e-9
                        for layer in layers for m in layer.materials):
                     unsupported.append(f"{element.identifier}: unequal parallel thermal path depths")
+        if engine == "energyplus" and not missing and not unsupported \
+                and self.foundation is not None and self.foundation.method == "kiva":
+            from .preflight import _preflight_building_kiva
+
+            unsupported.extend(_preflight_building_kiva(self).unsupported)
         return Readiness(tuple(missing), tuple(unsupported))
+
+    def _ground_boundary_missing(self):
+        """Return missing ground inputs without resolving omitted authoring values."""
+        missing = []
+        foundation = self.foundation
+        temperatures = self.ground_temperature
+        if foundation is None:
+            return ("foundation",)
+        supplied = foundation.model_fields_set
+        if "method" not in supplied:
+            missing.append("foundation.method")
+            return tuple(missing)
+        if foundation.method == "kiva":
+            if temperatures is not None:
+                missing.append("Kiva conflicts with prescribed ground temperatures")
+            required = (
+                "source", "soil_conductivity_w_mk", "soil_density_kg_m3",
+                "soil_specific_heat_j_kgk", "exposed_perimeter_fraction",
+                "wall_height_above_grade_m", "wall_depth_below_slab_m",
+                "deep_ground_boundary", "deep_ground_depth_m", "far_field_width_m",
+            )
+            missing.extend(f"foundation.{name}" for name in required if name not in supplied)
+            if foundation.footing_material is not None:
+                missing.extend(f"foundation.{name}" for name in ("footing_depth_m", "footing_width_m")
+                               if name not in supplied)
+        elif foundation.method == "prescribed_temperature":
+            kiva_only = supplied - {"method", "source"}
+            if kiva_only:
+                missing.append("prescribed_temperature cannot include Kiva parameters")
+            if temperatures is None:
+                missing.append("ground_temperature")
+            else:
+                temperature_fields = temperatures.model_fields_set
+                missing.extend(f"ground_temperature.{name}" for name in
+                               ("monthly_temperatures_c", "source")
+                               if name not in temperature_fields)
+        return tuple(missing)
 
     def quantities(self):
         self.readiness("quantities").require()
         return material_inventory(self.elements, self.hvac.equipment if self.hvac else ())
 
-    def snapshot(self):
-        return BuildingSnapshot.from_dict({
-            "schema": "epsm.building/1", "identifier": self.identifier, "preset": self.preset,
+    def _snapshot_data(self):
+        return {
+            "schema": "epsm.building/6", "identifier": self.identifier, "preset": self.preset,
+            "preset_revision": self.preset_revision,
+            "provenance": self.provenance.model_dump(mode="json"),
             "geometry": self.geometry.model_dump(mode="json") if self.geometry else None,
             "construction_set": construction_set_to_dict(self.construction_set)
             if self.construction_set else None,
             "facade": self.facade.model_dump(mode="json") if self.facade else None,
             "hvac": self.hvac.to_dict() if self.hvac else None,
             "operation": self.operation.model_dump(mode="json") if self.operation else None,
+            "foundation": self.foundation.model_dump(mode="json", exclude_unset=True)
+            if self.foundation else None,
+            "ground_temperature": self.ground_temperature.model_dump(mode="json", exclude_unset=True)
+            if self.ground_temperature else None,
+            "thermal_bridge_uplift_fraction": self.thermal_bridge_uplift_fraction,
+            "load_reference_area_m2": self.load_reference_area_m2,
+            "load_reference_area_policy": self.load_reference_area_policy,
             "context": self.context.model_dump(mode="json"),
             "elements": [e.to_dict() for e in self.elements],
-        })
+        }
+
+    def snapshot(self):
+        """Capture state without rewriting an untouched historical snapshot."""
+        data = self._snapshot_data()
+        if getattr(self, "_origin_state", None) == _json(data):
+            return self._origin_snapshot
+        return BuildingSnapshot.from_dict(data)
 
     @classmethod
     def from_dict(cls, data):
@@ -548,9 +745,18 @@ class Building:
         result.facade = data["facade"]
         result.hvac = HVACSystem(**data["hvac"]) if data["hvac"] else None
         result.operation = data["operation"]
+        result.foundation = data.get("foundation")
+        result.ground_temperature = data.get("ground_temperature")
+        result.thermal_bridge_uplift_fraction = data.get("thermal_bridge_uplift_fraction")
+        result.load_reference_area_m2 = data.get("load_reference_area_m2")
+        result.load_reference_area_policy = data.get("load_reference_area_policy")
         result.context = data.get("context", {})
         result.elements = [BuildingElement.from_dict(e) for e in data["elements"]]
-        result.preset = data.get("preset")
+        object.__setattr__(result, "preset", data.get("preset"))
+        object.__setattr__(result, "preset_revision", data.get("preset_revision"))
+        result.provenance = data.get("provenance", {})
+        result._origin_snapshot = BuildingSnapshot.from_dict(data)
+        result._origin_state = _json(result._snapshot_data())
         return result
 
     @classmethod
@@ -764,6 +970,15 @@ class Building:
         child._material_flows = (*self.material_flows, flows)
         child._parent_snapshot_id = before.sha256
         return child
+
+    def resolve(self, weather):
+        """Capture and resolve a read-only view with explicit weather context.
+
+        Requires complete authoring inputs and delegates to the existing pipeline.
+        Passing Weather or ClimateSpec performs no weather-file I/O; a path is
+        inspected by the existing conversion API. No engine is initialized.
+        """
+        return self.snapshot().resolve(weather)
 
     def to_spec(self, weather):
         """Compile authoring state to the existing numerical Core input contract."""

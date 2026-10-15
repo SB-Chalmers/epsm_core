@@ -37,8 +37,11 @@ Example::
 
 from __future__ import annotations
 
+import json
 from datetime import date
 from typing import Literal
+
+from pydantic import JsonValue, field_validator
 
 from .base import Fraction, Nonnegative, Spec
 
@@ -62,6 +65,9 @@ class SourceRecord(Spec):
     assumption_profile : str | None
         Named and externally managed default profile recorded in provenance.  Default:
         ``None``.
+    evidence : dict or None
+        Optional finite JSON evidence, including raw source fields, derivations and
+        selected overrides. Copied on validation; omitted in older records.
 
     Raises
     ------
@@ -94,6 +100,15 @@ class SourceRecord(Spec):
     source: str
     confidence: Fraction | None = None
     assumption_profile: str | None = None
+    evidence: dict[str, JsonValue] | None = None
+
+    @field_validator("evidence")
+    @classmethod
+    def portable_evidence(cls, value):
+        """Require ordinary finite JSON, and retain a detached copy of raw evidence."""
+        if value is None:
+            return None
+        return json.loads(json.dumps(value, allow_nan=False))
 
 
 class ProvenanceSpec(Spec):

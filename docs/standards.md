@@ -23,9 +23,9 @@ Sveby expresses area-normalised inputs per Atemp. EPSM Core applies area densiti
 | Heating setpoint | 21 °C | Constant `UseSpec.heating_setpoint` |
 | Non-heating/cooling-season setpoint | 25 °C | Constant `UseSpec.cooling_setpoint` |
 | Presence | 17:00–07:00, 14 h/day | Repeated 24-hour occupancy schedule |
-| Person heat | 80 W/person total | `UseSpec.occupant_activity_w` |
+| Person heat | 80 W/person total | `UseSpec.occupant_activity_w`; channel split selected by `UseSpec.gain_partitions` |
 | Household electricity | 21 kWh/(m² Atemp year) | Retained as source metadata |
-| Household electricity available as heat | 70%; 14.7 kWh/(m² year), 1.68 W/m² | `UseSpec.equipment_gain_w_m2` |
+| Household electricity available as heat | 70%; 14.7 kWh/(m² year), 1.68 W/m² | `UseSpec.equipment_gain_w_m2`; radiant/latent/convective split selected by `UseSpec.gain_partitions` |
 | DHW | 21 kWh/(m² Atemp year) | `UseSpec.dhw_kwh_m2_year` |
 | DHW available as internal heat | 0% | Water use is not assigned as a zone gain |
 | Minimum outdoor air | 0.35 L/(s m²) | Partial `AirflowSpec.mechanical_vent_l_s_m2` default |
@@ -37,6 +37,17 @@ Sveby expresses area-normalised inputs per Atemp. EPSM Core applies area densiti
 | Window-airing addition | 4 kWh/(m² Atemp year) | Stored for result normalisation, not emitted as infiltration |
 
 The full apartment-size occupancy table and the official monthly DHW and household-electricity values remain in the JSON resource even where the current Core schema cannot emit them.
+
+Sveby specifies total person heat and useful household electricity, not universal
+EnergyPlus radiant, latent and convective fractions. Core keeps those concerns
+separate: the named illustrative Building preset explicitly selects
+`GainPartitionSpec(policy="epsm_legacy_v1")`; a missing or null policy on an older
+snapshot retains the legacy fallback and appears as `selection="legacy_default"`
+in the per-zone gain diagnostic. A caller can provide reviewed channel fractions
+with `policy="explicit"`. These are modelling inputs rather than additional Sveby
+values. See the [physical Building gain-partition API](physical-building.md#internal-gain-partitions)
+for the legacy values, field meanings, budget checks, diagnostic and serialization
+behavior.
 
 ## Default use
 
@@ -57,12 +68,12 @@ from epsm_core import load_sveby_residential_v2
 sveby = load_sveby_residential_v2()
 ```
 
-`BuildingBuilder()` selects the unversioned loader when no constructor arguments are supplied. Known physical inputs can be dictionaries or typed Core specifications:
+`BuildingBuilder(building_use="residential")` selects the unversioned loader; `BuildingBuilder()` supplies no profile. Known physical inputs can be dictionaries or typed Core specifications:
 
 ```python
 from epsm_core import BuildingBuilder
 
-building = BuildingBuilder().build(
+building = BuildingBuilder(building_use="residential").build(
     identifier="example",
     geometry=geometry,
     climate=climate,
@@ -72,7 +83,7 @@ building = BuildingBuilder().build(
 )
 ```
 
-The resulting building gets the profile's `use`, `common_use`, solar multiplier and minimum mechanical outdoor-air flow. Weather, fabric, topology, leakage and recovery remain required. Explicit leaves in the supplied objects override profile leaves; Pydantic schema defaults that the caller did not explicitly set do not.
+The resulting building gets the selected profile's `use`, `common_use`, solar multiplier and minimum mechanical outdoor-air flow. Weather, fabric, topology, leakage and recovery remain required. Explicit leaves in the supplied objects override profile leaves; Pydantic schema defaults that the caller did not explicitly set do not.
 
 For a reviewed occupant density or active cooling system, create a caller-visible profile mapping and retain the same versioned provenance identity:
 
@@ -148,7 +159,7 @@ building = building.updated(
 )
 ```
 
-`BuildingBuilder()` and `load_sveby_spec()` continue to supply 21 kWh/m²/year
+`BuildingBuilder(building_use="residential")` and `load_sveby_spec()` supply 21 kWh/m²/year
 from the published residential profile. The Sveby school operational profile
 continues to supply 10; requesting `school` with `purpose="epc_normal_use"`
 explicitly selects the separate BEN comparison assumption of 2. For observed
@@ -158,9 +169,9 @@ measurement or allocation basis in the caller's evidence.
 
 ## Completion defaults
 
-Sveby specifies occupants by apartment size, not one universal person-per-area value. The no-input path therefore retains the previous EPSM demonstration density of `0.017 person/m²` as an explicitly labelled completion assumption. Replace it by calculating the building population from the stored apartment-size table and dividing by the verified Atemp.
+Sveby specifies occupants by apartment size, not one universal person-per-area value. The residential profile path therefore retains the previous EPSM demonstration density of `0.017 person/m²` as an explicitly labelled completion assumption. Replace it by calculating the building population from the stored apartment-size table and dividing by the verified Atemp.
 
-The default also keeps cooling disabled because the standard setpoint does not prove that a cooling system exists. The 25 °C schedule remains present and becomes active when the caller supplies `cooling_enabled=True`.
+The residential profile also keeps cooling disabled because the standard setpoint does not prove that a cooling system exists. The 25 °C schedule remains present and becomes active when the caller supplies `cooling_enabled=True`.
 
 Inspect completion assumptions programmatically:
 
@@ -195,9 +206,9 @@ Consequently, “loaded from the Sveby profile” means the run has traceable st
 
 ## Provenance and replacement
 
-Every missing leaf merged by the default builder is recorded as `status="assumed"`, with the versioned profile ID as both source and `assumption_profile`. Explicit caller leaves are recorded as measured with the caller's `source` label. The builder replaces caller-supplied provenance to prevent stale records from surviving a merge.
+Every missing leaf merged by a selected profile is recorded as `status="assumed"`, with the versioned profile ID as both source and `assumption_profile`. Explicit caller leaves are recorded as measured with the caller's `source` label. The builder replaces caller-supplied provenance to prevent stale records from surviving a merge.
 
-The resource validates its schema, identity, version and central reviewed values on load. Corruption or an unreviewed edit fails before a `UseSpec` is produced. Tests cover the values, schedule duration, no-argument builder, typed-input merging and explicit-profile compatibility. The JSON path is included in wheel package data and is checked during release verification.
+The resource validates its schema, identity, version and central reviewed values on load. Corruption or an unreviewed edit fails before a `UseSpec` is produced. Tests cover the values, schedule duration, explicit residential profile selection, typed-input merging and caller-owned profile compatibility. The JSON path is included in wheel package data and is checked during release verification.
 
 When updating the standard:
 

@@ -54,8 +54,10 @@ from .building_adapter import run_building, thermal_construction
 from .compiler import CompilationReport, EnergyPlusCompiler
 from .dhw import DHWProfileSpec, load_dhw_profile
 from .district import DistrictPlan
+from .gains import InternalGainSeries, resolve_internal_gains
 from .generic_programme import GenericOtherProgramme, load_generic_other_v1
 from .inventory import MaterialFlows, MaterialInventory, MaterialQuantity
+from .preflight import preflight_energyplus
 from .preparation import GeometryPolicy, GeometryPreparationResult, prepare_geometry
 from .pv import run_pvwatts
 from .quantities import quantity_takeoff
@@ -67,6 +69,7 @@ from .renovation import (
     ReplaceGlazing,
     apply_renovation,
 )
+from .resolved import ResolvedBuildingInput, resolve_building
 from .results import SimulationResult
 from .runner import EnergyPlusRunner, SimulationError
 from .specs import (
@@ -90,6 +93,7 @@ from .specs import (
     FootprintCleanupSpec,
     FoundationSpec,
     FVPSpec,
+    GainPartitionSpec,
     GeometrySpec,
     GlazingSpec,
     GroundTemperatureSpec,
@@ -120,10 +124,12 @@ from .weather import Weather, climate_from_epw
 
 __all__ = [
     "AuthoringLink", "Building", "BuildingElement", "BuildingSnapshot", "HVACSystem", "OperationProfile",
-    "Readiness", "RenovationStage", "MaterialFlows", "MaterialInventory", "MaterialQuantity",
+    "Readiness",
+    "ResolvedBuildingInput",
+    "resolve_building", "RenovationStage", "MaterialFlows", "MaterialInventory", "MaterialQuantity",
     "Weather",
     "Equipment",
-    "run_building", "thermal_construction",
+    "run_building", "thermal_construction", "preflight_energyplus",
     "DHWProfileSpec",
     "load_dhw_profile",
     "GenericOtherProgramme",
@@ -179,6 +185,9 @@ __all__ = [
     "ZoningSpec",
     "GlazingSpec",
     "FoundationSpec",
+    "GainPartitionSpec",
+    "InternalGainSeries",
+    "resolve_internal_gains",
     "GroundTemperatureSpec",
     "LayerSpec",
     "MaterialSpec",

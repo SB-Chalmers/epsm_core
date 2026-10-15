@@ -42,13 +42,16 @@ def test_gradual_authoring_and_readiness():
     assert not building.readiness("quantities")
     with pytest.raises(ValueError, match="not ready"):
         building.quantities()
-    reference = Building()
+    reference = Building(preset="illustrative-reference")
     assert reference.readiness(engine="energyplus")
     assert reference.readiness(engine="epsm_rc")
     complete = Building.from_footprint(
         Footprint.rectangle(10, 8), storeys=2, storey_height_m=3,
         construction_set=reference.construction_set, facade=reference.facade,
-        hvac=reference.hvac, operation=reference.operation)
+        hvac=reference.hvac, operation=reference.operation,
+        foundation=reference.foundation,
+        thermal_bridge_uplift_fraction=reference.thermal_bridge_uplift_fraction,
+        load_reference_area_policy=reference.load_reference_area_policy)
     assert complete.readiness()
     assert "illustrative-reference" in repr(reference)
     with pytest.raises(ValueError):
@@ -59,7 +62,7 @@ def test_gradual_authoring_and_readiness():
 def test_operation_assignment_preserves_public_domain_interface():
     from epsm_core import OperationProfile
 
-    building = Building()
+    building = Building(preset="illustrative-reference")
     assert isinstance(building.operation, OperationProfile)
     changed = building.operation.with_changes(equipment_gain_w_m2=10)
     building.operation = changed
@@ -78,7 +81,7 @@ def test_domain_representations_are_bounded_and_do_not_inspect_or_do_io(
         label, synthetic_weather, monkeypatch):
     from epsm_core import Equipment, ScheduleSpec
 
-    building = Building(identifier=label)
+    building = Building(preset="illustrative-reference", identifier=label)
     selected = wall(building)
     operation = ConstructionOperation("replace_element", selected.role,
                                       element=selected.construction)
@@ -120,7 +123,7 @@ def test_assignment_snapshot_and_subclass_isolation():
         def _copy_runtime_configuration_to(self, child):
             child.assessment = dict(self.assessment)
 
-    building = AppBuilding()
+    building = AppBuilding(preset="illustrative-reference")
     building.results.append("old")
     building.assessment["horizon"] = 60
     snapshot = building.snapshot()
@@ -141,7 +144,7 @@ def test_assignment_snapshot_and_subclass_isolation():
 
 
 def test_physical_inventory_is_independent_of_zones_and_preserves_material_fractions():
-    building = Building()
+    building = Building(preset="illustrative-reference")
     initial = building.quantities()
     building.geometry = building.geometry.updated(zoning=ZoningSpec(mode="whole_building"))
     assert building.quantities() == initial
@@ -164,7 +167,7 @@ def test_physical_inventory_is_independent_of_zones_and_preserves_material_fract
 
 
 def test_targeted_like_for_like_replacement_and_atomic_failure():
-    building = Building()
+    building = Building(preset="illustrative-reference")
     selected = wall(building)
     before = building.snapshot()
     operation = ConstructionOperation("replace_element", selected.role,
@@ -189,7 +192,7 @@ def test_targeted_like_for_like_replacement_and_atomic_failure():
 
 
 def test_added_component_retains_existing_occurrences():
-    building = Building()
+    building = Building(preset="illustrative-reference")
     selected = wall(building)
     component = selected.construction.components[0]
     addition = replace(component, name="new outside insulation", layers=component.layers[:1])
@@ -203,7 +206,7 @@ def test_added_component_retains_existing_occurrences():
 def test_authoring_between_renovations_keeps_roundtrippable_history():
     from epsm_core import ScheduleSpec
 
-    baseline = Building()
+    baseline = Building(preset="illustrative-reference")
     selected = wall(baseline)
     operation = ConstructionOperation("replace_element", selected.role,
                                       element=selected.construction)
@@ -231,7 +234,7 @@ def test_authoring_between_renovations_keeps_roundtrippable_history():
 
 
 def test_material_authoring_changes_require_resolution_without_inventing_flows():
-    baseline = Building()
+    baseline = Building(preset="illustrative-reference")
     selected = wall(baseline)
     operation = ConstructionOperation("replace_element", selected.role,
                                       element=selected.construction)
@@ -256,7 +259,7 @@ def test_material_authoring_changes_require_resolution_without_inventing_flows()
 def test_lineage_rejects_missing_authoring_links_and_preserves_previous_state():
     from epsm_core import ScheduleSpec
 
-    baseline = Building()
+    baseline = Building(preset="illustrative-reference")
     selected = wall(baseline)
     operation = ConstructionOperation("replace_element", selected.role,
                                       element=selected.construction)
@@ -272,7 +275,7 @@ def test_lineage_rejects_missing_authoring_links_and_preserves_previous_state():
 
 
 def test_renovation_prerequisites_and_symmetric_incompatibility():
-    building = Building()
+    building = Building(preset="illustrative-reference")
     selected = wall(building)
     operation = ConstructionOperation("replace_element", selected.role,
                                       element=selected.construction)
@@ -297,7 +300,7 @@ def test_renovation_prerequisites_and_symmetric_incompatibility():
 
 
 def test_system_renovation_tracks_count_and_preserves_other_equipment():
-    building = Building()
+    building = Building(preset="illustrative-reference")
     template = reference_hvac_template()
     values = template.to_dict()["values"]
     values["equipment"] = [e for e in values["equipment"] if e["identifier"] == "ventilation"]
@@ -311,7 +314,7 @@ def test_system_renovation_tracks_count_and_preserves_other_equipment():
 
 
 def test_equipment_unknown_area_stays_unknown_in_inventory_and_aggregation():
-    inventory = Building().quantities()
+    inventory = Building(preset="illustrative-reference").quantities()
     equipment = [row for row in inventory if row.kind == "equipment"]
     assert equipment
     for row in equipment:
@@ -324,7 +327,7 @@ def test_equipment_unknown_area_stays_unknown_in_inventory_and_aggregation():
 
 
 def test_targeted_construction_reaches_emitted_surfaces(synthetic_weather):
-    building = Building()
+    building = Building(preset="illustrative-reference")
     selected = wall(building)
     component = selected.construction.components[0]
     changed_layer = replace(component.layers[0].layer,
@@ -368,7 +371,7 @@ def test_weather_fingerprint_detects_mutation(synthetic_weather, tmp_path):
 def test_rc_readiness_reports_facade_override_shading():
     from epsm_core import FacadeOverride, OverhangSpec
 
-    building = Building()
+    building = Building(preset="illustrative-reference")
     selected = wall(building)
     building.facade = building.facade.updated(overrides=(FacadeOverride(
         facade_id=selected.facade_id, overhang=OverhangSpec(depth_m=1)),))
@@ -380,7 +383,7 @@ def test_thermal_bridge_preserves_zero_window_overrides(synthetic_weather):
     from epsm_core import FacadeOverride, OverhangSpec
     from epsm_core.pipeline import resolve_geometry
 
-    building = Building()
+    building = Building(preset="illustrative-reference")
     selected = wall(building)
     building.facade = building.facade.updated(overrides=(FacadeOverride(
         facade_id=selected.facade_id, storey=selected.storey, wwr=0,
@@ -398,7 +401,7 @@ def test_thermal_bridge_preserves_zero_window_overrides(synthetic_weather):
     {"storey": 99}, {"elevation_m": 99}, {"identifier": "unknown"},
 ])
 def test_energy_readiness_rejects_physical_metadata_differing_from_geometry(changes):
-    building = Building()
+    building = Building(preset="illustrative-reference")
     selected = wall(building)
     building.elements = tuple(replace(e, **changes) if e.id == selected.id else e
                               for e in building.elements)
@@ -409,13 +412,13 @@ def test_energy_readiness_rejects_physical_metadata_differing_from_geometry(chan
 
 
 def test_energy_readiness_rejects_missing_physical_element():
-    building = Building()
+    building = Building(preset="illustrative-reference")
     building.elements = building.elements[1:]
     assert not building.readiness(engine="energyplus")
 
 
 def test_layered_window_supports_quantities_but_reports_thermal_limit(synthetic_weather):
-    building = Building()
+    building = Building(preset="illustrative-reference")
     opaque = wall(building).construction
     layered_window = replace(opaque, application=Role.WINDOW, components=tuple(
         replace(c, application=Role.WINDOW) for c in opaque.components))

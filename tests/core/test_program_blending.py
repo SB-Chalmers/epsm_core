@@ -4,7 +4,7 @@ import math
 
 import pytest
 
-from epsm_core import ProgramBlend, ProgramComponent
+from epsm_core import GainPartitionSpec, ProgramBlend, ProgramComponent
 from epsm_core.compiler import EnergyPlusCompiler
 from epsm_core.specs import AirflowSpec, SchedulePeriod, ScheduleSpec, UseSpec
 
@@ -201,6 +201,60 @@ def test_zero_load_and_nested_blends_are_finite():
     assert again.occupant_activity_schedule.annual_values == pytest.approx(
         resolved.occupant_activity_schedule.annual_values
     )
+
+
+def test_program_blend_carries_equal_gain_partition_policy():
+    base = mixture()
+    policy = GainPartitionSpec(
+        policy="explicit",
+        people_fraction_radiant=0.25,
+        people_sensible_heat_fraction=None,
+        equipment_fraction_radiant=0.2,
+        equipment_fraction_latent=0.1,
+        lighting_fraction_radiant=0.3,
+        lighting_fraction_visible=0.2,
+        lighting_return_air_fraction=0.1,
+    )
+    components = tuple(
+        component.updated(use=component.use.updated(gain_partitions=policy))
+        for component in base.components
+    )
+    blend = base.updated(components=components)
+
+    effective, _ = blend.resolve(calendar_year=2024)
+    assert effective.gain_partitions == policy
+
+
+@pytest.mark.parametrize("change", ["field", "policy", "missing_vs_selected"])
+def test_program_blend_rejects_mixed_gain_partition_configurations(change):
+    base = mixture()
+    policy = GainPartitionSpec(
+        policy="explicit",
+        people_fraction_radiant=0.25,
+        people_sensible_heat_fraction=None,
+        equipment_fraction_radiant=0.2,
+        equipment_fraction_latent=0.1,
+        lighting_fraction_radiant=0.3,
+        lighting_fraction_visible=0.2,
+        lighting_return_air_fraction=0.1,
+    )
+    first = base.components[0].use.updated(gain_partitions=policy)
+    if change == "field":
+        second = base.components[1].use.updated(
+            gain_partitions=policy.updated(equipment_fraction_radiant=0.15)
+        )
+    elif change == "policy":
+        second = base.components[1].use.updated(
+            gain_partitions=GainPartitionSpec(policy="epsm_legacy_v1")
+        )
+    else:
+        second = base.components[1].use
+    components = (
+        base.components[0].updated(use=first),
+        base.components[1].updated(use=second),
+    )
+    with pytest.raises(ValueError, match="(?i)(gain|partition|policy)"):
+        base.updated(components=components).resolve(calendar_year=2024)
 
 
 def test_blended_native_compiler_schema(building, energyplus):

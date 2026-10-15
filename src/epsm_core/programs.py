@@ -75,6 +75,8 @@ class ProgramBlend(Spec):
         weights = [c.area_fraction for c in parts]
         uses = [c.use for c in parts]
         air = [c.airflow for c in parts]
+        if any(u.gain_partitions != first.use.gain_partitions for u in uses):
+            raise ValueError("Different gain partitions require separate zone programmes")
         # Resolve every calendar even when its associated design load is zero.
         for c in parts:
             for obj in (c.use, c.airflow):

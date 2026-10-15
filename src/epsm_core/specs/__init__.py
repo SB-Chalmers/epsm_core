@@ -66,6 +66,7 @@ from .physics import DeliverySpec as DeliverySpec
 from .physics import EnvelopeSpec as EnvelopeSpec
 from .physics import FoundationSpec as FoundationSpec
 from .physics import FVPSpec as FVPSpec
+from .physics import GainPartitionSpec as GainPartitionSpec
 from .physics import GroundTemperatureSpec as GroundTemperatureSpec
 from .physics import HeatingDeliverySpec as HeatingDeliverySpec
 from .physics import LayerSpec as LayerSpec

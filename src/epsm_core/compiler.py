@@ -69,6 +69,7 @@ from .failures import (
 )
 from .footprint_cleanup import prepared_footprints
 from .foundations import apply_kiva
+from .gains import equipment_partition_fractions, gain_partition_report
 from .pipeline import resolve_geometry
 from .roofs import backend_versions
 from .settings import CompilerSettings
@@ -76,6 +77,7 @@ from .specs import BuildingSpec, Spec
 from .surface_checks import MIN_GENERATED_EDGE_M, validate_surfaces
 from .vertex_order import serialize_vertices
 from .weather import climate_from_epw, file_sha256
+from .zone_inputs import resolve_zone_operations
 
 # PolygonClipping's 15,000-figure EnergyPlus default is too small for validated dense
 # contexts. One million is the capacity used by the archived dense-context campaign;
@@ -980,15 +982,7 @@ class EnergyPlusCompiler:
             )
         zone_report, ground_report = graph.zones, []
         g = spec.geometry
-        common_use = spec.common_use or spec.use.updated(
-            heating_setpoint=spec.use.heating_setpoint.constant(
-                g.zoning.apartments.common_heating_setpoint_c
-            ),
-            occupant_density_per_m2=0,
-            equipment_gain_w_m2=0,
-            lighting_gain_w_m2=0,
-            dhw_kwh_m2_year=0,
-        )
+        common_use, zone_operations, load_scale = resolve_zone_operations(spec, zone_report)
         has_common = any(
             z.get("zone_kind") in ("common", "stairwell") for z in zone_report.values()
         )
@@ -1011,39 +1005,6 @@ class EnergyPlusCompiler:
                 )
         if has_common:
             emit_airflow_schedules(spec.common_airflow or spec.airflow, "common_")
-        # Reject misspelled zone selectors rather than quietly using building defaults.
-        for assignment in spec.zone_uses:
-            matches = [name for name, z in zone_report.items() if z["conditioned"] and
-                       (name == assignment.zone_name if assignment.zone_name is not None else
-                        z.get("zone_kind", z.get("physical_zone_kind")) == assignment.zone_kind)]
-            if not matches:
-                raise ValueError(f"Zone-use selector matches no conditioned zone: {assignment}")
-        for exchange in spec.unconditioned_exchange:
-            if not any(not z["conditioned"] and z.get("physical_zone_kind") == exchange.zone_kind
-                       for z in zone_report.values()):
-                raise ValueError(f"Exchange selector matches no unconditioned {exchange.zone_kind}")
-        # 6. Separate common circulation area before optionally conserving residential loads.
-        residential_area = sum(
-            z["floor_area_m2"]
-            for z in zone_report.values()
-            if z["conditioned"] and z.get("zone_kind") not in ("common", "stairwell")
-        )
-        load_scale = (
-            g.conditioned_floor_area_m2 / residential_area
-            if has_common and g.zoning.apartments.conserve_residential_loads
-            else 1
-        )
-        residential_use = spec.use.updated(
-            **{
-                name: getattr(spec.use, name) * load_scale
-                for name in (
-                    "occupant_density_per_m2",
-                    "equipment_gain_w_m2",
-                    "lighting_gain_w_m2",
-                    "dhw_kwh_m2_year",
-                )
-            }
-        )
         # 7. Assign explicit area and volume so zoning does not silently change building totals.
         for zone, data in zone_report.items():
             height = max(data["elevations_m"]) - min(data["elevations_m"])
@@ -1064,23 +1025,10 @@ class EnergyPlusCompiler:
                 volume=data["volume_m3"],
             )
             if data["conditioned"]:
-                common = data.get("zone_kind") in ("common", "stairwell")
-                use = common_use if common else residential_use
-                airflow = (spec.common_airflow or spec.airflow) if common else spec.airflow
-                prefix = "common_" if common else ""
-                scale = (spec.load_reference_area_m2 / g.conditioned_floor_area_m2
-                         if spec.load_reference_area_m2 is not None else 1)
-                load_area = data["floor_area_m2"] * scale
-                assignments = sorted(
-                    (x for x in spec.zone_uses if x.zone_name == zone or
-                     (x.zone_kind is not None and x.zone_kind ==
-                      data.get("zone_kind", data.get("physical_zone_kind")))),
-                    key=lambda x: x.zone_name is not None)
-                for assignment in assignments:
-                    use = assignment.use or use
-                    airflow = assignment.airflow or airflow
-                    if assignment.reference_area_m2 is not None:
-                        load_area = assignment.reference_area_m2
+                operation = zone_operations[zone]
+                use, airflow = operation.use, operation.airflow
+                load_area, prefix = operation.load_reference_area_m2, operation.schedule_prefix
+                assignments = operation.assignments
                 if assignments:
                     prefix = zone + "_operation_"
                     emit_activity(use, prefix)
@@ -1115,6 +1063,7 @@ class EnergyPlusCompiler:
                 data["airflow_input"] = airflow.model_dump(mode="json")
                 data["load_reference_area_m2"] = load_area
                 data["operation_sources"] = [x.source for x in assignments]
+                data["gain_partitions"] = gain_partition_report(use, spec.climate.calendar_year)
                 self._loads(add, zone, load_area, data["volume_m3"], spec,
                             use=use, airflow=airflow, schedule_prefix=prefix)
             else:
@@ -1454,6 +1403,8 @@ class EnergyPlusCompiler:
 
         # 1. Emit per-zone schedules references, internal gains, airflow and ideal loads.
         u, a = use or spec.use, airflow or spec.airflow
+        partitions = u.gain_partitions
+        explicit = partitions is not None and partitions.policy == "explicit"
         add(
             "People",
             zone + "_people",
@@ -1461,7 +1412,9 @@ class EnergyPlusCompiler:
             number_of_people_schedule_name=schedule_prefix + "occupancy_fraction",
             number_of_people_calculation_method="People",
             number_of_people=area * u.occupant_density_per_m2,
-            fraction_radiant=0.3,
+            fraction_radiant=partitions.people_fraction_radiant if explicit else .3,
+            **({"sensible_heat_fraction": partitions.people_sensible_heat_fraction}
+               if explicit and partitions.people_sensible_heat_fraction is not None else {}),
             activity_level_schedule_name=schedule_prefix + "activity",
         )
         for obj, label, watts in (
@@ -1469,16 +1422,16 @@ class EnergyPlusCompiler:
             ("Lights", "lighting", u.lighting_gain_w_m2),
         ):
             if obj == "ElectricEquipment" and u.equipment_heat_fraction_schedule is not None:
-                # EnergyPlus radiant/lost fractions are constant. Three additive loads
-                # preserve electricity, zone heat and the legacy 30% input-radiant share.
-                # If total heat is below 30%, cap radiation to keep all fractions physical.
-                fractions = u.equipment_fraction.hourly(spec.climate.calendar_year)
-                heat = u.equipment_heat_fraction_schedule.hourly(spec.climate.calendar_year)
-                for suffix in ("_radiant", "_sensible", "_lost"):
+                # Separate pure channels preserve electrical input and the hourly
+                # heat budget. Legacy names and its scheduled radiation cap remain.
+                activity = u.equipment_fraction.hourly(spec.climate.calendar_year)
+                channels = equipment_partition_fractions(u, spec.climate.calendar_year)
+                names = [("radiant", "_radiant"), ("convective", "_sensible"), ("lost", "_lost")]
+                if explicit:
+                    names.append(("latent", "_latent"))
+                for channel, suffix in names:
                     name = zone + "_equipment" + suffix
-                    values = [f * (min(0.3, h) if suffix == "_radiant" else
-                                   h - min(0.3, h) if suffix == "_sensible" else 1 - h)
-                              for f, h in zip(fractions, heat)]
+                    values = [f * share for f, share in zip(activity, channels[channel])]
                     schedule = u.equipment_fraction.annual(
                         values, calendar_year=spec.climate.calendar_year,
                         source=u.equipment_heat_fraction_schedule.source)
@@ -1490,24 +1443,28 @@ class EnergyPlusCompiler:
                         schedule_name=name + "_fraction",
                         design_level_calculation_method="EquipmentLevel",
                         design_level=watts * area,
-                        fraction_radiant=1 if suffix == "_radiant" else 0,
-                        fraction_lost=1 if suffix == "_lost" else 0)
+                        fraction_radiant=1 if channel == "radiant" else 0,
+                        fraction_lost=1 if channel == "lost" else 0,
+                        **({"fraction_latent": 1 if channel == "latent" else 0} if explicit else {}))
                 continue
+            if obj == "ElectricEquipment":
+                fields = {"fraction_radiant": partitions.equipment_fraction_radiant if explicit else .3,
+                          "fraction_lost": 1 - u.equipment_heat_fraction}
+                if explicit:
+                    fields["fraction_latent"] = partitions.equipment_fraction_latent
+            else:
+                fields = {"fraction_radiant": partitions.lighting_fraction_radiant if explicit else .3}
+                if explicit:
+                    fields.update(fraction_visible=partitions.lighting_fraction_visible,
+                                  return_air_fraction=partitions.lighting_return_air_fraction)
             add(
                 obj,
                 zone + "_" + label,
                 zone_or_zonelist_or_space_or_spacelist_name=zone,
                 schedule_name=schedule_prefix + label + "_fraction",
-                design_level_calculation_method="LightingLevel"
-                if obj == "Lights"
-                else "EquipmentLevel",
-                **(
-                    {"lighting_level": watts * area}
-                    if obj == "Lights"
-                    else {"design_level": watts * area}
-                ),
-                fraction_radiant=0.3,
-                **({"fraction_lost": 1 - u.equipment_heat_fraction} if obj == "ElectricEquipment" else {}),
+                design_level_calculation_method="LightingLevel" if obj == "Lights" else "EquipmentLevel",
+                **({"lighting_level": watts * area} if obj == "Lights" else {"design_level": watts * area}),
+                **fields,
             )
         add(
             "ZoneInfiltration:DesignFlowRate",

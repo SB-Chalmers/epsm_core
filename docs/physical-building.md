@@ -1,12 +1,16 @@
 # Physical Building authoring
 
-`Building()` selects the named `illustrative-reference` preset: a 20 × 12 m,
-three-storey building with 2.8 m storeys, 20% glazing, explicit Data reference
-constructions/HVAC and the sourced Sveby residential operation factory. The
-reference is illustrative, not calibrated building evidence. Its embodied factors
-are unknown. `Building.empty()` has no supplied physics. `from_footprint(...)`
-starts from geometry and accepts explicit `construction_set`, `facade`, `hvac`
-and `operation` arguments.
+`Building()` and `Building.empty()` create an unpopulated authoring draft. Select
+`Building(preset="illustrative-reference")` to request the named illustrative
+preset: a 20 × 12 m, three-storey building with 2.8 m storeys, 20% glazing,
+explicit Data reference constructions/HVAC and the sourced Sveby residential
+operation factory. The reference is illustrative, not calibrated building
+evidence. Its embodied factors are unknown. The version-5 preset also names its
+uncalibrated EnergyPlus Kiva soil and boundary assumptions in its provenance.
+`from_footprint(...)` starts from geometry and accepts explicit `construction_set`,
+`facade`, `hvac`, `operation`, `foundation`, `ground_temperature` and
+`thermal_bridge_uplift_fraction`, `load_reference_area_m2` and
+`load_reference_area_policy` arguments.
 
 ## Ownership and editing
 
@@ -38,6 +42,163 @@ geometry or facade configuration to change thermal areas; construction-only
 overrides remain supported. Explicit zero-window facade overrides are preserved
 when assigning per-window thermal properties.
 
+### Internal-gain partitions
+
+`UseSpec.gain_partitions` selects how people, equipment and lighting gains are
+split into EnergyPlus heat channels. Leaving it `None` preserves the historical
+fallback and is reported as `legacy_default` in each zone's `gain_partitions`
+diagnostic. The named illustrative preset selects `GainPartitionSpec(policy="epsm_legacy_v1")`
+explicitly; this reports `selection="policy"` and records the choice as preset
+provenance. That policy uses 30% radiant people heat with EnergyPlus determining
+the sensible/latent split, caps equipment radiation at 30% of each hour's available
+heat, and assigns 30% of lighting input to radiant heat. Equipment latent, lighting
+visible and lighting return-air fractions are zero. Older snapshots with the field
+absent or null retain the legacy fallback.
+
+For a reviewed custom split, select `policy="explicit"` and provide the channel
+fractions. `people_fraction_radiant` is a fraction of sensible people heat;
+`people_sensible_heat_fraction=None` leaves that value to EnergyPlus's automatic
+calculation. Equipment radiant and latent fractions apply to electrical heat, with
+the remainder assigned to convection. Lighting radiant, visible and return-air
+fractions leave the remainder convective. Fractions that exceed their heat budget
+are rejected: equipment radiant plus latent, and the three lighting fractions, must
+each sum to at most one. Explicit equipment budgets must also fit every hour of the
+selected heat-fraction schedule; Core does not silently cap them. The legacy
+equipment path retains its historical hourly radiant cap.
+
+```python
+from epsm_core import GainPartitionSpec
+
+partitions = GainPartitionSpec(
+    policy="explicit",
+    people_fraction_radiant=0.25,
+    people_sensible_heat_fraction=None,  # EnergyPlus auto-calculates it
+    equipment_fraction_radiant=0.20,
+    equipment_fraction_latent=0.10,
+    lighting_fraction_radiant=0.30,
+    lighting_fraction_visible=0.20,
+    lighting_return_air_fraction=0.10,
+)
+building.operation = building.operation.with_changes(gain_partitions=partitions)
+```
+
+Gain partitions survive `UseSpec` JSON and Building snapshot/copy/renovation
+roundtrips. `ProgramBlend` requires a common gain-partition policy; represent
+components with different policies as separate zone uses instead of averaging the
+channel fractions. The compiled per-zone report includes the effective policy,
+selection (`legacy_default`, `policy` or `explicit`), supplied configuration and
+channel budget at `report.data["zones"][zone]["gain_partitions"]`.
+
+Ground heat transfer is authoring input too. A draft has no foundation method or
+ground temperatures, and energy readiness reports the missing fields. Kiva requires
+an explicit method, source, soil conductivity/density/heat capacity, wall heights,
+exposed-perimeter fraction, deep-boundary choice/depth and far-field width. If a
+footing material is supplied, footing depth and width must also be explicit. The
+prescribed-temperature method requires an explicit method and twelve monthly values
+with a source. Omitted FoundationSpec defaults remain useful as validated value
+defaults, but do not count as authored inputs. The named illustrative preset supplies
+the documented EnergyPlus 24.2 Kiva values explicitly; they are not site measurements.
+
+Thermal-bridge uplift is another required energy input. A draft leaves
+`thermal_bridge_uplift_fraction` unset. Supply a finite nonnegative fraction; for
+example, `0.1` means a ten percent U-value increase for supported envelope roles.
+The compiler represents it by changing equivalent conductivities while retaining
+layer thickness, density and specific heat, so physical material quantities and
+layer heat capacity stay unchanged. The named illustrative preset explicitly supplies
+zero and records that assumption in its provenance.
+
+Loads and area-based airflow need one load-reference area choice. Set a finite
+positive `load_reference_area_m2`, or select
+`load_reference_area_policy="conditioned_floor_area"` to derive it from the current
+geometry. The policy follows later geometry edits. A chosen area scales per-area
+people, equipment, lighting, DHW and area-based airflow inputs; it does not change
+the physical floor area, envelope, volume or material quantities. The illustrative
+preset uses the conditioned-floor-area policy. Supplying an explicit area overrides
+that preset assumption and removes its stale provenance record. If you set an
+explicit policy yourself, clear it before assigning an area.
+
+## Resolved input view
+
+`building.resolve(weather)` returns an immutable `ResolvedBuildingInput` view of a
+fully authored physical Building. Resolution requires energy readiness, so it does
+not fill missing operation, construction, foundation, thermal-bridge or area inputs.
+The input may be an already-loaded `Weather` or `ClimateSpec`; resolving it does not
+initialize EnergyPlus or read another weather file. This exported view has its own
+schema, `epsm.resolved_building/1`; it does not change the `epsm.building/6`
+snapshot format.
+
+```python
+resolved = building.resolve(weather)
+print(resolved.source_id, resolved.source_snapshot_id)
+for surface in resolved.surfaces:
+    print(surface["gross_area_m2"], surface["opening_area_m2"], surface["net_area_m2"])
+
+export = resolved.to_dict()  # writable detached data for downstream tools
+```
+
+The view reports per-surface gross, opening and net areas, and openings identify
+both each thermal pane and its logical physical opening. Physical ownership,
+thermal-zone assignments, operation references and boundary relationships remain
+attached to the resolved records. Internal mass is represented once as its physical
+record, not duplicated for the two thermal faces used by the engine.
+
+Geometry coordinates use `local_metric_after_scene_rotation`, matching the existing
+geometry pipeline. The origin is the source geometry's minimum XY before rotation;
+`orientation_deg` records the clockwise angle already applied to the local polygons.
+Consumers must not apply a second scene rotation. Construction records are nominal
+authoring constructions. They do not include thermal-bridge conductance equivalents
+or engine material substitutions.
+
+The source fields distinguish `source_kind` (`building_snapshot` or
+`building_spec`), `source_id`, `source_snapshot_id` and `source_spec_hash`. For
+physical Buildings, `source_id` and `source_snapshot_id` retain the exact snapshot
+SHA-256; `source_spec_hash` identifies the resolved spec, including its supplied
+climate context. For an existing spec, `source_spec_hash` identifies that spec and
+`source_snapshot_id` is `None`. Spec-only resolution retains construction roles and
+assignments, but leaves physical owner IDs absent when no authoring inventory exists.
+
+```python
+from epsm_core import resolve_building
+
+spec_view = resolve_building(spec)  # spec is an existing complete BuildingSpec
+print(spec_view.source_kind, spec_view.source_spec_hash)
+```
+
+The view's `climate` mapping retains the supplied calendar, site, weather identity
+and path as context; resolution does not read the file at that path. The nested maps
+are read-only and sequence data use tuples. Use `.to_dict()` for a detached mutable
+export; changing that export cannot alter the Building or the resolved view. A
+physical Building's snapshot identity remains the exact authoring snapshot hash
+(weather is not part of that snapshot), while `source_spec_hash` includes the
+resolved spec and supplied climate context. This also preserves identity for a
+restored complete schema-5 snapshot. For an existing complete `BuildingSpec`,
+`resolve_building(spec)` provides the same engine-independent view without weather
+file I/O because the climate metadata is already present. This is a resolved-input
+API; it does not imply migration of RC or other consumers.
+
+```python
+from epsm_core import Building, Footprint, FoundationSpec
+
+building = Building.from_footprint(
+    Footprint.rectangle(10, 8),
+    storeys=2,
+    storey_height_m=3,
+    foundation=FoundationSpec(
+        method="kiva",
+        source="study-soil-report-v1",
+        soil_conductivity_w_mk=1.6,
+        soil_density_kg_m3=1800,
+        soil_specific_heat_j_kgk=900,
+        exposed_perimeter_fraction=0.75,
+        wall_height_above_grade_m=0.2,
+        wall_depth_below_slab_m=0.1,
+        deep_ground_boundary="ZeroFlux",
+        deep_ground_depth_m=30,
+        far_field_width_m=25,
+    ),
+)
+```
+
 ## Quantities and ordered interventions
 
 `building.quantities()` returns an iterable MaterialInventory with `by_material()`
@@ -52,7 +213,7 @@ from epsm_data import ConstructionOperation, RenovationMeasure, SystemOperation
 from epsm_data import reference_hvac_template
 from epsm_data.domain.enums import BuildingElement as Role
 
-building = Building()
+building = Building(preset="illustrative-reference")
 wall = next(e for e in building.elements if e.role == Role.EXT_WALL)
 replacement = RenovationMeasure(
     'wall.replace', 'envelope', 'Replace wall', 'Illustrative replacement', 'wall',
@@ -79,10 +240,16 @@ physical intervention must appear in lifecycle flows.
 
 ## Snapshots, lineage and execution
 
-`snapshot()` stores canonical immutable JSON, including resolved construction
-values and occurrence identities. Its `.sha256` identifies that state. `.to_dict()`
-returns a detached copy; `.to_building()` returns an editable independent building.
-Runtime results and evaluation settings are excluded. Ordered history is separately
+`snapshot()` stores canonical immutable JSON, including the explicitly selected
+preset revision and provenance, resolved construction values, occurrence identities,
+authored ground fields, optional thermal-bridge input and load-reference choice. New
+snapshots use `epsm.building/6`; `.sha256` identifies the stored
+state. `.to_dict()` returns a detached copy; `.to_building()` returns an editable
+independent building. Runtime results and evaluation settings are excluded.
+Version-1 through version-5 snapshots remain readable and retain their original hash
+while their restored state is unchanged. Missing ground inputs stay missing when an
+older snapshot is restored. Editing a restored legacy building writes the new
+snapshot format without resolving the preset again. Ordered history is separately
 saved/restored with `lineage_to_dict()` and `restore_lineage()`.
 
 Authoring edits remain possible after a renovation. `building.authoring_links`
@@ -128,9 +295,17 @@ metadata can be supplied as `provenance={...}`. Core does not fetch weather or
 discover sidecars automatically. A complete calendar and preserved quality
 report do not establish local weather accuracy.
 
-`run_building(building, weather=weather, directory=...)` validates weather,
-captures a snapshot, compiles and executes the existing EnergyPlus implementation.
-`building.to_spec(weather)` exposes the migration bridge. Targeted opaque changes
+`readiness(engine="energyplus")` also checks Kiva's resolved ground-floor unions
+without opening weather files or initializing EnergyPlus. `preflight_energyplus(spec)`
+provides the same check for a complete `BuildingSpec`. It rejects per-zone floor
+holes, disconnected pieces, overlaps, non-coplanar floors and mixed constructions;
+prescribed monthly ground temperatures remain available for geometry Kiva cannot
+represent. The compiler repeats these checks as a final defensive guard.
+
+`run_building(building, weather=weather, directory=...)` captures a snapshot and
+checks EnergyPlus readiness before reading weather, then compiles and executes the
+existing EnergyPlus implementation. `building.to_spec(weather)` exposes the
+engine-independent migration bridge. Targeted opaque changes
 reach thermal faces/internal slabs through bounded construction overrides; nominal
 physical inventory continues to use the original Data materials. Parallel thermal
 layers are reduced only within the engine adapter.
@@ -159,3 +334,14 @@ The development CI checks out Data's `codex/harmonisation` branch. Configure the
 to that private repository; CI
 fails explicitly before testing if the secret is absent. Switch to
 the published dependency when the coordinated release is available.
+
+## Consumer migration after explicit presets
+
+Core now leaves `Building()` and `BuildingBuilder()` unconfigured. Callers that
+intend the illustrative model must select
+`Building(preset="illustrative-reference")`; callers that intend residential
+Sveby assumptions must select `BuildingBuilder(building_use="residential")`.
+RC, LCA and Workflows examples and tests using the former no-argument defaults
+need that explicit selection when upgrading Core. Those consumer changes and
+installed cross-package checks are separate from this Core change; they have
+not been claimed as passing here.
