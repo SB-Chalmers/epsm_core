@@ -54,6 +54,7 @@ from .building_adapter import run_building, thermal_construction
 from .compiler import CompilationReport, EnergyPlusCompiler
 from .dhw import DHWProfileSpec, load_dhw_profile
 from .district import DistrictPlan
+from .gains import InternalGainSeries, resolve_internal_gains
 from .generic_programme import GenericOtherProgramme, load_generic_other_v1
 from .inventory import MaterialFlows, MaterialInventory, MaterialQuantity
 from .preflight import preflight_energyplus
@@ -185,6 +186,8 @@ __all__ = [
     "GlazingSpec",
     "FoundationSpec",
     "GainPartitionSpec",
+    "InternalGainSeries",
+    "resolve_internal_gains",
     "GroundTemperatureSpec",
     "LayerSpec",
     "MaterialSpec",
