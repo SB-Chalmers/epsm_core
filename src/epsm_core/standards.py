@@ -10,7 +10,7 @@
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-15
 
-"""Load explicit operational standards bundled with EPSM Core.
+"""Resolve explicit operating definitions selected through EPSM Data.
 
 The default residential profile is Sveby Brukarindata bostader 2.0. It supplies
 standardised normal-use assumptions while leaving weather, fabric, leakage,
@@ -36,13 +36,13 @@ Example::
 
 from __future__ import annotations
 
-import json
 import math
 from calendar import monthrange
 from dataclasses import dataclass
-from importlib.resources import files
 from types import MappingProxyType
 from typing import Any, Mapping
+
+from epsm_data import load_operating_profile
 
 from .specs import ScheduleSpec, UseSpec
 
@@ -86,8 +86,7 @@ class SvebyResidentialSpec:
     Raises
     ------
     ValueError
-        If the resource schema, standard identity, version or pinned reviewed values do not
-        match the implementation.
+        If the resource layout or monthly/annual energy relationship is invalid.
 
     Notes
     -----
@@ -109,7 +108,11 @@ class SvebyResidentialSpec:
     data: Mapping[str, Any]
 
     def __post_init__(self) -> None:
-        """Freeze and validate the bundled resource before exposing any defaults."""
+        """Freeze supplied inputs and validate the supported physical layout.
+
+        Data's public loaders own named definition selection and source identity.
+        Core retains the schedule and energy-conservation checks.
+        """
         object.__setattr__(self, "data", _freeze(self.data))
         if self.data.get("schema_version") != 1:
             raise ValueError("Unsupported Sveby profile schema version")
@@ -118,18 +121,6 @@ class SvebyResidentialSpec:
         if self.data.get("version") != "2.0":
             raise ValueError("Unsupported Sveby residential version")
         use = self.data.get("use", {})
-        expected = {
-            "heating_setpoint_c": 21.0,
-            "cooling_setpoint_c": 25.0,
-            "occupancy_hours_per_day": 14,
-            "occupant_activity_total_w": 80.0,
-            "household_electricity_kwh_m2_year": 21.0,
-            "household_electricity_internal_gain_fraction": 0.70,
-            "household_electricity_internal_gain_w_m2": 1.68,
-            "dhw_kwh_m2_year": 21.0,
-        }
-        if any(use.get(key) != value for key, value in expected.items()):
-            raise ValueError("Bundled Sveby values do not match the reviewed v2.0 profile")
         monthly_pairs = (
             ("dhw_monthly_kwh_m2", use["dhw_kwh_m2_year"]),
             (
@@ -417,7 +408,7 @@ def load_sveby_residential_v2() -> SvebyResidentialSpec:
     FileNotFoundError
         If package installation omitted the required JSON resource.
     ValueError
-        If the stored schema, identity, version or pinned values fail validation.
+        If the definition layout, source identity or energy conservation is invalid.
 
     Notes
     -----
@@ -432,9 +423,7 @@ def load_sveby_residential_v2() -> SvebyResidentialSpec:
         standard = load_sveby_residential_v2()
         assert standard.data["version"] == "2.0"
     """
-    resource = files("epsm_data").joinpath("datasets/standards/sveby_residential_v2.json")
-    with resource.open("r", encoding="utf-8") as handle:
-        return SvebyResidentialSpec(json.load(handle))
+    return SvebyResidentialSpec(load_operating_profile("sveby_residential_v2").to_dict()["values"])
 
 
 def load_sveby_spec() -> SvebyResidentialSpec:

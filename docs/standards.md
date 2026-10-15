@@ -1,6 +1,6 @@
 # Bundled operational standards
 
-EPSM Core ships a version-pinned copy of the operational inputs from Sveby *Brukarindata bostäder* 2.0, published 11 November 2024. The source profile is package data rather than a network lookup, so the inputs used by a run do not change when the external website changes.
+EPSM Data owns the version-pinned operating definitions from Sveby *Brukarindata bostäder* 2.0, published 11 November 2024. Core resolves their schedules and physical inputs. The source profile is package data rather than a network lookup, so the inputs used by a run do not change when the external website changes.
 
 The official source is [Sveby Brukarindata bostäder 2.0](https://www.sveby.org/wp-content/uploads/2024/11/Sveby-brukarindata-bostadshus-2.0-241111.pdf). Data owns the machine-readable resource at `epsm_data/datasets/standards/sveby_residential_v2.json`, identified as `sveby.residential.v2.0.2024-11-11`. Core's existing loader reads that record and supplies numerical schedule and UseSpec factories.
 
@@ -49,7 +49,72 @@ values. See the [physical Building gain-partition API](physical-building.md#inte
 for the legacy values, field meanings, budget checks, diagnostic and serialization
 behavior.
 
-## Default use
+## Resolve Data definitions
+
+Select source definitions in Data and use Core's single conversion route for
+standard and authored profiles. Conversion of a loaded profile reads no files and
+does not select another catalogue record:
+
+```python
+from epsm_data import select_operating_profile
+from epsm_core import resolve_operating_profile
+
+profile = select_operating_profile("multi_family")
+resolved = resolve_operating_profile(profile, calendar={"calendar_year": 2024})
+operation = resolved.operation
+print(resolved.requirements)
+assumptions = resolved.to_dict()["assumptions"]
+```
+
+`ResolvedOperatingProfile.assumptions` preserves Core's `use`, `common_use`,
+`airflow` and `facade` section names. Its nested data are read-only;
+`to_dict()` returns a writable detached export. `operation` is the validated
+`OperationProfile` when use inputs are complete. `requirements` describes missing
+inputs in this partial conversion, not the readiness of an existing Building.
+The caller must combine them with its chosen physical inputs. Profile sources,
+assumption `source_records` and notes remain inspectable, including generic
+screening labels and explicit BEN source locators.
+
+Residential `calendar={"calendar_year": year}` conserves monthly DHW and useful
+household-electricity timing in ordinary and leap years. Omitting the year retains
+the existing repeated daily route. Office and school require caller-supplied
+`calendar_year`, `active_dates` and a nonempty `calendar_source`, with optional
+`normal_use=False` for an explicitly documented actual-use calendar. Missing
+calendar returns `operation=None` and a `calendar` requirement. A supplied invalid
+calendar raises an error. No holiday list or clock dates are invented.
+
+For clean authoring, construct `OperatingProfile("project-id", {
+"building_assumptions": {"use": {...}, "airflow": {...}, "facade": {...}}
+})` using portable plain values. Core validates each supplied physical value;
+valid incomplete sections expose missing field paths and remain inspectable.
+Custom schedules are supplied explicitly, without a second calendar-expansion
+convention. Unknown sections and invalid values raise errors even when other
+fields are missing. The same operation type is returned for standard and custom
+definitions.
+
+BEN normal-use DHW remains an explicit partial choice:
+
+```python
+from epsm_data import select_dhw_profile
+
+ben = select_dhw_profile("multi_family", purpose="epc_normal_use")
+dhw = resolve_operating_profile(ben, previous=operation)
+assert dhw.operation.dhw_kwh_m2_year == 25
+assert dhw.operation.dhw_fraction == operation.dhw_fraction
+```
+
+Without `previous`, BEN returns only the sourced annual DHW field and missing-use
+requirements; it never creates occupancy, temperatures or timing. Explicit
+`previous` also supports authored partial-use overlays. Full standard profiles
+resolve their own use independently. Source coefficients retain their Atemp basis;
+minimum airflow never supplies an installed ventilation topology, and no reference
+area is inferred. Weather and geometry remain outside this conversion.
+
+## Existing source factories
+
+The existing Core loaders remain during migration. They forward definition
+selection to Data and retain the Core classes' distinct schedule, common-space,
+coverage and DHW accounting methods. No current caller must migrate in this PR.
 
 The unversioned loader selects the current bundled standard:
 

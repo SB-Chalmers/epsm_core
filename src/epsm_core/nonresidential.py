@@ -19,11 +19,11 @@ This is not a measured split between lighting and equipment or a full HVAC model
 
 from __future__ import annotations
 
-import json
 from copy import deepcopy
 from datetime import date, timedelta
 from functools import partial
-from importlib.resources import files
+
+from epsm_data import load_operating_profile
 
 from .specs import ScheduleSpec, UseSpec
 from .standards import _freeze
@@ -47,37 +47,19 @@ def _active_schedule(year, dates, start, hours, *, on=1.0, off=0.0, source=None)
 class SvebyNonResidentialSpec:
     """Versioned normal-use source data; caller observations remain separate.
 
-    Loaders validate the packaged profile against reviewed source fingerprints.
+    Data's loaders select definitions and validate packaged source identities.
     Calendar dates, standby fraction and clock placement are explicit assumptions,
     not additional values claimed to be published by Sveby.
     """
 
     def __init__(self, data):
-        """Copy and validate the known published office or school resource."""
+        """Copy a supported office/school layout, leaving selection to Data."""
         self.data = _freeze(deepcopy(data))
         self.building_use = self.data["building_use"]
-        expected = {
-            "office": ("sveby.office.v1.0.2012-10-10", 225, 21, 2),
-            "school": ("sveby.school.v1.0.2016-05-16", 220, 22, 10),
-        }
-        if self.building_use not in expected:
+        if self.building_use not in {"office", "school"}:
             raise ValueError("Unsupported Sveby non-residential use")
-        identity, days, temperature, dhw = expected[self.building_use]
-        if (
-            self.data["schema_version"] != 1
-            or self.data["profile_id"] != identity
-            or self.data["reference_active_days"] != days
-            or self.data["use"]["heating_setpoint_c"] != temperature
-            or self.data["use"]["dhw_kwh_m2_year"] != dhw
-        ):
-            raise ValueError("Non-residential source values differ from the reviewed release")
-        if self.building_use == "office" and (
-            self.data["use"]["cooling_setpoint_c"] != 23
-            or self.data["use"]["business_electricity_kwh_m2_year"] != 50
-            or self.data["use"]["available_heat_fraction"] != 0.7
-            or self.data["use"]["mechanical_vent_l_s_m2"] != 1.3
-        ):
-            raise ValueError("Office energy/ventilation values differ from the reviewed release")
+        if self.data["schema_version"] != 1:
+            raise ValueError("Unsupported non-residential input schema")
 
     @property
     def profile_id(self):
@@ -98,8 +80,8 @@ class SvebyNonResidentialSpec:
         zone_role="classrooms",
         normal_use=True,
         fixed_solar_shading_calculated=False,
-        cooling_enabled=False,
-        standby_fraction=0.2,
+        cooling_enabled=None,
+        standby_fraction=None,
     ):
         """Build a partial, reproducible operation profile on a caller calendar.
 
@@ -147,57 +129,67 @@ class SvebyNonResidentialSpec:
             len(dates) != self.data["reference_active_days"] or any(d.weekday() > 4 for d in dates)
         ):
             raise ValueError("Normal-use calendar must match the source weekday/day count")
+        completion = self.data["completion_inputs"]
+        inputs = self.data["operation_inputs"]
+        if cooling_enabled is None:
+            cooling_enabled = completion["cooling_enabled"]
+        if standby_fraction is None:
+            standby_fraction = completion.get("standby_fraction", 0)
         if not 0 <= standby_fraction <= 1:
             raise ValueError("Standby fraction must lie in [0,1]")
         make = partial(_active_schedule, calendar_year, dates, source=calendar_source)
         data = self.data["use"]
         if self.building_use == "office":
-            occupancy = make(8, 9, on=0.7)
-            equipment = make(8, 9, off=standby_fraction)
+            start, hours = inputs["occupancy_start_hour"], inputs["occupancy_hours"]
+            occupancy = make(start, hours, on=inputs["occupancy_on_fraction"])
+            equipment = make(start, hours, off=standby_fraction)
             # Preserve source annual electrical input under every explicit calendar.
             watts = data["business_electricity_kwh_m2_year"] * 1000 / sum(equipment.annual_values)
             use = UseSpec(
-                occupancy_category="non_residential",
-                heating_setpoint=ScheduleSpec.constant(21),
-                cooling_setpoint=ScheduleSpec.constant(23),
+                occupancy_category=inputs["occupancy_category"],
+                heating_setpoint=ScheduleSpec.constant(data["heating_setpoint_c"]),
+                cooling_setpoint=ScheduleSpec.constant(data["cooling_setpoint_c"]),
                 cooling_enabled=cooling_enabled,
                 occupancy_fraction=occupancy,
-                occupant_density_per_m2=0.05,
-                occupant_activity_w=108,
+                occupant_density_per_m2=inputs["occupant_density_per_m2"],
+                occupant_activity_w=inputs["occupant_activity_w"],
                 equipment_gain_w_m2=watts,
-                equipment_heat_fraction=0.7,
+                equipment_heat_fraction=data["available_heat_fraction"],
                 equipment_fraction=equipment,
-                dhw_kwh_m2_year=2,
-                dhw_fraction=make(8, 9),
+                dhw_kwh_m2_year=data["dhw_kwh_m2_year"],
+                dhw_fraction=make(start, hours),
             )
             flow = data["mechanical_vent_l_s_m2"]
-            ventilation = make(7, 12)
+            ventilation = make(inputs["ventilation_start_hour"], inputs["ventilation_hours"])
         else:
-            if zone_role not in ("classrooms", "service", "kitchen_dining", "sports"):
+            if zone_role not in inputs["zone_roles"]:
                 raise ValueError("Unknown school zone role")
             service = zone_role == "service"
-            operating = make(7, 10)
+            operating = make(completion["operating_start_hour"], completion["operating_hours"])
             use = UseSpec(
-                occupancy_category="non_residential",
-                heating_setpoint=ScheduleSpec.constant(18 if service else 22),
-                cooling_setpoint=ScheduleSpec.constant(30),
+                occupancy_category=inputs["occupancy_category"],
+                heating_setpoint=ScheduleSpec.constant(inputs["service_heating_setpoint_c"]
+                                                       if service else data["heating_setpoint_c"]),
+                cooling_setpoint=ScheduleSpec.constant(completion["cooling_setpoint_c"]),
                 cooling_enabled=cooling_enabled,
-                occupant_density_per_m2=0 if service else 0.067,
-                occupant_activity_w=80,
-                occupancy_fraction=make(9, 6),
-                equipment_gain_w_m2=0 if service else 5,
-                lighting_gain_w_m2=0 if service else 5,
+                occupant_density_per_m2=0 if service else inputs["occupant_density_per_m2"],
+                occupant_activity_w=inputs["occupant_activity_w"],
+                occupancy_fraction=make(completion["occupancy_start_hour"],
+                                        completion["occupancy_hours"]),
+                equipment_gain_w_m2=0 if service else inputs["equipment_gain_w_m2"],
+                lighting_gain_w_m2=0 if service else inputs["lighting_gain_w_m2"],
                 equipment_fraction=operating,
                 lighting_fraction=operating,
-                dhw_kwh_m2_year=10,
+                dhw_kwh_m2_year=data["dhw_kwh_m2_year"],
                 dhw_fraction=operating,
             )
-            flow = 0.35 if service else 3.0
+            flow = inputs["service_mechanical_vent_l_s_m2"] if service else inputs["mechanical_vent_l_s_m2"]
             ventilation = operating
             if zone_role in ("kitchen_dining", "sports"):
-                flow = 4.0
-                base = make(7, 5, on=0.5)
-                boost = make(12, 5)
+                flow = inputs["boost_mechanical_vent_l_s_m2"]
+                base = make(completion["operating_start_hour"], completion["base_hours"],
+                            on=inputs["base_mechanical_vent_l_s_m2"] / flow)
+                boost = make(completion["boost_start_hour"], completion["boost_hours"])
                 ventilation = ScheduleSpec.annual(
                     tuple(a + b for a, b in zip(base.annual_values, boost.annual_values)),
                     calendar_year=calendar_year,
@@ -211,9 +203,10 @@ class SvebyNonResidentialSpec:
             },
             "facade": {
                 "solar_shading_factor": (
-                    (0.71 if fixed_solar_shading_calculated else 0.5)
+                    (completion["solar_shading_behavior_factor"] if fixed_solar_shading_calculated
+                     else completion["solar_shading_total_factor"])
                     if self.building_use == "office"
-                    else 0.65
+                    else completion["solar_shading_behavior_factor"]
                 )
             },
         }
@@ -221,8 +214,7 @@ class SvebyNonResidentialSpec:
 
 def _load(name):
     """Read bundled source data without a network or external dataset lookup."""
-    resource = files("epsm_data").joinpath("datasets", "standards", name)
-    return SvebyNonResidentialSpec(json.loads(resource.read_text(encoding="utf-8")))
+    return SvebyNonResidentialSpec(load_operating_profile(name.removesuffix(".json")).to_dict()["values"])
 
 
 def load_sveby_office_v1():

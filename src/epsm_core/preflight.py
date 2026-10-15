@@ -12,6 +12,8 @@
 
 from __future__ import annotations
 
+from epsm_core._logging import operation as logged_operation
+
 from .building import Readiness
 from .failures import CompilationError
 from .foundations import check_kiva_floor_geometry
@@ -28,6 +30,7 @@ def _surface_record(face, construction):
     )
 
 
+@logged_operation("simulation.preflight")
 def preflight_energyplus(spec: BuildingSpec) -> Readiness:
     """Inspect selected ground geometry without weather or engine I/O.
 

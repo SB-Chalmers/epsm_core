@@ -37,6 +37,8 @@ Example::
     assert geometry.conditioned_floor_area_m2 == 160
 """
 
+import logging as _stdlib_logging
+
 from ._version import __version__ as __version__
 from .builder import BuildingBuilder
 from .building import (
@@ -61,6 +63,7 @@ from .generic_programme import GenericOtherProgramme, load_generic_other_v1
 from .inventory import MaterialFlows, MaterialInventory, MaterialQuantity
 from .preflight import preflight_energyplus
 from .preparation import GeometryPolicy, GeometryPreparationResult, prepare_geometry
+from .profile_resolution import ResolvedOperatingProfile, resolve_operating_profile
 from .pv import run_pvwatts
 from .quantities import quantity_takeoff
 from .renovation import (
@@ -127,6 +130,7 @@ from .weather import Weather, climate_from_epw
 __all__ = [
     "AuthoringLink", "Building", "BuildingElement", "BuildingSnapshot", "HVACSystem", "OperationProfile",
     "Readiness", "InputAssignmentReport", "HVACTemplateResolution",
+    "ResolvedOperatingProfile", "resolve_operating_profile",
     "ResolvedBuildingInput",
     "resolve_building", "RenovationStage", "MaterialFlows", "MaterialInventory", "MaterialQuantity",
     "Weather",
@@ -214,6 +218,8 @@ __all__ = [
     "run_pvwatts",
 ]
 
+# A library emits no output until its host selects handlers.
+
 from .context import synthetic_context
 from .inspection import preview_geometry
 from .nonresidential import SvebyNonResidentialSpec, load_sveby_office_v1, load_sveby_school_v1
@@ -222,3 +228,5 @@ from .nonresidential import SvebyNonResidentialSpec, load_sveby_office_v1, load_
 from .programs import ProgramBlend as ProgramBlend
 from .programs import ProgramComponent as ProgramComponent
 from .settings import CompilerSettings, HourlyOutputRequest
+
+_stdlib_logging.getLogger("epsm_core").addHandler(_stdlib_logging.NullHandler())
