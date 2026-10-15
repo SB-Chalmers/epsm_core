@@ -55,6 +55,7 @@ from .physics import (
     EnvelopeSpec,
     RenewablesSpec,
     UseSpec,
+    _validate_operation_hvac,
 )
 from .provenance import AssessmentReference, ProvenanceSpec, RenovationRecord
 
@@ -200,15 +201,12 @@ class BuildingSpec(Spec):
             pairs.append((self.use, self.common_airflow))
         pairs.extend((x.use or self.use, x.airflow or self.airflow) for x in self.zone_uses)
         for use, airflow in pairs:
-            if self.delivery.fvp and airflow.infiltration_coefficients != (1, 0, 0, 0):
-                raise ValueError("FVP accounting requires constant leakage for every zone")
+            _validate_operation_hvac(use, airflow, self.delivery)
             for obj in (use, airflow):
                 for name in type(obj).model_fields:
                     schedule = getattr(obj, name)
                     if isinstance(schedule, ScheduleSpec):
                         schedule.hourly(self.climate.calendar_year)
-            if max(use.heating_setpoint.all_values) >= airflow.maximum_heating_supply_temperature_c:
-                raise ValueError("Zone heating supply limit must exceed its heating setpoint")
             if use.dhw_kwh_m2_year and not sum(use.dhw_fraction.hourly(self.climate.calendar_year)):
                 raise ValueError("Nonzero DHW requires activity in the simulation year")
         if self.delivery.heating is not None:
@@ -226,17 +224,9 @@ class BuildingSpec(Spec):
             raise ValueError("Duplicate unconditioned exchange selectors")
         for exchange in self.unconditioned_exchange:
             exchange.fraction.hourly(self.climate.calendar_year)
-        if self.delivery.fvp and (self.zone_uses or
-                set(self.airflow.mechanical_vent_fraction.all_values) != {1.0}):
+        if self.delivery.fvp and self.zone_uses:
             raise ValueError("FVP delivery currently requires uniform continuous exhaust flow")
         # 1. Validate cross-system and geometry references on a complete building.
-        if self.common_use is not None:
-            common_airflow = self.common_airflow or self.airflow
-            if (
-                max(self.common_use.heating_setpoint.all_values)
-                >= common_airflow.maximum_heating_supply_temperature_c
-            ):
-                raise ValueError("Common heating supply limit must exceed its heating setpoint")
         if self.geometry.zoning.mode == "apartments":
             if self.use.occupancy_category != "residential":
                 raise ValueError("Apartment generation requires explicitly residential occupancy")
@@ -252,15 +242,6 @@ class BuildingSpec(Spec):
             raise ValueError(
                 "Unconditioned basement requires an explicit thermal-boundary basement_ceiling construction"
             )
-        if self.delivery.fvp and self.airflow.infiltration_coefficients != (1, 0, 0, 0):
-            raise ValueError("FVP accounting requires constant leakage; weather-dependent flow is unsupported")
-        if self.delivery.fvp and self.airflow.topology != "F":
-            raise ValueError("FVP delivery requires F ventilation")
-        if (
-            max(self.use.heating_setpoint.all_values)
-            >= self.airflow.maximum_heating_supply_temperature_c
-        ):
-            raise ValueError("Heating supply limit must exceed the heating setpoint")
         catalog = {f.facade_id: f for f in self.geometry.facades()}
         for override in self.facade.overrides:
             if override.facade_id not in catalog:

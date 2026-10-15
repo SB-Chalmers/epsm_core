@@ -9,15 +9,17 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import math
 from dataclasses import dataclass, field, replace
 from typing import Literal
 from uuid import UUID, uuid4
 
+from epsm_data import HVACTemplate
 from epsm_data.domain import ConstructionSet, Element, WindowElement
 from epsm_data.domain.enums import BuildingElement as ElementRole
 from epsm_data.serialization import construction_set_from_dict, construction_set_to_dict
-from pydantic import TypeAdapter
+from pydantic import TypeAdapter, ValidationError
 
 from epsm_core._logging import operation as logged_operation
 
@@ -39,7 +41,15 @@ from .specs import (
     SourceRecord,
     UseSpec,
 )
-from .specs.base import Nonnegative, Positive
+from .specs.base import Fraction, Nonnegative, Positive
+from .specs.physics import (
+    _validate_airflow_properties,
+    _validate_delivery_properties,
+    _validate_hvac_properties,
+    _validate_operation_hvac,
+)
+
+logger = logging.getLogger(__name__)
 
 
 def _json(value):
@@ -76,6 +86,38 @@ class OperationProfile(UseSpec):
 
 
 @dataclass(frozen=True)
+class InputAssignmentReport:
+    """Applied physical inputs, retained choices and supplied roles without targets.
+
+    Construction paths identify physical elements, for example
+    ``construction:main.ground_floor``. Section paths name the supplied argument.
+    This report describes assignment only; use ``Building.readiness()`` for
+    remaining simulation requirements. ``to_dict()`` returns detached plain data.
+    """
+
+    applied: tuple[str, ...] = ()
+    replaced: tuple[str, ...] = ()
+    retained: tuple[str, ...] = ()
+    unmatched: tuple[str, ...] = ()
+
+    def __post_init__(self):
+        for name in ("applied", "replaced", "retained", "unmatched"):
+            object.__setattr__(self, name, tuple(getattr(self, name)))
+
+    def to_dict(self):
+        """Return assignment paths without sharing mutable report state."""
+        return {name: list(getattr(self, name))
+                for name in ("applied", "replaced", "retained", "unmatched")}
+
+    def __repr__(self):
+        return bounded_summary(type(self).__name__, applied=len(self.applied),
+                               replaced=len(self.replaced), retained=len(self.retained),
+                               unmatched=len(self.unmatched))
+
+    __str__ = __repr__
+
+
+@dataclass(frozen=True)
 class Equipment:
     """One installed product with a known count and optional external factor references."""
 
@@ -100,6 +142,41 @@ class Equipment:
     def __repr__(self):
         return bounded_summary(type(self).__name__, identifier=self.identifier,
                                product=self.product_id, count=self.count)
+
+    __str__ = __repr__
+
+
+@dataclass(frozen=True, repr=False)
+class HVACTemplateResolution:
+    """Validated loaded template inputs and explicit unresolved system requirements.
+
+    ``hvac`` is None until supplied/previous inputs form a complete system.
+    ``values`` is read-only; ``to_dict`` returns a writable detached export.
+    Resolving/inspecting these values reads no catalogue, file or service.
+    """
+
+    template_id: str
+    _values_json: str
+    hvac: HVACSystem | None
+    requirements: tuple[str, ...]
+    source_references: tuple[str, ...] = ()
+    notes: tuple[str, ...] = ()
+
+    @property
+    def values(self):
+        from .standards import _freeze
+
+        return _freeze(json.loads(self._values_json))
+
+    def to_dict(self):
+        return {"template_id": self.template_id, "values": json.loads(self._values_json),
+                "hvac": self.hvac.to_dict() if self.hvac is not None else None,
+                "requirements": list(self.requirements),
+                "source_references": list(self.source_references), "notes": list(self.notes)}
+
+    def __repr__(self):
+        return bounded_summary(type(self).__name__, template=self.template_id,
+                               complete=self.hvac is not None, requirements=len(self.requirements))
 
     __str__ = __repr__
 
@@ -142,18 +219,114 @@ class HVACSystem:
 
     @classmethod
     def from_template(cls, template, *, previous=None):
-        """Resolve a Data HVAC template; unspecified existing systems are retained."""
+        """Return a complete template system, raising if inputs remain unresolved.
+
+        Use ``resolve_template`` to inspect legitimate partial templates. Both
+        routes validate every supplied section through the same implementation.
+        """
+        result = cls.resolve_template(template, previous=previous)
+        if result.hvac is None:
+            raise ValueError("HVAC template missing inputs: " + ", ".join(result.requirements))
+        return result.hvac
+
+    @classmethod
+    def resolve_template(cls, template, *, previous=None):
+        """Validate a loaded Data template without inventing missing HVAC choices.
+
+        Independently check airflow, delivery, renewable and equipment inputs.
+        Invalid supplied fields/known contradictions raise even when another
+        section is incomplete. ``previous`` explicitly supplies retained values;
+        neither object is changed. Unknown top-level/section keys are rejected.
+        Returns HVACTemplateResolution with an optional complete system and
+        missing field paths. This performs no I/O or source selection.
+        """
+        if not isinstance(template, HVACTemplate):
+            raise TypeError("template must be an EPSM Data HVACTemplate")
+        if previous is not None and not isinstance(previous, cls):
+            raise TypeError("previous must be an HVACSystem")
         data = template.to_dict()["values"]
+        if set(data) - {"airflow", "delivery", "renewables", "equipment"}:
+            raise ValueError("Unknown HVAC template section")
         values = previous.to_dict() if previous is not None else {}
         for name in ("airflow", "delivery", "renewables"):
             if name in data:
+                if not isinstance(data[name], dict):
+                    raise ValueError(f"{name} must be a mapping")
+                if name == "delivery":
+                    data[name] = {key: {**values.get(name, {}).get(key, {}), **value}
+                                  if isinstance(value, dict) and isinstance(values.get(name, {}).get(key), dict)
+                                  else value for key, value in data[name].items()}
                 values[name] = {**values.get(name, {}), **data[name]}
+        requirements = []
         if "equipment" in data:
+            if not isinstance(data["equipment"], list):
+                raise ValueError("equipment must be a sequence of product records")
             equipment = {e["identifier"]: e for e in values.get("equipment", ())}
-            for record in data["equipment"]:
-                equipment[record["identifier"]] = record
+            seen = set()
+            for index, record in enumerate(data["equipment"]):
+                if not isinstance(record, dict) or set(record) - set(Equipment.__dataclass_fields__):
+                    raise ValueError("Unknown or invalid equipment fields")
+                for name in ("identifier", "product_id"):
+                    if name in record and (not isinstance(record[name], str) or not record[name].strip()):
+                        raise ValueError(f"Equipment {name} must be nonempty text")
+                if "count" in record:
+                    try:
+                        record["count"] = float(record["count"])
+                    except (TypeError, ValueError) as error:
+                        raise ValueError("Equipment count must be finite and positive") from error
+                    if not math.isfinite(record["count"]) or record["count"] <= 0:
+                        raise ValueError("Equipment count must be finite and positive")
+                identifier = record.get("identifier")
+                if identifier is not None and identifier in seen:
+                    raise ValueError("Supplied equipment identifiers must be unique")
+                seen.add(identifier)
+                merged = {**equipment.get(identifier, {}), **record}
+                missing = [name for name in ("identifier", "product_id") if name not in merged]
+                requirements.extend(f"equipment.{index}.{name}" for name in missing)
+                if "product_id" in record and "occurrence_id" not in record:
+                    merged.pop("occurrence_id", None)
+                check = dict(merged)
+                if isinstance(check.get("factor_refs"), dict):
+                    check["factor_refs"] = tuple(check["factor_refs"].items())
+                try:
+                    TypeAdapter(Equipment).validate_python(check)
+                except ValidationError as error:
+                    if any(item["type"] != "missing" or item["loc"] not in {("identifier",), ("product_id",)}
+                           for item in error.errors()):
+                        raise
+                equipment[identifier if identifier is not None else (None, index)] = merged
             values["equipment"] = list(equipment.values())
-        return cls(**values)
+        for name, kind in (("airflow", AirflowSpec), ("delivery", DeliverySpec),
+                           ("renewables", RenewablesSpec)):
+            supplied = values.get(name, {})
+            if name == "delivery":
+                heating = supplied.get("heating")
+                if isinstance(heating, dict) and heating.get("carrier") == "heat_pump" \
+                        and heating.get("heat_pump_cop") is None:
+                    requirements.append("delivery.heating.heat_pump_cop")
+            try:
+                kind.model_validate(supplied)
+            except ValidationError as error:
+                for item in error.errors():
+                    if item["type"] == "missing" and isinstance(item["loc"][-1], str):
+                        requirements.append(name + "." + ".".join(map(str, item["loc"])))
+                    elif (name == "delivery" and item["type"] == "value_error"
+                          and item["loc"] == ("heating",)
+                          and "delivery.heating.heat_pump_cop" in requirements
+                          and "requires an explicit COP" in item["msg"]):
+                        continue
+                    else:
+                        raise
+            if name == "airflow":
+                _validate_airflow_properties(supplied)
+            if name == "delivery":
+                _validate_delivery_properties(supplied)
+        _validate_hvac_properties(values)
+        hvac = None if requirements else cls(**values)
+        if hvac is not None:
+            _validate_operation_hvac(None, hvac.airflow, hvac.delivery)
+        return HVACTemplateResolution(template.template_id, _json(values), hvac,
+            tuple(dict.fromkeys(requirements)), template.source_references, template.notes)
 
 
 @dataclass(frozen=True)
@@ -585,6 +758,259 @@ class Building:
                         for e in self.elements)
         self.elements = updated
         return self
+
+    def assign_inputs(self, *, construction_set=None, operation=None, hvac=None,
+                      facade_properties=None, airflow_properties=None, thermal_bridge_uplift_fraction=None,
+                      provenance=None, mode="replace"):
+        """Validate and commit resolved inputs together, updating this Building.
+
+        Parameters
+        ----------
+        construction_set : epsm_data.ConstructionSet, optional
+            Replace supplied roles only. ``fill_missing`` assigns only physical
+            elements that currently have no construction, retaining overrides.
+        operation : OperationProfile or mapping, optional
+            Validated occupancy, gains and schedules; no calendar is inferred.
+        hvac : HVACSystem, optional
+            Already resolved systems, including infiltration reference basis.
+        airflow_properties : mapping, optional
+            Validated AirflowSpec fields except topology. ``replace`` patches only
+            supplied fields on the effective retained/supplied HVAC, preserving
+            delivery and equipment. No system means an unmatched patch.
+            ``fill_missing`` retains all known typed-system values, including zero,
+            even when that system is supplied in this same call.
+        facade_properties : mapping, optional
+            Only ``glazing`` and ``solar_shading_factor`` are accepted. An absent
+            facade stays missing: this operation never guesses opening geometry.
+            Explicit glazing overrides supplied window performance, with its own
+            property sources; window identity and opening geometry are retained.
+        thermal_bridge_uplift_fraction : float, optional
+            Nonnegative finite uplift. Zero explicitly assigns no uplift.
+        provenance : ProvenanceSpec or mapping, optional
+            Source records for changed inputs. Existing records for retained
+            fields survive; replacement drops stale records at changed paths.
+        mode : {"replace", "fill_missing"}
+            Replace supplied sections or fill absent sections, respectively.
+            Omitted sections always stay unchanged.
+
+        Returns
+        -------
+        InputAssignmentReport
+            Physical assignment paths and supplied roles with no geometry target.
+
+        Notes
+        -----
+        Every supplied value is validated before committing any change, including
+        inputs retained in ``fill_missing`` mode. Geometry, actual opening areas,
+        element IDs, context, ground configuration and earlier snapshots remain
+        unchanged. Authoring changes do not add renovation stages or material
+        flows; later material changes remain visible in authoring lineage.
+        No catalogue, weather, file or service is loaded.
+        Known operation/HVAC contradictions are checked against the effective
+        retained and supplied inputs. Calendar and complete geometry validation
+        remain simulation-preparation checks.
+        """
+        if mode not in {"replace", "fill_missing"}:
+            raise ValueError("mode must be 'replace' or 'fill_missing'")
+        candidate = Building.from_dict(self._snapshot_data())
+        records = ProvenanceSpec.model_validate(provenance or {}).records
+        supplied = {
+            "operation": operation, "hvac": hvac,
+            "thermal_bridge_uplift_fraction": thermal_bridge_uplift_fraction,
+        }
+        # The detached candidate validates all inputs, even those later retained.
+        for name, value in supplied.items():
+            if value is not None:
+                setattr(candidate, name, value)
+        if construction_set is not None:
+            candidate.construction_set = construction_set
+        properties = dict(facade_properties) if facade_properties is not None else None
+        if properties is not None:
+            if set(properties) - {"glazing", "solar_shading_factor"}:
+                raise ValueError("facade_properties accepts glazing and solar_shading_factor only")
+            if "glazing" in properties:
+                properties["glazing"] = GlazingSpec.model_validate(properties["glazing"])
+            if "solar_shading_factor" in properties:
+                properties["solar_shading_factor"] = TypeAdapter(Fraction).validate_python(
+                    properties["solar_shading_factor"])
+        airflow_patch = dict(airflow_properties) if airflow_properties is not None else None
+        if airflow_patch is not None:
+            if set(airflow_patch) - (set(AirflowSpec.model_fields) - {"topology"}):
+                raise ValueError("airflow_properties accepts AirflowSpec fields except topology")
+            try:
+                AirflowSpec.model_validate(airflow_patch)
+            except ValidationError as error:
+                # An unmatched partial patch may lack topology/infiltration,
+                # but every supplied field must obey model bounds/finiteness.
+                if any(item["type"] != "missing" or not isinstance(item["loc"][-1], str)
+                       for item in error.errors()):
+                    raise
+            _validate_airflow_properties(airflow_patch)
+        applied, replaced, retained, unmatched, changed = [], [], [], [], set()
+        updates = {}
+        for name, value in supplied.items():
+            if value is None:
+                continue
+            if mode == "fill_missing" and getattr(self, name) is not None:
+                retained.append(name)
+            else:
+                (applied if getattr(self, name) is None else replaced).append(name)
+                updates[name] = getattr(candidate, name)
+                changed.add(name)
+        if properties is not None:
+            if self.facade is None:
+                unmatched.append("facade_properties")
+            elif mode == "fill_missing":
+                retained.append("facade_properties")
+            else:
+                updates["facade"] = self.facade.updated(**properties)
+                replaced.append("facade_properties")
+                changed.update("facade." + name for name in properties)
+        construction_targets = set()
+        if construction_set is not None:
+            incoming = candidate.construction_set
+            existing = self.construction_set.elements if self.construction_set else {}
+            values = dict(existing)
+            for role, construction in incoming.elements.items():
+                if not any(element.role == role for element in self.elements):
+                    unmatched.append("construction:" + role.value)
+                elif mode == "replace" or role not in values:
+                    values[role] = construction
+                    changed.add("construction_set.elements." + role.value)
+            if values != dict(existing):
+                # A mixed default set is a new authored composition, not the
+                # incoming catalogue snapshot with another snapshot's identity.
+                updates["construction_set"] = ConstructionSet(elements=values)
+            elements = []
+            for element in self.elements:
+                path = "construction:" + element.identifier
+                if element.role not in incoming.elements:
+                    retained.append(path)
+                    elements.append(element)
+                elif mode == "fill_missing" and element.construction is not None:
+                    retained.append(path)
+                    elements.append(element)
+                else:
+                    (applied if element.construction is None else replaced).append(path)
+                    elements.append(element.with_changes(
+                        construction=incoming.elements[element.role]))
+                    path = "elements." + element.identifier + ".construction"
+                    changed.add(path)
+                    construction_targets.add(path)
+            # Copy through the public element validation without regenerating openings.
+            candidate.elements = elements
+            updates["_elements"] = candidate.elements
+        glazing_targets = set()
+        if properties is not None and self.facade is not None and mode == "replace" \
+                and "glazing" in properties:
+            glazing = properties["glazing"]
+            elements = []
+            for element in updates.get("_elements", self.elements):
+                if element.role != ElementRole.WINDOW:
+                    elements.append(element)
+                    continue
+                if not isinstance(element.construction, WindowElement):
+                    unmatched.append("construction:" + element.identifier)
+                    elements.append(element)
+                    continue
+                window = element.construction.with_changes(
+                    u_value=glazing.u_value_w_m2k, shgc=glazing.solar_heat_gain_coefficient,
+                    vt=glazing.visible_transmittance)
+                elements.append(element.with_changes(construction=window))
+                path = "elements." + element.identifier + ".construction"
+                if path not in construction_targets:
+                    changed.update(path + "." + name for name in ("u_value", "shgc", "vt"))
+                glazing_targets.add(path)
+            candidate.elements = elements
+            updates["_elements"] = candidate.elements
+
+        effective_hvac = updates.get("hvac", self.hvac)
+        airflow_changed = set()
+        if airflow_patch is not None:
+            if effective_hvac is None:
+                unmatched.append("airflow_properties")
+            elif mode == "fill_missing":
+                retained.extend("hvac.airflow." + name for name in airflow_patch)
+            else:
+                effective_hvac = effective_hvac.with_changes(
+                    airflow=effective_hvac.airflow.updated(**airflow_patch))
+                updates["hvac"] = effective_hvac
+                airflow_changed = {"hvac.airflow." + name for name in airflow_patch}
+                changed.update(airflow_changed)
+                replaced.extend("hvac.airflow." + name for name in airflow_patch)
+        if effective_hvac is not None:
+            _validate_operation_hvac(updates.get("operation", self.operation),
+                                     effective_hvac.airflow, effective_hvac.delivery)
+
+        def affected(path):
+            return any(path == key or path.startswith(key + ".") for key in changed)
+
+        def split_source(record, value, excluded):
+            # Broad provenance is narrowed before partial edits, so unchanged
+            # roles and facade geometry keep their original sources.
+            path = record.field_path
+            if any(path == key or path.startswith(key + ".") for key in excluded):
+                return []
+            if not any(key.startswith(path + ".") for key in excluded) or not isinstance(value, dict):
+                return [record]
+            return [child for key, item in value.items()
+                    for child in split_source(record.updated(field_path=path + "." + key), item, excluded)]
+
+        state = self._snapshot_data()
+        state["elements"] = {element.identifier: {
+            **element.to_dict(),
+            "construction": element.construction.to_dict() if element.construction else None,
+        } for element in self.elements}
+
+        def source_value(path):
+            value = state
+            while path:
+                if not isinstance(value, dict):
+                    return None
+                # Physical IDs contain dots. Match the complete loaded key
+                # before interpreting dots as paths within its construction.
+                keys = [key for key in value if path == key or path.startswith(key + ".")]
+                if not keys:
+                    return None
+                key = max(keys, key=len)
+                value, path = value[key], path[len(key):].lstrip(".")
+            return value
+
+        previous = [child for record in self.provenance.records
+                    for child in split_source(record, source_value(record.field_path), changed)]
+        for record in records:
+            paths = ([record.field_path] if affected(record.field_path) else
+                     [key for key in changed if key.startswith(record.field_path + ".")])
+            # A construction-set source also describes its actual element assignments.
+            if record.field_path == "construction_set" and construction_set is not None:
+                paths.extend(key for key in changed if key.startswith("elements.")
+                             and not any(key == path or key.startswith(path + ".")
+                                         for path in glazing_targets))
+                paths.extend(path + "." + name for path in glazing_targets & construction_targets
+                             for name in ("name", "archetype", "application", "boverket_id"))
+            glazing_fields = {"u_value_w_m2k": "u_value",
+                              "solar_heat_gain_coefficient": "shgc",
+                              "visible_transmittance": "vt"}
+            for name, physical_name in glazing_fields.items():
+                if record.field_path in {"facade", "facade.glazing", "facade.glazing." + name}:
+                    paths.extend(path + "." + physical_name for path in glazing_targets)
+            for path in sorted(set(paths)):
+                item = record.updated(field_path=path)
+                if hvac is not None and airflow_changed and path in {"hvac", "hvac.airflow"}:
+                    values = effective_hvac.to_dict() if path == "hvac" else effective_hvac.airflow.model_dump(mode="json")
+                    previous.extend(split_source(item, values, airflow_changed))
+                else:
+                    previous.append(item)
+        updates["provenance"] = ProvenanceSpec(records=tuple(previous))
+        # Every value is detached and validated above; committing cannot invoke a
+        # setter that rebuilds geometry or removes freshly attached source records.
+        for name, value in updates.items():
+            object.__setattr__(self, name, value)
+        report = InputAssignmentReport(tuple(applied), tuple(replaced),
+                                       tuple(retained), tuple(unmatched))
+        logger.info("Assigned resolved building inputs: %d applied, %d replaced, %d retained, "
+                    "%d unmatched", len(applied), len(replaced), len(retained), len(unmatched))
+        return report
 
     def _rebuild_elements(self, *, reassign=False):
         geometry = getattr(self, "geometry", None)

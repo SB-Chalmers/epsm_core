@@ -651,14 +651,6 @@ class AirflowSpec(Spec):
 
         _validate_airflow_properties({name: getattr(self, name) for name in type(self).model_fields})
         # 1. Require ventilation and heat-recovery values consistent with topology.
-        if self.topology == "S" and self.mechanical_vent_l_s_m2:
-            raise ValueError("S cannot have mechanical outdoor air")
-        if self.topology != "S" and self.natural_exchange_ach:
-            raise ValueError("Natural self-draught exchange is specific to S")
-        if self.topology != "FTX" and (
-            self.sensible_recovery_effectiveness or self.latent_recovery_effectiveness
-        ):
-            raise ValueError("Air-to-air recovery requires FTX")
         return self
 
 
@@ -911,14 +903,7 @@ class HeatingDeliverySpec(Spec):
     @model_validator(mode="after")
     def boundary(self):
         """Require a COP only for heat pumps and a physical loss fraction."""
-        if (self.carrier == "heat_pump") != (self.heat_pump_cop is not None):
-            raise ValueError("Heat-pump delivery requires an explicit COP; other carriers forbid it")
-        if self.heat_pump_cop is not None and min(self.heat_pump_cop.all_values) <= 0:
-            raise ValueError("Declared heat-pump COP must be positive")
-        if any(not 0 <= v <= 1 for v in self.loss_fraction.all_values):
-            raise ValueError("Loss fraction must lie in [0,1]")
-        if self.net_distribution_loss_kwh_m2_year and not sum(self.loss_fraction.all_values):
-            raise ValueError("Net distribution losses require an active schedule")
+        _validate_delivery_properties({"heating": self.model_dump()}, complete_heating=True)
         return self
 
 
@@ -958,8 +943,7 @@ class DeliverySpec(Spec):
     @model_validator(mode="after")
     def exclusive(self):
         """Do not apply two incompatible delivery conversions to the same heat."""
-        if self.fvp is not None and self.heating is not None:
-            raise ValueError("FVP and general heating delivery are mutually exclusive")
+        _validate_delivery_properties(self.model_dump())
         return self
 
 
@@ -1079,6 +1063,66 @@ def _validate_airflow_properties(values):
             and tuple(float(value) for value in values["infiltration_coefficients"]) != (1, 0, 0, 0)
             and (not values["infiltration_source"] or not values["infiltration_source"].strip())):
         raise ValueError("Weather-dependent infiltration requires a documented source")
+    topology = values.get("topology")
+    if topology == "S" and float(values.get("mechanical_vent_l_s_m2", 0)):
+        raise ValueError("S cannot have mechanical outdoor air")
+    if topology is not None and topology != "S" and float(values.get("natural_exchange_ach", 0)):
+        raise ValueError("Natural self-draught exchange is specific to S")
+    if topology is not None and topology != "FTX" and (
+            float(values.get("sensible_recovery_effectiveness", 0))
+            or float(values.get("latent_recovery_effectiveness", 0))):
+        raise ValueError("Air-to-air recovery requires FTX")
+
+
+def _validate_delivery_properties(values, *, complete_heating=False):
+    """Check supplied delivery relationships without filling unknown choices."""
+    if values.get("fvp") is not None and values.get("heating") is not None:
+        raise ValueError("FVP and general heating delivery are mutually exclusive")
+    heating = values.get("heating")
+    if not isinstance(heating, dict):
+        return
+    carrier = heating.get("carrier")
+    cop = heating.get("heat_pump_cop")
+    if carrier is not None and ((carrier != "heat_pump" and cop is not None)
+                               or (complete_heating and carrier == "heat_pump" and cop is None)):
+        raise ValueError("Heat-pump delivery requires an explicit COP; other carriers forbid it")
+    if cop is not None and min(ScheduleSpec.model_validate(cop).all_values) <= 0:
+        raise ValueError("Declared heat-pump COP must be positive")
+    if "loss_fraction" in heating:
+        schedule = ScheduleSpec.model_validate(heating["loss_fraction"])
+        if any(not 0 <= value <= 1 for value in schedule.all_values):
+            raise ValueError("Loss fraction must lie in [0,1]")
+        if float(heating.get("net_distribution_loss_kwh_m2_year", 0)) and not sum(schedule.all_values):
+            raise ValueError("Net distribution losses require an active schedule")
+
+
+def _validate_hvac_properties(values):
+    """Check known cross-system facts on partial or complete HVAC inputs."""
+    delivery = values.get("delivery", {})
+    airflow = values.get("airflow", {})
+    if delivery.get("fvp") is None:
+        return
+    if "infiltration_coefficients" in airflow and tuple(
+            float(value) for value in airflow["infiltration_coefficients"]) != (1, 0, 0, 0):
+        raise ValueError("FVP accounting requires constant leakage for every zone")
+    if "topology" in airflow and airflow["topology"] != "F":
+        raise ValueError("FVP delivery requires F ventilation")
+    if "mechanical_vent_fraction" in airflow and set(ScheduleSpec.model_validate(
+            airflow["mechanical_vent_fraction"]).all_values) != {1.0}:
+        raise ValueError("FVP delivery currently requires uniform continuous exhaust flow")
+
+
+def _validate_operation_hvac(use, airflow, delivery):
+    """Check known operation/system relationships without a simulation calendar.
+
+    Shared by complete BuildingSpec validation and atomic draft assignment.
+    A missing use is permitted; known HVAC contradictions are still rejected.
+    Calendar expansion and geometry references remain complete-model checks.
+    """
+    _validate_hvac_properties({"airflow": airflow.model_dump(), "delivery": delivery.model_dump()})
+    if use is not None and max(use.heating_setpoint.all_values) \
+            >= airflow.maximum_heating_supply_temperature_c:
+        raise ValueError("Zone heating supply limit must exceed its heating setpoint")
 
 
 

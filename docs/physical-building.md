@@ -42,6 +42,118 @@ geometry or facade configuration to change thermal areas; construction-only
 overrides remain supported. Explicit zero-window facade overrides are preserved
 when assigning per-window thermal properties.
 
+### Assigning resolved inputs together
+
+`building.assign_inputs(...)` updates the draft atomically and returns an
+`InputAssignmentReport`. Pass resolved `construction_set`, `operation`, `hvac`,
+`thermal_bridge_uplift_fraction` and/or `facade_properties` inputs. Construction
+roles without geometric targets are reported as unmatched; no physical elements
+are created. Core does not select a catalogue entry or infer a calendar here.
+
+`mode="replace"` replaces supplied roles and sections. Uncovered physical elements
+keep their constructions and installed component IDs. `mode="fill_missing"`
+fills individual unassigned elements and absent sections, preserving targeted
+overrides and configured operation/HVAC. Every supplied value is validated even
+when fill-missing would retain an existing choice. Invalid inputs leave the whole
+Building unchanged. A completely retained assignment preserves snapshot identity.
+Known operation/HVAC contradictions, including supply temperatures and FVP
+topology/leakage/continuous-exhaust constraints, are checked against the effective
+retained and supplied inputs. Calendar and complete geometry checks remain part
+of simulation preparation and do not require invented weather or project dates.
+
+```python
+from epsm_core import Building, Footprint
+
+reference = Building(preset="illustrative-reference")
+building = Building.from_footprint(
+    Footprint.rectangle(10, 8), storeys=2, storey_height_m=3,
+    facade=reference.facade,  # caller explicitly selects opening geometry
+)
+report = building.assign_inputs(
+    construction_set=reference.construction_set,
+    operation=reference.operation,
+    mode="fill_missing",
+)
+print(report.to_dict())
+print(building.readiness())  # HVAC, ground, bridge and load-area choices remain
+```
+
+`facade_properties` accepts only `glazing` and `solar_shading_factor`. Geometry,
+WWR, opening placement/layout, orientation and context stay unchanged. An absent
+facade stays missing and properties are reported unmatched. Explicit glazing
+properties update applicable actual `WindowElement` performance as well as facade
+defaults, so the engine receives those values. Missing/layered window definitions
+remain unchanged and are reported as unmatched physical targets. No whole-window
+construction is fabricated; readiness still reports their missing/unsupported
+representation.
+When constructions and explicit glazing are supplied together, explicit glazing
+properties take precedence for actual window performance. Construction-definition
+sources and winning glazing-property sources remain separate in provenance.
+
+Optional `provenance={"records": [...]}` accepts `SourceRecord` records for changed
+inputs. Partial edits narrow broad construction/facade sources to retain evidence
+for untouched fields. Incoming broad sources are attached only to changed paths.
+The report contains applied, replaced, retained and unmatched paths; `readiness()`
+reports simulation requirements. The operation and report rendering are offline.
+Earlier snapshots, renovation stages and material flows stay unchanged. Material
+authoring after renovation remains a history requirement rather than an invented
+intervention. Single-field assignments and `assign_construction()` remain available.
+
+Use `airflow_properties={...}` for explicit infiltration, ventilation or schedule
+patches without replacing the installed HVAC delivery, equipment or topology.
+Only known `AirflowSpec` fields are accepted, excluding `topology`; select a new
+system through `hvac` when topology must change. `replace` patches supplied leaves
+on the retained or same-call supplied system. Source records use paths such as
+`hvac.airflow.envelope_infiltration_ach`; untouched delivery/equipment sources are
+preserved. Same-call explicit leaf sources take precedence over broad template
+sources. Without HVAC, the patch is unmatched and no system is inferred.
+`fill_missing` retains every typed-system field, including zero, even when the
+system is newly supplied in that call. A model default is not evidence of absence.
+
+### Resolve a complete or incomplete HVAC template
+
+`HVACSystem.resolve_template(template, previous=None)` consumes a loaded Data
+`HVACTemplate` with no catalogue or resource reads. It returns immutable
+`HVACTemplateResolution`: an optional complete `hvac`, explicit `requirements`,
+read-only `values`, source references and notes. `to_dict()` returns a detached
+export. Partial templates do not invent topology, leakage or product choices.
+
+Every supplied airflow, delivery, renewables and equipment section is checked
+independently before missing inputs are classified. An incomplete airflow cannot
+mask invalid heating efficiency, contradictory delivery choices, malformed
+equipment or known topology/flow contradictions. Unknown sections/fields are
+rejected. A heat-pump carrier without a COP is an explicit requirement rather
+than a made-up efficiency.
+
+```python
+from epsm_data import HVACTemplate
+from epsm_core import HVACSystem
+
+template = HVACTemplate("project:minimum-flow", {
+    "airflow": {"mechanical_vent_l_s_m2": 0.35},
+})
+resolution = HVACSystem.resolve_template(template)
+assert resolution.hvac is None
+print(resolution.requirements)  # topology and envelope infiltration remain unknown
+```
+
+Explicit `previous` fills known system fields while retaining delivery/equipment
+not supplied by the template. Heating/FVP definition fields merge within their
+own section; schedules remain complete replacements. Equipment records merge by
+identifier, and explicitly supplied product definitions create new installed
+occurrence IDs unless the caller supplies an occurrence ID. Complete templates
+retain the existing `HVACSystem.from_template` behaviour through the same
+validation route. That factory raises when unresolved requirements remain; use
+`resolve_template` for gradual authoring. Template resolution does not apply
+building provenance; `assign_inputs` attaches the selected sources when committing.
+
+The existing geometry-first basement adapter currently labels a basement bottom
+`GROUND_FLOOR` when no construction set was supplied during geometry creation.
+`assign_inputs` preserves that recorded role and reports a supplied
+`BASEMENT_FLOOR` definition as unmatched. It does not relabel geometry or substitute
+the ground-floor recipe for a basement-floor recipe. Review the physical roles
+before application; correcting the geometry adapter is a separate change.
+
 ### Internal-gain partitions
 
 `UseSpec.gain_partitions` selects how people, equipment and lighting gains are
