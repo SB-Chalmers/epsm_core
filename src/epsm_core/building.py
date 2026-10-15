@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import math
 from dataclasses import dataclass, field, replace
 from typing import Literal
@@ -38,6 +39,8 @@ from .specs import (
     UseSpec,
 )
 from .specs.base import Fraction, Nonnegative, Positive
+
+logger = logging.getLogger(__name__)
 
 
 def _json(value):
@@ -632,6 +635,8 @@ class Building:
         facade_properties : mapping, optional
             Only ``glazing`` and ``solar_shading_factor`` are accepted. An absent
             facade stays missing: this operation never guesses opening geometry.
+            Explicit glazing overrides supplied window performance, with its own
+            property sources; window identity and opening geometry are retained.
         thermal_bridge_uplift_fraction : float, optional
             Nonnegative finite uplift. Zero explicitly assigns no uplift.
         provenance : ProvenanceSpec or mapping, optional
@@ -748,7 +753,8 @@ class Building:
                     vt=glazing.visible_transmittance)
                 elements.append(element.with_changes(construction=window))
                 path = "elements." + element.identifier + ".construction"
-                changed.add(path)
+                if path not in construction_targets:
+                    changed.update(path + "." + name for name in ("u_value", "shgc", "vt"))
                 glazing_targets.add(path)
             candidate.elements = elements
             updates["_elements"] = candidate.elements
@@ -768,14 +774,23 @@ class Building:
                     for child in split_previous(record.updated(field_path=path + "." + key), item)]
 
         state = self._snapshot_data()
-        state["elements"] = {element.identifier: element.to_dict() for element in self.elements}
+        state["elements"] = {element.identifier: {
+            **element.to_dict(),
+            "construction": element.construction.to_dict() if element.construction else None,
+        } for element in self.elements}
 
         def source_value(path):
             value = state
-            for part in path.split("."):
-                if not isinstance(value, dict) or part not in value:
+            while path:
+                if not isinstance(value, dict):
                     return None
-                value = value[part]
+                # Physical IDs contain dots. Match the complete loaded key
+                # before interpreting dots as paths within its construction.
+                keys = [key for key in value if path == key or path.startswith(key + ".")]
+                if not keys:
+                    return None
+                key = max(keys, key=len)
+                value, path = value[key], path[len(key):].lstrip(".")
             return value
 
         previous = [child for record in self.provenance.records
@@ -786,7 +801,8 @@ class Building:
             # A construction-set source also describes its actual element assignments.
             if record.field_path == "construction_set" and construction_set is not None:
                 paths.extend(key for key in changed if key.startswith("elements.")
-                             and key not in glazing_targets)
+                             and not any(key == path or key.startswith(path + ".")
+                                         for path in glazing_targets))
                 paths.extend(path + "." + name for path in glazing_targets & construction_targets
                              for name in ("name", "archetype", "application", "boverket_id"))
             glazing_fields = {"u_value_w_m2k": "u_value",
@@ -801,8 +817,11 @@ class Building:
         # setter that rebuilds geometry or removes freshly attached source records.
         for name, value in updates.items():
             object.__setattr__(self, name, value)
-        return InputAssignmentReport(tuple(applied), tuple(replaced),
-                                     tuple(retained), tuple(unmatched))
+        report = InputAssignmentReport(tuple(applied), tuple(replaced),
+                                       tuple(retained), tuple(unmatched))
+        logger.info("Assigned resolved building inputs: %d applied, %d replaced, %d retained, "
+                    "%d unmatched", len(applied), len(replaced), len(retained), len(unmatched))
+        return report
 
     def _rebuild_elements(self, *, reassign=False):
         geometry = getattr(self, "geometry", None)

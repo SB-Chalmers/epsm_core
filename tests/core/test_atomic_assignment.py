@@ -221,3 +221,21 @@ def test_explicit_glazing_wins_window_performance_and_keeps_its_own_source():
             assert records[path + ".u_value"] == "project-glazing"
             assert records[path + ".name"] == "catalogue"
             assert element.construction.u_value == 0.8
+
+
+@pytest.mark.parametrize("broad", [False, True])
+def test_glazing_only_preserves_unchanged_physical_window_metadata_sources(broad):
+    building = Building(preset="illustrative-reference")
+    window = next(e for e in building.elements if e.role == Role.WINDOW)
+    path = "elements." + window.identifier + ".construction"
+    metadata_path = path + ".name"
+    source_path = path if broad else metadata_path
+    source = SourceRecord(field_path=source_path, status="assumed", source="window-identity")
+    building.provenance = {"records": [*building.provenance.records, source]}
+    building.assign_inputs(facade_properties={"glazing": building.facade.glazing},
+        provenance={"records": [SourceRecord(field_path="facade.glazing", status="assumed",
+                                              source="new-glazing")]})
+    records = {r.field_path: r.source for r in building.provenance.records}
+    assert records[metadata_path] == "window-identity"
+    assert records[path + ".u_value"] == "new-glazing"
+    assert next(e for e in building.elements if e.id == window.id).construction.name == window.construction.name
