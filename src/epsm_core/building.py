@@ -497,7 +497,8 @@ class Building:
                     "load_reference_area_m2", "load_reference_area_policy"} \
                 and hasattr(self, "provenance"):
             object.__setattr__(self, "provenance", ProvenanceSpec(records=tuple(
-                r for r in self.provenance.records if r.field_path != name)))
+                r for r in self.provenance.records
+                if r.field_path != name and not r.field_path.startswith(name + "."))))
         if name in {"geometry", "construction_set", "facade"}:
             self._rebuild_elements(reassign=name == "construction_set")
 

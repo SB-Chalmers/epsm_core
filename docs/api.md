@@ -160,6 +160,19 @@ the specification; use `report.run_id` when a compilation report already exists.
 
 New envelopes default to `FoundationSpec(method="kiva")`. Soil and footing assumptions remain configurable and reported. Explicit legacy `GroundTemperatureSpec` profiles retain prescribed-temperature behaviour. See [foundation settings and migration](foundations.md).
 
+## Shared hourly gain inputs and raw evidence
+
+`resolve_internal_gains(use, reference_area_m2=..., calendar_year=...)` returns an
+immutable `InternalGainSeries` of hourly watts for explicit gain partitions.
+Convective and radiant heat are separate from latent, lost and return-air heat.
+Visible lighting energy enters the radiant channel. An engine-calculated people
+split stays in `unresolved_people_w`; consumers must resolve or reject it.
+This pure helper performs no weather or engine I/O.
+
+`SourceRecord.evidence` optionally retains finite JSON source fields, selected
+values and derivations. Older records need no new field. Geometry edits invalidate
+provenance for geometry and its descendants; copies and snapshots retain evidence.
+
 ## Warning acceptance
 
 The runner reviews bounded, known 24.2 psychrometric warnings only after full

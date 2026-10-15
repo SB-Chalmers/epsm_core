@@ -13,7 +13,70 @@ explicitly identified rather than estimated by Core.
 
 from __future__ import annotations
 
+import math
+from dataclasses import dataclass
+
+import numpy as np
+
 from .specs import GainPartitionSpec, UseSpec
+
+
+@dataclass(frozen=True)
+class InternalGainSeries:
+    """Immutable hourly watts; unresolved people heat is never assigned a guessed split.
+
+    Radiant includes visible lighting energy deposited on room surfaces. Latent,
+    lost and return-air channels remain separate from room sensible heat.
+    """
+
+    convective_w: tuple[float, ...]
+    radiant_w: tuple[float, ...]
+    latent_w: tuple[float, ...]
+    lost_w: tuple[float, ...]
+    return_air_w: tuple[float, ...]
+    unresolved_people_w: tuple[float, ...]
+
+
+def resolve_internal_gains(
+    use: UseSpec, *, reference_area_m2: float, calendar_year: int,
+) -> InternalGainSeries:
+    """Resolve supplied gain channels without weather, engine I/O or defaults.
+
+    Requires the explicit partition policy. People fractions refer to sensible
+    metabolic heat; equipment fractions refer to electrical input. A missing
+    people sensible fraction leaves active metabolic heat in ``unresolved_people_w``.
+    Consumers must handle or reject that channel rather than treating it as known.
+    """
+    if not math.isfinite(reference_area_m2) or reference_area_m2 <= 0:
+        raise ValueError("reference_area_m2 must be finite and positive")
+    config = use.gain_partitions
+    if config is None or config.policy != "explicit":
+        raise ValueError("Hourly gain resolution requires explicit gain partitions")
+
+    def annual(schedule):
+        return np.asarray(schedule.hourly(calendar_year), dtype=float)
+
+    people = (reference_area_m2 * use.occupant_density_per_m2
+              * annual(use.occupancy_fraction)
+              * (annual(use.occupant_activity_schedule) if use.occupant_activity_schedule is not None
+                 else use.occupant_activity_w))
+    equipment = reference_area_m2 * use.equipment_gain_w_m2 * annual(use.equipment_fraction)
+    lights = reference_area_m2 * use.lighting_gain_w_m2 * annual(use.lighting_fraction)
+    channels = equipment_partition_fractions(use, calendar_year)
+    unresolved = people if config.people_sensible_heat_fraction is None else np.zeros_like(people)
+    sensible = (np.zeros_like(people) if config.people_sensible_heat_fraction is None
+                else people * config.people_sensible_heat_fraction)
+    convective = (sensible * (1 - config.people_fraction_radiant)
+                  + equipment * channels["convective"]
+                  + lights * (1 - config.lighting_fraction_radiant
+                              - config.lighting_fraction_visible - config.lighting_return_air_fraction))
+    radiant = (sensible * config.people_fraction_radiant + equipment * channels["radiant"]
+               + lights * (config.lighting_fraction_radiant + config.lighting_fraction_visible))
+    latent = equipment * channels["latent"] + people - sensible - unresolved
+    return InternalGainSeries(*(tuple(float(value) for value in values) for values in (
+        convective, radiant, latent, equipment * channels["lost"],
+        lights * config.lighting_return_air_fraction, unresolved,
+    )))
 
 
 def equipment_partition_fractions(use: UseSpec, calendar_year: int) -> dict[str, list[float]]:
