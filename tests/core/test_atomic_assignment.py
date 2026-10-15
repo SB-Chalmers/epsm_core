@@ -311,6 +311,7 @@ def test_airflow_leaf_patch_preserves_delivery_equipment_and_other_source_record
     {"envelope_infiltration_ach": 0.2, "envelope_infiltration_l_s_m2": 0.1},
     {"mechanical_vent_fraction": {"values": (1.5,) * 24}},
     {"infiltration_coefficients": (0.5, 0.5, 0, 0), "infiltration_source": ""},
+    {"infiltration_coefficients": (1, 0, 0)},
 ])
 def test_invalid_airflow_patch_rolls_back_even_when_missing_or_retained(properties):
     for building in (Building.empty(), Building(preset="illustrative-reference")):
@@ -348,3 +349,16 @@ def test_same_call_hvac_then_patch_has_explicit_mode_and_source_precedence():
     assert "hvac" not in records
     assert records["hvac.delivery"] == "template"
     assert records["hvac.airflow.envelope_infiltration_ach"] == "explicit-leakage"
+
+
+def test_valid_glazing_preserves_unassigned_windows_and_reports_specific_targets():
+    reference = Building(preset="illustrative-reference")
+    building = Building.from_footprint(Footprint.rectangle(10, 8), storeys=1,
+                                      storey_height_m=3, facade=reference.facade)
+    targets = tuple(e for e in building.elements if e.role == Role.WINDOW)
+    geometry = building.geometry
+    glazing = reference.facade.glazing.updated(u_value_w_m2k=0.8)
+    report = building.assign_inputs(facade_properties={"glazing": glazing})
+    assert building.geometry == geometry and building.facade.glazing == glazing
+    assert all(next(e for e in building.elements if e.id == target.id) == target for target in targets)
+    assert all("construction:" + target.id in report.unmatched for target in targets)

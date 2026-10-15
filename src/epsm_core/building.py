@@ -15,6 +15,7 @@ from dataclasses import dataclass, field, replace
 from typing import Literal
 from uuid import UUID, uuid4
 
+from epsm_data import HVACTemplate
 from epsm_data.domain import ConstructionSet, Element, WindowElement
 from epsm_data.domain.enums import BuildingElement as ElementRole
 from epsm_data.serialization import construction_set_from_dict, construction_set_to_dict
@@ -39,7 +40,12 @@ from .specs import (
     UseSpec,
 )
 from .specs.base import Fraction, Nonnegative, Positive
-from .specs.physics import _validate_airflow_properties, _validate_operation_hvac
+from .specs.physics import (
+    _validate_airflow_properties,
+    _validate_delivery_properties,
+    _validate_hvac_properties,
+    _validate_operation_hvac,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -138,6 +144,41 @@ class Equipment:
     __str__ = __repr__
 
 
+@dataclass(frozen=True, repr=False)
+class HVACTemplateResolution:
+    """Validated loaded template inputs and explicit unresolved system requirements.
+
+    ``hvac`` is None until supplied/previous inputs form a complete system.
+    ``values`` is read-only; ``to_dict`` returns a writable detached export.
+    Resolving/inspecting these values reads no catalogue, file or service.
+    """
+
+    template_id: str
+    _values_json: str
+    hvac: HVACSystem | None
+    requirements: tuple[str, ...]
+    source_references: tuple[str, ...] = ()
+    notes: tuple[str, ...] = ()
+
+    @property
+    def values(self):
+        from .standards import _freeze
+
+        return _freeze(json.loads(self._values_json))
+
+    def to_dict(self):
+        return {"template_id": self.template_id, "values": json.loads(self._values_json),
+                "hvac": self.hvac.to_dict() if self.hvac is not None else None,
+                "requirements": list(self.requirements),
+                "source_references": list(self.source_references), "notes": list(self.notes)}
+
+    def __repr__(self):
+        return bounded_summary(type(self).__name__, template=self.template_id,
+                               complete=self.hvac is not None, requirements=len(self.requirements))
+
+    __str__ = __repr__
+
+
 @dataclass(frozen=True)
 class HVACSystem:
     """Explicit airflow, energy delivery and renewable equipment configuration."""
@@ -176,18 +217,114 @@ class HVACSystem:
 
     @classmethod
     def from_template(cls, template, *, previous=None):
-        """Resolve a Data HVAC template; unspecified existing systems are retained."""
+        """Return a complete template system, raising if inputs remain unresolved.
+
+        Use ``resolve_template`` to inspect legitimate partial templates. Both
+        routes validate every supplied section through the same implementation.
+        """
+        result = cls.resolve_template(template, previous=previous)
+        if result.hvac is None:
+            raise ValueError("HVAC template missing inputs: " + ", ".join(result.requirements))
+        return result.hvac
+
+    @classmethod
+    def resolve_template(cls, template, *, previous=None):
+        """Validate a loaded Data template without inventing missing HVAC choices.
+
+        Independently check airflow, delivery, renewable and equipment inputs.
+        Invalid supplied fields/known contradictions raise even when another
+        section is incomplete. ``previous`` explicitly supplies retained values;
+        neither object is changed. Unknown top-level/section keys are rejected.
+        Returns HVACTemplateResolution with an optional complete system and
+        missing field paths. This performs no I/O or source selection.
+        """
+        if not isinstance(template, HVACTemplate):
+            raise TypeError("template must be an EPSM Data HVACTemplate")
+        if previous is not None and not isinstance(previous, cls):
+            raise TypeError("previous must be an HVACSystem")
         data = template.to_dict()["values"]
+        if set(data) - {"airflow", "delivery", "renewables", "equipment"}:
+            raise ValueError("Unknown HVAC template section")
         values = previous.to_dict() if previous is not None else {}
         for name in ("airflow", "delivery", "renewables"):
             if name in data:
+                if not isinstance(data[name], dict):
+                    raise ValueError(f"{name} must be a mapping")
+                if name == "delivery":
+                    data[name] = {key: {**values.get(name, {}).get(key, {}), **value}
+                                  if isinstance(value, dict) and isinstance(values.get(name, {}).get(key), dict)
+                                  else value for key, value in data[name].items()}
                 values[name] = {**values.get(name, {}), **data[name]}
+        requirements = []
         if "equipment" in data:
+            if not isinstance(data["equipment"], list):
+                raise ValueError("equipment must be a sequence of product records")
             equipment = {e["identifier"]: e for e in values.get("equipment", ())}
-            for record in data["equipment"]:
-                equipment[record["identifier"]] = record
+            seen = set()
+            for index, record in enumerate(data["equipment"]):
+                if not isinstance(record, dict) or set(record) - set(Equipment.__dataclass_fields__):
+                    raise ValueError("Unknown or invalid equipment fields")
+                for name in ("identifier", "product_id"):
+                    if name in record and (not isinstance(record[name], str) or not record[name].strip()):
+                        raise ValueError(f"Equipment {name} must be nonempty text")
+                if "count" in record:
+                    try:
+                        record["count"] = float(record["count"])
+                    except (TypeError, ValueError) as error:
+                        raise ValueError("Equipment count must be finite and positive") from error
+                    if not math.isfinite(record["count"]) or record["count"] <= 0:
+                        raise ValueError("Equipment count must be finite and positive")
+                identifier = record.get("identifier")
+                if identifier is not None and identifier in seen:
+                    raise ValueError("Supplied equipment identifiers must be unique")
+                seen.add(identifier)
+                merged = {**equipment.get(identifier, {}), **record}
+                missing = [name for name in ("identifier", "product_id") if name not in merged]
+                requirements.extend(f"equipment.{index}.{name}" for name in missing)
+                if "product_id" in record and "occurrence_id" not in record:
+                    merged.pop("occurrence_id", None)
+                check = dict(merged)
+                if isinstance(check.get("factor_refs"), dict):
+                    check["factor_refs"] = tuple(check["factor_refs"].items())
+                try:
+                    TypeAdapter(Equipment).validate_python(check)
+                except ValidationError as error:
+                    if any(item["type"] != "missing" or item["loc"] not in {("identifier",), ("product_id",)}
+                           for item in error.errors()):
+                        raise
+                equipment[identifier if identifier is not None else (None, index)] = merged
             values["equipment"] = list(equipment.values())
-        return cls(**values)
+        for name, kind in (("airflow", AirflowSpec), ("delivery", DeliverySpec),
+                           ("renewables", RenewablesSpec)):
+            supplied = values.get(name, {})
+            if name == "delivery":
+                heating = supplied.get("heating")
+                if isinstance(heating, dict) and heating.get("carrier") == "heat_pump" \
+                        and heating.get("heat_pump_cop") is None:
+                    requirements.append("delivery.heating.heat_pump_cop")
+            try:
+                kind.model_validate(supplied)
+            except ValidationError as error:
+                for item in error.errors():
+                    if item["type"] == "missing" and isinstance(item["loc"][-1], str):
+                        requirements.append(name + "." + ".".join(map(str, item["loc"])))
+                    elif (name == "delivery" and item["type"] == "value_error"
+                          and item["loc"] == ("heating",)
+                          and "delivery.heating.heat_pump_cop" in requirements
+                          and "requires an explicit COP" in item["msg"]):
+                        continue
+                    else:
+                        raise
+            if name == "airflow":
+                _validate_airflow_properties(supplied)
+            if name == "delivery":
+                _validate_delivery_properties(supplied)
+        _validate_hvac_properties(values)
+        hvac = None if requirements else cls(**values)
+        if hvac is not None:
+            _validate_operation_hvac(None, hvac.airflow, hvac.delivery)
+        return HVACTemplateResolution(template.template_id, _json(values), hvac,
+            tuple(dict.fromkeys(requirements)), template.source_references, template.notes)
 
 
 @dataclass(frozen=True)
@@ -702,7 +839,8 @@ class Building:
             except ValidationError as error:
                 # An unmatched partial patch may lack topology/infiltration,
                 # but every supplied field must obey model bounds/finiteness.
-                if any(item["type"] != "missing" for item in error.errors()):
+                if any(item["type"] != "missing" or not isinstance(item["loc"][-1], str)
+                       for item in error.errors()):
                     raise
             _validate_airflow_properties(airflow_patch)
         applied, replaced, retained, unmatched, changed = [], [], [], [], set()
@@ -769,7 +907,9 @@ class Building:
                     elements.append(element)
                     continue
                 if not isinstance(element.construction, WindowElement):
-                    raise ValueError("Glazing properties require physical WindowElement constructions")
+                    unmatched.append("construction:" + element.identifier)
+                    elements.append(element)
+                    continue
                 window = element.construction.with_changes(
                     u_value=glazing.u_value_w_m2k, shgc=glazing.solar_heat_gain_coefficient,
                     vt=glazing.visible_transmittance)

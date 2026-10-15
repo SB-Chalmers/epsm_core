@@ -46,6 +46,7 @@ from .building import (
     BuildingSnapshot,
     Equipment,
     HVACSystem,
+    HVACTemplateResolution,
     InputAssignmentReport,
     OperationProfile,
     Readiness,
@@ -125,7 +126,7 @@ from .weather import Weather, climate_from_epw
 
 __all__ = [
     "AuthoringLink", "Building", "BuildingElement", "BuildingSnapshot", "HVACSystem", "OperationProfile",
-    "Readiness", "InputAssignmentReport",
+    "Readiness", "InputAssignmentReport", "HVACTemplateResolution",
     "ResolvedBuildingInput",
     "resolve_building", "RenovationStage", "MaterialFlows", "MaterialInventory", "MaterialQuantity",
     "Weather",

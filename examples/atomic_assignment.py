@@ -1,6 +1,8 @@
 """Apply resolved inputs to explicit geometry, offline and without an engine."""
 
-from epsm_core import Building, Footprint
+from epsm_data import HVACTemplate
+
+from epsm_core import Building, Footprint, HVACSystem
 
 
 def main():
@@ -20,6 +22,10 @@ def main():
     assert building.readiness("quantities")
     print(report)
     print("Still required:", building.readiness().missing)
+    template = HVACTemplate("project:minimum-flow", {"airflow": {"mechanical_vent_l_s_m2": 0.35}})
+    resolution = HVACSystem.resolve_template(template)
+    assert resolution.hvac is None
+    print("System requirements:", resolution.requirements)
 
 
 if __name__ == "__main__":
