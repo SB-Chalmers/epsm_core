@@ -7,6 +7,7 @@ calendar below exists solely to test counts/closures; it is not a school term.
 from datetime import date, timedelta
 
 import pytest
+from profile_inputs import nonresidential_converter
 
 from epsm_core import (
     AirflowSpec,
@@ -14,8 +15,6 @@ from epsm_core import (
     EnergyPlusRunner,
     HeatingDeliverySpec,
     UseSpec,
-    load_sveby_office_v1,
-    load_sveby_school_v1,
 )
 
 
@@ -31,7 +30,7 @@ def test_annual_source_loads_and_delivered_heat(
         if current.weekday() < 5:
             active.append(current)
         current += timedelta(days=1)
-    profile = (load_sveby_office_v1 if category == "office" else load_sveby_school_v1)()
+    profile = nonresidential_converter(category)
     defaults = profile.building_assumptions(
         calendar_year=year,
         active_dates=active,

@@ -1,6 +1,8 @@
 # epsm_core
 
-A pre-1.0 building-energy modelling library for automated urban building energy modelling. The package version is **0.3.0**; content hashes distinguish simulation inputs and implementations.
+Core 0.4.0 consumes Data 0.6.0 definitions and includes atomic assignment and profile API cleanup. See [release notes](RELEASE_NOTES.md) and [migration guidance](docs/archetype-operation.md).
+
+A pre-1.0 building-energy modelling library for automated urban building energy modelling. The package version is **0.4.0**; content hashes distinguish simulation inputs and implementations.
 
 ## Physical Building authoring
 

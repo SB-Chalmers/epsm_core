@@ -9,8 +9,6 @@ unchanged and importing this module performs no resource or network reads.
 
 from __future__ import annotations
 
-import json
-from importlib.resources import files
 from typing import Annotated, Literal
 
 from pydantic import Field
@@ -65,83 +63,3 @@ class DHWProfileSpec(Spec):
             source=f"{self.source_uri}; {self.source_locator}",
             assumption_profile=self.profile_id,
         )
-
-
-def load_dhw_profile(
-    building_type: BuildingType,
-    *,
-    purpose: Literal["epc_normal_use"],
-    version: str = "1",
-) -> DHWProfileSpec:
-    """Load a pinned, type-specific annual DHW assumption from package data.
-
-    Parameters
-    ----------
-    building_type : str
-        single_family, multi_family, office, school or non_residential. Mixed
-        programmes need separate component profiles and explicit area shares.
-    purpose : str
-        Explicitly select epc_normal_use. Actual-use estimation is not inferred
-        from these standardized coefficients.
-    version : str
-        Version of this EPSM profile resource, currently "1". The source is BEN
-        BFS 2016:12 with BFS 2017:6 amendments, not the latest regulations.
-
-    Returns
-    -------
-    DHWProfileSpec
-        Immutable assumption with source, area basis and profile identity.
-
-    Raises
-    ------
-    ValueError
-        For unsupported selectors or an unreviewed change to the pinned resource.
-    FileNotFoundError
-        If package installation omitted the resource.
-
-    Examples
-    --------
-    Example::
-
-        from epsm_core import load_dhw_profile, load_sveby_spec
-
-        profile = load_dhw_profile("multi_family", purpose="epc_normal_use")
-        use = profile.apply_to(load_sveby_spec().use_spec(calendar_year=2024))
-        assert use.dhw_kwh_m2_year == 25
-    """
-    expected_rates = {
-        "single_family": 20.0,
-        "multi_family": 25.0,
-        "office": 2.0,
-        "school": 2.0,
-        "non_residential": 2.0,
-    }
-    if purpose != "epc_normal_use":
-        raise ValueError(f"Unsupported DHW profile purpose: {purpose!r}")
-    if version != "1":
-        raise ValueError(f"Unsupported DHW profile version: {version!r}")
-    if building_type not in expected_rates:
-        raise ValueError(f"Unsupported DHW building type: {building_type!r}")
-    resource = files("epsm_data").joinpath("datasets/standards/dhw_epc_normal_use_v1.json")
-    with resource.open("r", encoding="utf-8") as handle:
-        data = json.load(handle)
-    expected = {
-        "schema_version": 1,
-        "profile_id": "ben.dhw.normal_use.v1",
-        "purpose": "epc_normal_use",
-        "version": "1",
-        "area_basis": "Atemp",
-        "dhw_kwh_m2_year_by_type": expected_rates,
-    }
-    if any(data.get(key) != value for key, value in expected.items()):
-        raise ValueError("Bundled DHW values do not match the reviewed EPC normal-use v1 profile")
-    return DHWProfileSpec(
-        profile_id=f"{data['profile_id']}.{building_type}",
-        building_type=building_type,
-        purpose=data["purpose"],
-        version=data["version"],
-        area_basis=data["area_basis"],
-        dhw_kwh_m2_year=data["dhw_kwh_m2_year_by_type"][building_type],
-        source_uri=data["source_uri"],
-        source_locator=data["source_locator_by_type"][building_type],
-    )

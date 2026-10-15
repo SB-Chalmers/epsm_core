@@ -37,7 +37,7 @@ supplied climate metadata without reading its weather path.
 
 ## Operational standards
 
-`load_sveby_spec()` reads the current bundled residential profile; `load_sveby_residential_v2()` pins version 2.0 explicitly. `BuildingBuilder()` has no profile by default; set `building_use="residential"` to select the current bundled profile. The standard supplies operational leaves only, so weather, fabric, leakage, ventilation topology and installed-system performance remain explicit inputs.
+Data’s `select_operating_profile("multi_family", version="2.0")` selects the pinned residential definition; Core’s `resolve_operating_profile` converts loaded values. `BuildingBuilder()` has no profile by default; set `building_use="residential"` to select the current bundled profile. The standard supplies operational leaves only, so weather, fabric, leakage, ventilation topology and installed-system performance remain explicit inputs.
 
 The explicit residential profile contains separately labelled completion defaults for occupant density and cooling availability. It also retains requirements the current compiler cannot emit, rather than silently changing them. See the [operational-standards contract](standards.md) for source mappings, Atemp handling, overrides, provenance and the compliance boundary.
 

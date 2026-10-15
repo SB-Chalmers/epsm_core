@@ -649,25 +649,8 @@ class AirflowSpec(Spec):
             assert airflow.compatible() is airflow
         """
 
-        for name in ("infiltration_fraction", "natural_exchange_fraction", "mechanical_vent_fraction", "heating_availability", "cooling_availability"):
-            if any(not 0 <= v <= 1 for v in getattr(self, name).all_values):
-                raise ValueError(f"{name} must lie in [0,1]")
-        if self.infiltration_coefficients != (1, 0, 0, 0) and (
-            not self.infiltration_source or not self.infiltration_source.strip()
-        ):
-            raise ValueError("Weather-dependent infiltration requires a documented source")
-        # Alternative reference bases must not create two infiltration streams.
-        if self.envelope_infiltration_l_s_m2 is not None and self.envelope_infiltration_ach:
-            raise ValueError("Area-based infiltration requires envelope_infiltration_ach=0")
+        _validate_airflow_properties({name: getattr(self, name) for name in type(self).model_fields})
         # 1. Require ventilation and heat-recovery values consistent with topology.
-        if self.topology == "S" and self.mechanical_vent_l_s_m2:
-            raise ValueError("S cannot have mechanical outdoor air")
-        if self.topology != "S" and self.natural_exchange_ach:
-            raise ValueError("Natural self-draught exchange is specific to S")
-        if self.topology != "FTX" and (
-            self.sensible_recovery_effectiveness or self.latent_recovery_effectiveness
-        ):
-            raise ValueError("Air-to-air recovery requires FTX")
         return self
 
 
@@ -849,50 +832,7 @@ class UseSpec(Spec):
             assert use.schedules() is use
         """
 
-        if self.occupant_activity_schedule is not None and any(
-            v <= 0 for v in self.occupant_activity_schedule.all_values
-        ):
-            raise ValueError("Occupant activity must be positive W/person")
-        if self.equipment_heat_fraction_schedule is not None and any(
-            not 0 <= v <= 1 for v in self.equipment_heat_fraction_schedule.all_values
-        ):
-            raise ValueError("Equipment heat fraction schedule must lie in [0,1]")
-        partitions = self.gain_partitions
-        if partitions is not None and partitions.policy == "explicit":
-            available = (min(self.equipment_heat_fraction_schedule.all_values)
-                         if self.equipment_heat_fraction_schedule is not None
-                         else self.equipment_heat_fraction)
-            if (partitions.equipment_fraction_radiant + partitions.equipment_fraction_latent
-                    > available + 1e-12):
-                raise ValueError("Equipment radiant/latent partitions exceed available heat fraction")
-        elif self.equipment_heat_fraction_schedule is None and self.equipment_heat_fraction < .3 - 1e-12:
-            raise ValueError("Legacy static radiant fraction exceeds available equipment heat; select explicit partitions")
-        # 1. Validate fractional schedules, DHW activity and the thermostat deadband.
-        for name in (
-            "occupancy_fraction",
-            "equipment_fraction",
-            "lighting_fraction",
-            "dhw_fraction",
-        ):
-            if any(not 0 <= v <= 1 for v in getattr(self, name).all_values):
-                raise ValueError(f"{name} must lie in [0,1]")
-        if self.dhw_kwh_m2_year and not sum(self.dhw_fraction.all_values):
-            raise ValueError("Nonzero DHW demand requires a nonzero schedule")
-        years = self.heating_setpoint.declared_years | self.cooling_setpoint.declared_years
-        if len(years) > 1:
-            raise ValueError("Setpoint calendars must refer to the same year")
-        # Undated profiles need only seven aligned weekdays; dated/annual
-        # profiles are checked on their actual Gregorian axis (including leap day).
-        if years:
-            year = next(iter(years))
-            pairs = zip(self.heating_setpoint.hourly(year), self.cooling_setpoint.hourly(year))
-        else:
-            heat = self.heating_setpoint.weekday_values or (self.heating_setpoint.values,) * 7
-            cool = self.cooling_setpoint.weekday_values or (self.cooling_setpoint.values,) * 7
-            pairs = ((h, c) for hd, cd in zip(heat, cool) for h, c in zip(hd, cd))
-        for h, c in pairs:
-            if h >= c:
-                raise ValueError("Heating setpoint must remain below cooling setpoint")
+        _validate_use_properties({name: getattr(self, name) for name in type(self).model_fields})
         return self
 
 
@@ -963,14 +903,7 @@ class HeatingDeliverySpec(Spec):
     @model_validator(mode="after")
     def boundary(self):
         """Require a COP only for heat pumps and a physical loss fraction."""
-        if (self.carrier == "heat_pump") != (self.heat_pump_cop is not None):
-            raise ValueError("Heat-pump delivery requires an explicit COP; other carriers forbid it")
-        if self.heat_pump_cop is not None and min(self.heat_pump_cop.all_values) <= 0:
-            raise ValueError("Declared heat-pump COP must be positive")
-        if any(not 0 <= v <= 1 for v in self.loss_fraction.all_values):
-            raise ValueError("Loss fraction must lie in [0,1]")
-        if self.net_distribution_loss_kwh_m2_year and not sum(self.loss_fraction.all_values):
-            raise ValueError("Net distribution losses require an active schedule")
+        _validate_delivery_properties({"heating": self.model_dump()}, complete_heating=True)
         return self
 
 
@@ -1010,8 +943,7 @@ class DeliverySpec(Spec):
     @model_validator(mode="after")
     def exclusive(self):
         """Do not apply two incompatible delivery conversions to the same heat."""
-        if self.fvp is not None and self.heating is not None:
-            raise ValueError("FVP and general heating delivery are mutually exclusive")
+        _validate_delivery_properties(self.model_dump())
         return self
 
 
@@ -1110,3 +1042,136 @@ class RenewablesSpec(Spec):
     """
 
     pv_systems: tuple[PVSpec, ...] = ()
+
+
+def _validate_airflow_properties(values):
+    """Check supplied airflow relationships independently of installed topology.
+
+    Missing fields remain unknown for partial authoring. Complete AirflowSpec
+    supplies all fields here, retaining the same physical constraints.
+    """
+    for name in ("infiltration_fraction", "natural_exchange_fraction", "mechanical_vent_fraction",
+                 "heating_availability", "cooling_availability"):
+        if name in values:
+            schedule = ScheduleSpec.model_validate(values[name])
+            if any(not 0 <= value <= 1 for value in schedule.all_values):
+                raise ValueError(f"{name} must lie in [0,1]")
+    if (values.get("envelope_infiltration_l_s_m2") is not None
+            and float(values.get("envelope_infiltration_ach", 0))):
+        raise ValueError("Area-based infiltration requires envelope_infiltration_ach=0")
+    if ("infiltration_coefficients" in values and "infiltration_source" in values
+            and tuple(float(value) for value in values["infiltration_coefficients"]) != (1, 0, 0, 0)
+            and (not values["infiltration_source"] or not values["infiltration_source"].strip())):
+        raise ValueError("Weather-dependent infiltration requires a documented source")
+    topology = values.get("topology")
+    if topology == "S" and float(values.get("mechanical_vent_l_s_m2", 0)):
+        raise ValueError("S cannot have mechanical outdoor air")
+    if topology is not None and topology != "S" and float(values.get("natural_exchange_ach", 0)):
+        raise ValueError("Natural self-draught exchange is specific to S")
+    if topology is not None and topology != "FTX" and (
+            float(values.get("sensible_recovery_effectiveness", 0))
+            or float(values.get("latent_recovery_effectiveness", 0))):
+        raise ValueError("Air-to-air recovery requires FTX")
+
+
+def _validate_delivery_properties(values, *, complete_heating=False):
+    """Check supplied delivery relationships without filling unknown choices."""
+    if values.get("fvp") is not None and values.get("heating") is not None:
+        raise ValueError("FVP and general heating delivery are mutually exclusive")
+    heating = values.get("heating")
+    if not isinstance(heating, dict):
+        return
+    carrier = heating.get("carrier")
+    cop = heating.get("heat_pump_cop")
+    if carrier is not None and ((carrier != "heat_pump" and cop is not None)
+                               or (complete_heating and carrier == "heat_pump" and cop is None)):
+        raise ValueError("Heat-pump delivery requires an explicit COP; other carriers forbid it")
+    if cop is not None and min(ScheduleSpec.model_validate(cop).all_values) <= 0:
+        raise ValueError("Declared heat-pump COP must be positive")
+    if "loss_fraction" in heating:
+        schedule = ScheduleSpec.model_validate(heating["loss_fraction"])
+        if any(not 0 <= value <= 1 for value in schedule.all_values):
+            raise ValueError("Loss fraction must lie in [0,1]")
+        if float(heating.get("net_distribution_loss_kwh_m2_year", 0)) and not sum(schedule.all_values):
+            raise ValueError("Net distribution losses require an active schedule")
+
+
+def _validate_hvac_properties(values):
+    """Check known cross-system facts on partial or complete HVAC inputs."""
+    delivery = values.get("delivery", {})
+    airflow = values.get("airflow", {})
+    if delivery.get("fvp") is None:
+        return
+    if "infiltration_coefficients" in airflow and tuple(
+            float(value) for value in airflow["infiltration_coefficients"]) != (1, 0, 0, 0):
+        raise ValueError("FVP accounting requires constant leakage for every zone")
+    if "topology" in airflow and airflow["topology"] != "F":
+        raise ValueError("FVP delivery requires F ventilation")
+    if "mechanical_vent_fraction" in airflow and set(ScheduleSpec.model_validate(
+            airflow["mechanical_vent_fraction"]).all_values) != {1.0}:
+        raise ValueError("FVP delivery currently requires uniform continuous exhaust flow")
+
+
+def _validate_operation_hvac(use, airflow, delivery):
+    """Check known operation/system relationships without a simulation calendar.
+
+    Shared by complete BuildingSpec validation and atomic draft assignment.
+    A missing use is permitted; known HVAC contradictions are still rejected.
+    Calendar expansion and geometry references remain complete-model checks.
+    """
+    _validate_hvac_properties({"airflow": airflow.model_dump(), "delivery": delivery.model_dump()})
+    if use is not None and max(use.heating_setpoint.all_values) \
+            >= airflow.maximum_heating_supply_temperature_c:
+        raise ValueError("Zone heating supply limit must exceed its heating setpoint")
+
+
+
+def _validate_use_properties(values):
+    """Validate known use relationships without inventing absent authoring inputs."""
+    schedules = {}
+    for name in ("occupant_activity_schedule", "equipment_heat_fraction_schedule",
+                 "occupancy_fraction", "equipment_fraction", "lighting_fraction", "dhw_fraction",
+                 "heating_setpoint", "cooling_setpoint"):
+        if values.get(name) is not None:
+            schedules[name] = ScheduleSpec.model_validate(values[name])
+    activity = schedules.get("occupant_activity_schedule")
+    if activity is not None and any(value <= 0 for value in activity.all_values):
+        raise ValueError("Occupant activity must be positive W/person")
+    heat_fraction = schedules.get("equipment_heat_fraction_schedule")
+    if heat_fraction is not None and any(not 0 <= value <= 1 for value in heat_fraction.all_values):
+        raise ValueError("Equipment heat fraction schedule must lie in [0,1]")
+    partitions = values.get("gain_partitions")
+    if partitions is not None:
+        partitions = GainPartitionSpec.model_validate(partitions)
+    if partitions is not None and partitions.policy == "explicit":
+        available = (min(heat_fraction.all_values) if heat_fraction is not None
+                     else float(values["equipment_heat_fraction"])
+                     if "equipment_heat_fraction" in values else None)
+        if available is not None and (partitions.equipment_fraction_radiant
+                + partitions.equipment_fraction_latent > available + 1e-12):
+            raise ValueError("Equipment radiant/latent partitions exceed available heat fraction")
+    elif ("gain_partitions" in values and "equipment_heat_fraction_schedule" in values
+            and heat_fraction is None and "equipment_heat_fraction" in values
+            and float(values["equipment_heat_fraction"]) < .3 - 1e-12):
+        raise ValueError("Legacy static radiant fraction exceeds available equipment heat; select explicit partitions")
+    for name in ("occupancy_fraction", "equipment_fraction", "lighting_fraction", "dhw_fraction"):
+        if name in schedules and any(not 0 <= value <= 1 for value in schedules[name].all_values):
+            raise ValueError(f"{name} must lie in [0,1]")
+    if (float(values.get("dhw_kwh_m2_year", 0)) and "dhw_fraction" in schedules
+            and not sum(schedules["dhw_fraction"].all_values)):
+        raise ValueError("Nonzero DHW demand requires a nonzero schedule")
+    if not {"heating_setpoint", "cooling_setpoint"} <= schedules.keys():
+        return
+    heating, cooling = schedules["heating_setpoint"], schedules["cooling_setpoint"]
+    years = heating.declared_years | cooling.declared_years
+    if len(years) > 1:
+        raise ValueError("Setpoint calendars must refer to the same year")
+    if years:
+        year = next(iter(years))
+        pairs = zip(heating.hourly(year), cooling.hourly(year))
+    else:
+        heat = heating.weekday_values or (heating.values,) * 7
+        cool = cooling.weekday_values or (cooling.values,) * 7
+        pairs = ((h, c) for hd, cd in zip(heat, cool) for h, c in zip(hd, cd))
+    if any(h >= c for h, c in pairs):
+        raise ValueError("Heating setpoint must remain below cooling setpoint")
