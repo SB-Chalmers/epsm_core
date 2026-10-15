@@ -4,6 +4,7 @@ from calendar import monthrange
 from datetime import date, timedelta
 
 import pytest
+from profile_inputs import nonresidential_converter, residential_converter
 
 from epsm_core import (
     BuildingBuilder,
@@ -11,9 +12,6 @@ from epsm_core import (
     ScheduleSpec,
     UnconditionedExchangeSpec,
     ZoneUseSpec,
-    load_sveby_office_v1,
-    load_sveby_residential_v2,
-    load_sveby_school_v1,
 )
 from epsm_core.compiler import EnergyPlusCompiler
 
@@ -94,7 +92,7 @@ def test_fraction_and_setpoint_checks_include_calendar_overrides(building):
 
 @pytest.mark.parametrize("year", [2023, 2024])
 def test_residential_monthly_energy_conserves_source_totals(year):
-    standard = load_sveby_residential_v2()
+    standard = residential_converter()
     use = standard.use_spec(calendar_year=year)
     assert sum(
         use.equipment_fraction.hourly(year)
@@ -110,7 +108,7 @@ def test_residential_monthly_energy_conserves_source_totals(year):
 
 
 def test_office_calendar_and_electrical_heat_boundary():
-    profile = load_sveby_office_v1()
+    profile = nonresidential_converter("office")
     defaults = profile.building_assumptions(
         calendar_year=2023,
         active_dates=active_days(2023, 225),
@@ -130,7 +128,7 @@ def test_office_calendar_and_electrical_heat_boundary():
 
 
 def test_school_calendar_source_and_activity_counts():
-    profile = load_sveby_school_v1()
+    profile = nonresidential_converter("school")
     with pytest.raises(ValueError, match="source"):
         profile.building_assumptions(
             calendar_year=2023, active_dates=active_days(2023, 220), calendar_source=""

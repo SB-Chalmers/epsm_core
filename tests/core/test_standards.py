@@ -1,9 +1,11 @@
-from epsm_core import BuildingBuilder, load_sveby_residential_v2, load_sveby_spec
+from profile_inputs import residential_converter
+
+from epsm_core import BuildingBuilder
 
 
 def test_bundled_sveby_profile_matches_reviewed_values():
-    standard = load_sveby_residential_v2()
-    assert load_sveby_spec().profile_id == standard.profile_id
+    standard = residential_converter()
+    assert residential_converter().profile_id == standard.profile_id
     assert standard.source_uri.startswith("https://www.sveby.org/")
     assert standard.completion_default_fields == (
         "cooling_enabled",
