@@ -111,3 +111,25 @@ def test_engine_events_use_compilation_identity_not_directory(monkeypatch, caplo
         r for r in caplog.records if getattr(r, "epsm_event", "") == "simulation.engine.started"
     )
     assert event.epsm_context["run_id"] == "compiled-run-identity"
+
+
+def test_batch_engine_completion_is_debug(monkeypatch, caplog, tmp_path):
+    from types import SimpleNamespace
+    import pytest
+    import epsm_core.runner as runner_module
+    import epsm_core.weather as weather_module
+
+    def write(spec, directory):
+        directory.mkdir(parents=True)
+        return SimpleNamespace(run_id="batch-run")
+
+    runner = object.__new__(runner_module.EnergyPlusRunner)
+    runner.compiler = SimpleNamespace(write=write, executable="fixture-engine")
+    spec = SimpleNamespace(climate=SimpleNamespace(epw_path="unused.epw", calendar_year=2023))
+    monkeypatch.setattr(weather_module, "validate_epw_calendar", lambda *args: {})
+    monkeypatch.setattr(runner_module.subprocess, "run", lambda *args, **kwargs: SimpleNamespace(returncode=0))
+    # This fixture stops at missing engine artifacts after the process exit event.
+    with caplog.at_level(logging.DEBUG), pytest.raises(FileNotFoundError):
+        runner.run(spec, tmp_path / "batch", log_context={"batch_mode": True})
+    event = next(record for record in caplog.records if getattr(record, "epsm_event", "") == "simulation.engine.completed")
+    assert event.levelno == logging.DEBUG

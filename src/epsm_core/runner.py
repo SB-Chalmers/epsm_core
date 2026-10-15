@@ -45,7 +45,7 @@ from pathlib import Path
 
 import numpy as np
 
-from epsm_core._logging import bind_context, context_logger
+from epsm_core._logging import bind_context, context_logger, current_context
 from epsm_core._logging import operation as logged_operation
 
 from .compiler import EnergyPlusCompiler
@@ -326,7 +326,8 @@ class EnergyPlusRunner:
                     code=EXTERNAL_ENVIRONMENT_FAILURE,
                 ) from error
         simulation_seconds = time.perf_counter() - simulation_start
-        logger.info(
+        logger.log(
+            10 if current_context().get("batch_mode") else 20,
             "EnergyPlus exited",
             extra={
                 "epsm_event": "simulation.engine.completed",
