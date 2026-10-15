@@ -57,6 +57,7 @@ def test_missing_project_calendar_is_explicit_without_invented_operation(buildin
     {}, {"calendar_year": 2024}, {"calendar_year": 2024, "active_dates": []},
     project_calendar(2024, 224),
     {"calendar_year": 2024, "active_dates": ["2023-01-02"], "calendar_source": "project"},
+    {**project_calendar(2024, 225), "normal_use": "false"},
 ])
 def test_supplied_invalid_office_calendar_raises(calendar):
     with pytest.raises(ValueError):
@@ -89,6 +90,17 @@ def test_custom_partial_profile_exposes_missing_use_fields():
     assert resolved.operation is None
     assert "use.heating_setpoint" in resolved.requirements
     assert resolved.assumptions["use"]["equipment_gain_w_m2"] == 2
+
+
+def test_custom_overlay_sources_only_authored_fields_and_preserves_prior_temperature():
+    previous = resolve_operating_profile(select_operating_profile("multi_family")).operation
+    profile = OperatingProfile("project:equipment", {"building_assumptions": {
+        "use": {"equipment_gain_w_m2": 9},
+    }}, source_references=("project:equipment-survey",))
+    resolved = resolve_operating_profile(profile, previous=previous)
+    assert resolved.operation.heating_setpoint == previous.heating_setpoint
+    assert resolved.operation.equipment_gain_w_m2 == 9
+    assert tuple(record.field_path for record in resolved.source_records) == ("use.equipment_gain_w_m2",)
 
 
 @pytest.mark.parametrize("assumptions", [

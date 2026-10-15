@@ -78,6 +78,8 @@ def _calendar_values(calendar, *, project):
         raise ValueError("calendar_year must be a Gregorian year")
     if project and not {"active_dates", "calendar_source"} <= set(calendar):
         raise ValueError("An explicit project active_dates and calendar_source are required")
+    if "normal_use" in calendar and type(calendar["normal_use"]) is not bool:
+        raise ValueError("normal_use must be an explicit boolean")
     return dict(calendar)
 
 
@@ -147,12 +149,15 @@ def resolve_operating_profile(profile, *, calendar=None, previous=None, **option
         previous = UseSpec.model_validate(previous.model_dump() if isinstance(previous, UseSpec) else previous)
     requirements = list(data.get("requirements", ()))
     source_records = ()
+    custom_paths = None
     if "building_assumptions" in data:
         if calendar is not None or options:
             raise ValueError("Custom assumptions supply their own resolved schedules and inputs")
         assumptions = data["building_assumptions"]
         if not isinstance(assumptions, dict):
             raise ValueError("building_assumptions must be a mapping")
+        custom_paths = tuple(section + "." + field for section, values in assumptions.items()
+                             if isinstance(values, dict) for field in values)
         if previous is not None and "use" in assumptions:
             if not isinstance(assumptions["use"], dict):
                 raise ValueError("use must be a mapping for an explicit partial overlay")
@@ -203,9 +208,10 @@ def resolve_operating_profile(profile, *, calendar=None, previous=None, **option
     if "use" not in assumptions:
         requirements.append("operation")
     if not source_records:
-        source_records = tuple(SourceRecord(field_path=section, status="assumed",
+        paths = custom_paths if custom_paths is not None else assumptions
+        source_records = tuple(SourceRecord(field_path=path, status="assumed",
             source="; ".join(profile.source_references) or profile.profile_id,
-            assumption_profile=profile.profile_id) for section in assumptions)
+            assumption_profile=profile.profile_id) for path in paths)
     result = ResolvedOperatingProfile(profile.profile_id,
         json.dumps(assumptions, sort_keys=True, separators=(",", ":"), allow_nan=False),
         operation, tuple(dict.fromkeys(requirements)), profile.source_references, source_records, profile.notes)
