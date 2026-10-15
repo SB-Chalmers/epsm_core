@@ -39,6 +39,7 @@ from .specs import (
     UseSpec,
 )
 from .specs.base import Fraction, Nonnegative, Positive
+from .specs.physics import _validate_operation_hvac
 
 logger = logging.getLogger(__name__)
 
@@ -659,6 +660,9 @@ class Building:
         unchanged. Authoring changes do not add renovation stages or material
         flows; later material changes remain visible in authoring lineage.
         No catalogue, weather, file or service is loaded.
+        Known operation/HVAC contradictions are checked against the effective
+        retained and supplied inputs. Calendar and complete geometry validation
+        remain simulation-preparation checks.
         """
         if mode not in {"replace", "fill_missing"}:
             raise ValueError("mode must be 'replace' or 'fill_missing'")
@@ -758,6 +762,11 @@ class Building:
                 glazing_targets.add(path)
             candidate.elements = elements
             updates["_elements"] = candidate.elements
+
+        effective_hvac = updates.get("hvac", self.hvac)
+        if effective_hvac is not None:
+            _validate_operation_hvac(updates.get("operation", self.operation),
+                                     effective_hvac.airflow, effective_hvac.delivery)
 
         def affected(path):
             return any(path == key or path.startswith(key + ".") for key in changed)

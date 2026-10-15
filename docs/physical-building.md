@@ -56,6 +56,10 @@ fills individual unassigned elements and absent sections, preserving targeted
 overrides and configured operation/HVAC. Every supplied value is validated even
 when fill-missing would retain an existing choice. Invalid inputs leave the whole
 Building unchanged. A completely retained assignment preserves snapshot identity.
+Known operation/HVAC contradictions, including supply temperatures and FVP
+topology/leakage/continuous-exhaust constraints, are checked against the effective
+retained and supplied inputs. Calendar and complete geometry checks remain part
+of simulation preparation and do not require invented weather or project dates.
 
 ```python
 from epsm_core import Building, Footprint

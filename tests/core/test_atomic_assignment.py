@@ -9,6 +9,7 @@ from epsm_core import (
     Building,
     FacadeOverride,
     Footprint,
+    FVPSpec,
     GlazingSpec,
     InputAssignmentReport,
     SourceRecord,
@@ -239,3 +240,44 @@ def test_glazing_only_preserves_unchanged_physical_window_metadata_sources(broad
     assert records[metadata_path] == "window-identity"
     assert records[path + ".u_value"] == "new-glazing"
     assert next(e for e in building.elements if e.id == window.id).construction.name == window.construction.name
+
+
+def test_invalid_effective_operation_hvac_pair_rolls_back_atomically():
+    building = Building(preset="illustrative-reference")
+    before = building.snapshot()
+    operation = building.operation.with_changes(heating_setpoint={"values": (50,) * 24},
+                                              cooling_setpoint={"values": (60,) * 24})
+    with pytest.raises(ValueError, match="supply limit"):
+        building.assign_inputs(operation=operation, construction_set=building.construction_set)
+    assert building.snapshot().sha256 == before.sha256
+    # The supplied operation is retained rather than paired with HVAC in this mode.
+    building.assign_inputs(operation=operation, mode="fill_missing")
+    assert building.snapshot().sha256 == before.sha256
+
+
+def test_invalid_fvp_hvac_pair_is_rejected_even_without_operation():
+    reference = Building(preset="illustrative-reference")
+    building = Building.empty()
+    hvac = reference.hvac.with_changes(delivery={"fvp": FVPSpec(cop=3, capacity_kw=5)})
+    before = building.snapshot()
+    with pytest.raises(ValueError, match="F ventilation"):
+        building.assign_inputs(hvac=hvac)
+    assert building.snapshot().sha256 == before.sha256
+
+
+@pytest.mark.parametrize("changes, message", [
+    ({"mechanical_vent_fraction": {"values": (0.5,) * 24}}, "continuous exhaust"),
+    ({"infiltration_coefficients": (0.5, 0.5, 0, 0), "infiltration_source": "test:source"},
+     "constant leakage"),
+])
+def test_known_fvp_flow_contradictions_roll_back(changes, message):
+    reference = Building(preset="illustrative-reference")
+    airflow = reference.hvac.airflow.updated(topology="F", sensible_recovery_effectiveness=0,
+                                             **changes)
+    hvac = reference.hvac.with_changes(airflow=airflow,
+        delivery={"fvp": FVPSpec(cop=3, capacity_kw=5)})
+    building = Building.empty()
+    before = building.snapshot()
+    with pytest.raises(ValueError, match=message):
+        building.assign_inputs(hvac=hvac)
+    assert building.snapshot().sha256 == before.sha256

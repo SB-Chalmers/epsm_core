@@ -1110,3 +1110,22 @@ class RenewablesSpec(Spec):
     """
 
     pv_systems: tuple[PVSpec, ...] = ()
+
+
+def _validate_operation_hvac(use, airflow, delivery):
+    """Check known operation/system relationships without a simulation calendar.
+
+    Shared by complete BuildingSpec validation and atomic draft assignment.
+    A missing use is permitted; known HVAC contradictions are still rejected.
+    Calendar expansion and geometry references remain complete-model checks.
+    """
+    if delivery.fvp is not None:
+        if airflow.infiltration_coefficients != (1, 0, 0, 0):
+            raise ValueError("FVP accounting requires constant leakage for every zone")
+        if airflow.topology != "F":
+            raise ValueError("FVP delivery requires F ventilation")
+        if set(airflow.mechanical_vent_fraction.all_values) != {1.0}:
+            raise ValueError("FVP delivery currently requires uniform continuous exhaust flow")
+    if use is not None and max(use.heating_setpoint.all_values) \
+            >= airflow.maximum_heating_supply_temperature_c:
+        raise ValueError("Zone heating supply limit must exceed its heating setpoint")
