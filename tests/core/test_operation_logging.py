@@ -82,3 +82,32 @@ def test_district_identity_preparation_inherits_thread_context(monkeypatch, capl
         result = plan.run(tmp_path, workers=2, log_context={"study_id": "district-test"})
     assert result == {"first": "first", "second": "second"}
     assert observed == ["district-test", "district-test"]
+
+
+def test_engine_events_use_compilation_identity_not_directory(monkeypatch, caplog, tmp_path):
+    import subprocess
+    from types import SimpleNamespace
+
+    import pytest
+
+    import epsm_core.runner as runner_module
+    import epsm_core.weather as weather_module
+
+    def write(spec, directory):
+        directory.mkdir(parents=True)
+        return SimpleNamespace(run_id="compiled-run-identity")
+
+    def timeout(*args, **kwargs):
+        raise subprocess.TimeoutExpired("fixture-engine", 1)
+
+    runner = object.__new__(runner_module.EnergyPlusRunner)
+    runner.compiler = SimpleNamespace(write=write, executable="fixture-engine")
+    spec = SimpleNamespace(climate=SimpleNamespace(epw_path="unused.epw", calendar_year=2023))
+    monkeypatch.setattr(weather_module, "validate_epw_calendar", lambda *args: {})
+    monkeypatch.setattr(runner_module.subprocess, "run", timeout)
+    with caplog.at_level(logging.DEBUG), pytest.raises(runner_module.SimulationError):
+        runner.run(spec, tmp_path / "arbitrary-directory")
+    event = next(
+        r for r in caplog.records if getattr(r, "epsm_event", "") == "simulation.engine.started"
+    )
+    assert event.epsm_context["run_id"] == "compiled-run-identity"

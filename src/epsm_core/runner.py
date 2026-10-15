@@ -279,7 +279,7 @@ class EnergyPlusRunner:
             str(directory),
             str(directory / "model.epJSON"),
         ]
-        bind_context(run_id=directory.name)
+        bind_context(run_id=report.run_id)
         logger = context_logger(__name__)
         logger.debug(
             "Launching EnergyPlus",
