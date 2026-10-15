@@ -33,6 +33,9 @@ Example::
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+from epsm_core._logging import current_context
+from epsm_core._logging import operation as logged_operation
+
 from .geometry import local_polygons
 from .roofs import roof_faces
 from .runner import EnergyPlusRunner
@@ -183,6 +186,7 @@ class DistrictPlan(Spec):
                 )
             )
 
+    @logged_operation("simulation.district")
     def run(self, directory, *, energyplus=None, workers=1):
         """Run independent target simulations in a bounded thread pool.
 
@@ -220,6 +224,8 @@ class DistrictPlan(Spec):
         # 1. Run independent target simulations in a bounded thread pool.
         runner = EnergyPlusRunner(energyplus)
 
+        log_context = current_context()
+
         def run_one(building):
             """Run one context-resolved building under its compiler-derived identity.
 
@@ -246,7 +252,9 @@ class DistrictPlan(Spec):
             """
 
             run_id = runner.compiler.run_id(building)
-            return building.identifier, runner.run(building, Path(directory) / run_id)
+            return building.identifier, runner.run(
+                building, Path(directory) / run_id, log_context=log_context
+            )
 
         with ThreadPoolExecutor(max_workers=workers) as pool:
             return dict(pool.map(run_one, self.resolved_buildings()))

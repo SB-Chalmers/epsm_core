@@ -39,6 +39,8 @@ from pathlib import Path
 
 import numpy as np
 
+from epsm_core._logging import operation as logged_operation
+
 from .compiler import ENERGY_VARIABLES
 from .failures import GEOMETRY_INVARIANT_FAILURE, MISSING_EXPECTED_OUTPUT, ResultValidationError
 from .weather import hourly_axis
@@ -92,6 +94,7 @@ class SimulationResult:
     time_axis: np.ndarray | None = None
 
 
+@logged_operation("simulation.results.read")
 def read_results(sql_path, spec, report, diagnostics):
     """Read and reconcile annual and hourly EnergyPlus SQL signals.
 
