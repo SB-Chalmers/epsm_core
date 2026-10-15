@@ -308,6 +308,9 @@ def test_airflow_leaf_patch_preserves_delivery_equipment_and_other_source_record
     {"mechanical_vent_l_s_m2": float("nan")}, {"unknown": 2},
     {"maximum_heating_supply_temperature_c": float("nan")},
     {"mechanical_vent_l_s_m2": float("inf")},
+    {"envelope_infiltration_ach": 0.2, "envelope_infiltration_l_s_m2": 0.1},
+    {"mechanical_vent_fraction": {"values": (1.5,) * 24}},
+    {"infiltration_coefficients": (0.5, 0.5, 0, 0), "infiltration_source": ""},
 ])
 def test_invalid_airflow_patch_rolls_back_even_when_missing_or_retained(properties):
     for building in (Building.empty(), Building(preset="illustrative-reference")):

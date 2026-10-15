@@ -649,16 +649,7 @@ class AirflowSpec(Spec):
             assert airflow.compatible() is airflow
         """
 
-        for name in ("infiltration_fraction", "natural_exchange_fraction", "mechanical_vent_fraction", "heating_availability", "cooling_availability"):
-            if any(not 0 <= v <= 1 for v in getattr(self, name).all_values):
-                raise ValueError(f"{name} must lie in [0,1]")
-        if self.infiltration_coefficients != (1, 0, 0, 0) and (
-            not self.infiltration_source or not self.infiltration_source.strip()
-        ):
-            raise ValueError("Weather-dependent infiltration requires a documented source")
-        # Alternative reference bases must not create two infiltration streams.
-        if self.envelope_infiltration_l_s_m2 is not None and self.envelope_infiltration_ach:
-            raise ValueError("Area-based infiltration requires envelope_infiltration_ach=0")
+        _validate_airflow_properties({name: getattr(self, name) for name in type(self).model_fields})
         # 1. Require ventilation and heat-recovery values consistent with topology.
         if self.topology == "S" and self.mechanical_vent_l_s_m2:
             raise ValueError("S cannot have mechanical outdoor air")
@@ -1110,6 +1101,27 @@ class RenewablesSpec(Spec):
     """
 
     pv_systems: tuple[PVSpec, ...] = ()
+
+
+def _validate_airflow_properties(values):
+    """Check supplied airflow relationships independently of installed topology.
+
+    Missing fields remain unknown for partial authoring. Complete AirflowSpec
+    supplies all fields here, retaining the same physical constraints.
+    """
+    for name in ("infiltration_fraction", "natural_exchange_fraction", "mechanical_vent_fraction",
+                 "heating_availability", "cooling_availability"):
+        if name in values:
+            schedule = ScheduleSpec.model_validate(values[name])
+            if any(not 0 <= value <= 1 for value in schedule.all_values):
+                raise ValueError(f"{name} must lie in [0,1]")
+    if (values.get("envelope_infiltration_l_s_m2") is not None
+            and float(values.get("envelope_infiltration_ach", 0))):
+        raise ValueError("Area-based infiltration requires envelope_infiltration_ach=0")
+    if ("infiltration_coefficients" in values and "infiltration_source" in values
+            and tuple(float(value) for value in values["infiltration_coefficients"]) != (1, 0, 0, 0)
+            and (not values["infiltration_source"] or not values["infiltration_source"].strip())):
+        raise ValueError("Weather-dependent infiltration requires a documented source")
 
 
 def _validate_operation_hvac(use, airflow, delivery):

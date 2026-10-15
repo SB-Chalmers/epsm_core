@@ -39,7 +39,7 @@ from .specs import (
     UseSpec,
 )
 from .specs.base import Fraction, Nonnegative, Positive
-from .specs.physics import _validate_operation_hvac
+from .specs.physics import _validate_airflow_properties, _validate_operation_hvac
 
 logger = logging.getLogger(__name__)
 
@@ -704,6 +704,7 @@ class Building:
                 # but every supplied field must obey model bounds/finiteness.
                 if any(item["type"] != "missing" for item in error.errors()):
                     raise
+            _validate_airflow_properties(airflow_patch)
         applied, replaced, retained, unmatched, changed = [], [], [], [], set()
         updates = {}
         for name, value in supplied.items():
