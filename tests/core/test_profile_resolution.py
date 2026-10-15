@@ -20,16 +20,27 @@ def project_calendar(year, count):
     return {"calendar_year": year, "active_dates": dates, "calendar_source": "test:calendar"}
 
 
-# Captured before the ownership refactor using Core's existing source factories.
-# These cover every resolved schedule and physical input in each complete mapping.
+# Captured from pre-refactor Core 4f7f746 using its existing source factories.
+# Preserve every field and schedule position; round only float representation
+# below source precision to tolerate Python 3.12's improved annual summation.
 BASELINES = {
-    ("multi_family", 2023): "e82504013d129929f1232530e3864a1214e48aaaac54ac0c9e87360c575cd855",
-    ("multi_family", 2024): "35f692738866901dba0ce36b7e8f3346e6843f9916d1d296e93d0084a1890ff4",
-    ("office", 2023): "b9369ce7defc5700babf8565329e40b1f02130c748294b846d22f70f75c93d18",
-    ("office", 2024): "ae27f850a4267d14b30284331cd15c0a849302b6fa2f3482c9cd1580a6c48c32",
+    ("multi_family", 2023): "c5670263e168f980bd7fc69f2611b003db36a06452644877d42d7501d4f89b4d",
+    ("multi_family", 2024): "0124a86ee537c262bcf1fb5da2358002dd53919b28bb3ada040aaa0dce553f4a",
+    ("office", 2023): "216fca7dea7ad7ca168039af82e8471f039d3cea40ab0f748a9fc6f12fb38a24",
+    ("office", 2024): "1532de9c08983cb7c71f9c811739e8d9bd19a335ce25fcf118bd0cddbeb1af3e",
     ("school", 2023): "bbcc3853dbd488be8456cbf65c2627460f7b7b698d4eb09f386ae9a7cbe12a85",
     ("school", 2024): "03541b937606b7d11666527c14c418b4c14d1a4c45ef457a31b15148baa2779a",
 }
+
+
+def normalized_physical_values(value):
+    if isinstance(value, float):
+        return round(value, 9)
+    if isinstance(value, dict):
+        return {key: normalized_physical_values(item) for key, item in value.items()}
+    if isinstance(value, (tuple, list)):
+        return [normalized_physical_values(item) for item in value]
+    return value
 
 
 @pytest.mark.parametrize("building_type, year", BASELINES)
@@ -39,10 +50,31 @@ def test_standard_resolution_preserves_all_pre_refactor_inputs(building_type, ye
     resolved = resolve_operating_profile(select_operating_profile(building_type), calendar=calendar)
     assert isinstance(resolved, ResolvedOperatingProfile)
     assert isinstance(resolved.operation, OperationProfile)
-    payload = json.dumps(resolved.to_dict()["assumptions"], sort_keys=True, separators=(",", ":"))
+    payload = json.dumps(normalized_physical_values(resolved.to_dict()["assumptions"]),
+                         sort_keys=True, separators=(",", ":"))
     assert hashlib.sha256(payload.encode()).hexdigest() == BASELINES[building_type, year]
     assert "load_reference_area_m2" in resolved.requirements
     assert "calendar" not in resolved.requirements
+
+
+@pytest.mark.parametrize("building_type", ["multi_family", "office"])
+@pytest.mark.parametrize("year", [2023, 2024])
+def test_baseline_comparison_preserves_physics_under_python_311_summation(
+        building_type, year, monkeypatch):
+    import epsm_core.nonresidential as nonresidential
+    import epsm_core.standards as residential
+
+    def historical_sum(items, start=0):
+        result = start
+        for item in items:
+            result += item
+        return result
+
+    # Python 3.12 improved float summation; older interpreters produce the same
+    # source rates with differences around 1e-12 W/m2 after annual normalization.
+    monkeypatch.setattr(residential, "sum", historical_sum, raising=False)
+    monkeypatch.setattr(nonresidential, "sum", historical_sum, raising=False)
+    test_standard_resolution_preserves_all_pre_refactor_inputs(building_type, year)
 
 
 @pytest.mark.parametrize("building_type", ["office", "school"])
