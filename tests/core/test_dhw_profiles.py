@@ -3,6 +3,7 @@
 from datetime import date, timedelta
 
 import pytest
+from profile_inputs import dhw_converter, nonresidential_converter, residential_converter
 
 from epsm_core import (
     DHWProfileSpec,
@@ -11,9 +12,6 @@ from epsm_core import (
     ProgramComponent,
     ScheduleSpec,
     SourceRecord,
-    load_dhw_profile,
-    load_sveby_school_v1,
-    load_sveby_spec,
 )
 
 
@@ -23,7 +21,7 @@ from epsm_core import (
      ("non_residential", 2)],
 )
 def test_public_typed_epc_profiles(building_type, expected):
-    profile = load_dhw_profile(building_type, purpose="epc_normal_use")
+    profile = dhw_converter(building_type, purpose="epc_normal_use")
     assert isinstance(profile, DHWProfileSpec)
     assert profile.building_type == building_type
     assert profile.purpose == "epc_normal_use"
@@ -40,37 +38,37 @@ def test_public_typed_epc_profiles(building_type, expected):
 )
 def test_unknown_profile_selection_is_rejected(building_type, purpose, version):
     with pytest.raises(ValueError):
-        load_dhw_profile(building_type, purpose=purpose, version=version)
+        dhw_converter(building_type, purpose=purpose, version=version)
 
 
 def test_profile_selection_requires_explicit_purpose():
     with pytest.raises(TypeError):
-        load_dhw_profile("single_family")
+        dhw_converter("single_family")
 
 
 @pytest.mark.parametrize("invalid", [-1, float("nan"), float("inf")])
 def test_profile_rejects_invalid_annual_demand(invalid):
-    profile = load_dhw_profile("single_family", purpose="epc_normal_use")
+    profile = dhw_converter("single_family", purpose="epc_normal_use")
     with pytest.raises(ValueError):
         profile.updated(dhw_kwh_m2_year=invalid)
 
 
 def test_profile_is_frozen():
-    profile = load_dhw_profile("single_family", purpose="epc_normal_use")
+    profile = dhw_converter("single_family", purpose="epc_normal_use")
     with pytest.raises(ValueError):
         profile.dhw_kwh_m2_year = 25
 
 
 def test_epc_profiles_preserve_published_operational_defaults():
-    assert load_sveby_spec().use_spec().dhw_kwh_m2_year == 21
-    assert load_sveby_school_v1().data["use"]["dhw_kwh_m2_year"] == 10
-    assert load_dhw_profile("school", purpose="epc_normal_use").dhw_kwh_m2_year == 2
+    assert residential_converter().use_spec().dhw_kwh_m2_year == 21
+    assert nonresidential_converter("school").data["use"]["dhw_kwh_m2_year"] == 10
+    assert dhw_converter("school", purpose="epc_normal_use").dhw_kwh_m2_year == 2
 
 
 def test_profile_application_preserves_schedules_and_other_use_inputs():
-    original = load_sveby_spec().use_spec(calendar_year=2024)
+    original = residential_converter().use_spec(calendar_year=2024)
     before = original.model_dump_json()
-    profile = load_dhw_profile("multi_family", purpose="epc_normal_use")
+    profile = dhw_converter("multi_family", purpose="epc_normal_use")
     changed = profile.apply_to(original)
     assert changed.dhw_kwh_m2_year == 25
     assert changed.model_dump(exclude={"dhw_kwh_m2_year"}) == original.model_dump(
@@ -81,7 +79,7 @@ def test_profile_application_preserves_schedules_and_other_use_inputs():
 
 
 def test_profile_provenance_identifies_selected_assumption_and_source():
-    profile = load_dhw_profile("multi_family", purpose="epc_normal_use")
+    profile = dhw_converter("multi_family", purpose="epc_normal_use")
     record = profile.source_record()
     assert isinstance(record, SourceRecord)
     assert record.field_path == "use.dhw_kwh_m2_year"
@@ -143,8 +141,8 @@ def _compiled_dhw_hourly_kwh(model, year):
 @pytest.mark.parametrize("year", [2023, 2024])
 @pytest.mark.parametrize(("building_type", "rate"), [("single_family", 20), ("multi_family", 25)])
 def test_compiled_dhw_conserves_typed_demand_on_atemp(building, energyplus, year, building_type, rate):
-    base_use = load_sveby_spec().use_spec(calendar_year=year)
-    use = load_dhw_profile(building_type, purpose="epc_normal_use").apply_to(base_use)
+    base_use = residential_converter().use_spec(calendar_year=year)
+    use = dhw_converter(building_type, purpose="epc_normal_use").apply_to(base_use)
     atemp = 900
     candidate = building.updated(
         use=use,
@@ -165,10 +163,10 @@ def test_compiled_dhw_conserves_typed_demand_on_atemp(building, energyplus, year
 
 @pytest.mark.parametrize("year", [2023, 2024])
 def test_selected_profiles_conserve_mixed_programme_dhw(building, energyplus, year):
-    residential = load_dhw_profile("multi_family", purpose="epc_normal_use").apply_to(
+    residential = dhw_converter("multi_family", purpose="epc_normal_use").apply_to(
         building.use.updated(occupancy_category="residential")
     )
-    office = load_dhw_profile("office", purpose="epc_normal_use").apply_to(
+    office = dhw_converter("office", purpose="epc_normal_use").apply_to(
         building.use.updated(
             occupancy_category="non_residential",
             dhw_fraction=ScheduleSpec(

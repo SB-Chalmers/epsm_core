@@ -6,6 +6,7 @@ from datetime import date, timedelta
 
 import pytest
 from epsm_data import OperatingProfile, load_operating_profile, select_operating_profile
+from profile_inputs import dhw_converter
 
 from epsm_core import OperationProfile, ResolvedOperatingProfile, resolve_operating_profile
 
@@ -183,7 +184,6 @@ def test_invalid_supplied_options_raise_even_without_a_project_calendar(options)
 def test_ben_definition_does_not_replace_sveby_operation_implicitly():
     from epsm_data import select_dhw_profile
 
-    from epsm_core import load_dhw_profile
 
     ben = select_dhw_profile("multi_family", purpose="epc_normal_use")
     partial = resolve_operating_profile(ben)
@@ -191,8 +191,21 @@ def test_ben_definition_does_not_replace_sveby_operation_implicitly():
     assert partial.assumptions["use"] == {"dhw_kwh_m2_year": 25}
     resolved = resolve_operating_profile(select_operating_profile("multi_family"))
     assert resolved.operation.dhw_kwh_m2_year == 21
-    assert load_dhw_profile("multi_family", purpose="epc_normal_use").apply_to(
+    assert dhw_converter("multi_family", purpose="epc_normal_use").apply_to(
         resolved.operation).dhw_kwh_m2_year == 25
     overlay = resolve_operating_profile(ben, previous=resolved.operation)
     assert overlay.operation == resolved.operation.with_changes(dhw_kwh_m2_year=25)
-    assert overlay.source_records == (load_dhw_profile("multi_family", purpose="epc_normal_use").source_record(),)
+    assert overlay.source_records == (dhw_converter("multi_family", purpose="epc_normal_use").source_record(),)
+
+
+@pytest.mark.parametrize("building_type, year", BASELINES)
+def test_builder_selection_preserves_pre_refactor_physical_inputs(building_type, year):
+    from epsm_core import BuildingBuilder
+
+    category = "residential" if building_type == "multi_family" else building_type
+    count = {"office": 225, "school": 220}.get(building_type)
+    calendar = project_calendar(year, count) if count else {"calendar_year": year}
+    builder = BuildingBuilder(building_use=category, **calendar)
+    payload = json.dumps(normalized_physical_values(builder.assumptions),
+                         sort_keys=True, separators=(",", ":"))
+    assert hashlib.sha256(payload.encode()).hexdigest() == BASELINES[building_type, year]

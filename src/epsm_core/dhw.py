@@ -11,7 +11,6 @@ from __future__ import annotations
 
 from typing import Annotated, Literal
 
-from epsm_data import select_dhw_profile
 from pydantic import Field
 
 from .specs import SourceRecord, UseSpec
@@ -64,49 +63,3 @@ class DHWProfileSpec(Spec):
             source=f"{self.source_uri}; {self.source_locator}",
             assumption_profile=self.profile_id,
         )
-
-
-def load_dhw_profile(
-    building_type: BuildingType,
-    *,
-    purpose: Literal["epc_normal_use"],
-    version: str = "1",
-) -> DHWProfileSpec:
-    """Load a pinned, type-specific annual DHW assumption from package data.
-
-    Parameters
-    ----------
-    building_type : str
-        single_family, multi_family, office, school or non_residential. Mixed
-        programmes need separate component profiles and explicit area shares.
-    purpose : str
-        Explicitly select epc_normal_use. Actual-use estimation is not inferred
-        from these standardized coefficients.
-    version : str
-        Version of this EPSM profile resource, currently "1". The source is BEN
-        BFS 2016:12 with BFS 2017:6 amendments, not the latest regulations.
-
-    Returns
-    -------
-    DHWProfileSpec
-        Immutable assumption with source, area basis and profile identity.
-
-    Raises
-    ------
-    ValueError
-        For unsupported selectors, an invalid source identity or invalid physical values.
-    FileNotFoundError
-        If package installation omitted the resource.
-
-    Examples
-    --------
-    Example::
-
-        from epsm_core import load_dhw_profile, load_sveby_spec
-
-        profile = load_dhw_profile("multi_family", purpose="epc_normal_use")
-        use = profile.apply_to(load_sveby_spec().use_spec(calendar_year=2024))
-        assert use.dhw_kwh_m2_year == 25
-    """
-    data = select_dhw_profile(building_type, purpose=purpose, version=version).to_dict()["values"]
-    return DHWProfileSpec.model_validate({key: data[key] for key in DHWProfileSpec.model_fields})

@@ -34,8 +34,9 @@ unheated total area. GIS purpose order supplies no fraction. Missing, unrepresen
 or contradictory EPC shares must be reviewed, not silently normalised. Share counts
 alone cannot locate an office on a particular storey.
 
-`load_generic_other_v1()` supplies a labelled screening fallback when the caller
-cannot identify a non-residential use. Its `use_spec()` assumes 21 C heating,
+Data’s `load_operating_profile("generic_other")`, converted through
+Core’s `resolve_operating_profile`, supplies a labelled screening fallback when the caller
+cannot identify a non-residential use. Its resolved operation assumes 21 C heating,
 weekday 08:00–18:00 occupancy at 0.03 people/m2, 5 W/m2 each of equipment and
 lighting, and 5 kWh/m2/year of DHW. It exposes a 0.7 L/s/m2 ventilation design
 flow and a matching weekday fraction schedule for the caller's `AirflowSpec`.

@@ -18,8 +18,8 @@ ventilation topology and installed-system performance to the building source.
 
 Notes
 -----
-The bundled JSON is read only when a loader or an explicitly configured ``BuildingBuilder`` is
-called. Importing :mod:`epsm_core` does not read the resource or contact the network.
+Data reads bundled definitions when explicitly selected; physical converters consume the
+supplied values. An explicitly configured ``BuildingBuilder`` selects through Data. Importing :mod:`epsm_core` does not read the resource or contact the network.
 The stored standard contains more information than the current compiler can emit so
 unsupported requirements remain visible instead of being silently approximated.
 
@@ -27,9 +27,10 @@ Examples
 --------
 Example::
 
-    from epsm_core import load_sveby_spec
+    from epsm_data import select_operating_profile
+    from epsm_core import SvebyResidentialSpec
 
-    standard = load_sveby_spec()
+    standard = SvebyResidentialSpec(select_operating_profile("multi_family").to_dict()["values"])
     use = standard.use_spec()
     assert use.occupant_activity_w == 80
 """
@@ -41,8 +42,6 @@ from calendar import monthrange
 from dataclasses import dataclass
 from types import MappingProxyType
 from typing import Any, Mapping
-
-from epsm_data import load_operating_profile
 
 from .specs import ScheduleSpec, UseSpec
 
@@ -99,9 +98,11 @@ class SvebyResidentialSpec:
     --------
     Example::
 
-        from epsm_core import load_sveby_residential_v2
+        from epsm_data import select_operating_profile
+        from epsm_core import SvebyResidentialSpec
 
-        standard = load_sveby_residential_v2()
+        definition = select_operating_profile("multi_family", version="2.0")
+        standard = SvebyResidentialSpec(definition.to_dict()["values"])
         assert standard.data["area_basis"] == "Atemp"
     """
 
@@ -359,9 +360,10 @@ class SvebyResidentialSpec:
         --------
         Example::
 
-            from epsm_core import BuildingBuilder, load_sveby_spec
+            from epsm_data import select_operating_profile
+            from epsm_core import BuildingBuilder, SvebyResidentialSpec
 
-            standard = load_sveby_spec()
+            standard = SvebyResidentialSpec(select_operating_profile("multi_family").to_dict()["values"])
             assumptions = standard.building_assumptions(
                 occupant_density_per_m2=0.021,
                 fixed_solar_shading_calculated=True,
@@ -393,51 +395,3 @@ class SvebyResidentialSpec:
                 ]
             },
         }
-
-
-def load_sveby_residential_v2() -> SvebyResidentialSpec:
-    """Load the bundled, version-pinned Sveby residential specification.
-
-    Returns
-    -------
-    SvebyResidentialSpec
-        Immutable, validated version 2.0 profile.
-
-    Raises
-    ------
-    FileNotFoundError
-        If package installation omitted the required JSON resource.
-    ValueError
-        If the definition layout, source identity or energy conservation is invalid.
-
-    Notes
-    -----
-    Reads package data only. It never downloads or refreshes the official document.
-
-    Examples
-    --------
-    Example::
-
-        from epsm_core import load_sveby_residential_v2
-
-        standard = load_sveby_residential_v2()
-        assert standard.data["version"] == "2.0"
-    """
-    return SvebyResidentialSpec(load_operating_profile("sveby_residential_v2").to_dict()["values"])
-
-
-def load_sveby_spec() -> SvebyResidentialSpec:
-    """Load EPSM Core's current default Sveby residential specification.
-
-    Returns
-    -------
-    SvebyResidentialSpec
-        Current default profile; presently identical to
-        ``load_sveby_residential_v2()``.
-
-    Notes
-    -----
-    This unversioned convenience name may select a later reviewed profile in a future Core
-    release. Use the versioned loader when reproducibility across releases is required.
-    """
-    return load_sveby_residential_v2()

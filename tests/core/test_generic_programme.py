@@ -1,10 +1,10 @@
 """The generic programme is a valid, clearly identified screening fallback."""
 
-from epsm_core import load_generic_other_v1
+from epsm_core import GenericOtherProgramme
 
 
 def test_generic_other_profile_has_valid_weekday_and_leap_year_schedules():
-    profile = load_generic_other_v1()
+    profile = GenericOtherProgramme()
     use = profile.use_spec()
     ventilation = profile.ventilation_fraction()
 

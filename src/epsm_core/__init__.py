@@ -56,10 +56,10 @@ from .building import (
 )
 from .building_adapter import run_building, thermal_construction
 from .compiler import CompilationReport, EnergyPlusCompiler
-from .dhw import DHWProfileSpec, load_dhw_profile
+from .dhw import DHWProfileSpec
 from .district import DistrictPlan
 from .gains import InternalGainSeries, resolve_internal_gains
-from .generic_programme import GenericOtherProgramme, load_generic_other_v1
+from .generic_programme import GenericOtherProgramme
 from .inventory import MaterialFlows, MaterialInventory, MaterialQuantity
 from .preflight import preflight_energyplus
 from .preparation import GeometryPolicy, GeometryPreparationResult, prepare_geometry
@@ -124,7 +124,7 @@ from .specs import (
     ZoneUseSpec,
     ZoningSpec,
 )
-from .standards import SvebyResidentialSpec, load_sveby_residential_v2, load_sveby_spec
+from .standards import SvebyResidentialSpec
 from .weather import Weather, climate_from_epw
 
 __all__ = [
@@ -137,10 +137,8 @@ __all__ = [
     "Equipment",
     "run_building", "thermal_construction", "preflight_energyplus",
     "DHWProfileSpec",
-    "load_dhw_profile",
     "GenericOtherProgramme",
-    "load_generic_other_v1",
-    "SvebyNonResidentialSpec", "load_sveby_office_v1", "load_sveby_school_v1",
+    "SvebyNonResidentialSpec",
     "FootprintCleanupSpec",
     "synthetic_context",
     "preview_geometry",
@@ -159,8 +157,6 @@ __all__ = [
     "quantity_takeoff",
     "BuildingBuilder",
     "SvebyResidentialSpec",
-    "load_sveby_residential_v2",
-    "load_sveby_spec",
     "CompilationReport",
     "EnergyPlusCompiler",
     "EnergyPlusRunner",
@@ -222,7 +218,7 @@ __all__ = [
 
 from .context import synthetic_context
 from .inspection import preview_geometry
-from .nonresidential import SvebyNonResidentialSpec, load_sveby_office_v1, load_sveby_school_v1
+from .nonresidential import SvebyNonResidentialSpec
 
 # Explicit area-weighted mixed-use operation (no implicit spatial allocation).
 from .programs import ProgramBlend as ProgramBlend

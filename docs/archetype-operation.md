@@ -33,14 +33,15 @@ separate. In particular, school airing 4 kWh/m² is never converted into leakage
 ## Calendar and zone inputs
 
 ```python
-from epsm_core import AirflowSpec, UseSpec, load_sveby_school_v1
+from epsm_data import select_operating_profile
+from epsm_core import AirflowSpec, UseSpec, resolve_operating_profile
 
 # active_dates and calendar_source come from reviewed project observations.
-profile = load_sveby_school_v1()
-inputs = profile.building_assumptions(
-    calendar_year=2023, active_dates=active_dates,
-    calendar_source=calendar_source, zone_role="classrooms",
-)
+profile = select_operating_profile("school", version="1.0")
+inputs = resolve_operating_profile(
+    profile, calendar={"calendar_year": 2023, "active_dates": active_dates,
+                       "calendar_source": calendar_source}, zone_role="classrooms",
+).to_dict()["assumptions"]
 use = UseSpec.model_validate(inputs["use"])
 airflow = AirflowSpec(
     topology="FTX", envelope_infiltration_ach=measured_leakage_scenario_ach,

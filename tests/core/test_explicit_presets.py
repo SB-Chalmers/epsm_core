@@ -10,7 +10,7 @@ from epsm_core import Building, BuildingBuilder, BuildingSnapshot, Footprint, Ge
 def test_no_argument_authoring_does_not_resolve_assumptions(monkeypatch):
     def forbidden():
         raise AssertionError("implicit standard lookup")
-    monkeypatch.setattr("epsm_core.standards.load_sveby_spec", forbidden)
+    monkeypatch.setattr("epsm_data.select_operating_profile", forbidden)
     building = Building()
     assert building.preset is None
     assert all(getattr(building, name) is None for name in
