@@ -122,7 +122,8 @@ def quantity_takeoff(building):
     seen = set()
     # 2. Count reciprocal physical assemblies once and subtract actual pane areas.
     for face in graph.surfaces:
-        if face.name in seen or face.construction == "partition":
+        if face.name in seen or (face.construction == "partition"
+                                 and face.name not in surface_overrides):
             continue
         seen.add(face.name)
         if face.boundary == "Surface":
@@ -148,22 +149,24 @@ def quantity_takeoff(building):
                     )
                 )
                 glazing_areas[(element_id, glazing_hash)] += glazed
-        assembly = surface_overrides.get(face.name, getattr(building.envelope, role))
+        assembly = surface_overrides.get(face.name) or getattr(building.envelope, role)
         assembly_key = _hash(assembly.model_dump(mode="json"))
         assembly_values[assembly_key] = assembly
         assemblies[(element_id, role, assembly_key)] += area
     # 3. Restore same-zone physical slabs omitted from thermal boundary surfaces.
     for mass in graph.internal_mass:
-        # Physical intermediate slab counted once, irrespective of its two radiating faces.
-        height = mass["elevation_m"]
-        assembly = mass_overrides.get(
-            mass["name"], building.envelope.intermediate_floor)
+        # Same-zone walls and slabs each have one installed material owner.
+        if mass.get("physical_boundary") == "Internal":
+            element_id = f"{mass['facade_id']}.floor{mass['storey']}.internal_wall"
+            role, default = "wall", building.envelope.wall
+        else:
+            height = mass["elevation_m"]
+            element_id = f"{mass['part_id']}.horizontal.{height:g}.intermediate_floor"
+            role, default = "intermediate_floor", building.envelope.intermediate_floor
+        assembly = mass_overrides.get(mass["name"], default)
         assembly_key = _hash(assembly.model_dump(mode="json"))
         assembly_values[assembly_key] = assembly
-        assemblies[
-            (f"{mass['part_id']}.horizontal.{height:g}.intermediate_floor", "intermediate_floor",
-             assembly_key)
-        ] += mass["area_m2"]
+        assemblies[(element_id, role, assembly_key)] += mass["area_m2"]
     for (element, digest), area in sorted(glazing_areas.items()):
         items.append(
             PhysicalQuantity(

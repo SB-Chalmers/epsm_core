@@ -236,7 +236,7 @@ fully authored physical Building. Resolution requires energy readiness, so it do
 not fill missing operation, construction, foundation, thermal-bridge or area inputs.
 The input may be an already-loaded `Weather` or `ClimateSpec`; resolving it does not
 initialize EnergyPlus or read another weather file. This exported view has its own
-schema, `epsm.resolved_building/1`; it does not change the `epsm.building/6`
+schema, `epsm.resolved_building/1`; it does not change the `epsm.building/7`
 snapshot format.
 
 ```python
@@ -355,7 +355,7 @@ physical intervention must appear in lifecycle flows.
 `snapshot()` stores canonical immutable JSON, including the explicitly selected
 preset revision and provenance, resolved construction values, occurrence identities,
 authored ground fields, optional thermal-bridge input and load-reference choice. New
-snapshots use `epsm.building/6`; `.sha256` identifies the stored
+snapshots use `epsm.building/7`; `.sha256` identifies the stored
 state. `.to_dict()` returns a detached copy; `.to_building()` returns an editable
 independent building. Runtime results and evaluation settings are excluded.
 Version-1 through version-5 snapshots remain readable and retain their original hash
@@ -457,3 +457,20 @@ RC, LCA and Workflows examples and tests using the former no-argument defaults
 need that explicit selection when upgrading Core. Those consumer changes and
 installed cross-package checks are separate from this Core change; they have
 not been claimed as passing here.
+
+
+## Shared walls and exposure
+
+Physical elements expose a `boundary`: `Outdoors`, `Ground`, `Adiabatic` or
+`Internal`. Partial party-wall contacts create separate opaque elements for the
+outdoor remainder and adiabatic contact; only outdoor areas generate windows.
+Same-building attached conditioned parts have one installed shared-wall owner,
+retained as internal thermal mass. Constructions and material quantities remain
+physical even when their boundary has no outdoor heat transfer.
+
+Snapshot format 7 adds that explicit boundary. Formats 1–6 remain readable and
+an untouched restored snapshot keeps its original bytes and identity. Missing
+legacy boundaries are inferred from their role. Editing geometry regenerates
+boundary-aware inventory and writes format 7. Explicit party-wall basements,
+attached unconditioned parts, apartments and pitched physical inventories retain
+their stated readiness limitations. See [contact assumptions](party-walls.md).

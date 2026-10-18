@@ -776,8 +776,9 @@ def build_surface_graph(spec, polygons):
                             polygons,
                             bottom,
                             top,
-                            {w.facade_id for w in geometry.party_walls},
+                            (),
                             part_tops,
+                            party_walls=geometry.party_walls,
                         )
                         key = (part.identifier, tuple(edges), geometry.zoning.depth_m)
                         if key not in cache:
@@ -968,7 +969,6 @@ def graph_from_cells(spec, polygons, cells):
         if cell.perimeter_facade_id:
             data["perimeter_facade_id"] = cell.perimeter_facade_id
     surfaces, masses = [], []
-    total = unary_union(polygons)
     original_edges = {
         part.identifier: [
             (fid, LineString([a, b])) for fid, a, b in facade_edges(p, part.identifier)
@@ -976,18 +976,26 @@ def graph_from_cells(spec, polygons, cells):
         for part, p in zip(geometry.parts, polygons)
     }
     valid_facades = {fid for edges in original_edges.values() for fid, _ in edges}
-    party = {w.facade_id: w for w in geometry.party_walls}
-    for wall in party.values():
-        if not wall.contact_confirmed or wall.neighbor_conditioning != "heated":
-            raise ValueError(
-                f"Party wall {wall.facade_id} requires reviewed heated-neighbor contact"
-            )
+    from .party_walls import contact_bounds
+
+    party = {}
+    for wall in geometry.party_walls:
+        party.setdefault(wall.facade_id, []).append(wall)
+        if not wall.contact_confirmed:
+            raise ValueError(f"Party wall {wall.facade_id} requires reviewed geometric contact")
     if set(party) - valid_facades:
         raise ValueError("Party wall references unknown facade")
-    for edges in original_edges.values():
+    facade_lines = {fid: line for edges in original_edges.values() for fid, line in edges}
+    party_regions = {}
+    party_points = []
+    for part, edges in zip(geometry.parts, original_edges.values()):
         for fid, line in edges:
-            if fid in party and line.difference(total.boundary).length > 1e-7:
-                raise ValueError(f"Party facade {fid} is internal to the building")
+            if fid not in party:
+                continue
+            rectangles = [contact_bounds(wall, line, part.storey_elevations_m[0],
+                                          part.storey_elevations_m[-1]) for wall in party[fid]]
+            party_regions[fid] = rectangles
+            party_points.extend(line.interpolate(x) for rectangle in rectangles for x in rectangle[:2])
     coordinates = {
         tuple(p)
         for cell in cells
@@ -1000,7 +1008,7 @@ def graph_from_cells(spec, polygons, cells):
         for ring in (poly.exterior, *poly.interiors)
         for p in ring.coords[:-1]
     )
-    points = [Point(p) for p in sorted(coordinates)]
+    points = [Point(p) for p in sorted(coordinates)] + party_points
     point_tree = STRtree(points)
 
     vertex_pool = VertexPool()
@@ -1165,10 +1173,13 @@ def graph_from_cells(spec, polygons, cells):
                 ),
                 "",
             )
+            facade_levels = sorted({*levels,
+                *(z for rectangle in party_regions.get(fid, ()) for z in rectangle[2:]
+                  if cell.bottom < z < cell.top)})
             for si, (start, end) in enumerate(_segments(a, b, near)):
                 edge = LineString([start, end])
                 midpoint = edge.interpolate(0.5, normalized=True)
-                for zi, (bottom, top) in enumerate(zip(levels, levels[1:])):
+                for zi, (bottom, top) in enumerate(zip(facade_levels, facade_levels[1:])):
                     adjacent = [
                         c
                         for c in neighbors
@@ -1180,10 +1191,30 @@ def graph_from_cells(spec, polygons, cells):
                         raise ValueError("Ambiguous shared-edge ownership")
                     other = adjacent[0] if adjacent else None
                     if other and other.zone == cell.zone:
+                        if fid in party_regions and any(
+                            x0 - GRID <= facade_lines[fid].project(midpoint) <= x1 + GRID
+                            and z0 <= bottom + GRID and z1 >= top - GRID
+                            for x0, x1, z0, z1 in party_regions[fid]
+                        ):
+                            raise ValueError(f"Party wall contact {fid} overlaps an internal building interface")
+                        if cell.part.identifier < other.part.identifier:
+                            masses.append(dict(
+                                name=f"{cell.identifier}_wall_{ei}_s{si}_z{zi}", zone=cell.zone,
+                                area_m2=edge.length * (top - bottom), part_id=cell.part.identifier,
+                                facade_id=fid, storey=cell.storey, physical_boundary="Internal",
+                                vertices=[wall_vertices(start, end, bottom, top)],
+                            ))
                         continue
                     role = "weather_shell" if cell.kind == "attic" else "wall"
                     boundary = "Outdoors"
+                    is_party_contact = fid in party_regions and any(
+                        x0 - GRID <= facade_lines[fid].project(midpoint) <= x1 + GRID
+                        and z0 <= bottom + GRID and z1 >= top - GRID
+                        for x0, x1, z0, z1 in party_regions[fid]
+                    )
                     if other:
+                        if is_party_contact:
+                            raise ValueError(f"Party wall contact {fid} overlaps an internal building interface")
                         boundary = "Surface"
                         if cell.conditioned == other.conditioned:
                             kinds = {cell.zone_kind, other.zone_kind}
@@ -1196,7 +1227,7 @@ def graph_from_cells(spec, polygons, cells):
                             )
                         else:
                             role = "wall" if cell.conditioned else "wall_reverse"
-                    elif fid in party:
+                    elif is_party_contact:
                         boundary = "Adiabatic"
                     elif cell.kind == "basement":
                         boundary, role = "Ground", "basement_wall"
@@ -1214,7 +1245,7 @@ def graph_from_cells(spec, polygons, cells):
                     )
                     if boundary == "Adiabatic":
                         surface.annotations.append(
-                            "assumed adiabatic party wall: " + party[fid].neighbor_id
+                            "assumed adiabatic party wall: " + ", ".join(sorted({wall.neighbor_id for wall in party[fid]}))
                         )
                     if boundary == "Outdoors" and not fid:
                         raise ValueError("Generated internal partition could not be paired")

@@ -331,7 +331,13 @@ class HVACSystem:
 
 @dataclass(frozen=True)
 class BuildingElement:
-    """One physical area with a construction; independent of thermal surfaces."""
+    """One installed area and construction, independent of computational faces.
+
+    ``boundary`` is Outdoors, Ground, Adiabatic or Internal. An adiabatic or
+    internal wall retains its construction and material quantities; it has no
+    outdoor exposure. Legacy omitted values are inferred from the physical role.
+    A physical window must be outdoors.
+    """
 
     identifier: str
     role: ElementRole
@@ -342,11 +348,23 @@ class BuildingElement:
     storey: int | None = None
     elevation_m: float | None = None
     component_ids: tuple[str, ...] = ()
+    boundary: str | None = None
 
     def __post_init__(self):
         if not self.identifier or not math.isfinite(self.area_m2) or self.area_m2 < 0:
             raise ValueError("Physical element requires an ID and finite nonnegative area")
         object.__setattr__(self, "role", ElementRole(self.role))
+        boundary = self.boundary
+        if boundary is None:
+            boundary = ("Ground" if self.role in {ElementRole.GROUND_FLOOR, ElementRole.BASEMENT_FLOOR,
+                                                ElementRole.BASEMENT_WALL} else
+                        "Internal" if self.role == ElementRole.INTERMEDIATE_FLOOR or self.role.is_int_wall
+                        else "Outdoors")
+        if boundary not in {"Outdoors", "Ground", "Adiabatic", "Internal"}:
+            raise ValueError("Unsupported physical element boundary")
+        if self.role == ElementRole.WINDOW and boundary != "Outdoors":
+            raise ValueError("Physical windows require an Outdoors boundary")
+        object.__setattr__(self, "boundary", boundary)
         if self.construction is not None:
             if not isinstance(self.construction, (Element, WindowElement)):
                 raise TypeError("construction must be an EPSM Data Element or WindowElement")
@@ -380,7 +398,7 @@ class BuildingElement:
                 "area_m2": self.area_m2, "construction": _encode_element(self.construction),
                 "part_id": self.part_id, "facade_id": self.facade_id,
                 "storey": self.storey, "elevation_m": self.elevation_m,
-                "component_ids": list(self.component_ids)}
+                "component_ids": list(self.component_ids), "boundary": self.boundary}
 
     @classmethod
     def from_dict(cls, data):
@@ -427,7 +445,7 @@ class BuildingSnapshot:
     def from_dict(cls, data):
         if data.get("schema") not in {
                 "epsm.building/1", "epsm.building/2", "epsm.building/3", "epsm.building/4",
-                "epsm.building/5", "epsm.building/6"}:
+                "epsm.building/5", "epsm.building/6", "epsm.building/7"}:
             raise ValueError("Unsupported Building snapshot schema")
         return cls(_json(data))
 
@@ -446,14 +464,15 @@ class BuildingSnapshot:
         return (building_type or Building).from_dict(self.to_dict())
 
     @logged_operation("building.spec.convert", level=10)
-    def to_spec(self, weather):
-        return self.to_building().to_spec(weather)
+    def to_spec(self, weather, *, geometry_cache=None):
+        """Convert retained inputs, optionally reusing caller-owned geometry."""
+        return self.to_building().to_spec(weather, geometry_cache=geometry_cache)
 
-    def resolve(self, weather):
+    def resolve(self, weather, *, geometry_cache=None):
         """Resolve retained physical inputs without initializing an engine."""
         from .resolved import resolve_snapshot
 
-        return resolve_snapshot(self, weather)
+        return resolve_snapshot(self, weather, geometry_cache=geometry_cache)
 
     def quantities(self):
         return self.to_building().quantities()
@@ -1141,7 +1160,7 @@ class Building:
 
     def _snapshot_data(self):
         return {
-            "schema": "epsm.building/6", "identifier": self.identifier, "preset": self.preset,
+            "schema": "epsm.building/7", "identifier": self.identifier, "preset": self.preset,
             "preset_revision": self.preset_revision,
             "provenance": self.provenance.model_dump(mode="json"),
             "geometry": self.geometry.model_dump(mode="json") if self.geometry else None,
@@ -1404,18 +1423,23 @@ class Building:
         child._parent_snapshot_id = before.sha256
         return child
 
-    def resolve(self, weather):
+    def resolve(self, weather, *, geometry_cache=None):
         """Capture and resolve a read-only view with explicit weather context.
 
         Requires complete authoring inputs and delegates to the existing pipeline.
         Passing Weather or ClimateSpec performs no weather-file I/O; a path is
         inspected by the existing conversion API. No engine is initialized.
         """
-        return self.snapshot().resolve(weather)
+        return self.snapshot().resolve(weather, geometry_cache=geometry_cache)
 
     @logged_operation("building.spec.convert", level=10)
-    def to_spec(self, weather):
-        """Compile authoring state to the existing numerical Core input contract."""
+    def to_spec(self, weather, *, geometry_cache=None):
+        """Convert physical inputs, optionally reusing a caller-owned GeometryCache.
+
+        A supplied cache fingerprints installed sources during lookup and returns
+        detached working geometry. Omitting it retains uncached behavior. Material
+        assignments and operation inputs are always taken from this Building.
+        """
         from .building_adapter import to_spec
 
-        return to_spec(self, weather)
+        return to_spec(self, weather, geometry_cache=geometry_cache)

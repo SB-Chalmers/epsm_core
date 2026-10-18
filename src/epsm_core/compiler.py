@@ -57,7 +57,7 @@ from shapely.geometry import Polygon
 from epsm_core._logging import operation as logged_operation
 
 from ._version import __version__ as COMPILER_VERSION
-from .constructions import bridge_equivalent, internal_mass_halves
+from .constructions import bridge_equivalent, internal_mass_halves, surface_construction_reversed
 from .context import (
     emittable_context_surfaces,
     mirror_suppression_eligibility,
@@ -324,7 +324,7 @@ class EnergyPlusCompiler:
         compiler = EnergyPlusCompiler(energyplus="/path/to/EnergyPlus/energyplus")
     """
 
-    def __init__(self, energyplus=None, *, settings=None):
+    def __init__(self, energyplus=None, *, settings=None, geometry_cache=None):
         """Resolve EnergyPlus 24.2 and initialize its schema validator and source identities.
 
         Parameters
@@ -333,6 +333,8 @@ class EnergyPlusCompiler:
             EnergyPlus 24.2 executable; None uses ENERGYPLUS_EXE then PATH. Default: ``None``.
         settings : CompilerSettings or None
             Explicit engine controls; None uses CompilerSettings defaults. Default: ``None``.
+        geometry_cache : GeometryCache or None
+            Caller-owned prepared geometry reuse. Working graphs remain detached.
 
         Returns
         -------
@@ -364,6 +366,7 @@ class EnergyPlusCompiler:
 
         # 1. Resolve EnergyPlus 24.2 and initialize its schema validator and source identities.
         self.settings = settings or CompilerSettings()
+        self.geometry_cache = geometry_cache
         executable = energyplus or os.environ.get("ENERGYPLUS_EXE") or shutil.which("energyplus")
         if not executable:
             raise FileNotFoundError("Set ENERGYPLUS_EXE to EnergyPlus 24.2 or pass energyplus=")
@@ -741,7 +744,7 @@ class EnergyPlusCompiler:
         # 3. Preserve nominal assemblies in the audit while emitting equivalent thermal
         # properties.
         try:
-            resolved = resolve_geometry(spec, panelize=True)
+            resolved = resolve_geometry(spec, panelize=True, cache=getattr(self, "geometry_cache", None))
         except ValueError as error:
             raise CompilationError(GEOMETRY_INVARIANT_FAILURE, str(error)) from error
         graph = resolved.graph
@@ -775,18 +778,24 @@ class EnergyPlusCompiler:
                     internal_mass_halves(spec.envelope.intermediate_floor),
                 )
             )
+        if any(mass.get("physical_boundary") == "Internal" for mass in graph.internal_mass):
+            assemblies.update(zip(("internal_wall_face_a", "internal_wall_face_b"),
+                                  internal_mass_halves(spec.envelope.wall)))
         override_names = {}
         override_base_roles = {}
         surfaces_by_name = {face.name: face for face in graph.surfaces}
         unknown = set(spec.surface_constructions) - surfaces_by_name.keys()
         if unknown:
             raise ValueError(f"Unknown surface construction targets: {sorted(unknown)}")
+        shared_overrides = {}
         for index, (name, assembly) in enumerate(sorted(spec.surface_constructions.items())):
-            label = f"physical_override_{index}"
+            base_role = surfaces_by_name[name].construction.removesuffix(
+                "_reverse").removeprefix("unconditioned_")
+            key = (base_role, assembly.model_dump_json())
+            label = shared_overrides.setdefault(key, f"physical_override_{index}")
             assemblies[label] = assembly
             override_names[name] = label
-            override_base_roles[label] = surfaces_by_name[name].construction.removesuffix(
-                "_reverse").removeprefix("unconditioned_")
+            override_base_roles[label] = base_role
         mass_override_names = {}
         mass_names = {mass["name"] for mass in graph.internal_mass}
         if set(spec.internal_mass_constructions) - mass_names:
@@ -1086,7 +1095,7 @@ class EnergyPlusCompiler:
         assigned_area = sum(z.get("load_reference_area_m2", 0) for z in zone_report.values())
         if spec.load_reference_area_m2 is not None and abs(assigned_area - spec.load_reference_area_m2) > 1e-6:
             raise ValueError("Zone reference areas must sum to the declared building load reference area")
-        # 8. Expose both slab halves while preserving one physical slab's heat capacity.
+        # 8. Expose both wall/slab halves while preserving one installed assembly's capacity.
         for mass in graph.internal_mass:
             for face in ("a", "b"):
                 add(
@@ -1094,7 +1103,8 @@ class EnergyPlusCompiler:
                     mass["name"] + "_" + face,
                     construction_name=(mass_override_names[mass["name"]][0 if face == "a" else 1]
                                        if mass["name"] in mass_override_names
-                                       else "internal_slab_face_" + face),
+                                       else ("internal_wall_face_" if mass.get("physical_boundary") == "Internal"
+                                             else "internal_slab_face_") + face),
                     zone_or_zonelist_name=mass["zone"],
                     surface_area=mass["area_m2"],
                 )
@@ -1104,8 +1114,8 @@ class EnergyPlusCompiler:
                 face.zone,
                 face.vertices,
                 face.kind,
-                (override_names[face.name] + ("_reverse" if face.construction.endswith(
-                    "_reverse") else "") if face.name in override_names else face.construction),
+                (override_names[face.name] + ("_reverse" if surface_construction_reversed(
+                    face, spec.surface_constructions) else "") if face.name in override_names else face.construction),
                 face.boundary,
                 face.adjacent,
             )

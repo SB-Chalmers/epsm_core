@@ -253,3 +253,16 @@ def bridge_equivalent(assembly: ConstructionSpec, uplift: float):
             for x in assembly.layers
         )
     )
+
+
+def surface_construction_reversed(face, physical_overrides):
+    """Orient one reciprocal physical partition from its common nominal owner.
+
+    Computational AirBoundary partitions have no layer direction. When a
+    physical shared wall replaces that partition, one reciprocal side must use
+    the reversed nominal layers. Existing explicitly oriented roles retain their
+    original direction, and ordinary AirBoundary faces remain unchanged.
+    """
+    return (face.construction.endswith("_reverse") or
+            (face.construction == "partition" and face.name in physical_overrides
+             and face.boundary == "Surface" and face.name > face.adjacent))

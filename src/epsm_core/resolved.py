@@ -20,6 +20,7 @@ from types import MappingProxyType
 from typing import Mapping
 
 from .building import BuildingSnapshot
+from .constructions import surface_construction_reversed
 from .pipeline import resolve_geometry
 from .specs import BuildingSpec
 from .zone_inputs import resolve_zone_operations
@@ -124,10 +125,11 @@ class ResolvedBuildingInput:
         return f"ResolvedBuildingInput(characters={len(self._json)})"
 
 
-def _resolve(spec: BuildingSpec, *, snapshot: BuildingSnapshot | None = None) -> ResolvedBuildingInput:
+def _resolve(spec: BuildingSpec, *, snapshot: BuildingSnapshot | None = None,
+             geometry_cache=None) -> ResolvedBuildingInput:
     # Revalidate a detached copy: frozen Pydantic fields can contain mutable maps.
     spec = BuildingSpec.model_validate(spec.model_dump())
-    resolved = resolve_geometry(spec, panelize=True)
+    resolved = resolve_geometry(spec, panelize=True, cache=geometry_cache)
     graph = resolved.graph
     unknown_surfaces = set(spec.surface_constructions) - {face.name for face in graph.surfaces}
     if unknown_surfaces:
@@ -153,7 +155,7 @@ def _resolve(spec: BuildingSpec, *, snapshot: BuildingSnapshot | None = None) ->
             "vertices": face.vertices, "part_id": face.part_id, "facade_id": face.facade_id,
             "storey": face.storey, "cell_kind": face.cell_kind,
             "boundary": face.boundary, "adjacent": face.adjacent,
-            "construction_role": face.construction, "reverse": face.construction.endswith("_reverse"),
+            "construction_role": face.construction, "reverse": surface_construction_reversed(face, spec.surface_constructions),
             "construction": assembly.model_dump(mode="json") if assembly is not None else None,
             "physical_element_id": owner.identifier if owner is not None else None,
             "physical_component_ids": owner.component_ids if owner is not None else (),
@@ -174,7 +176,8 @@ def _resolve(spec: BuildingSpec, *, snapshot: BuildingSnapshot | None = None) ->
     internal_mass = []
     for mass in graph.internal_mass:
         owner = owners["internal_mass"].get(mass["name"])
-        assembly = spec.internal_mass_constructions.get(mass["name"], spec.envelope.intermediate_floor)
+        assembly = spec.internal_mass_constructions.get(mass["name"], spec.envelope.wall
+                    if mass.get("physical_boundary") == "Internal" else spec.envelope.intermediate_floor)
         internal_mass.append({**mass, "construction": assembly.model_dump(mode="json"),
                               "physical_element_id": owner.identifier if owner is not None else None,
                               "physical_component_ids": owner.component_ids if owner is not None else ()})
@@ -235,21 +238,22 @@ def _resolve(spec: BuildingSpec, *, snapshot: BuildingSnapshot | None = None) ->
     })
 
 
-def resolve_building(spec: BuildingSpec) -> ResolvedBuildingInput:
+def resolve_building(spec: BuildingSpec, *, geometry_cache=None) -> ResolvedBuildingInput:
     """Resolve an already validated spec without reading weather or initializing an engine.
 
     Reuses Core topology, openings, physical assignment overrides and operation
     selection. The source identity is the spec's physical hash; physical Building
     convenience methods instead retain their exact authoring snapshot identity.
     """
-    return _resolve(spec)
+    return _resolve(spec, geometry_cache=geometry_cache)
 
 
-def resolve_snapshot(snapshot: BuildingSnapshot, weather) -> ResolvedBuildingInput:
+def resolve_snapshot(snapshot: BuildingSnapshot, weather, *, geometry_cache=None) -> ResolvedBuildingInput:
     """Resolve an authoring snapshot with explicitly supplied Weather or ClimateSpec.
 
     Conversion requires complete authoring inputs. Passing a weather-file path
     retains the existing explicit weather-inspection behavior of ``to_spec``;
     already inspected Weather or ClimateSpec performs no file access here.
     """
-    return _resolve(snapshot.to_spec(weather), snapshot=snapshot)
+    return _resolve(snapshot.to_spec(weather, geometry_cache=geometry_cache),
+                    snapshot=snapshot, geometry_cache=geometry_cache)
