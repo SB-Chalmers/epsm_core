@@ -512,6 +512,7 @@ def resolve_openings(spec, graph):
                         # EnergyPlus requires subsurfaces to lie strictly within
                         # their parent. An opening clipped at a thermal split may
                         # otherwise share the parent's edge and trigger CHKSBS.
+                        suppression_reason = "Clipped opening reduced after parent-edge clearance"
                         piece = piece.intersection(
                             parent_shape.buffer(-MIN_GENERATED_EDGE_M, join_style=2)
                         )

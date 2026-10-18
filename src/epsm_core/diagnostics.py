@@ -430,7 +430,8 @@ def compiler_warning_conditions(spec, model, report):
         if face["surface_type"] == "Floor":
             expected[face["zone_name"]] += properties(vertices(face))[0]
     for mass in report.data["internal_mass"]:
-        expected[mass["zone"]] += mass["area_m2"]
+        if mass.get("physical_boundary") != "Internal":
+            expected[mass["zone"]] += mass["area_m2"]
     if not report.data["internal_mass"]:
         return ()
     if all(

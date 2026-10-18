@@ -1,3 +1,22 @@
+# Core 0.6.0 — shared-wall boundaries
+
+- Confirmed geometric contact is an explicit adiabatic modelling assumption,
+  independent of the neighbour's heating evidence. Partial horizontal and
+  vertical contacts preserve the exposed wall remainder.
+- Physical windows and thermal windows use the same outdoor exposure. Physical
+  opaque contact area remains installed, including material mass and capacity.
+- Flat compact attached conditioned parts retain shared walls once, with internal
+  thermal mass and no outdoor conduction or gains on that area.
+- `PartyWallNeighbor` and `GeometrySpec.with_party_wall_contacts` detect opposing
+  collinear wall edges from supplied metric footprints and heights. Exact contact
+  is the default; up to 0.1 m tolerance is an explicit sensitivity assumption.
+- Physical snapshot format 7 records each element's boundary. Formats 1–6 remain
+  readable without rewriting unchanged snapshots. RC needs 0.6.0 or later to
+  consume the boundary-aware physical inventory. Catalogue defaults are unchanged.
+
+See [scope and migration](docs/party-walls.md). Package release checks and tested
+revisions are recorded with the coordinated release.
+
 # Release 0.5.0 — 18 October 2026
 
 Physical conversion resolves geometry once and reuses it for surface and internal

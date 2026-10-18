@@ -20,6 +20,7 @@ from types import MappingProxyType
 from typing import Mapping
 
 from .building import BuildingSnapshot
+from .constructions import surface_construction_reversed
 from .pipeline import resolve_geometry
 from .specs import BuildingSpec
 from .zone_inputs import resolve_zone_operations
@@ -154,7 +155,7 @@ def _resolve(spec: BuildingSpec, *, snapshot: BuildingSnapshot | None = None,
             "vertices": face.vertices, "part_id": face.part_id, "facade_id": face.facade_id,
             "storey": face.storey, "cell_kind": face.cell_kind,
             "boundary": face.boundary, "adjacent": face.adjacent,
-            "construction_role": face.construction, "reverse": face.construction.endswith("_reverse"),
+            "construction_role": face.construction, "reverse": surface_construction_reversed(face, spec.surface_constructions),
             "construction": assembly.model_dump(mode="json") if assembly is not None else None,
             "physical_element_id": owner.identifier if owner is not None else None,
             "physical_component_ids": owner.component_ids if owner is not None else (),
@@ -175,7 +176,8 @@ def _resolve(spec: BuildingSpec, *, snapshot: BuildingSnapshot | None = None,
     internal_mass = []
     for mass in graph.internal_mass:
         owner = owners["internal_mass"].get(mass["name"])
-        assembly = spec.internal_mass_constructions.get(mass["name"], spec.envelope.intermediate_floor)
+        assembly = spec.internal_mass_constructions.get(mass["name"], spec.envelope.wall
+                    if mass.get("physical_boundary") == "Internal" else spec.envelope.intermediate_floor)
         internal_mass.append({**mass, "construction": assembly.model_dump(mode="json"),
                               "physical_element_id": owner.identifier if owner is not None else None,
                               "physical_component_ids": owner.component_ids if owner is not None else ()})

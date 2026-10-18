@@ -999,9 +999,9 @@ class PartyWall(Spec):
 
     Notes
     -----
-    Surface generation currently accepts only confirmed contact with a heated neighbour and
-    models it adiabatically. Unknown/unheated neighbours are representable as input evidence
-    but rejected for this approximation.
+    Confirmed geometric contact is assumed adiabatic independently of neighbour heating.
+    Optional distances bound a rectangular contact in the directed facade plane; omitted
+    bounds cover the complete facade. No neighbouring temperature is inferred.
 
     Examples
     --------
@@ -1023,6 +1023,41 @@ class PartyWall(Spec):
     neighbor_conditioning: Literal["heated", "unheated", "unknown"]
     contact_confirmed: bool
     assumption_source: str
+    start_m: Nonnegative = 0
+    end_m: Positive | None = None
+    bottom_m: float | None = None
+    top_m: float | None = None
+
+    @model_validator(mode="after")
+    def contact_extents(self):
+        if self.end_m is not None and self.end_m <= self.start_m:
+            raise ValueError("end_m must exceed start_m")
+        if self.bottom_m is not None and self.top_m is not None and self.top_m <= self.bottom_m:
+            raise ValueError("top_m must exceed bottom_m")
+        if not self.assumption_source.strip():
+            raise ValueError("Party wall requires an assumption_source")
+        return self
+
+
+class PartyWallNeighbor(Spec):
+    """Explicit neighbouring wall extrusion in the target's metric coordinate frame.
+
+    ``top_m`` is a supplied grade-relative eave height, never an inferred roof peak.
+    The caller records whether this value and the wall footprint are measured or
+    assumed in the contact operation's ``assumption_source``. Missing heights must
+    remain outside this representation rather than silently covering a full facade.
+    """
+
+    identifier: str
+    footprint: Footprint
+    bottom_m: float = 0
+    top_m: float
+
+    @model_validator(mode="after")
+    def positive_height(self):
+        if self.top_m <= self.bottom_m:
+            raise ValueError("top_m must exceed bottom_m")
+        return self
 
 
 class FootprintCleanupSpec(Spec):
@@ -1112,7 +1147,7 @@ class GeometrySpec(Spec):
         ValueError
             Rejected conditions: Part identifiers must be unique; Plan-area parts must not
             overlap; use adjacent columns for setbacks; Conditioned basement requires positive
-            basement depth; Building requires conditioned volume; Duplicate party-wall facade.
+            basement depth; Building requires conditioned volume.
 
         Notes
         -----
@@ -1150,9 +1185,6 @@ class GeometrySpec(Spec):
             raise ValueError("Conditioned basement requires positive basement depth")
         if not any(p.conditioned for p in self.parts) and not self.basement_conditioned:
             raise ValueError("Building requires conditioned volume")
-        fids = [p.facade_id for p in self.party_walls]
-        if len(set(fids)) != len(fids):
-            raise ValueError("Duplicate party-wall facade")
         return self
 
     @classmethod
@@ -1423,6 +1455,22 @@ class GeometrySpec(Spec):
         """
 
         return part.roof or self.roof
+
+    def with_party_wall_contacts(self, neighbors, *, tolerance_m=0.0, assumption_source):
+        """Return geometry with confirmed collinear neighbouring contact rectangles.
+
+        Neighbours are :class:`PartyWallNeighbor` extrusions in the same metric
+        frame. The default accepts exactly touching opposite-facing wall edges.
+        An explicitly supplied tolerance (at most 0.1 m) permits a parallel gap;
+        proximity without opposing collinear edges never creates a party wall.
+        Existing explicit contacts are retained and overlapping patches are united
+        during surface generation. Inputs are not modified and no files are read.
+        """
+        from ..party_walls import detect_contacts
+
+        contacts = detect_contacts(self, neighbors, tolerance_m=tolerance_m,
+                                   assumption_source=assumption_source)
+        return self.updated(party_walls=(*self.party_walls, *contacts))
 
     def facades(self):
         """Inspect stable facade IDs and azimuths without engine or weather resources.

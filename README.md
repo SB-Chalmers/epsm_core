@@ -1,8 +1,8 @@
 # epsm_core
 
-Core 0.5.0 reuses prepared geometry while retaining physical and numerical input behavior. It consumes Data 0.6.0 definitions. See [release notes](RELEASE_NOTES.md), [prepared geometry](docs/geometry-cache.md) and [migration guidance](docs/archetype-operation.md).
+Core 0.6.0 represents shared contact as adiabatic in physical inventory and thermal geometry. Windows use the exposed wall area, and same-building shared walls retain one material owner. It consumes Data 0.6.0 definitions. See [shared-wall assumptions](docs/party-walls.md), [release notes](RELEASE_NOTES.md) and [prepared geometry](docs/geometry-cache.md).
 
-A pre-1.0 building-energy modelling library for automated urban building energy modelling. The package version is **0.5.0**; content hashes distinguish simulation inputs and implementations.
+A pre-1.0 building-energy modelling library for automated urban building energy modelling. The package version is **0.6.0**; content hashes distinguish simulation inputs and implementations.
 
 ## Physical Building authoring
 
