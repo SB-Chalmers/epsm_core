@@ -446,14 +446,15 @@ class BuildingSnapshot:
         return (building_type or Building).from_dict(self.to_dict())
 
     @logged_operation("building.spec.convert", level=10)
-    def to_spec(self, weather):
-        return self.to_building().to_spec(weather)
+    def to_spec(self, weather, *, geometry_cache=None):
+        """Convert retained inputs, optionally reusing caller-owned geometry."""
+        return self.to_building().to_spec(weather, geometry_cache=geometry_cache)
 
-    def resolve(self, weather):
+    def resolve(self, weather, *, geometry_cache=None):
         """Resolve retained physical inputs without initializing an engine."""
         from .resolved import resolve_snapshot
 
-        return resolve_snapshot(self, weather)
+        return resolve_snapshot(self, weather, geometry_cache=geometry_cache)
 
     def quantities(self):
         return self.to_building().quantities()
@@ -1404,18 +1405,23 @@ class Building:
         child._parent_snapshot_id = before.sha256
         return child
 
-    def resolve(self, weather):
+    def resolve(self, weather, *, geometry_cache=None):
         """Capture and resolve a read-only view with explicit weather context.
 
         Requires complete authoring inputs and delegates to the existing pipeline.
         Passing Weather or ClimateSpec performs no weather-file I/O; a path is
         inspected by the existing conversion API. No engine is initialized.
         """
-        return self.snapshot().resolve(weather)
+        return self.snapshot().resolve(weather, geometry_cache=geometry_cache)
 
     @logged_operation("building.spec.convert", level=10)
-    def to_spec(self, weather):
-        """Compile authoring state to the existing numerical Core input contract."""
+    def to_spec(self, weather, *, geometry_cache=None):
+        """Convert physical inputs, optionally reusing a caller-owned GeometryCache.
+
+        A supplied cache fingerprints installed sources during lookup and returns
+        detached working geometry. Omitting it retains uncached behavior. Material
+        assignments and operation inputs are always taken from this Building.
+        """
         from .building_adapter import to_spec
 
-        return to_spec(self, weather)
+        return to_spec(self, weather, geometry_cache=geometry_cache)

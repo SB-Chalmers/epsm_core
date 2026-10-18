@@ -133,7 +133,7 @@ def _surface_constructions_for_building(building, geometry, facade, envelope, *,
 
 
 @logged_operation("model.convert", level=10)
-def to_spec(building, weather):
+def to_spec(building, weather, *, geometry_cache=None):
     """Produce the legacy validated engine specification with exact target assignments."""
     building.readiness().require()
     if isinstance(weather, Weather):
@@ -163,11 +163,11 @@ def to_spec(building, weather):
         load_reference_area_m2=building.effective_load_reference_area_m2,
         use=building.operation, context=building.context, delivery=building.hvac.delivery,
         renewables=building.hvac.renewables, provenance=building.provenance)
-    surface_constructions = _surface_constructions_for_building(
-        building, spec.geometry, spec.facade, envelope)
     from .pipeline import resolve_geometry
 
-    resolved = resolve_geometry(spec, panelize=True)
+    resolved = resolve_geometry(spec, panelize=True, cache=geometry_cache)
+    surface_constructions = _surface_constructions_for_building(
+        building, spec.geometry, spec.facade, envelope, resolved=resolved)
     owners = _physical_element_owners(building, resolved)["internal_mass"]
     mass_constructions = {}
     for mass in resolved.graph.internal_mass:

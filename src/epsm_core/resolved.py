@@ -124,10 +124,11 @@ class ResolvedBuildingInput:
         return f"ResolvedBuildingInput(characters={len(self._json)})"
 
 
-def _resolve(spec: BuildingSpec, *, snapshot: BuildingSnapshot | None = None) -> ResolvedBuildingInput:
+def _resolve(spec: BuildingSpec, *, snapshot: BuildingSnapshot | None = None,
+             geometry_cache=None) -> ResolvedBuildingInput:
     # Revalidate a detached copy: frozen Pydantic fields can contain mutable maps.
     spec = BuildingSpec.model_validate(spec.model_dump())
-    resolved = resolve_geometry(spec, panelize=True)
+    resolved = resolve_geometry(spec, panelize=True, cache=geometry_cache)
     graph = resolved.graph
     unknown_surfaces = set(spec.surface_constructions) - {face.name for face in graph.surfaces}
     if unknown_surfaces:
@@ -235,21 +236,22 @@ def _resolve(spec: BuildingSpec, *, snapshot: BuildingSnapshot | None = None) ->
     })
 
 
-def resolve_building(spec: BuildingSpec) -> ResolvedBuildingInput:
+def resolve_building(spec: BuildingSpec, *, geometry_cache=None) -> ResolvedBuildingInput:
     """Resolve an already validated spec without reading weather or initializing an engine.
 
     Reuses Core topology, openings, physical assignment overrides and operation
     selection. The source identity is the spec's physical hash; physical Building
     convenience methods instead retain their exact authoring snapshot identity.
     """
-    return _resolve(spec)
+    return _resolve(spec, geometry_cache=geometry_cache)
 
 
-def resolve_snapshot(snapshot: BuildingSnapshot, weather) -> ResolvedBuildingInput:
+def resolve_snapshot(snapshot: BuildingSnapshot, weather, *, geometry_cache=None) -> ResolvedBuildingInput:
     """Resolve an authoring snapshot with explicitly supplied Weather or ClimateSpec.
 
     Conversion requires complete authoring inputs. Passing a weather-file path
     retains the existing explicit weather-inspection behavior of ``to_spec``;
     already inspected Weather or ClimateSpec performs no file access here.
     """
-    return _resolve(snapshot.to_spec(weather), snapshot=snapshot)
+    return _resolve(snapshot.to_spec(weather, geometry_cache=geometry_cache),
+                    snapshot=snapshot, geometry_cache=geometry_cache)

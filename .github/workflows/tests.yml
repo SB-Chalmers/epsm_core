@@ -2,7 +2,7 @@ name: Core tests
 on: [push, pull_request, workflow_dispatch]
 jobs:
   unit:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         python: ['3.11', '3.13']
@@ -29,10 +29,33 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - run: python -m pip install build .ci/epsm_data '.[dev,geometry]'
+      - name: Install required EnergyPlus 24.2
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download v24.2.0 --repo NatLabRockies/EnergyPlus --pattern 'EnergyPlus-24.2.0-e7ecb2d53b-Linux-Ubuntu22.04-x86_64.tar.gz' --dir "$RUNNER_TEMP"
+          mkdir -p "$RUNNER_TEMP/energyplus"
+          tar -xzf "$RUNNER_TEMP/EnergyPlus-24.2.0-e7ecb2d53b-Linux-Ubuntu22.04-x86_64.tar.gz" -C "$RUNNER_TEMP/energyplus" --strip-components=1
+          echo "ENERGYPLUS_EXE=$RUNNER_TEMP/energyplus/energyplus" >> "$GITHUB_ENV"
       - name: Record tested revisions
         run: |
           git rev-parse HEAD
           git -C .ci/epsm_data rev-parse HEAD
+          "$ENERGYPLUS_EXE" --version
       - run: ruff check src/epsm_core examples
-      - run: pytest -o pythonpath= -m 'not energyplus'
+      - name: Build and install release distributions
+        run: |
+          python -m build
+          python -m pip install --no-deps --force-reinstall dist/epsm_core-*.whl
+      - name: Run full installed Core suite with real engine
+        env:
+          EPSM_REQUIRE_ENERGYPLUS: '1'
+        run: pytest -o pythonpath= --junitxml=core-results.xml
       - run: python -m pip check
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: core-${{ matrix.python }}-${{ matrix.dependencies }}
+          path: |
+            core-results.xml
+            dist/

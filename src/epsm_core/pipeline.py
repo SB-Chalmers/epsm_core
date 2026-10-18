@@ -33,12 +33,97 @@ Example::
     resolved = resolve_geometry(building, panelize=False)
 """
 
+import hashlib
+import json
+from collections import OrderedDict
+from copy import deepcopy
 from dataclasses import dataclass
+from pathlib import Path
 
 from .facades import panelize_receiving_walls, resolve_openings, shading_geometry
 from .geometry import local_polygons
 from .surface_checks import validate_surfaces
 from .topology import build_surface_graph
+
+
+def _geometry_implementation_identity():
+    """Fingerprint installed Core sources so edited checkouts cannot reuse stale graphs."""
+    root = Path(__file__).parent
+    digest = hashlib.sha256()
+    for path in sorted(root.rglob("*.py")):
+        digest.update(path.relative_to(root).as_posix().encode())
+        digest.update(path.read_bytes())
+    return digest.hexdigest()
+
+
+class GeometryCache:
+    """Caller-owned bounded cache of detached geometry working graphs.
+
+    Parameters
+    ----------
+    max_entries : int
+        Positive maximum number of graphs retained; default 64. Entries are
+        evicted in least-recently-used order. No files are read at construction.
+
+    Notes
+    -----
+    Explicit cached resolution fingerprints installed Core Python sources on
+    every lookup. Geometry and facade placement/shading controls identify each
+    entry; material, glazing and operation assignments are rebound by consumers.
+    Graphs are deep-copied on storage and retrieval because engine compilation
+    mutates its working graph. A cache never retains a thermal simulation state.
+    Instances are intended for sequential use by one caller, not shared threads.
+
+    Examples
+    --------
+    >>> cache = GeometryCache(max_entries=8)
+    >>> len(cache)
+    0
+    """
+
+    def __init__(self, max_entries: int = 64):
+        if type(max_entries) is not int or max_entries <= 0:
+            raise ValueError("max_entries must be a positive integer")
+        self.max_entries = max_entries
+        self._entries = OrderedDict()
+        self.hits = self.misses = 0
+
+    def __len__(self):
+        return len(self._entries)
+
+    def __repr__(self):
+        return f"GeometryCache(entries={len(self)}, max_entries={self.max_entries})"
+
+    def clear(self):
+        """Release retained graphs and reset counters; performs no file I/O."""
+        self._entries.clear()
+        self.hits = self.misses = 0
+
+    def _key(self, spec, panelize):
+        facade = getattr(spec, "facade", None)
+        controls = facade.model_dump(mode="json", exclude={
+            "glazing": True, "solar_shading_factor": True,
+            "overrides": {"__all__": {"glazing", "solar_shading_factor"}},
+        }) if facade is not None else None
+        return hashlib.sha256(json.dumps({
+            "geometry": spec.geometry.model_dump(mode="json"),
+            "facade": controls, "panelize": panelize,
+            "implementation": _geometry_implementation_identity(),
+        }, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
+
+    def _get(self, key):
+        if key not in self._entries:
+            self.misses += 1
+            return None
+        self.hits += 1
+        self._entries.move_to_end(key)
+        return deepcopy(self._entries[key])
+
+    def _put(self, key, resolved):
+        self._entries[key] = deepcopy(resolved)
+        self._entries.move_to_end(key)
+        while len(self._entries) > self.max_entries:
+            self._entries.popitem(last=False)
 
 
 @dataclass
@@ -114,7 +199,7 @@ class ResolvedGeometry:
         return len({o.metadata["logical_window"] for o in self.openings})
 
 
-def resolve_geometry(spec, *, panelize=False):
+def resolve_geometry(spec, *, panelize=False, cache: GeometryCache | None = None):
     """Resolve a shared surface graph, openings and shading for all consumers.
 
     Parameters
@@ -125,6 +210,9 @@ def resolve_geometry(spec, *, panelize=False):
     panelize : bool
         Subdivide shaded receiving walls and re-resolve openings when true. Default:
         ``False``.
+    cache : GeometryCache or None
+        Explicit bounded reuse. Lookups read installed Core sources to verify
+        implementation identity. None performs the ordinary uncached resolution.
 
     Returns
     -------
@@ -148,6 +236,14 @@ def resolve_geometry(spec, *, panelize=False):
         resolved = resolve_geometry(building, panelize=False)
     """
 
+    key = None
+    if cache is not None:
+        if not isinstance(cache, GeometryCache):
+            raise TypeError("cache must be a GeometryCache")
+        key = cache._key(spec, panelize)
+        retained = cache._get(key)
+        if retained is not None:
+            return retained
     # 1. Resolve a shared surface graph, openings and shading for all consumers.
     from .footprint_cleanup import prepared_footprints, validate_facade_references
     _, cleanup_report = prepared_footprints(spec.geometry)
@@ -193,4 +289,7 @@ def resolve_geometry(spec, *, panelize=False):
         },
         graph.zones,
     )
-    return ResolvedGeometry(polygons, origin, graph, openings, facades, shading)
+    resolved = ResolvedGeometry(polygons, origin, graph, openings, facades, shading)
+    if cache is not None:
+        cache._put(key, resolved)
+    return resolved
