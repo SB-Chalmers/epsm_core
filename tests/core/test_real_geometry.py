@@ -117,7 +117,7 @@ def test_party_wall(building, energyplus):
         EnergyPlusCompiler(energyplus).compile(
             b.updated(
                 geometry=b.geometry.updated(
-                    party_walls=(party.updated(neighbor_conditioning="unknown"),)
+                    party_walls=(party.updated(contact_confirmed=False),)
                 )
             )
         )

@@ -185,6 +185,6 @@ def test_old_snapshot_stays_missing_until_edited():
     assert "load_reference_area_m2 or load_reference_area_policy" in restored.readiness().missing
     restored.identifier = "edited"
     saved = restored.snapshot().to_dict()
-    assert saved["schema"] == "epsm.building/6"
+    assert saved["schema"] == "epsm.building/7"
     assert saved["load_reference_area_m2"] is None
     assert saved["load_reference_area_policy"] is None

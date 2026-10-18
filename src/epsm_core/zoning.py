@@ -130,7 +130,8 @@ def polygon_components(geometry):
     )
 
 
-def exposed_facades(part, polygon, parts, polygons, bottom, top, party_ids=(), part_tops=None):
+def exposed_facades(part, polygon, parts, polygons, bottom, top, party_ids=(), part_tops=None,
+                    *, party_walls=()):
     """Find directed facade segments exposed in at least one storey height band.
 
     Parameters
@@ -152,6 +153,9 @@ def exposed_facades(part, polygon, parts, polygons, bottom, top, party_ids=(), p
         Default: ``()``.
     part_tops : dict or None
         Optional per-part top elevations including attic shading extents. Default: ``None``.
+    party_walls : sequence of PartyWall
+        Optional rectangular contact patches. A horizontal segment is excluded
+        only if their union covers the complete storey height at that segment.
 
     Returns
     -------
@@ -161,8 +165,10 @@ def exposed_facades(part, polygon, parts, polygons, bottom, top, party_ids=(), p
     Notes
     -----
     A neighbour suppresses an entire storey's exposure only if it reaches the storey top.
-    Reviewed party facades are excluded. Exact vertical subdivision occurs later in the
-    surface builder.
+    Legacy complete party facade IDs are excluded. Partial contact patches exclude
+    only segments fully covered through this storey; their outdoor upper/lower
+    remnants still create perimeter strips. Exact vertical subdivision occurs
+    later in the surface builder.
 
     Examples
     --------
@@ -196,7 +202,26 @@ def exposed_facades(part, polygon, parts, polygons, bottom, top, party_ids=(), p
         if fid in party_ids:
             continue
         line = LineString([a, b])
-        remainder = line.difference(covering)
+        contact_covers = []
+        from .party_walls import contact_bounds
+
+        rectangles = [contact_bounds(wall, line, part.storey_elevations_m[0],
+                                     part.storey_elevations_m[-1])
+                      for wall in party_walls if wall.facade_id == fid]
+        xs = sorted({x for rectangle in rectangles for x in rectangle[:2]})
+        for lo, hi in zip(xs, xs[1:]):
+            middle = (lo + hi) / 2
+            heights = sorted((max(bottom, z0), min(top, z1))
+                             for x0, x1, z0, z1 in rectangles
+                             if x0 <= middle <= x1 and z0 < top and z1 > bottom)
+            reached = bottom
+            for z0, z1 in heights:
+                if z0 > reached + GRID:
+                    break
+                reached = max(reached, z1)
+            if reached >= top - GRID:
+                contact_covers.append(LineString([line.interpolate(lo), line.interpolate(hi)]))
+        remainder = line.difference(covering.union(unary_union(contact_covers)))
         pieces = [remainder] if remainder.geom_type == "LineString" else remainder.geoms
         for piece in pieces:
             if piece.geom_type != "LineString" or piece.length < GRID:

@@ -55,6 +55,7 @@ from .geometry import Footprint as Footprint
 from .geometry import FootprintCleanupSpec as FootprintCleanupSpec
 from .geometry import GeometrySpec as GeometrySpec
 from .geometry import PartyWall as PartyWall
+from .geometry import PartyWallNeighbor as PartyWallNeighbor
 from .geometry import RoofSpec as RoofSpec
 from .geometry import ZoningSpec as ZoningSpec
 from .operations import UnconditionedExchangeSpec as UnconditionedExchangeSpec

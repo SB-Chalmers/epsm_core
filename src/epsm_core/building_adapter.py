@@ -88,26 +88,36 @@ def _envelope_for_building(building):
 
 def _physical_element_owners(building, resolved):
     """Link thermal panes, faces and internal mass to original physical elements."""
-    walls = {(e.facade_id, e.storey): e for e in building.elements if e.role == Role.EXT_WALL}
+    walls = {(e.facade_id, e.storey, e.boundary): e for e in building.elements if e.role == Role.EXT_WALL}
     basement = {e.facade_id: e for e in building.elements if e.role == Role.BASEMENT_WALL}
     horizontal = {(e.part_id, round(e.elevation_m, 8)): e for e in building.elements
                   if e.elevation_m is not None and e.facade_id is None}
     windows = {(element.facade_id, element.storey): element for element in building.elements
                if element.role == Role.WINDOW}
     surfaces = {}
+    faces = {face.name: face for face in resolved.graph.surfaces}
     for face in resolved.graph.surfaces:
         role = face.construction.removesuffix("_reverse").removeprefix("unconditioned_")
         physical = None
         if face.kind == "Wall":
             physical = basement.get(face.facade_id) if role == "basement_wall" else \
-                walls.get((face.facade_id, face.storey)) if role == "wall" else None
+                walls.get((face.facade_id, face.storey, face.boundary)) if role == "wall" else None
+            if face.boundary == "Surface" and physical is None:
+                other = faces[face.adjacent]
+                physical = (walls.get((face.facade_id, face.storey, "Internal")) or
+                            walls.get((other.facade_id, other.storey, "Internal")))
         elif len({round(vertex[2], 8) for vertex in face.vertices}) == 1:
             physical = horizontal.get((face.part_id, round(face.vertices[0][2], 8)))
         if physical is not None:
             surfaces[face.name] = physical
-    mass = {item["name"]: horizontal[(item["part_id"], round(item["elevation_m"], 8))]
-            for item in resolved.graph.internal_mass
-            if (item["part_id"], round(item["elevation_m"], 8)) in horizontal}
+    mass = {}
+    for item in resolved.graph.internal_mass:
+        if item.get("physical_boundary") == "Internal":
+            physical = walls.get((item["facade_id"], item["storey"], "Internal"))
+        else:
+            physical = horizontal.get((item["part_id"], round(item["elevation_m"], 8)))
+        if physical is not None:
+            mass[item["name"]] = physical
     openings = {opening.name: windows[(opening.metadata["facade_id"], opening.metadata["storey"])]
                 for opening in resolved.openings
                 if (opening.metadata["facade_id"], opening.metadata["storey"]) in windows}
