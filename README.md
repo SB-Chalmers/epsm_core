@@ -113,3 +113,8 @@ EPSM is needed only for this combined configuration, not for ordinary library
 logging. Existing scripts can keep using `logging.basicConfig(level=logging.INFO)`.
 
 The standalone command accepts `--log-level` before its subcommand, including `OFF`. Command results remain on stdout.
+# Prepared geometry
+
+Repeated conversions and compilation can use a caller-owned bounded
+[`GeometryCache`](docs/geometry-cache.md). Physical assignments remain fresh and
+each consumer receives detached working geometry.

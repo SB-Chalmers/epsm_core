@@ -324,7 +324,7 @@ class EnergyPlusCompiler:
         compiler = EnergyPlusCompiler(energyplus="/path/to/EnergyPlus/energyplus")
     """
 
-    def __init__(self, energyplus=None, *, settings=None):
+    def __init__(self, energyplus=None, *, settings=None, geometry_cache=None):
         """Resolve EnergyPlus 24.2 and initialize its schema validator and source identities.
 
         Parameters
@@ -333,6 +333,8 @@ class EnergyPlusCompiler:
             EnergyPlus 24.2 executable; None uses ENERGYPLUS_EXE then PATH. Default: ``None``.
         settings : CompilerSettings or None
             Explicit engine controls; None uses CompilerSettings defaults. Default: ``None``.
+        geometry_cache : GeometryCache or None
+            Caller-owned prepared geometry reuse. Working graphs remain detached.
 
         Returns
         -------
@@ -364,6 +366,7 @@ class EnergyPlusCompiler:
 
         # 1. Resolve EnergyPlus 24.2 and initialize its schema validator and source identities.
         self.settings = settings or CompilerSettings()
+        self.geometry_cache = geometry_cache
         executable = energyplus or os.environ.get("ENERGYPLUS_EXE") or shutil.which("energyplus")
         if not executable:
             raise FileNotFoundError("Set ENERGYPLUS_EXE to EnergyPlus 24.2 or pass energyplus=")
@@ -741,7 +744,7 @@ class EnergyPlusCompiler:
         # 3. Preserve nominal assemblies in the audit while emitting equivalent thermal
         # properties.
         try:
-            resolved = resolve_geometry(spec, panelize=True)
+            resolved = resolve_geometry(spec, panelize=True, cache=self.geometry_cache)
         except ValueError as error:
             raise CompilationError(GEOMETRY_INVARIANT_FAILURE, str(error)) from error
         graph = resolved.graph
