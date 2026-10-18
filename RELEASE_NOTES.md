@@ -1,3 +1,16 @@
+# Release 0.5.0 — 18 October 2026
+
+Physical conversion resolves geometry once and reuses it for surface and internal
+mass assignments. Advanced conversion, inspection and compiler calls accept an
+explicit bounded `GeometryCache`; every consumer receives detached working
+geometry and current material/operation assignments. Cached lookup fingerprints
+installed sources and invalidates geometry, window-placement and shading edits.
+
+The numerical and physical input contracts are unchanged. Data 0.6.0 remains the
+minimum dependency. See [prepared geometry](docs/geometry-cache.md) for cache
+ownership, source-file access, clearing and examples. Core 0.5.0 is the supported
+Core version for RC 0.5.0's optional preparation reuse.
+
 # Release 0.4.0 — 15 October 2026
 
 Core consumes shared Data archetypes and operating definitions and assigns validated inputs atomically to physical Buildings. Replace/fill modes retain geometry, material quantities, provenance and renovation lineage; rejected assignments leave the Building unchanged.

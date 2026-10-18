@@ -744,7 +744,7 @@ class EnergyPlusCompiler:
         # 3. Preserve nominal assemblies in the audit while emitting equivalent thermal
         # properties.
         try:
-            resolved = resolve_geometry(spec, panelize=True, cache=self.geometry_cache)
+            resolved = resolve_geometry(spec, panelize=True, cache=getattr(self, "geometry_cache", None))
         except ValueError as error:
             raise CompilationError(GEOMETRY_INVARIANT_FAILURE, str(error)) from error
         graph = resolved.graph

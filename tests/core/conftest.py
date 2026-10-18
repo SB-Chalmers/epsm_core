@@ -12,6 +12,8 @@ from epsm_core.weather import climate_from_epw
 def energyplus():
     path = os.environ.get("ENERGYPLUS_EXE", "/Applications/OpenStudio-3.9.0/EnergyPlus/energyplus")
     if not Path(path).exists():
+        if os.environ.get("EPSM_REQUIRE_ENERGYPLUS") == "1":
+            pytest.fail("Required Core release check needs installed EnergyPlus 24.2")
         pytest.skip("EnergyPlus 24.2 unavailable")
     return path
 

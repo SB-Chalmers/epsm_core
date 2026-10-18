@@ -56,6 +56,31 @@ def test_geometry_cache_invalidates_changed_implementation(building, monkeypatch
     assert cache.misses == 2
 
 
+@pytest.mark.parametrize("shape", ["concave", "courtyard", "multipart"])
+def test_complex_geometry_reuse_preserves_topology_and_windows(building, shape):
+    from epsm_core import Footprint
+
+    part = building.geometry.parts[0]
+    if shape == "concave":
+        footprint = Footprint(exterior=((0, 0), (12, 0), (12, 4), (5, 4), (5, 10), (0, 10)))
+    else:
+        footprint = Footprint(exterior=((0, 0), (12, 0), (12, 10), (0, 10)),
+            holes=(((4, 3), (8, 3), (8, 7), (4, 7)),) if shape == "courtyard" else ())
+    parts = (part.updated(footprint=footprint),)
+    if shape == "multipart":
+        parts += (part.updated(identifier="annex", footprint=Footprint(
+            exterior=((30, 0), (38, 0), (38, 6), (30, 6)))),)
+    spec = building.updated(geometry=building.geometry.updated(parts=parts))
+    cache = GeometryCache()
+    before = resolve_geometry(spec, panelize=True)
+    for _ in range(2):
+        after = resolve_geometry(spec, panelize=True, cache=cache)
+        assert faces(after) == faces(before)
+        assert after.openings == before.openings
+        assert after.graph.zones == before.graph.zones
+        assert [p.wkb for p in after.polygons] == [p.wkb for p in before.polygons]
+
+
 def test_authoring_resolves_once_and_rebinds_materials(synthetic_weather, monkeypatch):
     from epsm_core import pipeline
 

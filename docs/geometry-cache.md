@@ -7,6 +7,7 @@ each conversion.
 For repeated conversions or compilation, explicitly retain a bounded cache:
 
 ```python
+from epsm_core import EnergyPlusCompiler
 from epsm_core.pipeline import GeometryCache
 
 cache = GeometryCache(max_entries=16)
