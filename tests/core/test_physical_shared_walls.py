@@ -179,7 +179,7 @@ def test_schema_six_snapshot_preserves_original_identity_until_geometry_edit():
     assert restored.snapshot().sha256 == original.sha256
     assert restored.readiness(engine="epsm_rc").ready
     restored.geometry = restored.geometry.updated(party_walls=(party(),))
-    assert restored.snapshot().to_dict()["schema"] == "epsm.building/7"
+    assert restored.snapshot().to_dict()["schema"] == "epsm.building/8"
     assert restored.snapshot().sha256 != original.sha256
 
 

@@ -236,7 +236,7 @@ fully authored physical Building. Resolution requires energy readiness, so it do
 not fill missing operation, construction, foundation, thermal-bridge or area inputs.
 The input may be an already-loaded `Weather` or `ClimateSpec`; resolving it does not
 initialize EnergyPlus or read another weather file. This exported view has its own
-schema, `epsm.resolved_building/1`; it does not change the `epsm.building/7`
+schema, `epsm.resolved_building/1`; it does not change the `epsm.building/8`
 snapshot format.
 
 ```python
@@ -355,10 +355,10 @@ physical intervention must appear in lifecycle flows.
 `snapshot()` stores canonical immutable JSON, including the explicitly selected
 preset revision and provenance, resolved construction values, occurrence identities,
 authored ground fields, optional thermal-bridge input and load-reference choice. New
-snapshots use `epsm.building/7`; `.sha256` identifies the stored
+snapshots use `epsm.building/8`; `.sha256` identifies the stored
 state. `.to_dict()` returns a detached copy; `.to_building()` returns an editable
 independent building. Runtime results and evaluation settings are excluded.
-Version-1 through version-5 snapshots remain readable and retain their original hash
+Version-1 through version-7 snapshots remain readable and retain their original hash
 while their restored state is unchanged. Missing ground inputs stay missing when an
 older snapshot is restored. Editing a restored legacy building writes the new
 snapshot format without resolving the preset again. Ordered history is separately
@@ -424,13 +424,21 @@ layers are reduced only within the engine adapter.
 
 ## Current adapter limits
 
-The new automatically generated physical inventory supports detached flat compact
-footprint columns, storeys, windows and basements. Attached parts, party walls,
-pitched roofs, generated apartment partitions, and outlines changed by automatic
-cleanup require further physical-ownership adapters. Readiness reports these gaps;
-the pre-existing complete geometry/numerical APIs remain available. Thermal
+The generated physical inventory supports flat compact parts, flat and pitched
+cold attics, storeys, windows, full-footprint basements, reviewed party walls and
+attached conditioned parts. Cold-attic ceilings, sloped roof shells and gable
+walls have separate physical owners and constructions. Basement interfaces stay
+internal and shared basement walls retain one installed owner. See
+[roof and basement inputs](roofs-and-basements.md) for examples and the exact
+construction and control handoff.
+
+Touching pitched parts, pitched-attic party contacts above the eave, attached
+unconditioned parts, generated apartment partitions and outlines changed by
+automatic cleanup retain explicit ownership limitations. Readiness reports these
+gaps; the pre-existing complete geometry/numerical APIs remain available. Thermal
 reduction currently requires equal parallel path depths and at most ten emitted
-layers per assembly. RC has additional single-conditioned-domain/shading limits.
+layers per assembly. RC additionally validates its supported thermal domains,
+buffer reduction, schedules and shading assumptions before calculation.
 Layered window recipes remain available for material inventory; the current
 thermal bridge requires whole-window U-value, SHGC and visible transmittance
 through `WindowElement`, and readiness reports layered windows as unsupported.
@@ -439,7 +447,7 @@ remain explicit inventory gaps; they are never invented from U-values or counts.
 
 ## Development installation
 
-This release requires `epsm_data >= 0.4.0`.
+This release requires `epsm_data >= 0.6.0`.
 Install Data first, then Core (`pip install -e ../epsm_data -e '.[dev,geometry]'`).
 CI tests both a recorded Data commit and its current `dev` branch. Configure the
 `EPSM_DATA_DEPLOY_KEY` Actions secret containing a read-only SSH deploy key scoped
@@ -471,6 +479,8 @@ physical even when their boundary has no outdoor heat transfer.
 Snapshot format 7 adds that explicit boundary. Formats 1–6 remain readable and
 an untouched restored snapshot keeps its original bytes and identity. Missing
 legacy boundaries are inferred from their role. Editing geometry regenerates
-boundary-aware inventory and writes format 7. Explicit party-wall basements,
-attached unconditioned parts, apartments and pitched physical inventories retain
-their stated readiness limitations. See [contact assumptions](party-walls.md).
+boundary-aware inventory. Format 8 additionally retains authored `zone_uses` and
+`unconditioned_exchange` inputs. Reviewed basement contacts and supported
+cold-attic shells now have physical owners; attached unconditioned parts,
+apartments, touching pitched parts and pitched-attic contacts above the eave
+retain their stated limitations. See [contact assumptions](party-walls.md).

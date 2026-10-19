@@ -89,7 +89,8 @@ def _envelope_for_building(building):
 def _physical_element_owners(building, resolved):
     """Link thermal panes, faces and internal mass to original physical elements."""
     walls = {(e.facade_id, e.storey, e.boundary): e for e in building.elements if e.role == Role.EXT_WALL}
-    basement = {e.facade_id: e for e in building.elements if e.role == Role.BASEMENT_WALL}
+    basement = {(e.facade_id, e.boundary): e for e in building.elements if e.role == Role.BASEMENT_WALL}
+    roofs = {e.part_id: e for e in building.elements if e.role == Role.ROOF}
     horizontal = {(e.part_id, round(e.elevation_m, 8)): e for e in building.elements
                   if e.elevation_m is not None and e.facade_id is None}
     windows = {(element.facade_id, element.storey): element for element in building.elements
@@ -97,15 +98,21 @@ def _physical_element_owners(building, resolved):
     surfaces = {}
     faces = {face.name: face for face in resolved.graph.surfaces}
     for face in resolved.graph.surfaces:
-        role = face.construction.removesuffix("_reverse").removeprefix("unconditioned_")
         physical = None
         if face.kind == "Wall":
-            physical = basement.get(face.facade_id) if role == "basement_wall" else \
-                walls.get((face.facade_id, face.storey, face.boundary)) if role == "wall" else None
+            collection = basement if face.cell_kind == "basement" else walls
+            key = (face.facade_id, face.boundary) if face.cell_kind == "basement" else \
+                (face.facade_id, face.storey, face.boundary)
+            physical = collection.get(key)
             if face.boundary == "Surface" and physical is None:
                 other = faces[face.adjacent]
-                physical = (walls.get((face.facade_id, face.storey, "Internal")) or
-                            walls.get((other.facade_id, other.storey, "Internal")))
+                key = (face.facade_id, "Internal") if face.cell_kind == "basement" else \
+                    (face.facade_id, face.storey, "Internal")
+                other_key = (other.facade_id, "Internal") if face.cell_kind == "basement" else \
+                    (other.facade_id, other.storey, "Internal")
+                physical = collection.get(key) or collection.get(other_key)
+        elif face.kind == "Roof" and face.cell_kind == "attic":
+            physical = roofs.get(face.part_id)
         elif len({round(vertex[2], 8) for vertex in face.vertices}) == 1:
             physical = horizontal.get((face.part_id, round(face.vertices[0][2], 8)))
         if physical is not None:
@@ -113,7 +120,8 @@ def _physical_element_owners(building, resolved):
     mass = {}
     for item in resolved.graph.internal_mass:
         if item.get("physical_boundary") == "Internal":
-            physical = walls.get((item["facade_id"], item["storey"], "Internal"))
+            physical = basement.get((item["facade_id"], "Internal")) if item["storey"] < 0 else \
+                walls.get((item["facade_id"], item["storey"], "Internal"))
         else:
             physical = horizontal.get((item["part_id"], round(item["elevation_m"], 8)))
         if physical is not None:
@@ -172,7 +180,8 @@ def to_spec(building, weather, *, geometry_cache=None):
         facade=facade, climate=climate, envelope=envelope, airflow=building.hvac.airflow,
         load_reference_area_m2=building.effective_load_reference_area_m2,
         use=building.operation, context=building.context, delivery=building.hvac.delivery,
-        renewables=building.hvac.renewables, provenance=building.provenance)
+        renewables=building.hvac.renewables, provenance=building.provenance,
+        zone_uses=building.zone_uses, unconditioned_exchange=building.unconditioned_exchange)
     from .pipeline import resolve_geometry
 
     resolved = resolve_geometry(spec, panelize=True, cache=geometry_cache)
