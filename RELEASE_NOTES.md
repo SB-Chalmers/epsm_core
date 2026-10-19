@@ -1,3 +1,25 @@
+# Core 0.7.0 — physical roofs and basement controls
+
+- Cold attics retain their separate ceiling, actual sloped weather-shell area and
+  gable walls. Shell and ceiling constructions remain explicit physical inputs;
+  thermal faces and material quantities refer to the same installed elements.
+- Conditioned basement slabs, ground walls and internal separating floors retain
+  their physical boundaries and shared-wall ownership. A separating floor is not
+  counted as an additional ground boundary.
+- Physical Buildings retain declared `zone_uses` and `unconditioned_exchange`
+  through snapshots and the EnergyPlus handoff. No attic ventilation rate or
+  basement thermostat is inferred by Core.
+- Snapshot format 8 stores these operations. Older formats remain readable and
+  keep their identity until edited. Old incomplete attic inventories or outdated
+  basement-interface metadata require explicit geometry regeneration before
+  simulation; stored inventories are not silently relabelled.
+- RC 0.7.0 consumes the new roof/domain inputs under its separately declared
+  reduction policies. Pitched roofs on touching parts and ambiguous physical
+  interfaces retain explicit support limitations. Catalogue defaults are unchanged.
+
+See [supported geometry and migration](docs/roofs-and-basements.md) and the
+[public authoring example](examples/roofs_and_basements.ipynb).
+
 # Core 0.6.0 — shared-wall boundaries
 
 - Confirmed geometric contact is an explicit adiabatic modelling assumption,

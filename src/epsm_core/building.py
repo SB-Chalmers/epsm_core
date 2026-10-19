@@ -39,7 +39,9 @@ from .specs import (
     ProvenanceSpec,
     RenewablesSpec,
     SourceRecord,
+    UnconditionedExchangeSpec,
     UseSpec,
+    ZoneUseSpec,
 )
 from .specs.base import Fraction, Nonnegative, Positive
 from .specs.physics import (
@@ -445,7 +447,7 @@ class BuildingSnapshot:
     def from_dict(cls, data):
         if data.get("schema") not in {
                 "epsm.building/1", "epsm.building/2", "epsm.building/3", "epsm.building/4",
-                "epsm.building/5", "epsm.building/6", "epsm.building/7"}:
+                "epsm.building/5", "epsm.building/6", "epsm.building/7", "epsm.building/8"}:
             raise ValueError("Unsupported Building snapshot schema")
         return cls(_json(data))
 
@@ -552,11 +554,17 @@ class Building:
     The explicitly selected reference preset is illustrative, not calibrated evidence.
     Geometry/construction/HVAC/operation assignments are validated independently.
     ``readiness()`` describes what remains before a thermal simulation.
+    ``zone_uses`` retains explicit zone/kind operation overrides, including a
+    separately controlled conditioned basement. ``unconditioned_exchange``
+    retains sourced attic/basement outdoor-air scenarios; an empty tuple does
+    not infer ventilation. Both fields are detached on assignment and retained
+    in schema-8 snapshots, independent of physical element ownership.
     """
 
     def __init__(self, *, preset=None, identifier="building",
                  geometry=None, construction_set=None, facade=None, hvac=None,
-                 operation=None, context=None, provenance=None, foundation=None,
+                 operation=None, zone_uses=(), unconditioned_exchange=(),
+                 context=None, provenance=None, foundation=None,
                  ground_temperature=None, thermal_bridge_uplift_fraction=None,
                  load_reference_area_m2=None,
                  load_reference_area_policy: Literal["conditioned_floor_area"] | None = None):
@@ -625,6 +633,8 @@ class Building:
         self.facade = facade
         self.hvac = hvac
         self.operation = operation
+        self.zone_uses = zone_uses
+        self.unconditioned_exchange = unconditioned_exchange
         self.foundation = foundation
         self.ground_temperature = ground_temperature
         self.thermal_bridge_uplift_fraction = thermal_bridge_uplift_fraction
@@ -654,6 +664,14 @@ class Building:
                 value = value.model_dump()
             value = kind.model_validate(
                 value.model_dump(exclude_unset=True) if isinstance(value, kind) else value)
+        elif name in {"zone_uses", "unconditioned_exchange"}:
+            kind = ZoneUseSpec if name == "zone_uses" else UnconditionedExchangeSpec
+            value = tuple(kind.model_validate(item.model_dump() if isinstance(item, kind) else item)
+                          for item in value)
+            selectors = [(item.zone_name, item.zone_kind) if name == "zone_uses" else item.zone_kind
+                         for item in value]
+            if len(set(selectors)) != len(selectors):
+                raise ValueError(f"Duplicate {name} selectors")
         elif name == "construction_set" and value is not None:
             if not isinstance(value, ConstructionSet):
                 raise TypeError("construction_set must be an EPSM Data ConstructionSet")
@@ -692,13 +710,13 @@ class Building:
                 raise ValueError("Clear the area before setting a load-reference area policy")
         object.__setattr__(self, name, value)
         if name in {"geometry", "construction_set", "facade", "hvac", "operation",
-                    "foundation", "ground_temperature", "thermal_bridge_uplift_fraction",
+                    "zone_uses", "unconditioned_exchange", "foundation", "ground_temperature", "thermal_bridge_uplift_fraction",
                     "load_reference_area_m2", "load_reference_area_policy"} \
                 and hasattr(self, "provenance"):
             object.__setattr__(self, "provenance", ProvenanceSpec(records=tuple(
                 r for r in self.provenance.records
                 if r.field_path != name and not r.field_path.startswith(name + "."))))
-        if name in {"geometry", "construction_set", "facade"}:
+        if name in {"geometry", "construction_set", "facade"} and not getattr(self, "_restoring_snapshot", False):
             self._rebuild_elements(reassign=name == "construction_set")
 
     def __delattr__(self, name):
@@ -725,7 +743,8 @@ class Building:
     @classmethod
     def from_footprint(cls, footprint, *, storeys=None, storey_height_m=None,
                        storey_elevations_m=None, identifier="building", construction_set=None,
-                       facade=None, hvac=None, operation=None, context=None, foundation=None,
+                       facade=None, hvac=None, operation=None, zone_uses=(),
+                       unconditioned_exchange=(), context=None, foundation=None,
                        ground_temperature=None, thermal_bridge_uplift_fraction=None,
                        load_reference_area_m2=None, load_reference_area_policy=None,
                        **geometry_options):
@@ -734,7 +753,9 @@ class Building:
             storey_elevations_m=storey_elevations_m, **geometry_options)
         return cls.empty(identifier=identifier, geometry=geometry,
                          construction_set=construction_set, facade=facade, hvac=hvac,
-                         operation=operation, context=context, foundation=foundation,
+                         operation=operation, zone_uses=zone_uses,
+                         unconditioned_exchange=unconditioned_exchange,
+                         context=context, foundation=foundation,
                          ground_temperature=ground_temperature,
                          thermal_bridge_uplift_fraction=thermal_bridge_uplift_fraction,
                          load_reference_area_m2=load_reference_area_m2,
@@ -1088,8 +1109,10 @@ class Building:
             elif self.load_reference_area_m2 is not None and self.load_reference_area_policy is not None:
                 unsupported.append("Choose either load_reference_area_m2 or load_reference_area_policy")
             if engine == "epsm_rc" and self.geometry is not None:
-                if self.geometry.basement_depth_m or any(not p.conditioned for p in self.geometry.parts):
-                    unsupported.append("epsm_rc requires a single conditioned domain without basement")
+                if any(not p.conditioned for p in self.geometry.parts):
+                    unsupported.append("epsm_rc requires conditioned above-grade parts")
+                if self.geometry.basement_depth_m and not self.geometry.basement_conditioned:
+                    unsupported.append("epsm_rc cannot aggregate an unconditioned basement")
                 if self.context.buildings:
                     unsupported.append("epsm_rc does not model explicit context shading")
                 if self.facade is not None and (self.facade.balconies
@@ -1160,7 +1183,7 @@ class Building:
 
     def _snapshot_data(self):
         return {
-            "schema": "epsm.building/7", "identifier": self.identifier, "preset": self.preset,
+            "schema": "epsm.building/8", "identifier": self.identifier, "preset": self.preset,
             "preset_revision": self.preset_revision,
             "provenance": self.provenance.model_dump(mode="json"),
             "geometry": self.geometry.model_dump(mode="json") if self.geometry else None,
@@ -1169,6 +1192,9 @@ class Building:
             "facade": self.facade.model_dump(mode="json") if self.facade else None,
             "hvac": self.hvac.to_dict() if self.hvac else None,
             "operation": self.operation.model_dump(mode="json") if self.operation else None,
+            "zone_uses": [item.model_dump(mode="json") for item in self.zone_uses],
+            "unconditioned_exchange": [item.model_dump(mode="json")
+                                       for item in self.unconditioned_exchange],
             "foundation": self.foundation.model_dump(mode="json", exclude_unset=True)
             if self.foundation else None,
             "ground_temperature": self.ground_temperature.model_dump(mode="json", exclude_unset=True)
@@ -1191,12 +1217,18 @@ class Building:
     def from_dict(cls, data):
         BuildingSnapshot.from_dict(data)
         result = cls.empty(identifier=data["identifier"])
+        # Stored elements own their historical physical identity. Loading the
+        # validated fields must not invoke a newer thermal-geometry algorithm
+        # before those elements are restored. Normal edits regenerate as usual.
+        object.__setattr__(result, "_restoring_snapshot", True)
         result.geometry = data["geometry"]
         result.construction_set = construction_set_from_dict(data["construction_set"]) \
             if data.get("construction_set") else None
         result.facade = data["facade"]
         result.hvac = HVACSystem(**data["hvac"]) if data["hvac"] else None
         result.operation = data["operation"]
+        result.zone_uses = data.get("zone_uses", ())
+        result.unconditioned_exchange = data.get("unconditioned_exchange", ())
         result.foundation = data.get("foundation")
         result.ground_temperature = data.get("ground_temperature")
         result.thermal_bridge_uplift_fraction = data.get("thermal_bridge_uplift_fraction")
@@ -1204,6 +1236,7 @@ class Building:
         result.load_reference_area_policy = data.get("load_reference_area_policy")
         result.context = data.get("context", {})
         result.elements = [BuildingElement.from_dict(e) for e in data["elements"]]
+        object.__setattr__(result, "_restoring_snapshot", False)
         object.__setattr__(result, "preset", data.get("preset"))
         object.__setattr__(result, "preset_revision", data.get("preset_revision"))
         result.provenance = data.get("provenance", {})

@@ -63,7 +63,7 @@ def test_complete_kiva_inputs_roundtrip_without_injected_defaults():
     building.foundation = config
 
     encoded = building.snapshot().to_dict()
-    assert encoded["schema"] == "epsm.building/7"
+    assert encoded["schema"] == "epsm.building/8"
     assert encoded["foundation"] == config.model_dump(mode="json", exclude_unset=True)
     restored = Building.from_snapshot(building.snapshot())
     assert restored.foundation.model_fields_set == config.model_fields_set

@@ -107,7 +107,7 @@ def test_older_snapshot_with_no_thermal_bridge_stays_missing():
     assert "thermal_bridge_uplift_fraction" not in restored.readiness("quantities").missing
     restored.identifier = "edited"
     edited = restored.snapshot().to_dict()
-    assert edited["schema"] == "epsm.building/7"
+    assert edited["schema"] == "epsm.building/8"
     assert edited["thermal_bridge_uplift_fraction"] is None
 
 
