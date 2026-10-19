@@ -39,7 +39,7 @@ def test_explicit_preset_records_version_and_preserves_overrides():
     }
     assert all(r.status == "assumed" and r.assumption_profile == "illustrative-reference@5"
                for r in records)
-    assert building.snapshot().to_dict()["schema"] == "epsm.building/7"
+    assert building.snapshot().to_dict()["schema"] == "epsm.building/8"
     assert building.copy().to_dict() == building.to_dict()
     building.operation = building.operation.with_changes(equipment_gain_w_m2=9)
     assert not any(r.field_path == "operation" for r in building.provenance.records)
@@ -80,7 +80,7 @@ def test_legacy_snapshot_keeps_identity_until_an_edit(monkeypatch):
     assert restored.provenance.records == ()
     assert restored.operation.gain_partitions is None
     restored.identifier = "edited"
-    assert restored.snapshot().to_dict()["schema"] == "epsm.building/7"
+    assert restored.snapshot().to_dict()["schema"] == "epsm.building/8"
     assert original.to_dict()["schema"] == "epsm.building/1"
 
 
@@ -121,7 +121,7 @@ def test_legacy_renovation_lineage_preserves_all_snapshot_references():
     assert restored.snapshot().sha256 == original.sha256
     assert restored.authoring_links == ()
     restored.operation = restored.operation.with_changes(equipment_gain_w_m2=9)
-    assert restored.snapshot().to_dict()["schema"] == "epsm.building/7"
+    assert restored.snapshot().to_dict()["schema"] == "epsm.building/8"
     assert restored.authoring_links[-1].before.sha256 == original.sha256
     assert not restored.authoring_links[-1].changes_material_inventory
 

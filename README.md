@@ -1,8 +1,8 @@
 # epsm_core
 
-Core 0.6.0 represents shared contact as adiabatic in physical inventory and thermal geometry. Windows use the exposed wall area, and same-building shared walls retain one material owner. It consumes Data 0.6.0 definitions. See [shared-wall assumptions](docs/party-walls.md), [release notes](RELEASE_NOTES.md) and [prepared geometry](docs/geometry-cache.md).
+Core 0.7.0 adds physical cold-attic roof shells, basement interfaces and explicit auxiliary-zone controls. Shared contact remains adiabatic, with windows on exposed walls and one installed owner for shared internal walls. It consumes Data 0.6.0 definitions. See [roof and basement support](docs/roofs-and-basements.md), [shared-wall assumptions](docs/party-walls.md), [release notes](RELEASE_NOTES.md) and [prepared geometry](docs/geometry-cache.md).
 
-A pre-1.0 building-energy modelling library for automated urban building energy modelling. The package version is **0.6.0**; content hashes distinguish simulation inputs and implementations.
+A pre-1.0 building-energy modelling library for automated urban building energy modelling. The package version is **0.7.0**; content hashes distinguish simulation inputs and implementations.
 
 ## Physical Building authoring
 
@@ -28,6 +28,10 @@ See [physical authoring and renovation](docs/physical-building.md) for targeted
 interventions, ownership, supported geometry and migration details. The public
 `epsm.Building` adds database conversion, engine selection and combined energy/LCA
 results while inheriting this same physical model.
+
+[Physical roofs and basements](docs/roofs-and-basements.md) describes the separate
+occupied ceiling, actual cold-attic shell, ground interfaces and explicitly
+authored zone controls passed to EnergyPlus and RC.
 
 Start with a metric footprint and storeys, choose procedural facade and zoning assumptions, add neighbouring buildings, and inspect the geometry before simulation. EPSM preserves concave outlines, courtyards and disconnected parts. Per-storey zoning is the default; perimeter/core zoning is available explicitly. Generated apartment layouts are experimental.
 

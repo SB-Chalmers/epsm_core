@@ -69,16 +69,18 @@ internal shared wall once. The wall remains internal thermal mass, including
 both radiating sides in EnergyPlus, while reciprocal computational faces do not
 duplicate its material inventory.
 
-The physical authoring adapter supports flat compact roofs and conditioned
-attached parts. Party walls with explicit basements, attached unconditioned
-parts, apartment partitions and pitched physical inventories remain unsupported
-where readiness reports them. Existing legacy `BuildingSpec` geometry routes
-retain their separately documented capabilities.
+The physical authoring adapter supports flat compact attached parts, explicit
+basement interfaces and detached cold-attic roof shells. Touching pitched roofs,
+attached unconditioned parts, apartment partitions and above-eave pitched attic
+contacts retain the limitations described in [roof and basement support](roofs-and-basements.md).
+Existing legacy `BuildingSpec` geometry routes retain their separately documented
+capabilities.
 
 Physical snapshot format `epsm.building/7` adds the boundary field. Formats
 1–6 remain readable; missing boundaries are inferred by physical role, and an
 untouched restored snapshot retains its original identity. Editing geometry
-regenerates exposure and emits format 7. An old snapshot with contradictory
+regenerates exposure and emits current format 8, which also retains declared
+auxiliary-zone operations. An old snapshot with contradictory
 party-wall/window quantities fails readiness until that explicit geometry edit;
 restoration does not silently rewrite old evidence. Geometry/cache identities
 include contact extents, and implementation fingerprints invalidate old graphs.
