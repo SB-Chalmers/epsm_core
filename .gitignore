@@ -1,6 +1,6 @@
 __pycache__/
 *.py[cod]
-.venv/
+.venv
 .venv-demo/
 .ipynb_checkpoints/
 node_modules/
