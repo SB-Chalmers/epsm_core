@@ -5,6 +5,12 @@ Core produces geometry and scientific metadata. The separate TypeScript-first
 display package. Studio owns adapters for its application. The viewer consumes
 portable `epsm.scene/1` dictionaries and does not import Core.
 
+Core 0.8.0 removes the display methods and modules listed below. Geometry and
+Building inspection now returns pure scene data, including for incomplete drafts.
+The scene format is independent of the package release version and remains
+`epsm.scene/1`. Install Viewer explicitly in applications and notebooks that draw
+these scenes; Core has no Viewer dependency.
+
 ## Install optional display tools
 
 Install Core in the environment used by the example. Build the viewer's Python
