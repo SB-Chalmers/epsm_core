@@ -1,4 +1,4 @@
-"""Inspect simple, courtyard or unequal-wing geometry without an engine."""
+"""Inspect geometry without an engine; install the optional epsm_viewer wheel."""
 
 import argparse
 
@@ -40,8 +40,11 @@ if __name__ == "__main__":
     p.add_argument("--output", default="output/geometry")
     p.add_argument("--headless", action="store_true")
     args = p.parse_args()
-    with example_geometry(args.shape, args.zoning).view(
-        args.output, launch_browser=not args.headless
+    from epsm_viewer import view_scene
+
+    with view_scene(
+        example_geometry(args.shape, args.zoning).scene(),
+        directory=args.output, launch_browser=not args.headless,
     ) as view:
         print(view.url)
         if not args.headless:

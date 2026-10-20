@@ -13,3 +13,8 @@ output directory document those prerequisites in their command-line help.
 
 The [larger learning catalogue](../demo/README.md) provides independent notebooks
 for geometry, weather, construction, operation and real EnergyPlus execution.
+
+[Geometry](geometry.py) and [context](context.py) browser examples additionally
+require the separately built `epsm_viewer` Python wheel. Core scene generation
+itself needs no display package, engine or weather. Follow the
+[viewer installation and migration guide](../docs/viewer-migration.md).
