@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-10-03
+# Date modified: 2026-10-20
 # Changelog:
+#   2026-10-20 - Export pure polygon scenes; move display lifecycle out of Core.
 #   2026-10-03 - Add documented calendar, operational and archetype-application support.
 #   2026-09-06 - Document building interfaces, examples, constraints and processing rationale.
 
@@ -256,45 +257,22 @@ class BuildingSpec(Spec):
         validate_context(self.geometry, self.context)
         return self
 
-    def widget(self, *, height=600):
-        """Inspect this building inline in JupyterLab or VS Code without simulation."""
-        return self.geometry.widget(facade=self.facade, context=self.context, height=height)
-
-    def view(self, directory=None, *, launch_browser=True):
-        """Open a geometry preview using this building's facade and context settings.
-
-        Parameters
-        ----------
-        directory : str or Path or None
-            Local artifact directory; consult Notes for creation, overwrite and default-path
-            behavior. Default: ``None``.
-        launch_browser : bool
-            Open the default browser when true; the returned server still needs cleanup.
-            Default: ``True``.
+    def scene(self):
+        """Export geometry, facade and context without reading weather or running an engine.
 
         Returns
         -------
-        ViewerHandle
-            Live preview server requiring cleanup.
-
-        Notes
-        -----
-        Delegates to GeometrySpec.view and does not simulate. Writes artifacts and optionally
-        opens the browser.
+        dict
+            Detached ``epsm.scene/1`` polygon scene in metres, with Z-up axes.
 
         Examples
         --------
-        Supply a validated BuildingSpec as ``building``.
+        Given an already loaded BuildingSpec named ``building``::
 
-        Example::
-
-            with building.view("output/review", launch_browser=False) as handle:
-                print(handle.url)
+            scene = building.scene()
+            assert scene["schema"] == "epsm.scene/1"
         """
-
-        return self.geometry.view(
-            directory, facade=self.facade, context=self.context, launch_browser=launch_browser
-        )
+        return self.geometry.scene(facade=self.facade, context=self.context)
 
     def physical_dict(self):
         """Serialize simulation-relevant inputs without administrative provenance.

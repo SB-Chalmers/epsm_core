@@ -13,12 +13,19 @@ The dedicated `.venv-demo` is separate from the older `.venv`. The current demo 
 ```sh
 python3 -m venv .venv-demo
 .venv-demo/bin/python -m pip install -r requirements.txt
+.venv-demo/bin/python -m pip install '/path/to/epsm_viewer-<version>-py3-none-any.whl[notebook]'
 .venv-demo/bin/python -m pip check
 .venv-demo/bin/python -m ipykernel install --prefix .venv-demo --name epsm-core-demo --display-name 'EPSM Core Demo'
 .venv-demo/bin/python -m jupyterlab
 ```
 
 Choose **EPSM Core Demo** in JupyterLab. In VS Code, select `.venv-demo/bin/python` as the notebook kernel. Run a notebook from a fresh kernel, starting at its setup cell. The setup creates a unique output directory beneath `output/demo/`, so separately executed lessons do not share hidden state or overwrite one another's runs.
+
+Replace the wheel path with the actual built `epsm_viewer` wheel. It is a separate
+optional package, not part of Core's notebook extra or assumed available on a
+package index. Interactive lessons and `preview(..., interactive=True)` require
+it; a missing dependency raises an error. `preview(..., interactive=False)` uses
+Core scene data and Matplotlib only. See [viewer migration](../docs/viewer-migration.md).
 
 Geometry-only lessons need no EnergyPlus executable or EPW. Lessons tagged with weather use explicit local files; simulation lessons additionally require **EnergyPlus 24.2** and its adjacent schema. Set `ENERGYPLUS_EXE` to the executable and `EPSM_WEATHER_DIR` to your weather directory if needed. The demo helpers also recognize the existing repository weather folder and the documented local OpenStudio EnergyPlus location. No notebook downloads or fabricates weather.
 
@@ -32,7 +39,7 @@ The climate comparisons use these exact example files:
 
 Each lesson has an API explanation and reading notes. The facade lesson walks through complete BuildingSpec construction, validated nested updates, override precedence and resolved elevations. Read input tables before interpreting plots. Follow assertions as checks of specific contracts, such as preserved area or annual/hourly energy agreement; they do not prove calibration against measured buildings.
 
-`building()` and `geometry()` are input factories in [the demo helpers](support/common.py), not universal package defaults. `table()`, `plans()`, `bars()` and `preview()` are presentation aids. The public package calls remain visible in the lesson cells. `preview()` displays a static figure and normally an embedded widget; use `.widget()` directly when you want to manage the interactive handle yourself.
+`building()` and `geometry()` are input factories in [the demo helpers](support/common.py), not universal package defaults. `table()`, `plans()`, `bars()` and `preview()` are presentation aids. The public package calls remain visible in the lesson cells. `preview()` displays a static figure and normally an embedded widget; use `epsm_viewer.scene_widget(value.scene())` directly when you want to manage the interactive handle yourself.
 
 Static documentation screenshots explain controls and model representations. They are not live widgets or new simulation results. The context and zoning sensitivity figures come from a separate retained experiment; captions link to its assumptions and run data. Compare their interpretation method with the notebook experiment rather than expecting identical numerical values.
 
@@ -129,6 +136,6 @@ Running the executor with no pattern executes the full catalogue and writes its 
 
 ## Figure conventions and maintenance
 
-Every chart creates a fresh, explicitly sized figure and closes it after display. Standard charts use 9 × 4 inches, annotated plans 10 × 6, and four-panel comparisons 12 × 8. Footprint galleries wrap at three columns. `plans`, `preview`, `bars` and `flow` accept `figsize` for lesson-specific layouts. `preview()` displays once and returns no widget handle; use `b.widget()` to retain a handle.
+Every chart creates a fresh, explicitly sized figure and closes it after display. Standard charts use 9 × 4 inches, annotated plans 10 × 6, and four-panel comparisons 12 × 8. Footprint galleries wrap at three columns. `plans`, `preview`, `bars` and `flow` accept `figsize` for lesson-specific layouts. `preview()` displays once and returns no widget handle; use `epsm_viewer.scene_widget(b.scene())` to retain a handle.
 
 Notebooks are the editable source of truth. `scripts/build_demo_notebooks.py` only scaffolds missing notebooks. `scripts/enrich_demo_notebooks.py` refreshes tagged explanation cells, links to reference figures outside their owning lesson, and preserves the custom facade lesson. Execute all lessons with `.venv-demo/bin/python scripts/execute_demo_notebooks.py`; inspect `output/demo/execution-report.json` for actual outcomes.

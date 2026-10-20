@@ -4,9 +4,9 @@ from shapely.geometry import Polygon
 
 from epsm_core import EnergyPlusCompiler
 from epsm_core.context import resolve_context, visible_context_surfaces
+from epsm_core.scene import scene_data
 from epsm_core.specs import ContextBuilding, ContextSpec, Footprint
 from epsm_core.surface_checks import properties
-from epsm_core.viewer import viewer_data
 
 
 def context(base=0):
@@ -31,7 +31,7 @@ def test_visibility_keeps_complete_physical_preview(building, energyplus, angle)
     full = resolve_context(spec.geometry, spec.context)
     visibility = report.data["context"]["visibility"]
     assert 0 < visibility["retained_count"] < visibility["original_count"] == len(full.surfaces)
-    shown = [o for o in viewer_data(model, report.data)["objects"] if o["kind"] == "context"]
+    shown = [o for o in scene_data(model, report.data)["objects"] if o["kind"] == "context"]
     assert {o["name"] for o in shown} == {o.name for o in full.surfaces}
     assert sum(o["area_m2"] for o in shown) == pytest.approx(
         sum(properties(np.array(o.vertices))[0] for o in full.surfaces)

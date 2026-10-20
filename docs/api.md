@@ -23,6 +23,8 @@ The package version is `0.7.0`. Simulation identity combines input content, recu
 | `preflight_energyplus` | Read-only EnergyPlus geometry readiness for a `BuildingSpec` |
 | `resolve_building` | Resolve an existing complete `BuildingSpec` without engine or weather-file I/O |
 | `quantity_takeoff` | Physical material/equipment quantities, excluding virtual zoning and context |
+| `GeometrySpec.scene` / `BuildingSpec.scene` / `Building.scene` | Portable scene data; no display, files or server |
+| `scene_data` | Convert an already loaded epJSON model and reports into scene data |
 
 Definitions live in focused `epsm_core.specs` domain modules and are re-exported from `epsm_core`. Importing them does not load a registry or contact a service.
 
@@ -105,7 +107,11 @@ preview. Surface conduction is validation-only; the ground-transfer scalar is av
 only when complete conduction evidence was explicitly requested. Use explicit viewer
 APIs for inspection. Campaign sampling, storage and validation outputs belong in orchestration.
 
-`geometry.view(..., facade=..., context=...)` and `building.view(...)` use the geometry-only viewer. Their returned handle is a context manager; closing it stops the local server. Inspection scene artifacts are not EnergyPlus simulation inputs. Compile explicitly when engine preflight is required.
+`geometry.scene(facade=..., context=...)`, `BuildingSpec.scene()` and physical
+`Building.scene()` return `epsm.scene/1` dictionaries. A draft needs geometry but
+does not need complete energy inputs. Core computes geometry and metadata;
+`epsm_viewer` displays the returned data. Inspection scenes are not EnergyPlus
+simulation inputs. Compile explicitly when engine preflight is required.
 
 `preflight_energyplus(spec)` checks Kiva floor unions using resolved zones and physical
 construction overrides. It needs no EnergyPlus executable or weather-file read; the
@@ -113,16 +119,21 @@ compiler retains the same validation before applying Kiva objects.
 
 ```python
 # Uses the geometry and resolved context created above; no weather or engine required.
-with geometry.view("output/preview", context=context) as viewer:
+from epsm_viewer import view_scene  # Install the optional viewer wheel first.
+
+scene = geometry.scene(context=context)
+with view_scene(scene, directory="output/preview") as viewer:
     print(viewer.url)
     input("Press Enter to stop the preview. ")
 ```
 
 See the [viewer screenshot and controls](usage.md#start-with-geometry), [resolved zoning plans](geometry.md#roofs-and-thermal-zoning) and [context gallery](geometry.md#surrounding-buildings). Context surfaces report `building_id`, `footprint_index` and `surface_type` so selecting a roof cap identifies the neighbour it belongs to. Viewer cutaways change only the display.
 
-CLI operations are `schema`, `validate`, `compile`, `run`, `view` and `export-idf`.
-`--energyplus` selects the executable. `view` displays an existing compiled epJSON;
-Python geometry inspection also works before a complete building specification exists.
+CLI operations are `schema`, `validate`, `compile`, `run` and `export-idf`.
+`--energyplus` selects the executable. To inspect compiled output, load its model
+and report explicitly, call `scene_data(model, report)`, then pass the scene to
+`epsm_viewer`. See [viewer migration](viewer-migration.md) for complete examples,
+optional installation and the replacement for the removed display APIs.
 
 
 ### Annual UBEM fidelity and migration

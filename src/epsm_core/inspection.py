@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-06
+# Date modified: 2026-10-20
 # Changelog:
+#   2026-10-20 - Export pure polygon scenes; move display lifecycle out of Core.
 #   2026-09-06 - Document inspection interfaces, examples, constraints and processing rationale.
 
 """Geometry inspection without weather files, materials or an EnergyPlus installation.
@@ -19,8 +20,8 @@ Notes
 -----
 Geometry, windows and shading are resolved through the same pipeline as compilation. The
 resulting scene is intentionally incomplete as simulation input: it needs no weather,
-loads or physical material definitions. Preview functions write artifacts and return a
-closeable server handle.
+loads or physical material definitions. Public scene exports return detached polygon
+data without writing artifacts, opening a browser or starting a server.
 
 Examples
 --------
@@ -37,15 +38,13 @@ Example::
     assert report["geometry_only"] is True
 """
 
-import json
 from dataclasses import asdict
-from pathlib import Path
 from types import SimpleNamespace
 
 from .context import resolve_context
 from .pipeline import resolve_geometry
+from .scene import scene_data
 from .specs import ContextSpec, FacadeSpec, GlazingSpec
-from .viewer import view_epjson
 
 
 def geometry_scene(geometry, *, facade=None, context=None):
@@ -86,6 +85,11 @@ def geometry_scene(geometry, *, facade=None, context=None):
         scene, report = geometry_scene(geometry)
         assert report["geometry_only"] is True
     """
+    return _geometry_scene(geometry, facade=facade, context=context)
+
+
+def _geometry_scene(geometry, *, facade=None, context=None, physical=None):
+    """Assemble loaded geometry and optionally attach original physical owners."""
     # 1. Assemble an engine-independent epJSON-shaped preview and metadata report.
     if facade is None:
         facade = FacadeSpec(
@@ -159,6 +163,9 @@ def geometry_scene(geometry, *, facade=None, context=None):
         scene["Shading:Building:Detailed"][s["name"]] = dict(vertices=coordinates(s["vertices"]))
     report = dict(
         geometry_only=True,
+        origin_m=resolved.origin,
+        orientation_deg=geometry.orientation_deg,
+        source_crs=geometry.source_crs,
         zones=graph.zones,
         facades=resolved.facades,
         facade_catalog=[asdict(f) for f in geometry.facades()],
@@ -183,62 +190,63 @@ def geometry_scene(geometry, *, facade=None, context=None):
         thermal_pane_count=len(resolved.openings),
         parts=[p.model_dump(mode="json") for p in geometry.parts],
     )
+    if physical is not None:
+        from .building_adapter import _physical_element_owners
+
+        owners = _physical_element_owners(physical, resolved)
+        report.update(building_id=physical.identifier, snapshot_id=physical.snapshot().sha256)
+        for section in ("surfaces", "openings"):
+            for name, owner in owners[section].items():
+                report[section][name].update(physical_element_id=owner.identifier,
+                    physical_component_ids=owner.component_ids)
+        for mass in report["internal_mass"]:
+            owner = owners["internal_mass"].get(mass["name"])
+            if owner is not None:
+                mass.update(physical_element_id=owner.identifier,
+                            physical_component_ids=owner.component_ids)
     return scene, report
 
 
-def preview_geometry(geometry, directory=None, *, facade=None, context=None, launch_browser=True):
-    """Write a geometry-only scene and serve an interactive local preview.
+
+def geometry_scene_data(geometry, *, facade=None, context=None):
+    """Export an engine-independent neutral polygon scene from loaded geometry.
 
     Parameters
     ----------
     geometry : GeometrySpec
-        Physical parts, metric coordinate frame, orientation and zoning controls.
-    directory : str or Path or None
-        Local artifact directory; consult Notes for creation, overwrite and default-path
-        behavior. Default: ``None``.
-    facade : FacadeSpec or None
-        Window and shading controls; None uses the preview's zero-glazing default. Default:
-        ``None``.
-    context : ContextSpec or None
-        Explicit shading neighbours; existing context is retained by synthetic generation.
-        Default: ``None``.
-    launch_browser : bool
-        Open the default browser when true; the returned server still needs cleanup.
-        Default: ``True``.
+        Physical parts in a metric source coordinate frame.
+    facade : FacadeSpec or None, optional
+        Explicit windows and shading; absent facade produces zero glazing.
+    context : ContextSpec or None, optional
+        Explicit neighbouring physical geometry in the same coordinate frame.
 
     Returns
     -------
-    ViewerHandle
-        Context-managed loopback server handle.
+    dict
+        Detached JSON values using ``epsm.scene/1``, metres and Z-up coordinates.
+        Original polygons, opening rings and geometry metadata are retained.
 
     Notes
     -----
-    Creates or overwrites scene.json and compilation.json plus viewer artifacts. The default
-    directory is output/preview; close the handle to release its server and thread.
+    Uses the same validated geometry pipeline as compilation without requiring
+    weather, constructions or an EnergyPlus installation. No files are read or
+    written. Consumers own rendering and display lifecycle.
 
     Examples
     --------
-    Example::
-
-        from epsm_core.specs.geometry import Footprint
-        from epsm_core.specs.geometry import GeometrySpec
-        from epsm_core.inspection import preview_geometry
-
-        geometry = GeometrySpec.from_footprint(
-            Footprint.rectangle(10, 8), storeys=2, storey_height_m=3
-        )
-        with preview_geometry(
-            geometry, "output/review", launch_browser=False
-        ) as handle:
-            print(handle.url)
+    >>> from epsm_core import Footprint, GeometrySpec, geometry_scene_data
+    >>> geometry = GeometrySpec.from_footprint(Footprint.rectangle(4, 3), storeys=1, storey_height_m=3)
+    >>> geometry_scene_data(geometry)['report']['geometry_only']
+    True
     """
+    model, report = geometry_scene(geometry, facade=facade, context=context)
+    return scene_data(model, report)
 
-    # 1. Write a geometry-only scene and serve an interactive local preview.
-    directory = Path(directory or "output/preview")
-    directory.mkdir(parents=True, exist_ok=True)
-    scene, report = geometry_scene(geometry, facade=facade, context=context)
-    (directory / "scene.json").write_text(json.dumps(scene, allow_nan=False))
-    (directory / "compilation.json").write_text(json.dumps(report, allow_nan=False))
-    return view_epjson(
-        directory / "scene.json", directory=directory / "viewer", launch_browser=launch_browser
-    )
+
+def _building_scene_data(building):
+    """Export physical Building geometry without thermal readiness or source I/O."""
+    if building.geometry is None:
+        raise ValueError("Building has no geometry; assign geometry before exporting a scene")
+    model, report = _geometry_scene(building.geometry, facade=building.facade,
+                                    context=building.context, physical=building)
+    return scene_data(model, report)

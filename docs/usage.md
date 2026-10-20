@@ -29,6 +29,10 @@ Sveby specifies occupancy by apartment size rather than one universal density. U
 
 *Geometry inspection comes before weather, constructions and operations are needed. [Editable flowchart](figures/workflow.mmd).*
 
+These display examples need the separately built `epsm_viewer` Python wheel;
+install it using the [viewer guide](viewer-migration.md). Core's `.scene()` data
+methods remain usable without that optional package.
+
 ```sh
 python examples/geometry.py --shape rectangle --zoning per_storey --headless
 python examples/geometry.py --shape courtyard --zoning perimeter_core --headless
@@ -49,11 +53,15 @@ python -m http.server 8000 --bind 127.0.0.1 --directory output/context/viewer
 
 ![Geometry viewer showing the complete high-rise context, the target building and cutaway controls.](figures/viewer-controls.png)
 
-*Actual geometry-only preview: a 30 × 20 m, three-storey target with 25 synthetic high-rise neighbours. The target is beige; context is grey. No simulation has been run for this screenshot.*
+*Retained geometry-only preview from the earlier Core viewer: a 30 × 20 m, three-storey target with 25 synthetic high-rise neighbours. The target is beige; context is grey. No simulation has been run for this screenshot. The 20 October 2026 extraction moves display to epsm_viewer; this image is not verification of the extracted renderer.*
 
 The viewer initially fits the complete context. Use **Focus building** to inspect the target and **Fit context** to return to the surroundings. **Building cutaway** starts off; enable it to remove target surfaces above the chosen elevation. Cutaway, building opacity, roof visibility and storey isolation leave context buildings complete. Neighbour surfaces stay opaque so their roof caps are unambiguous. Click a surface to inspect its vertices, identity and available metadata; geometry-only previews have no assigned material layers.
 
-If a previously saved viewer shows open-topped neighbours, regenerate it with the current package and reload the page. Earlier viewer assets applied the target-height clipping plane to neighbours as well, hiding their existing roof caps. This was a display issue; it did not remove simulation shading surfaces. Deliberate cutaways do not create artificial closing faces.
+If an older saved viewer shows open-topped neighbours, regenerate the scene and
+Viewer bundle and reload the page. Historical Core viewer assets applied the
+target-height clipping plane to neighbours as well, hiding existing roof caps.
+That was a display issue; it did not remove simulation shading surfaces.
+Deliberate cutaways do not create artificial closing faces.
 
 ## Describe a building and simulate
 
@@ -100,7 +108,11 @@ python docs/figures/plot_roof_facade.py
 python docs/figures/plot_geometry_sensitivity.py
 ```
 
-To regenerate screenshots and verify the context viewer controls, install Puppeteer under ignored `output/`. The capture script generates fresh geometry scenes from the maintained context example, checks all four presets, and writes browser-check results beneath `output/validation/`.
+To regenerate screenshots, install the Viewer wheel and Puppeteer under ignored
+`output/`. The capture script exports fresh Core scenes, writes bundles through
+`epsm_viewer`, checks that all four presets render without browser errors, and
+writes its check results beneath `output/validation/`. Detailed control behavior
+is tested in the Viewer repository.
 
 ```sh
 npm install --prefix output/docs-tools puppeteer

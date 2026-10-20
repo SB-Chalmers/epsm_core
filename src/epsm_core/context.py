@@ -459,7 +459,7 @@ class ContextResolution:
         Mutable thermal face list, or immutable shading tuple in ContextResolution.
         Required at construction.
     report : dict
-        Compilation metadata; SQL/compiler consumers use CompilationReport, viewer_data uses
+        Compilation metadata; SQL/compiler consumers use CompilationReport, scene_data uses
         its decoded data mapping.  Required at construction.
 
     Notes

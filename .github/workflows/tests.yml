@@ -83,6 +83,20 @@ jobs:
         env:
           EPSM_REQUIRE_ENERGYPLUS: '1'
         run: pytest -o pythonpath= --junitxml=core-results.xml
+      - name: Check installed scene handoff without display dependencies
+        run: |
+          cd "$RUNNER_TEMP"
+          python - <<'PYTHON'
+          import importlib.util
+          import json
+          import sys
+          from epsm_core import Building, Footprint
+          building = Building.from_footprint(Footprint.rectangle(4, 3), storeys=1, storey_height_m=3)
+          assert json.loads(json.dumps(building.scene()))['schema'] == 'epsm.scene/1'
+          assert importlib.util.find_spec('epsm_core.viewer') is None
+          assert importlib.util.find_spec('epsm_core.notebook') is None
+          assert not any(name in sys.modules for name in ('epsm_viewer', 'anywidget', 'ipywidgets'))
+          PYTHON
       - run: python -m pip check
       - uses: actions/upload-artifact@v4
         if: always()

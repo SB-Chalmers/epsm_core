@@ -1,7 +1,0 @@
-{
-  "private": true,
-  "scripts": {
-    "build:widget": "esbuild src/epsm_core/viewer_assets/widget-entry.js --bundle --format=esm --alias:three=./src/epsm_core/viewer_assets/three.module.js --outfile=src/epsm_core/viewer_assets/widget.js --minify"
-  },
-  "devDependencies": {"esbuild": "0.25.9"}
-}

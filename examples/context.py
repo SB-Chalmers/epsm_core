@@ -1,4 +1,4 @@
-"""Write inspectable custom or synthetic neighbouring buildings."""
+"""Write neighbours and preview them with the optional epsm_viewer wheel."""
 
 import argparse
 from pathlib import Path
@@ -29,11 +29,15 @@ if __name__ == "__main__":
     )
     p.add_argument("--output", type=Path, default=Path("output/context"))
     args = p.parse_args()
+    from epsm_viewer import view_scene
+
     geometry = GeometrySpec.from_footprint(
         Footprint.rectangle(30, 20), storeys=3, storey_height_m=3
     )
     context = example_context(geometry, args.preset)
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / "context.json").write_text(context.model_dump_json(indent=2))
-    with geometry.view(args.output, context=context, launch_browser=False) as view:
+    with view_scene(
+        geometry.scene(context=context), directory=args.output / "viewer", launch_browser=False,
+    ) as view:
         print(f"Saved {len(context.buildings)} neighbours and viewer to {view.directory}")

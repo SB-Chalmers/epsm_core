@@ -163,9 +163,9 @@ def test_resolver_preserves_context_roof_holes_and_multiple_footprints():
 
 @pytest.mark.parametrize("height", [6, 60])
 @pytest.mark.parametrize("outline", ["rectangle", "concave", "courtyard"])
-def test_preview_context_caps_cover_the_footprint_at_full_height(height, outline):
+def test_scene_context_caps_cover_the_footprint_at_full_height(height, outline):
     from epsm_core.inspection import geometry_scene
-    from epsm_core.viewer import viewer_data
+    from epsm_core.scene import scene_data
 
     exterior = ((50, 0), (80, 0), (80, 30), (50, 30))
     if outline == "concave":
@@ -176,17 +176,17 @@ def test_preview_context_caps_cover_the_footprint_at_full_height(height, outline
     scene, report = geometry_scene(geometry(), context=context)
     caps = [
         obj
-        for obj in viewer_data(scene, report)["objects"]
+        for obj in scene_data(scene, report)["objects"]
         if obj["kind"] == "context" and obj["metadata"]["surface_type"] == "Roof"
     ]
     assert caps
-    triangles = np.concatenate([np.asarray(obj["triangles"]).reshape(-1, 3, 3) for obj in caps])
-    assert triangles[:, :, 2] == pytest.approx(height)
+    polygons = [np.asarray(obj["vertices"]) for obj in caps]
+    assert np.concatenate(polygons)[:, 2] == pytest.approx(height)
     from shapely import unary_union
 
-    coverage = unary_union([Polygon(t[:, :2]) for t in triangles])
+    coverage = unary_union([Polygon(p[:, :2]) for p in polygons])
     assert coverage.symmetric_difference(footprint.polygon).area < 1e-8
-    assert sum(Polygon(t[:, :2]).area for t in triangles) == pytest.approx(footprint.polygon.area)
+    assert sum(Polygon(p[:, :2]).area for p in polygons) == pytest.approx(footprint.polygon.area)
 
 
 @pytest.mark.parametrize("shape,roof_height", [("gable", 5), ("mono_pitch", 10)])
@@ -230,8 +230,8 @@ def test_district_flat_cold_attic_height(building):
 def test_context_only_compilation_uses_shadow_settings_without_adding_physics(building, energyplus):
     from epsm_core.compiler import EnergyPlusCompiler
     from epsm_core.quantities import quantity_takeoff
+    from epsm_core.scene import scene_data
     from epsm_core.settings import CompilerSettings
-    from epsm_core.viewer import viewer_data
 
     context = ContextSpec(buildings=(neighbour(),))
     shaded = building.updated(context=context)
@@ -246,7 +246,7 @@ def test_context_only_compilation_uses_shadow_settings_without_adding_physics(bu
     for kind in ("Zone", "People", "Lights", "ElectricEquipment", "WaterUse:Equipment"):
         assert model[kind] == baseline[kind]
     assert quantity_takeoff(shaded) == quantity_takeoff(building)
-    objects = viewer_data(model, report.data)["objects"]
+    objects = scene_data(model, report.data)["objects"]
     neighbours = [o for o in objects if o["kind"] == "context"]
     assert len(neighbours) == 6
     assert all(o["metadata"]["building_id"] == "neighbour" for o in neighbours)

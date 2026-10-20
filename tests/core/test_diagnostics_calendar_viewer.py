@@ -1,14 +1,10 @@
-import json
-from urllib.error import HTTPError
-from urllib.request import urlopen
-
 import numpy as np
 import pytest
 
 from epsm_core.compiler import EnergyPlusCompiler
 from epsm_core.diagnostics import WarningRule, error_diagnostics
+from epsm_core.scene import scene_data
 from epsm_core.surface_checks import properties, vertices
-from epsm_core.viewer import view_epjson, viewer_data
 from epsm_core.weather import hourly_axis
 
 
@@ -43,10 +39,10 @@ def test_calendar(year, hours, building):
     assert np.all(np.diff(axis) == np.timedelta64(1, "h"))
 
 
-def test_viewer_opening_geometry_and_allowlist(building, energyplus, tmp_path):
+def test_scene_opening_polygon_areas(building, energyplus):
     compiler = EnergyPlusCompiler(energyplus)
     model, report = compiler.compile(building)
-    data = viewer_data(model, report.data)
+    data = scene_data(model, report.data)
     for obj in data["objects"]:
         parent = model.get("BuildingSurface:Detailed", {}).get(obj["name"])
         if not parent:
@@ -57,17 +53,12 @@ def test_viewer_opening_geometry_and_allowlist(building, energyplus, tmp_path):
             for o in model.get("FenestrationSurface:Detailed", {}).values()
             if o["building_surface_name"] == obj["name"]
         )
-        triangles = np.asarray(obj["triangles"]).reshape(-1, 3, 3)
-        actual = sum(np.linalg.norm(np.cross(t[1] - t[0], t[2] - t[0])) / 2 for t in triangles)
-        assert actual == pytest.approx(gross - openings)
-    compiler.write(building, tmp_path)
-    (tmp_path / "private.txt").write_text("not a viewer artifact")
-    with view_epjson(tmp_path / "model.epJSON", launch_browser=False) as handle:
-        assert urlopen(handle.url).status == 200
-        assert len(json.load(urlopen(handle.url + "model.json"))["objects"]) == len(data["objects"])
-        for suffix in ("private.txt", "../building.json", "%2e%2e/private.txt"):
-            with pytest.raises(HTTPError):
-                urlopen(handle.url + suffix)
+        assert obj["area_m2"] == pytest.approx(gross)
+        assert obj["net_area_m2"] == pytest.approx(gross - openings)
+        assert len(obj["holes"]) == sum(
+            o["building_surface_name"] == obj["name"]
+            for o in model.get("FenestrationSurface:Detailed", {}).values()
+        )
 
 
 @pytest.mark.parametrize("bad_column,bad_value", [("Hour", 1), ("Minute", 15), ("Interval", 30)])

@@ -396,7 +396,7 @@ def compiler_warning_conditions(spec, model, report):
     model : dict
         EnergyPlus epJSON object mapping keyed by object type and name.
     report : CompilationReport or dict
-        Compilation metadata; SQL/compiler consumers use CompilationReport, viewer_data uses
+        Compilation metadata; SQL/compiler consumers use CompilationReport, scene_data uses
         its decoded data mapping.
 
     Returns

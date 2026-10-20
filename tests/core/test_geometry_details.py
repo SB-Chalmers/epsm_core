@@ -15,9 +15,9 @@ from epsm_core import (
 )
 from epsm_core.facades import window_rectangles
 from epsm_core.quantities import quantity_takeoff
+from epsm_core.scene import scene_data
 from epsm_core.specs import ZoningSpec
 from epsm_core.surface_checks import MIN_GENERATED_EDGE_M, vertices
-from epsm_core.viewer import viewer_data
 
 
 def residential_building(building):
@@ -142,13 +142,14 @@ def test_facade_compilation_and_quantities(building, energyplus):
         )
 
     assert points(model) == points(other)
-    data = viewer_data(
+    data = scene_data(
         other,
         c.compile(b.updated(geometry=b.geometry.updated(zoning=ZoningSpec(mode="whole_building"))))[
             1
         ].data,
     )
-    assert any(o["kind"] == "slab_visual" for o in data["objects"])
+    assert data["report"]["internal_mass"]
+    assert all(o["kind"] != "slab_visual" for o in data["objects"])
 
 
 @pytest.mark.parametrize("shape", ["mono_pitch", "gable", "hip"])
@@ -287,7 +288,7 @@ def test_apartment_windows_loads_and_fallback(building, energyplus, height, orie
         o["heating_setpoint_temperature_schedule_name"] == "common_heating_setpoint"
         for o in after["ThermostatSetpoint:DualSetpoint"].values()
     )
-    assert viewer_data(after, report.data)["objects"]
+    assert scene_data(after, report.data)["objects"]
     tiny = apartment.updated(
         geometry=apartment.geometry.updated(
             parts=(apartment.geometry.parts[0].updated(footprint=Footprint.rectangle(4, 4)),)
@@ -427,7 +428,7 @@ def test_u_shape_apartment_topology_regression(building, energyplus, orientation
     assert validate_surfaces(model, report.data["zones"])["status"] == "passed"
 
 
-def test_party_wall_layout_fallback_and_viewer_zone(building, energyplus):
+def test_party_wall_layout_fallback_and_scene_zone(building, energyplus):
     from epsm_core import PartyWall
 
     b = residential_building(building)
@@ -452,7 +453,7 @@ def test_party_wall_layout_fallback_and_viewer_zone(building, energyplus):
     model, report = EnergyPlusCompiler(energyplus).compile(b)
     assert report.data["layout"]["status"] == "fallback_per_storey"
     assert "Party-wall" in report.data["layout"]["parts"][0]["reason"]
-    data = viewer_data(model, report.data)
+    data = scene_data(model, report.data)
     objects = {o["name"]: o for o in data["objects"]}
     openings = [o for o in objects.values() if o["kind"] == "opening"]
     assert openings

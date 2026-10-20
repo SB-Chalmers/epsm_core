@@ -106,7 +106,7 @@ def read_results(sql_path, spec, report, diagnostics):
         Validated building input; geometry-only helpers also accept an object exposing the
         fields they consume.
     report : CompilationReport or dict
-        Compilation metadata; SQL/compiler consumers use CompilationReport, viewer_data uses
+        Compilation metadata; SQL/compiler consumers use CompilationReport, scene_data uses
         its decoded data mapping.
     diagnostics : dict
         Structured acceptance decisions and original diagnostic evidence.
