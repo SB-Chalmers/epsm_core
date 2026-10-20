@@ -1,3 +1,28 @@
+# Core 0.7.1 — shared snapshot preparation
+
+- Physical snapshot resolution shares one validated conversion, geometry graph
+  and physical owner mapping. The advanced `resolve_snapshot_inputs` handoff
+  returns that specification, read-only resolved view and caller-owned Building.
+  Existing snapshot and resolved export formats are unchanged.
+- Snapshot restoration decodes each physical assignment once. The read-only
+  resolved view parses its JSON once on inspection while detached exports and
+  portable serialization retain their existing behavior.
+- `hourly_schedule_scope()` shares immutable expansions within one preparation
+  and calculation call, including nested validation and energy accounting.
+  Independent calls retain no schedule cache.
+- EPW calendar validation accepts an explicit captured text stream as well as a
+  path. Reduced domains can pass validated airflow directly to
+  `heating_delivery_for_domain`, sharing the existing energy accounting without
+  constructing a compiler report or reconstructing airflow models.
+- Geometry cache implementation identity is captured lazily once per process.
+  Restart after editing sources; later lookups do not reread or check source
+  metadata. The cache still returns detached working graphs.
+- The ten-layer construction limit belongs to EnergyPlus readiness, preflight
+  and compilation. RC and physical snapshot inspection accept longer explicit
+  constructions. Existing numerical behavior is preserved.
+
+See [prepared geometry and shared inputs](docs/geometry-cache.md).
+
 # Core 0.7.0 — physical roofs and basement controls
 
 - Cold attics retain their separate ceiling, actual sloped weather-shell area and

@@ -527,6 +527,11 @@ class EnergyPlusCompiler:
 
         # 1. Compile a validated building into checked EnergyPlus epJSON and an audit report.
         spec = BuildingSpec.model_validate(spec.model_dump())
+        from .preflight import _construction_layer_issues
+
+        layer_issues = _construction_layer_issues(spec)
+        if layer_issues:
+            raise ValueError("; ".join(layer_issues))
         weather_location = self._verified_weather(spec.climate)
         for field in ("latitude_deg", "longitude_deg", "time_zone_hours", "elevation_m"):
             if getattr(spec.climate, field) != getattr(weather_location, field):

@@ -88,6 +88,34 @@ def test_energyplus_run_preflights_before_creating_runner_or_output(monkeypatch,
     assert not directory.exists()
 
 
+def test_energyplus_footing_layer_limit_fails_before_geometry_or_weather(monkeypatch, tmp_path):
+    from epsm_core import ConstructionSpec, LayerSpec, MaterialSpec
+
+    building = Building(preset="illustrative-reference")
+    material = MaterialSpec(name="explicit footing concrete", conductivity_w_mk=1.7,
+                            density_kg_m3=2300, specific_heat_j_kgk=880)
+    footing = ConstructionSpec(layers=(LayerSpec(material=material, thickness_m=.1),) * 11)
+    building.foundation = building.foundation.updated(footing_wall=footing)
+    assert building.readiness()
+    assert building.readiness(engine="epsm_rc")
+
+    def forbidden(*args, **kwargs):
+        pytest.fail("Unsupported footing layers must fail before geometry, weather or runner setup")
+
+    monkeypatch.setattr("epsm_core.pipeline.resolve_geometry", forbidden)
+    monkeypatch.setattr("epsm_core.preflight._preflight_building_kiva", forbidden)
+    monkeypatch.setattr(Weather, "from_epw", forbidden)
+    monkeypatch.setattr("epsm_core.runner.EnergyPlusRunner", forbidden)
+    readiness = building.readiness(engine="energyplus")
+    assert not readiness
+    assert any("foundation.footing_wall" in issue and "10 layers" in issue
+               for issue in readiness.unsupported)
+    directory = tmp_path / "must-not-exist"
+    with pytest.raises(ValueError, match="foundation.footing_wall"):
+        run_building(building, weather="unused.epw", directory=directory)
+    assert not directory.exists()
+
+
 def test_whole_building_adapter_preserves_physical_mass_overrides_and_inventory():
     from epsm_data.domain.enums import BuildingElement as Role
 

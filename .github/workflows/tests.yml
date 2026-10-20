@@ -1,12 +1,30 @@
 name: Core tests
-on: [push, pull_request, workflow_dispatch]
+on:
+  pull_request:
+    branches: [dev, main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      development_dependencies:
+        description: Test Data dev on Python 3.13 instead of the pinned release matrix
+        type: boolean
+        default: false
+
+# A newer PR revision replaces its old checks. Release/manual runs stay independent.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   unit:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        python: ['3.11', '3.13']
-        dependencies: ['pinned', 'dev']
+        # Routine and release checks keep both supported Python versions pinned.
+        # Development-dependency compatibility is one explicitly requested lane.
+        python: ${{ fromJSON(inputs.development_dependencies && '["3.13"]' || '["3.11", "3.13"]') }}
+        dependencies: ${{ fromJSON(inputs.development_dependencies && '["dev"]' || '["pinned"]') }}
     steps:
       - uses: actions/checkout@v4
       - name: Check private prerelease dependency access
@@ -17,7 +35,7 @@ jobs:
             echo "::error::Set EPSM_DATA_DEPLOY_KEY to a read-only deploy key for SB-Chalmers/epsm_data. The private dependency requires read access; tests have not run."
             exit 1
           fi
-      # Test the recorded dependency and current development independently.
+      # The tested Data release remains fixed; dev is available by manual request.
       - uses: actions/checkout@v4
         with:
           repository: SB-Chalmers/epsm_data
@@ -28,14 +46,28 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: |
+            pyproject.toml
+            .ci/epsm_data/pyproject.toml
       - run: python -m pip install build .ci/epsm_data '.[dev,geometry]'
+      - name: Reuse required EnergyPlus 24.2
+        id: energyplus-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/energyplus
+          key: energyplus-${{ runner.os }}-${{ runner.arch }}-ubuntu22.04-24.2.0-e7ecb2d53b
       - name: Install required EnergyPlus 24.2
+        if: steps.energyplus-cache.outputs.cache-hit != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release download v24.2.0 --repo NatLabRockies/EnergyPlus --pattern 'EnergyPlus-24.2.0-e7ecb2d53b-Linux-Ubuntu22.04-x86_64.tar.gz' --dir "$RUNNER_TEMP"
           mkdir -p "$RUNNER_TEMP/energyplus"
           tar -xzf "$RUNNER_TEMP/EnergyPlus-24.2.0-e7ecb2d53b-Linux-Ubuntu22.04-x86_64.tar.gz" -C "$RUNNER_TEMP/energyplus" --strip-components=1
+      - name: Select required EnergyPlus 24.2
+        run: |
+          test -x "$RUNNER_TEMP/energyplus/energyplus"
           echo "ENERGYPLUS_EXE=$RUNNER_TEMP/energyplus/energyplus" >> "$GITHUB_ENV"
       - name: Record tested revisions
         run: |
