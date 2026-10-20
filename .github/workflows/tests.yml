@@ -7,9 +7,12 @@ on:
   workflow_dispatch:
     inputs:
       development_dependencies:
-        description: Test Data dev on Python 3.13 instead of the pinned release matrix
+        description: Check current Data main on Python 3.13 instead of release pins
         type: boolean
         default: false
+
+permissions:
+  contents: read
 
 # A newer PR revision replaces its old checks. Release/manual runs stay independent.
 concurrency:
@@ -17,14 +20,42 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  combination:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: SB-Chalmers/epsm
+          ssh-key: ${{ secrets.EPSM_REPO_DEPLOY_KEY }}
+          persist-credentials: false
+          ref: main
+          path: .ci/platform
+          sparse-checkout: |
+            /compatibility.json
+            /scripts/compatibility_matrix.py
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - id: matrix
+        env:
+          MATRIX_MODE: ${{ inputs.development_dependencies && 'main' || 'pinned' }}
+        run: |
+          python .ci/platform/scripts/compatibility_matrix.py \
+            --manifest .ci/platform/compatibility.json --consumer epsm_core \
+            --packages epsm_data \
+            --manifest-revision "$(git -C .ci/platform rev-parse HEAD)" \
+            --mode "$MATRIX_MODE" >> "$GITHUB_OUTPUT"
   unit:
+    name: unit (${{ matrix.python }}, ${{ matrix.mode }})
+    needs: combination
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     strategy:
-      matrix:
-        # Routine and release checks keep both supported Python versions pinned.
-        # Development-dependency compatibility is one explicitly requested lane.
-        python: ${{ fromJSON(inputs.development_dependencies && '["3.13"]' || '["3.11", "3.13"]') }}
-        dependencies: ${{ fromJSON(inputs.development_dependencies && '["dev"]' || '["pinned"]') }}
+      matrix: ${{ fromJSON(needs.combination.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
       - name: Check private prerelease dependency access
@@ -35,13 +66,12 @@ jobs:
             echo "::error::Set EPSM_DATA_DEPLOY_KEY to a read-only deploy key for SB-Chalmers/epsm_data. The private dependency requires read access; tests have not run."
             exit 1
           fi
-      # The tested Data release remains fixed; dev is available by manual request.
       - uses: actions/checkout@v4
         with:
           repository: SB-Chalmers/epsm_data
           ssh-key: ${{ secrets.EPSM_DATA_DEPLOY_KEY }}
           persist-credentials: false
-          ref: ${{ matrix.dependencies == 'dev' && 'dev' || 'bc8449402b9e0dbe0ea85ff76c954cf36d209f86' }}
+          ref: ${{ matrix.epsm_data }}
           path: .ci/epsm_data
       - uses: actions/setup-python@v5
         with:
@@ -71,6 +101,7 @@ jobs:
           echo "ENERGYPLUS_EXE=$RUNNER_TEMP/energyplus/energyplus" >> "$GITHUB_ENV"
       - name: Record tested revisions
         run: |
+          echo "EPSM compatibility manifest: ${{ matrix.manifest_revision }}"
           git rev-parse HEAD
           git -C .ci/epsm_data rev-parse HEAD
           "$ENERGYPLUS_EXE" --version
@@ -101,7 +132,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: core-${{ matrix.python }}-${{ matrix.dependencies }}
+          name: core-${{ matrix.python }}-${{ matrix.mode }}
           path: |
             core-results.xml
             dist/
