@@ -2,7 +2,7 @@
 
 There is one current immutable `BuildingSpec` and one generated JSON Schema. Inputs reject unknown fields, nonfinite values and invalid geometry. Use `.updated(...)` for a validated replacement; direct `model_copy(update=...)` does not validate changes.
 
-The package version is `0.7.0`. Simulation identity combines input content, recursive compiler sources, compiler settings, engine/schema and geometry-backend identities. The [physical Building API](physical-building.md) adds gradual authoring and explicit snapshot schema `epsm.building/8`, including declared auxiliary-zone controls and attic outdoor exchange; the existing complete `BuildingSpec` remains the numerical migration contract.
+The package version is `0.8.0`. Simulation identity combines input content, recursive compiler sources, compiler settings, engine/schema and geometry-backend identities. The [physical Building API](physical-building.md) adds gradual authoring and explicit snapshot schema `epsm.building/8`, including declared auxiliary-zone controls and attic outdoor exchange; the existing complete `BuildingSpec` remains the numerical migration contract.
 
 ## Responsibilities
 
@@ -25,6 +25,8 @@ The package version is `0.7.0`. Simulation identity combines input content, recu
 | `quantity_takeoff` | Physical material/equipment quantities, excluding virtual zoning and context |
 | `GeometrySpec.scene` / `BuildingSpec.scene` / `Building.scene` | Portable scene data; no display, files or server |
 | `scene_data` | Convert an already loaded epJSON model and reports into scene data |
+| `geometry_scene_data` | Export a supplied geometry, facade and context without complete energy inputs |
+| `scene_schema` | Return the versioned `epsm.scene/1` JSON contract |
 
 Definitions live in focused `epsm_core.specs` domain modules and are re-exported from `epsm_core`. Importing them does not load a registry or contact a service.
 

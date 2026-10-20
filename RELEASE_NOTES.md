@@ -1,4 +1,4 @@
-# Unreleased — separate viewer ownership
+# Core 0.8.0 — separate viewer ownership
 
 - Browser rendering, JavaScript assets, local preview hosting and optional
   notebook widgets move to the independent `epsm_viewer` package. Core has no
@@ -11,8 +11,10 @@
   `epsm-core view` APIs have explicit replacements in the
   [viewer migration guide](docs/viewer-migration.md). Rendering triangulation and
   display lifecycle now belong to Viewer; Studio owns application adapters.
-- This section describes unreleased changes. Existing release tags, package
-  compatibility manifests and published-version claims remain unchanged.
+- This pre-1.0 API break changes display ownership. The scene format remains
+  `epsm.scene/1`; physical inputs, numerical methods and engine output formats
+  retain their existing contracts. Install the independent Viewer artifact
+  explicitly when display is needed.
 
 # Core 0.7.1 — shared snapshot preparation
 
