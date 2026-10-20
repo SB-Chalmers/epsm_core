@@ -378,9 +378,36 @@ def test_rc_readiness_accepts_context_for_hourly_horizon_method():
     ),))
     before = building.snapshot().sha256
     # Older RC adapters must keep rejecting context instead of ignoring it.
-    assert not building.readiness(engine="epsm_rc").ready
+    assert not building.readiness(engine="epsm_rc", rc_context_shading=False).ready
     assert building.readiness(engine="epsm_rc", rc_context_shading=True).ready
     assert building.snapshot().sha256 == before
+
+
+@pytest.mark.parametrize("release,accepted", [
+    ("0.8.2", False), ("0.8.3", True), ("0.8.3+local", True),
+    ("0.9.0", True), ("0.8.3rc1", False), ("unknown", False), (None, False),
+])
+def test_rc_context_readiness_defaults_to_installed_adapter_capability(monkeypatch, release, accepted):
+    import importlib.metadata
+
+    from epsm_core.specs import ContextBuilding, ContextSpec
+
+    building = Building(preset="illustrative-reference")
+    building.context = ContextSpec(buildings=(ContextBuilding(
+        identifier="neighbour", height_m=15,
+        footprints=(Footprint(exterior=((-5, -20), (25, -20), (25, -10), (-5, -10))),),
+    ),))
+
+    def installed(name):
+        assert name == "epsm_rc"
+        if release is None:
+            raise importlib.metadata.PackageNotFoundError(name)
+        return release
+
+    monkeypatch.setattr(importlib.metadata, "version", installed)
+    assert building.readiness(engine="epsm_rc").ready is accepted
+    assert building.readiness(engine="epsm_rc", rc_context_shading=True).ready
+    assert not building.readiness(engine="epsm_rc", rc_context_shading=False).ready
 
 
 def test_rc_readiness_reports_facade_override_shading():
