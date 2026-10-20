@@ -14,6 +14,9 @@ inputs. No national holiday or school term is inferred from a building label.
 from __future__ import annotations
 
 from calendar import isleap
+from collections.abc import Iterator
+from contextlib import contextmanager
+from contextvars import ContextVar
 from datetime import date, timedelta
 from typing import Annotated
 
@@ -22,6 +25,33 @@ from pydantic import Field, model_validator
 from .base import Spec
 
 DayValues = Annotated[tuple[float, ...], Field(min_length=24, max_length=24)]
+
+_hourly_schedules: ContextVar[dict | None] = ContextVar("epsm_hourly_schedules", default=None)
+
+
+@contextmanager
+def hourly_schedule_scope() -> Iterator[None]:
+    """Reuse immutable hourly tuples during one preparation and calculation call.
+
+    Equal schedule contents and years share expansion, including across model
+    validation and delivered-energy accounting. Nested scopes share their outer
+    call's values; leaving the outer scope releases them, also after a failure.
+    Outside a scope, ``ScheduleSpec.hourly`` retains its ordinary behavior. This
+    performs no I/O and does not retain schedules between independent calls.
+
+    Yields
+    ------
+    None
+        A local scope; ``ScheduleSpec.hourly`` continues to return immutable tuples.
+    """
+    if _hourly_schedules.get() is not None:
+        yield
+        return
+    token = _hourly_schedules.set({})
+    try:
+        yield
+    finally:
+        _hourly_schedules.reset(token)
 
 
 class SchedulePeriod(Spec):
@@ -122,6 +152,22 @@ class ScheduleSpec(Spec):
         Every hour is represented once, including 29 February. No DST, warm-up
         or design-day hours are inserted. This is the axis used by climate/results.
         """
+        if self.annual_values is not None:
+            # Already immutable and expanded; retain year checks without
+            # serializing an entire annual vector merely to cache its identity.
+            return self._expand_hourly(year)
+        retained = _hourly_schedules.get()
+        if retained is None:
+            return self._expand_hourly(year)
+        # Do not let an equal-valued float reuse an integer year's expansion:
+        # uncached daily calendar construction rejects that input type.
+        key = (self.model_dump_json(), type(year), year)
+        if key not in retained:
+            retained[key] = self._expand_hourly(year)
+        return retained[key]
+
+    def _expand_hourly(self, year: int) -> tuple[float, ...]:
+        """Validate the selected year and expand this schedule's calendar rules."""
         if not 1900 <= year <= 2200:
             raise ValueError("Schedule year must lie in [1900,2200]")
         if self.declared_years and self.declared_years != {year}:

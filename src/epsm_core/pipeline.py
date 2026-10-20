@@ -38,6 +38,7 @@ import json
 from collections import OrderedDict
 from copy import deepcopy
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 
 from .facades import panelize_receiving_walls, resolve_openings, shading_geometry
@@ -46,8 +47,9 @@ from .surface_checks import validate_surfaces
 from .topology import build_surface_graph
 
 
+@lru_cache(maxsize=1)
 def _geometry_implementation_identity():
-    """Fingerprint installed Core sources so edited checkouts cannot reuse stale graphs."""
+    """Fingerprint installed Core sources once per process, on first cached lookup."""
     root = Path(__file__).parent
     digest = hashlib.sha256()
     for path in sorted(root.rglob("*.py")):
@@ -67,8 +69,8 @@ class GeometryCache:
 
     Notes
     -----
-    Explicit cached resolution fingerprints installed Core Python sources on
-    every lookup. Geometry and facade placement/shading controls identify each
+    Explicit cached resolution fingerprints installed Core Python sources once
+    per process, on first use. Restart after editing code. Geometry and facade placement/shading controls identify each
     entry; material, glazing and operation assignments are rebound by consumers.
     Graphs are deep-copied on storage and retrieval because engine compilation
     mutates its working graph. A cache never retains a thermal simulation state.
@@ -211,8 +213,9 @@ def resolve_geometry(spec, *, panelize=False, cache: GeometryCache | None = None
         Subdivide shaded receiving walls and re-resolve openings when true. Default:
         ``False``.
     cache : GeometryCache or None
-        Explicit bounded reuse. Lookups read installed Core sources to verify
-        implementation identity. None performs the ordinary uncached resolution.
+        Explicit bounded reuse. The first cached lookup reads installed Core
+        sources once per process. Restart after editing code. None performs the
+        ordinary uncached resolution.
 
     Returns
     -------

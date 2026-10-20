@@ -59,7 +59,7 @@ def _glazing(window):
                       visible_transmittance=window.vt)
 
 
-def _envelope_for_building(building):
+def _envelope_for_building(building, *, convert=thermal_construction):
     """Build the nominal envelope from explicit physical assignments."""
     assignments = building.construction_set.elements if building.construction_set else {}
 
@@ -70,7 +70,7 @@ def _envelope_for_building(building):
             if fallback is not None:
                 return fallback
             raise ValueError(f"No construction for {role.value}")
-        return thermal_construction(value)
+        return convert(value)
 
     wall = construction(Role.EXT_WALL)
     top = construction(Role.TOP_FLOOR)
@@ -132,19 +132,20 @@ def _physical_element_owners(building, resolved):
     return {"surfaces": surfaces, "internal_mass": mass, "openings": openings}
 
 
-def _surface_constructions_for_building(building, geometry, facade, envelope, *, resolved=None):
+def _surface_constructions_for_building(building, geometry, facade, envelope, *, resolved=None,
+                                       owners=None, convert=thermal_construction):
     """Resolve physical surface overrides identically for adaptation and preflight."""
     from .pipeline import resolve_geometry
 
     if resolved is None:
         resolved = resolve_geometry(SimpleNamespace(geometry=geometry, facade=facade), panelize=True)
-    owners = _physical_element_owners(building, resolved)["surfaces"]
+    owners = (owners if owners is not None else _physical_element_owners(building, resolved))["surfaces"]
     surface_constructions = {}
     for face in resolved.graph.surfaces:
         physical = owners.get(face.name)
         role = face.construction.removesuffix("_reverse").removeprefix("unconditioned_")
         if physical is not None:
-            assembly = thermal_construction(physical.construction)
+            assembly = convert(physical.construction)
             if getattr(envelope, role, None) != assembly:
                 surface_constructions[face.name] = assembly
     return surface_constructions
@@ -153,14 +154,30 @@ def _surface_constructions_for_building(building, geometry, facade, envelope, *,
 @logged_operation("model.convert", level=10)
 def to_spec(building, weather, *, geometry_cache=None):
     """Produce the legacy validated engine specification with exact target assignments."""
-    building.readiness().require()
+    spec, _, _ = _prepare_spec(building, weather, geometry_cache=geometry_cache)
+    return spec
+
+
+def _prepare_spec(building, weather, *, geometry_cache=None, engine=None):
+    """Convert and validate once, retaining geometry and owners for resolved export."""
+    building.readiness(engine=engine, weather=weather).require()
     if isinstance(weather, Weather):
         climate = weather.climate
     elif isinstance(weather, ClimateSpec):
         climate = weather
     else:
         climate = Weather.from_epw(weather).climate
-    envelope = _envelope_for_building(building)
+    assemblies = {}
+
+    def convert(assembly):
+        # Repeated faces often have the same immutable physical assignment.
+        # Keep thermal conversion local to this captured Building preparation.
+        key = id(assembly)
+        if key not in assemblies:
+            assemblies[key] = thermal_construction(assembly)
+        return assemblies[key]
+
+    envelope = _envelope_for_building(building, convert=convert)
     intermediate = envelope.intermediate_floor
     # Preserve explicit zero-window and shading choices, including facade-wide
     # overrides that have no corresponding physical window instance.
@@ -185,18 +202,23 @@ def to_spec(building, weather, *, geometry_cache=None):
     from .pipeline import resolve_geometry
 
     resolved = resolve_geometry(spec, panelize=True, cache=geometry_cache)
+    owners = _physical_element_owners(building, resolved)
     surface_constructions = _surface_constructions_for_building(
-        building, spec.geometry, spec.facade, envelope, resolved=resolved)
-    owners = _physical_element_owners(building, resolved)["internal_mass"]
+        building, spec.geometry, spec.facade, envelope, resolved=resolved,
+        owners=owners, convert=convert)
     mass_constructions = {}
     for mass in resolved.graph.internal_mass:
-        physical = owners.get(mass["name"])
+        physical = owners["internal_mass"].get(mass["name"])
         if physical is not None:
-            assembly = thermal_construction(physical.construction)
+            assembly = convert(physical.construction)
             if assembly != intermediate:
                 mass_constructions[mass["name"]] = assembly
-    return spec.updated(surface_constructions=surface_constructions,
-                        internal_mass_constructions=mass_constructions)
+    # Every override is a validated ConstructionSpec associated with a name in
+    # this resolved graph. Only these newly created assignment maps change;
+    # repeating all BuildingSpec validators would recheck unchanged inputs.
+    spec = spec.model_copy(update={"surface_constructions": surface_constructions,
+                                  "internal_mass_constructions": mass_constructions})
+    return spec, resolved, owners
 
 
 @logged_operation("simulation.building")

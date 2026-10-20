@@ -36,8 +36,10 @@ import csv
 import hashlib
 import json
 import math
+from contextlib import nullcontext
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import IO
 
 from ._representation import bounded_summary
 from .specs import ClimateSpec
@@ -317,13 +319,15 @@ def hourly_axis(year):
     )
 
 
-def validate_epw_calendar(path, year):
+def validate_epw_calendar(path: str | Path | IO[str], year: int) -> dict:
     """Require exactly one EPW interval for every hour of the chosen year.
 
     Parameters
     ----------
-    path : str or Path
-        Local input file path; the operation never downloads missing input.
+    path : str, Path or readable text stream
+        Local file or an explicitly captured EPW text stream at its first header.
+        Streams remain open and are consumed from their current position. The
+        operation never downloads missing input or opens a path for a stream.
     year : int
         Gregorian year used for complete hourly calendar alignment.
 
@@ -356,7 +360,8 @@ def validate_epw_calendar(path, year):
     # 1. Require exactly one EPW interval for every hour of the chosen year.
     from datetime import datetime, timedelta
 
-    with Path(path).open(encoding="utf-8-sig") as stream:
+    selected = nullcontext(path) if hasattr(path, "read") else Path(path).open(encoding="utf-8-sig")
+    with selected as stream:
         reader = csv.reader(stream)
         headers = [next(reader) for _ in range(8)]
         axis = []
