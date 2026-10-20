@@ -259,8 +259,8 @@ class ConstructionSpec(Spec):
     Attributes
     ----------
     layers : tuple[LayerSpec, ...]
-        One to ten layers ordered outside to inside. Minimum length 1. Maximum length 10.
-        Required at construction.
+        One or more layers ordered outside to inside. Required at construction.
+        EnergyPlus-specific preflight limits its emitted constructions to ten layers.
     surface_resistance_m2k_w : Nonnegative
         Combined reporting film resistance in m2 K/W; not an emitted material layer.
         Nonnegative when supplied. Default: ``0.17``.
@@ -273,7 +273,7 @@ class ConstructionSpec(Spec):
 
     Notes
     -----
-    Contains one to ten layers. Film resistance is reporting metadata; EnergyPlus determines
+    Contains one or more layers. Film resistance is reporting metadata; EnergyPlus determines
     surface heat transfer separately. Reciprocal faces use reversed layer order.
 
     Examples
@@ -295,7 +295,7 @@ class ConstructionSpec(Spec):
         )
     """
 
-    layers: Annotated[tuple[LayerSpec, ...], Field(min_length=1, max_length=10)]
+    layers: Annotated[tuple[LayerSpec, ...], Field(min_length=1)]
     surface_resistance_m2k_w: Nonnegative = 0.17
 
     @property

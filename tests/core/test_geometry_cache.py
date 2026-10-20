@@ -56,6 +56,32 @@ def test_geometry_cache_invalidates_changed_implementation(building, monkeypatch
     assert cache.misses == 2
 
 
+def test_geometry_implementation_sources_are_read_once_per_process(building, monkeypatch):
+    from pathlib import Path
+
+    from epsm_core import pipeline
+
+    original = Path.read_bytes
+    reads = []
+
+    def recorded(path):
+        reads.append(path)
+        return original(path)
+
+    pipeline._geometry_implementation_identity.cache_clear()
+    monkeypatch.setattr(Path, "read_bytes", recorded)
+    try:
+        cache = GeometryCache()
+        resolve_geometry(building, cache=cache)
+        first_reads = list(reads)
+        assert first_reads
+        resolve_geometry(building, cache=cache)
+        resolve_geometry(building, cache=GeometryCache())
+        assert reads == first_reads
+    finally:
+        pipeline._geometry_implementation_identity.cache_clear()
+
+
 @pytest.mark.parametrize("shape", ["concave", "courtyard", "multipart"])
 def test_complex_geometry_reuse_preserves_topology_and_windows(building, shape):
     from epsm_core import Footprint

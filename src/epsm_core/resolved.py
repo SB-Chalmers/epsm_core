@@ -16,13 +16,16 @@ from __future__ import annotations
 import json
 from collections import defaultdict
 from dataclasses import dataclass
+from functools import cached_property
+from pathlib import Path
 from types import MappingProxyType
-from typing import Mapping
+from typing import Mapping, NamedTuple
 
-from .building import BuildingSnapshot
+from .building import Building, BuildingSnapshot
 from .constructions import surface_construction_reversed
-from .pipeline import resolve_geometry
-from .specs import BuildingSpec
+from .pipeline import GeometryCache, resolve_geometry
+from .specs import BuildingSpec, ClimateSpec
+from .weather import Weather
 from .zone_inputs import resolve_zone_operations
 
 
@@ -53,9 +56,14 @@ class ResolvedBuildingInput:
             raise ValueError("Unsupported resolved Building input schema")
         return cls(json.dumps(data, sort_keys=True, separators=(",", ":"), allow_nan=False))
 
-    @property
+    @cached_property
     def data(self) -> Mapping:
         return _freeze(json.loads(self._json))
+
+    def __getstate__(self):
+        # Only the portable JSON is serialized; the immutable parsed view can
+        # be rebuilt lazily and contains MappingProxyType objects.
+        return {"_json": self._json}
 
     def to_dict(self) -> dict:
         """Return a new nested writable tree without modifying this view."""
@@ -125,23 +133,23 @@ class ResolvedBuildingInput:
         return f"ResolvedBuildingInput(characters={len(self._json)})"
 
 
-def _resolve(spec: BuildingSpec, *, snapshot: BuildingSnapshot | None = None,
-             geometry_cache=None) -> ResolvedBuildingInput:
+def _resolve(spec: BuildingSpec, *, geometry_cache=None) -> ResolvedBuildingInput:
     # Revalidate a detached copy: frozen Pydantic fields can contain mutable maps.
     spec = BuildingSpec.model_validate(spec.model_dump())
     resolved = resolve_geometry(spec, panelize=True, cache=geometry_cache)
+    return _resolved_input(spec, resolved)
+
+
+def _resolved_input(spec, resolved, *, snapshot=None, physical=None, owners=None):
+    """Export already validated, caller-owned preparation without resolving it again."""
     graph = resolved.graph
     unknown_surfaces = set(spec.surface_constructions) - {face.name for face in graph.surfaces}
     if unknown_surfaces:
         raise ValueError(f"Unknown surface construction targets: {sorted(unknown_surfaces)}")
     if set(spec.internal_mass_constructions) - {mass["name"] for mass in graph.internal_mass}:
         raise ValueError("Unknown physical internal-mass construction targets")
-    physical = snapshot.to_building() if snapshot is not None else None
-    owners = {"surfaces": {}, "internal_mass": {}, "openings": {}}
-    if physical is not None:
-        from .building_adapter import _physical_element_owners
-
-        owners = _physical_element_owners(physical, resolved)
+    if owners is None:
+        owners = {"surfaces": {}, "internal_mass": {}, "openings": {}}
     opening_areas = defaultdict(float)
     for opening in resolved.openings:
         opening_areas[opening.parent] += opening.area
@@ -255,5 +263,66 @@ def resolve_snapshot(snapshot: BuildingSnapshot, weather, *, geometry_cache=None
     retains the existing explicit weather-inspection behavior of ``to_spec``;
     already inspected Weather or ClimateSpec performs no file access here.
     """
-    return _resolve(snapshot.to_spec(weather, geometry_cache=geometry_cache),
-                    snapshot=snapshot, geometry_cache=geometry_cache)
+    return resolve_snapshot_inputs(snapshot, weather, geometry_cache=geometry_cache).resolved
+
+
+class ResolvedSnapshotInputs(NamedTuple):
+    """One snapshot's validated specification, read-only view and physical Building.
+
+    ``spec`` and ``building`` are caller-owned working inputs; their nested maps
+    may be mutable. Edits cannot alter the source snapshot or another call.
+    ``resolved`` remains the detached immutable, portable inspection view.
+    """
+
+    spec: BuildingSpec
+    resolved: ResolvedBuildingInput
+    building: Building
+
+
+def resolve_snapshot_inputs(snapshot: BuildingSnapshot, weather: Weather | ClimateSpec | str | Path,
+                            *, geometry_cache: GeometryCache | None = None,
+                            engine: str | None = None) -> ResolvedSnapshotInputs:
+    """Prepare one physical snapshot for consumers needing both spec and geometry.
+
+    Parameters
+    ----------
+    snapshot : BuildingSnapshot
+        Retained physical inputs and their original provenance. They are not changed.
+    weather : Weather, ClimateSpec or path-like
+        Explicit weather selection. Weather and ClimateSpec require no file I/O
+        here; a path is inspected as in ``Building.to_spec``.
+    geometry_cache : GeometryCache, optional
+        Caller-owned geometry reuse. The first cached lookup fingerprints Core
+        sources once per process; restart after editing code.
+    engine : str, optional
+        Engine-specific readiness rules, ``epsm_rc`` or ``energyplus``.
+
+    Returns
+    -------
+    ResolvedSnapshotInputs
+        Caller-owned validated specification and physical Building, plus a
+        detached read-only resolved view with metric geometry and original units.
+
+    Raises
+    ------
+    TypeError
+        The supplied snapshot is not a BuildingSnapshot.
+    ValueError
+        Physical inputs are incomplete, invalid or unsupported for the engine.
+
+    Notes
+    -----
+    Reconstructs the physical Building, checks readiness, validates its
+    specification and resolves geometry once. No engine is started. The caller
+    can wrap this and subsequent calculations in
+    ``epsm_core.specs.schedules.hourly_schedule_scope`` to share schedule expansion.
+    """
+    if not isinstance(snapshot, BuildingSnapshot):
+        raise TypeError("snapshot must be a BuildingSnapshot")
+    from .building_adapter import _prepare_spec
+
+    physical = snapshot.to_building()
+    spec, geometry, owners = _prepare_spec(physical, weather, geometry_cache=geometry_cache,
+                                           engine=engine)
+    resolved = _resolved_input(spec, geometry, snapshot=snapshot, physical=physical, owners=owners)
+    return ResolvedSnapshotInputs(spec, resolved, physical)

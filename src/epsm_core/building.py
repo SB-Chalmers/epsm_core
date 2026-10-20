@@ -409,6 +409,16 @@ class BuildingElement:
         return cls(**values)
 
 
+def _validated_elements(values):
+    """Check the physical collection; its receiving operation owns any copying."""
+    values = tuple(values)
+    if any(not isinstance(value, BuildingElement) for value in values):
+        raise TypeError("elements must contain physical BuildingElement objects")
+    if len({value.identifier for value in values}) != len(values):
+        raise ValueError("Physical element identifiers must be unique")
+    return values
+
+
 @dataclass(frozen=True)
 class Readiness:
     missing: tuple[str, ...] = ()
@@ -785,12 +795,8 @@ class Building:
 
     @elements.setter
     def elements(self, values):
-        values = tuple(values)
-        if any(not isinstance(value, BuildingElement) for value in values):
-            raise TypeError("elements must contain physical BuildingElement objects")
-        if len({value.identifier for value in values}) != len(values):
-            raise ValueError("Physical element identifiers must be unique")
-        self._elements = tuple(BuildingElement.from_dict(value.to_dict()) for value in values)
+        self._elements = tuple(BuildingElement.from_dict(value.to_dict())
+                               for value in _validated_elements(values))
 
     def assign_construction(self, construction, *, element_ids=None):
         """Assign a resolved construction independently to selected physical elements."""
@@ -1108,6 +1114,10 @@ class Building:
                 missing.append("load_reference_area_m2 or load_reference_area_policy")
             elif self.load_reference_area_m2 is not None and self.load_reference_area_policy is not None:
                 unsupported.append("Choose either load_reference_area_m2 or load_reference_area_policy")
+            if (engine == "energyplus" and self.foundation is not None
+                    and self.foundation.footing_wall is not None
+                    and len(self.foundation.footing_wall.layers) > 10):
+                unsupported.append("foundation.footing_wall: EnergyPlus supports at most 10 layers")
             if engine == "epsm_rc" and self.geometry is not None:
                 if any(not p.conditioned for p in self.geometry.parts):
                     unsupported.append("epsm_rc requires conditioned above-grade parts")
@@ -1128,8 +1138,8 @@ class Building:
                 if not isinstance(element.construction, Element):
                     continue
                 layers = [s.layer for c in element.construction.components for s in c.layers]
-                if len(layers) > 10:
-                    unsupported.append(f"{element.identifier}: engine bridge supports at most 10 layers")
+                if engine == "energyplus" and len(layers) > 10:
+                    unsupported.append(f"{element.identifier}: EnergyPlus supports at most 10 layers")
                 if any(abs(m.thickness - layer.thickness) > 1e-9
                        for layer in layers for m in layer.materials):
                     unsupported.append(f"{element.identifier}: unequal parallel thermal path depths")
@@ -1235,7 +1245,10 @@ class Building:
         result.load_reference_area_m2 = data.get("load_reference_area_m2")
         result.load_reference_area_policy = data.get("load_reference_area_policy")
         result.context = data.get("context", {})
-        result.elements = [BuildingElement.from_dict(e) for e in data["elements"]]
+        # These objects were just decoded and validated into this new Building.
+        # The public setter's defensive serialize/copy pass would decode them
+        # all again; only its collection-level uniqueness rule remains here.
+        result._elements = _validated_elements(BuildingElement.from_dict(e) for e in data["elements"])
         object.__setattr__(result, "_restoring_snapshot", False)
         object.__setattr__(result, "preset", data.get("preset"))
         object.__setattr__(result, "preset_revision", data.get("preset_revision"))
@@ -1469,7 +1482,7 @@ class Building:
     def to_spec(self, weather, *, geometry_cache=None):
         """Convert physical inputs, optionally reusing a caller-owned GeometryCache.
 
-        A supplied cache fingerprints installed sources during lookup and returns
+        A supplied cache fingerprints installed sources once per process and returns
         detached working geometry. Omitting it retains uncached behavior. Material
         assignments and operation inputs are always taken from this Building.
         """

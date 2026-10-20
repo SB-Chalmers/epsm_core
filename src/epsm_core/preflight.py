@@ -17,7 +17,24 @@ from epsm_core._logging import operation as logged_operation
 from .building import Readiness
 from .failures import CompilationError
 from .foundations import check_kiva_floor_geometry
-from .specs import BuildingSpec
+from .specs import BuildingSpec, ConstructionSpec
+
+
+def _construction_layer_issues(spec):
+    """Name constructions that exceed EnergyPlus's ten emitted material layers."""
+    constructions = {
+        f"envelope.{name}": getattr(spec.envelope, name)
+        for name in type(spec.envelope).model_fields
+        if isinstance(getattr(spec.envelope, name), ConstructionSpec)
+    }
+    foundation = spec.envelope.foundation
+    if foundation is not None and foundation.footing_wall is not None:
+        constructions["envelope.foundation.footing_wall"] = foundation.footing_wall
+    for field in ("surface_constructions", "internal_mass_constructions"):
+        constructions.update({f"{field}.{name}": value
+                              for name, value in getattr(spec, field).items()})
+    return tuple(f"{name}: EnergyPlus supports at most 10 layers"
+                 for name, assembly in constructions.items() if len(assembly.layers) > 10)
 
 
 def _surface_record(face, construction):
@@ -32,7 +49,7 @@ def _surface_record(face, construction):
 
 @logged_operation("simulation.preflight")
 def preflight_energyplus(spec: BuildingSpec) -> Readiness:
-    """Inspect selected ground geometry without weather or engine I/O.
+    """Inspect EnergyPlus construction limits and ground geometry without I/O.
 
     Parameters
     ----------
@@ -42,14 +59,15 @@ def preflight_energyplus(spec: BuildingSpec) -> Readiness:
     Returns
     -------
     Readiness
-        Unsupported Kiva conditions naming the affected zone. Prescribed ground
+        Unsupported layer counts or Kiva conditions naming the affected input. Prescribed ground
         treatment has no Kiva floor restriction.
 
     Notes
     -----
     Uses the same floor union and validation as the compiler. It does not read
     the EPW, inspect an installation, create output or change the input. This
-    checks ground geometry, rather than every simulation prerequisite.
+    checks construction layer counts and ground geometry, rather than every
+    simulation prerequisite.
 
     Examples
     --------
@@ -60,6 +78,9 @@ def preflight_energyplus(spec: BuildingSpec) -> Readiness:
     """
     from .pipeline import resolve_geometry
 
+    layer_issues = _construction_layer_issues(spec)
+    if layer_issues:
+        return Readiness(unsupported=layer_issues)
     envelope = spec.envelope
     foundation = envelope.foundation
     if foundation is None or foundation.method != "kiva":
