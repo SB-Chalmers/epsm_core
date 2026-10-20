@@ -1,8 +1,8 @@
 # epsm_core
 
-Core 0.7.1 prepares physical snapshots once for shared simulation inputs and supports per-call schedule reuse. Physical cold-attic shells, basement controls and shared-wall ownership retain their existing behavior. It consumes Data 0.6.0 definitions. See [roof and basement support](docs/roofs-and-basements.md), [shared-wall assumptions](docs/party-walls.md), [release notes](RELEASE_NOTES.md) and [prepared geometry](docs/geometry-cache.md).
+Core 0.8.0 exports portable polygon scenes for the independent `epsm_viewer` package. Core owns physical geometry and scientific metadata; Viewer owns browser and notebook display. Shared snapshot preparation, physical cold-attic shells, basement controls and shared-wall ownership retain their existing behavior. Core consumes Data 0.6.0 definitions. See [viewer migration](docs/viewer-migration.md), [release notes](RELEASE_NOTES.md), [roof and basement support](docs/roofs-and-basements.md), [shared-wall assumptions](docs/party-walls.md) and [prepared geometry](docs/geometry-cache.md).
 
-A pre-1.0 building-energy modelling library for automated urban building energy modelling. The package version is **0.7.1**; content hashes distinguish simulation inputs and implementations.
+A pre-1.0 building-energy modelling library for automated urban building energy modelling. The package version is **0.8.0**; content hashes distinguish simulation inputs and implementations.
 
 ## Physical Building authoring
 

@@ -21,7 +21,8 @@ from epsm_core.specs import BuildingSpec
 
 
 def test_current_schema_version_and_roundtrip(building):
-    assert __version__ == COMPILER_VERSION == "0.7.1"
+    # The package owns its release version; compiler identity must use it too.
+    assert __version__ == COMPILER_VERSION
     data = building.model_dump(mode="json")
     assert "schema_version" not in data
     assert BuildingSpec.model_validate_json(json.dumps(data)) == building
