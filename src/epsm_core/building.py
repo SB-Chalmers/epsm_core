@@ -1078,7 +1078,14 @@ class Building:
             if not reassign and e.identifier in previous and previous[e.identifier].construction
             else e for e in generated)
 
-    def readiness(self, purpose="energy", *, engine=None, weather=None):
+    def readiness(self, purpose="energy", *, engine=None, weather=None, rc_context_shading=None):
+        """Check physical inputs and the caller's declared RC context capability.
+
+        RC adapters implementing context shading can declare that support with
+        ``rc_context_shading=True``. By default, an installed stable RC release
+        >=0.8.3 declares that capability; missing, older or unrecognized releases
+        retain the rejection that prevents silently ignored neighbours.
+        """
         if engine not in {None, "energyplus", "epsm_rc"}:
             raise ValueError(f"Unsupported simulation engine {engine!r}")
         if purpose not in {"geometry", "energy", "quantities", "inventory", "lca"}:
@@ -1123,7 +1130,18 @@ class Building:
                     unsupported.append("epsm_rc requires conditioned above-grade parts")
                 if self.geometry.basement_depth_m and not self.geometry.basement_conditioned:
                     unsupported.append("epsm_rc cannot aggregate an unconditioned basement")
-                if self.context.buildings:
+                if self.context.buildings and rc_context_shading is None:
+                    from importlib.metadata import PackageNotFoundError, version
+
+                    try:
+                        release = version("epsm_rc").partition("+")[0].split(".")
+                    except PackageNotFoundError:
+                        release = []
+                    rc_context_shading = (
+                        len(release) == 3 and all(value.isdigit() for value in release)
+                        and tuple(map(int, release)) >= (0, 8, 3)
+                    )
+                if self.context.buildings and not rc_context_shading:
                     unsupported.append("epsm_rc does not model explicit context shading")
                 if self.facade is not None and (self.facade.balconies
                         or self.facade.reveal_depth_m or self.facade.overhang.depth_m
