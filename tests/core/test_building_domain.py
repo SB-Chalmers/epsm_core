@@ -377,7 +377,9 @@ def test_rc_readiness_accepts_context_for_hourly_horizon_method():
         footprints=(Footprint(exterior=((-5, -20), (25, -20), (25, -10), (-5, -10))),),
     ),))
     before = building.snapshot().sha256
-    assert building.readiness(engine="epsm_rc").ready
+    # Older RC adapters must keep rejecting context instead of ignoring it.
+    assert not building.readiness(engine="epsm_rc").ready
+    assert building.readiness(engine="epsm_rc", rc_context_shading=True).ready
     assert building.snapshot().sha256 == before
 
 

@@ -1,9 +1,13 @@
 # Core 0.8.1 — RC context readiness
 
-RC readiness now accepts explicit context buildings for the ISO 13790 hourly
-horizon method implemented by RC 0.8.3. Facade overhangs, reveals and balconies
-remain unsupported by that adapter. Physical context, scene exports, EnergyPlus
-compilation and thermal input formats retain their existing contracts.
+RC readiness accepts explicit context buildings when the caller declares
+`rc_context_shading=True`, for adapters such as RC 0.8.3 that implement the ISO
+13790 hourly horizon method. The default preserves the rejection needed by older
+RC adapters, preventing them from silently ignoring neighbours. RC 0.8.3's checked
+physical handoff works across both older and current Core releases. Facade
+overhangs, reveals and balconies remain unsupported by that adapter. Physical
+context, scene exports, EnergyPlus compilation and thermal input formats retain
+their existing contracts.
 
 # Core 0.8.0 — separate viewer ownership
 

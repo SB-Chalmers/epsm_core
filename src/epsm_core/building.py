@@ -1078,7 +1078,13 @@ class Building:
             if not reassign and e.identifier in previous and previous[e.identifier].construction
             else e for e in generated)
 
-    def readiness(self, purpose="energy", *, engine=None, weather=None):
+    def readiness(self, purpose="energy", *, engine=None, weather=None, rc_context_shading=False):
+        """Check physical inputs and the caller's declared RC context capability.
+
+        RC adapters implementing context shading can declare that support with
+        ``rc_context_shading=True``. The default retains the context rejection
+        required by older adapters that otherwise silently ignore neighbours.
+        """
         if engine not in {None, "energyplus", "epsm_rc"}:
             raise ValueError(f"Unsupported simulation engine {engine!r}")
         if purpose not in {"geometry", "energy", "quantities", "inventory", "lca"}:
@@ -1123,8 +1129,8 @@ class Building:
                     unsupported.append("epsm_rc requires conditioned above-grade parts")
                 if self.geometry.basement_depth_m and not self.geometry.basement_conditioned:
                     unsupported.append("epsm_rc cannot aggregate an unconditioned basement")
-                # Context buildings are consumed by RC's ISO 13790 hourly
-                # horizon approximation; facade shading details are separate.
+                if self.context.buildings and not rc_context_shading:
+                    unsupported.append("epsm_rc does not model explicit context shading")
                 if self.facade is not None and (self.facade.balconies
                         or self.facade.reveal_depth_m or self.facade.overhang.depth_m
                         or any(o.reveal_depth_m or (o.overhang and o.overhang.depth_m)
