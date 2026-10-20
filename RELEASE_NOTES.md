@@ -1,3 +1,16 @@
+# Core 0.8.1 — RC context readiness
+
+RC readiness accepts explicit context buildings when the caller declares
+`rc_context_shading=True`, for adapters such as RC 0.8.3 that implement the ISO
+13790 hourly horizon method. By default, an installed stable RC release >=0.8.3
+declares that support, including the umbrella EPSM preflight. Missing, older or
+unrecognized RC releases retain the rejection that prevents silently ignored
+neighbours. RC 0.8.3's checked
+physical handoff works across both older and current Core releases. Facade
+overhangs, reveals and balconies remain unsupported by that adapter. Physical
+context, scene exports, EnergyPlus compilation and thermal input formats retain
+their existing contracts.
+
 # Core 0.8.0 — separate viewer ownership
 
 - Browser rendering, JavaScript assets, local preview hosting and optional
