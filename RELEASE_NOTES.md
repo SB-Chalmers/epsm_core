@@ -11,7 +11,7 @@
   `epsm-core view` APIs have explicit replacements in the
   [viewer migration guide](docs/viewer-migration.md). Rendering triangulation and
   display lifecycle now belong to Viewer; Studio owns application adapters.
-- This is an unreleased working-tree change. Existing release tags, package
+- This section describes unreleased changes. Existing release tags, package
   compatibility manifests and published-version claims remain unchanged.
 
 # Core 0.7.1 — shared snapshot preparation
