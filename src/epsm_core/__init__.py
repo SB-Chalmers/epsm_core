@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-10-03
+# Date modified: 2026-10-20
 # Changelog:
+#   2026-10-20 - Export pure polygon scenes; move display lifecycle out of Core.
 #   2026-10-03 - Add documented calendar, operational and archetype-application support.
 #   2026-09-15 - Export the bundled Sveby residential standard API.
 #   2026-09-11 - Export the typed HourlyOutputRequest API.
@@ -142,7 +143,9 @@ __all__ = [
     "SvebyNonResidentialSpec",
     "FootprintCleanupSpec",
     "synthetic_context",
-    "preview_geometry",
+    "scene_data",
+    "scene_schema",
+    "geometry_scene_data",
     "CompilerSettings",
     "HourlyOutputRequest",
     "RoofSpec",
@@ -219,12 +222,13 @@ __all__ = [
 # A library emits no output until its host selects handlers.
 
 from .context import synthetic_context
-from .inspection import preview_geometry
+from .inspection import geometry_scene_data
 from .nonresidential import SvebyNonResidentialSpec
 
 # Explicit area-weighted mixed-use operation (no implicit spatial allocation).
 from .programs import ProgramBlend as ProgramBlend
 from .programs import ProgramComponent as ProgramComponent
+from .scene import scene_data, scene_schema
 from .settings import CompilerSettings, HourlyOutputRequest
 
 _stdlib_logging.getLogger("epsm_core").addHandler(_stdlib_logging.NullHandler())

@@ -1,3 +1,19 @@
+# Unreleased — separate viewer ownership
+
+- Browser rendering, JavaScript assets, local preview hosting and optional
+  notebook widgets move to the independent `epsm_viewer` package. Core has no
+  viewer runtime dependency.
+- `Building.scene()`, `GeometrySpec.scene()` and `BuildingSpec.scene()` export
+  detached `epsm.scene/1` polygons, opening rings, metric coordinate information
+  and inspection metadata. Physical Building exports retain owner and snapshot
+  identities. No weather, engine, server or browser is required.
+- The removed `.view()`, `.widget()`, `preview_geometry`, viewer module and
+  `epsm-core view` APIs have explicit replacements in the
+  [viewer migration guide](docs/viewer-migration.md). Rendering triangulation and
+  display lifecycle now belong to Viewer; Studio owns application adapters.
+- This section describes unreleased changes. Existing release tags, package
+  compatibility manifests and published-version claims remain unchanged.
+
 # Core 0.7.1 — shared snapshot preparation
 
 - Physical snapshot resolution shares one validated conversion, geometry graph

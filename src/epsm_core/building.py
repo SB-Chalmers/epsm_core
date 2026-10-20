@@ -1469,6 +1469,37 @@ class Building:
         child._parent_snapshot_id = before.sha256
         return child
 
+    def scene(self):
+        """Export physical geometry while retaining available physical owner IDs.
+
+        Returns
+        -------
+        dict
+            Detached ``epsm.scene/1`` polygon data in metres and Z-up coordinates.
+            Surface and opening metadata link to original physical elements.
+
+        Raises
+        ------
+        ValueError
+            No geometry has been assigned, or supplied geometry is invalid.
+
+        Notes
+        -----
+        Thermal readiness, construction assignments, HVAC, operation, weather
+        and an installed engine are not required. Missing facade inputs mean
+        zero glazing. The Building is unchanged and no file or service is read.
+
+        Examples
+        --------
+        >>> from epsm_core import Building, Footprint
+        >>> draft = Building.from_footprint(Footprint.rectangle(4, 3), storeys=1, storey_height_m=3)
+        >>> draft.scene()['schema']
+        'epsm.scene/1'
+        """
+        from .inspection import _building_scene_data
+
+        return _building_scene_data(self)
+
     def resolve(self, weather, *, geometry_cache=None):
         """Capture and resolve a read-only view with explicit weather context.
 

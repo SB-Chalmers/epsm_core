@@ -20,7 +20,7 @@ Notes
 -----
 Commands delegate to the same public interfaces used from Python. Schema and validation
 operate without engine discovery; compile, run and export-idf require EnergyPlus 24.2.
-The view command serves local artifacts until interrupted.
+Geometry inspection is exported as scene data through the Python API.
 
 Examples
 --------
@@ -44,7 +44,7 @@ from .specs import BuildingSpec
 
 
 def main(argv=None):
-    """Dispatch schema, validation, compilation, simulation, export or preview commands.
+    """Dispatch schema, validation, compilation, simulation or export commands.
 
     Parameters
     ----------
@@ -64,8 +64,8 @@ def main(argv=None):
 
     Notes
     -----
-    argv=None reads process arguments. argparse exits on invalid syntax; view blocks until
-    Ctrl-C. Compilation/run/export require EnergyPlus 24.2; schema and validation do not
+    argv=None reads process arguments. argparse exits on invalid syntax.
+    Compilation/run/export require EnergyPlus 24.2; schema and validation do not
     instantiate the engine.
 
     Examples
@@ -77,7 +77,7 @@ def main(argv=None):
         main(["schema"])
     """
 
-    # 1. Dispatch schema, validation, compilation, simulation, export or preview commands.
+    # 1. Dispatch schema, validation, compilation, simulation or export commands.
     parser = argparse.ArgumentParser(prog="epsm-core")
     parser.add_argument(
         "--log-level",
@@ -93,26 +93,8 @@ def main(argv=None):
         p.add_argument("spec", type=Path)
         if name != "validate":
             p.add_argument("output", type=Path)
-    view = sub.add_parser("view", help="Inspect existing epJSON without simulation")
-    view.add_argument("epjson", type=Path)
-    view.add_argument(
-        "--headless", action="store_true", help="Print loopback URL without launching browser"
-    )
     args = parser.parse_args(argv)
     with configure_cli(args.log_level, "epsm_core"):
-        if args.command == "view":
-            import time
-
-            from .viewer import view_epjson
-
-            with view_epjson(args.epjson, launch_browser=not args.headless) as handle:
-                print(handle.url, flush=True)
-                try:
-                    while True:
-                        time.sleep(1)
-                except KeyboardInterrupt:
-                    pass
-            return
         if args.command == "schema":
             print(json.dumps(BuildingSpec.model_json_schema(), indent=2))
             return

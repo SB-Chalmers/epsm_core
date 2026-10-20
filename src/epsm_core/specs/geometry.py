@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-06
+# Date modified: 2026-10-20
 # Changelog:
+#   2026-10-20 - Export pure polygon scenes; move display lifecycle out of Core.
 #   2026-09-06 - Document geometry interfaces, examples, constraints and processing rationale.
 
 """Geometry input specifications.
@@ -1501,61 +1502,33 @@ class GeometrySpec(Spec):
 
         return facade_catalog(self)
 
-    def widget(self, *, facade=None, context=None, height=600):
-        """Return an embedded, offline notebook widget; requires the notebook extra.
-
-        Uses the same resolved surfaces as ``view`` without a local HTTP server.
-        Close the widget to release frontend resources. This does not simulate.
-        """
-        from ..notebook import geometry_widget
-
-        return geometry_widget(self, facade=facade, context=context, height=height)
-
-    def view(self, directory=None, *, facade=None, context=None, launch_browser=True):
-        """Write and serve a geometry-only preview with optional facade and context.
+    def scene(self, *, facade=None, context=None):
+        """Export loaded geometry as a neutral polygon scene in metres.
 
         Parameters
         ----------
-        directory : str or Path or None
-            Local artifact directory; consult Notes for creation, overwrite and default-path
-            behavior. Default: ``None``.
-        facade : FacadeSpec or None
-            Window and shading controls; None uses the preview's zero-glazing default. Default:
-            ``None``.
-        context : ContextSpec or None
-            Explicit shading neighbours; existing context is retained by synthetic generation.
-            Default: ``None``.
-        launch_browser : bool
-            Open the default browser when true; the returned server still needs cleanup.
-            Default: ``True``.
+        facade : FacadeSpec or None, optional
+            Window and shading inputs; absence means zero glazing.
+        context : ContextSpec or None, optional
+            Explicit neighbouring geometry in the same metric coordinate frame.
 
         Returns
         -------
-        ViewerHandle
-            Live context-managed loopback preview.
+        dict
+            Detached JSON values using ``epsm.scene/1`` and Z-up coordinates.
 
         Notes
         -----
-        No weather or construction input is required. Writes preview artifacts, optionally
-        launches a browser, and requires explicit handle cleanup.
+        No weather, materials, engine, files or display runtime are required.
+        Original surface polygons and opening rings retain their metadata.
 
         Examples
         --------
-        Example::
-
-            from epsm_core.specs.geometry import Footprint
-            from epsm_core.specs.geometry import GeometrySpec
-
-            geometry = GeometrySpec.from_footprint(
-                Footprint.rectangle(10, 8), storeys=2, storey_height_m=3
-            )
-            with geometry.view("output/review", launch_browser=False) as handle:
-                print(handle.url)
+        >>> from epsm_core import Footprint, GeometrySpec
+        >>> geometry = GeometrySpec.from_footprint(Footprint.rectangle(4, 3), storeys=1, storey_height_m=3)
+        >>> geometry.scene()['units']
+        'm'
         """
+        from ..inspection import geometry_scene_data
 
-        # 1. Write and serve a geometry-only preview with optional facade and context.
-        from ..inspection import preview_geometry
-
-        return preview_geometry(
-            self, directory, facade=facade, context=context, launch_browser=launch_browser
-        )
+        return geometry_scene_data(self, facade=facade, context=context)

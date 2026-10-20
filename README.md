@@ -43,18 +43,27 @@ Operational assumptions are explicit: choose `BuildingBuilder(building_use="resi
 
 ```python
 from epsm_core import Footprint, GeometrySpec, ZoningSpec, synthetic_context
+from epsm_viewer import view_scene  # Optional display package; install its built wheel.
 
 geometry = GeometrySpec.from_footprint(
     Footprint.rectangle(30, 20), storeys=3, storey_height_m=3,
     zoning=ZoningSpec(mode="perimeter_core", depth_m=4.5),
 )
 context = synthetic_context(geometry, preset="urban_lowrise_dense", seed=0)
-with geometry.view("output/preview", context=context) as preview:
+with view_scene(geometry.scene(context=context), directory="output/preview") as preview:
     print(preview.url)
     input("Press Enter to stop the preview. ")
 ```
 
-Geometry inspection needs no EnergyPlus installation or weather. Simulation uses a validated immutable `BuildingSpec`, a local EPW, and EnergyPlus 24.2. Python 3.11 or later is required.
+Core's `geometry.scene()`, `BuildingSpec.scene()` and physical `Building.scene()`
+return portable scene dictionaries without opening a browser or requiring weather
+or EnergyPlus. Interactive display belongs to the separate `epsm_viewer` package.
+Install its built Python wheel alongside Core; notebook display additionally needs
+the viewer's `notebook` extra. The viewer is not bundled with Core or assumed to
+be published on a package index. See [viewer migration](docs/viewer-migration.md)
+for installation and the browser/notebook examples.
+
+Simulation uses a validated immutable `BuildingSpec`, a local EPW, and EnergyPlus 24.2. Python 3.11 or later is required.
 
 ```sh
 python -m pip install -e '.[dev,geometry]'
@@ -69,7 +78,8 @@ The package owns building inputs, geometry, compilation, execution and physical 
 `epsm_data` owns shared construction graph classes, catalogue values and sourced operational
 assumptions. Core factories read those source records when explicitly called. `epsm_db`
 owns building evidence and ingestion; `epsm_workflows` owns execution and optimisation.
-Importing Core does not discover datasets or use the network.
+`epsm_viewer` owns browser and notebook display of loaded scene data; Studio owns
+application adapters. Importing Core does not discover datasets or use the network.
 
 Maintain source in `src/`, tests in `tests/`, and executable examples in `examples/`. External inputs belong in ignored `data/`; generated artifacts belong in ignored `output/`. Historical evidence is kept separately in `ARCHIVE/`. Current tests and examples do not depend on archived studies.
 

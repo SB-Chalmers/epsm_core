@@ -24,6 +24,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from IPython.display import display
 from epsm_core import *
+from epsm_viewer import scene_widget, view_scene, write_scene
 from demo.support.common import (building, geometry, epw, engine, workspace, table,
                                  plans, preview, bars, weather_frame, result_frame, result_plots)
 from epsm_core.inspection import geometry_scene
@@ -39,7 +40,7 @@ def nb(folder, name, title, purpose, steps, *, needs=(), lesson=""):
         "**How to use:** select the **EPSM Core Demo** kernel and Run All from a fresh kernel. "
         "Each notebook is independent; generated files go under `output/demo/`. "
         "Setup instructions and the complete learning path are in [the demo guide](../README.md).\n\n"
-    ) + "**Prerequisites:** " + (", ".join(needs) if needs else "notebook environment; no EnergyPlus or weather required") + "."
+    ) + "**Prerequisites:** installed epsm_viewer wheel with notebook extra; " + (", ".join(needs) if needs else "notebook environment; no EnergyPlus or weather required") + "."
     cells = [nbf.v4.new_markdown_cell(intro), nbf.v4.new_code_cell(SETUP)]
     for heading, explanation, code in steps:
         cells += [nbf.v4.new_markdown_cell(f"## {heading}\n\n{explanation}"), nbf.v4.new_code_cell(textwrap.dedent(code).strip())]
@@ -265,7 +266,7 @@ for mode in ["scaled","wwr","dimensions"]:
     facade = custom.updated(layout=layout)
     scene, report = geometry_scene(g, facade=facade)
     counts[mode] = report["logical_window_count"]
-    display(g.widget(facade=facade, height=450))
+    display(scene_widget(g.scene(facade=facade), height=450))
 bars(counts, "logical windows", "Opening layout comparison")
 '''),
 ('Add explicit shading geometry', 'Reveals model recess shading, not frame conduction. Open balconies and overhangs are shading surfaces; they are not enclosed thermal spaces.', '''
@@ -273,7 +274,7 @@ shaded = custom.updated(reveal_depth_m=.12, overhang=OverhangSpec(depth_m=.6), b
 scene, report = geometry_scene(g, facade=shaded)
 assert len(scene["Shading:Building:Detailed"]) > 0
 table({"logical_windows": report["logical_window_count"], "thermal_panes": report["thermal_pane_count"], "shades": len(scene["Shading:Building:Detailed"])})
-display(g.widget(facade=shaded))
+display(scene_widget(g.scene(facade=shaded)))
 ''')], lesson='At stock scale, separate uncertain WWR, glazing performance and shade geometry. Assigning more geometric detail is not evidence that the assumed inputs are better.')
 nb('01_geometry','06_experimental_apartment_layouts','Experimental apartment layouts',
    'Inspect bounded residential layout generation, type mix, access and the explicit fallback policy.', [
@@ -311,12 +312,12 @@ g = geometry()
 neighbour = ContextBuilding(identifier="north-neighbour", footprints=(Footprint(exterior=tuple(box(5,30,25,45).exterior.coords)),), height_m=18)
 context = ContextSpec(buildings=(neighbour,))
 table(neighbour.model_dump())
-display(g.widget(context=context))
+display(scene_widget(g.scene(context=context)))
 '''),
 ('Generate seeded scenarios', 'The same seed makes the low-rise and high-rise horizontal geometry comparable. These presets change shading, not weather, wind or engine terrain.', '''
 contexts = {name: synthetic_context(g, preset=name, seed=17) for name in ["rural","urban_lowrise_dense","urban_highrise_dense"]}
 for name,c in contexts.items():
-    display(g.widget(context=c, height=450))
+    display(scene_widget(g.scene(context=c), height=450))
 table([{ "preset": name, **c.generation} for name,c in contexts.items()])
 bars({name:len(c.buildings) for name,c in contexts.items()}, "neighbours", "Achieved context counts")
 '''),
@@ -717,8 +718,9 @@ written=compiler.write(b,OUT/"compiled")
 assert written.run_id==report.run_id
 assert compiler.run_id(b)==report.run_id
 table([{ "artifact":p.name,"bytes":p.stat().st_size} for p in (OUT/"compiled").iterdir()])
-from epsm_core.viewer import widget_epjson
-display(widget_epjson(OUT/"compiled/model.epJSON"))
+from epsm_core import scene_data
+from epsm_viewer import scene_widget
+display(scene_widget(scene_data(model, report.data)))
 '''),
 ('Exercise CLI compile and IDF export', 'IDF is an engine interchange artifact, not a replacement for the explicit BuildingSpec. Check the CLI output and retain the original spec and report.', '''
 import subprocess
@@ -752,24 +754,22 @@ print(proc.stdout[:1200])
 nb('07_visualise','01_embedded_geometry_widget','Embedded 3D geometry widget',
    'Inspect resolved geometry directly inside JupyterLab and VS Code, including when the kernel runs on another machine.', [
 ('Display an engine-independent scene', 'The widget receives bundled JavaScript and scene data through the kernel. It does not depend on a browser reaching the kernel machine through localhost.', '''
-from epsm_core.notebook import GeometryWidget
-from epsm_core.viewer import viewer_data
+from epsm_viewer import scene_widget
 g=geometry(Footprint.u_shape(30,30,14,20),roof=RoofSpec(shape="hip"))
-widget=g.widget(height=600)
-assert isinstance(widget,GeometryWidget)
+widget=scene_widget(g.scene(), height=600)
 assert widget._repr_mimebundle_()[0]["application/vnd.jupyter.widget-view+json"]["model_id"]
 display(widget)
 preview(g,"Static reference for non-widget readers",interactive=False)
 '''),
 ('Use inspection controls', 'Drag to orbit, scroll to zoom, choose a storey and enable cutaway. Select a surface using the dropdown or by clicking the geometry; the next cell reads the Python selection state.', '''
 print("Selected surface (empty until you select one):",widget.selected_surface)
-scene,report=geometry_scene(g)
-assert widget.scene==viewer_data(scene,report)
+scene=g.scene()
+assert widget.scene == scene
 table({"objects":len(widget.scene["objects"]),"geometry_only":widget.scene["report"]["geometry_only"],"height_px":widget.height})
 '''),
 ('Manage widget lifetime', 'Changing height updates the existing view. close releases the frontend when you are finished; do not close the visible widget immediately after displaying it.', '''
 widget.height=650
-probe=g.widget(height=250)
+probe=scene_widget(g.scene(), height=250)
 probe.close()  # An undisplayed probe verifies explicit lifecycle use.
 bars({kind:sum(o["kind"]==kind for o in widget.scene["objects"]) for kind in {o["kind"] for o in widget.scene["objects"]}},"objects","Scene inventory")
 # When finished inspecting the visible widget, run: widget.close()
@@ -777,10 +777,12 @@ bars({kind:sum(o["kind"]==kind for o in widget.scene["objects"]) for kind in {o[
 nb('07_visualise','02_compiled_model_inspection','Inspect actual compiled surfaces',
    'Compare a geometry-only preview with compiled constructions and diagnostic evidence.', [
 ('Compile an explicit building', 'Compiled epJSON contains thermal constructions and load assignments unavailable to a geometry-only preview. Neither display mode runs EnergyPlus by itself.', '''
-from epsm_core.viewer import widget_epjson,write_viewer,view_epjson
+from epsm_core import scene_data
+from epsm_viewer import scene_widget, view_scene, write_scene
 b=building(); compiler=EnergyPlusCompiler(engine())
 report=compiler.write(b,OUT/"compiled")
-widget=widget_epjson(OUT/"compiled/model.epJSON")
+compiled_scene = scene_data(json.loads((OUT/"compiled/model.epJSON").read_text()), report.data)
+widget=scene_widget(compiled_scene)
 display(widget)
 preview(b,"Static geometry reference",interactive=False)
 '''),
@@ -789,10 +791,10 @@ table(pd.DataFrame.from_dict(report.data["constructions"],orient="index").reset_
 assert not widget.scene["report"].get("geometry_only",False)
 bars({"zones":len(report.data["zones"]),"surfaces":len(report.data["surfaces"])},"count","Compiled inventory")
 '''),
-('Preserve the standalone viewer API', 'The browser-server handle remains available for standalone work. It must remain open while a browser uses its URL; the context manager below is only a short HTTP smoke test.', '''
+('Use the external viewer explicitly', 'The browser-server handle remains available for standalone work. It must remain open while a browser uses its URL; the context manager below is only a short HTTP smoke test.', '''
 from urllib.request import urlopen
-bundle=write_viewer(OUT/"compiled/model.epJSON",OUT/"browser-bundle")
-with view_epjson(OUT/"compiled/model.epJSON",directory=OUT/"served",launch_browser=False) as handle:
+bundle=write_scene(compiled_scene, directory=OUT/"browser-bundle")
+with view_scene(compiled_scene, directory=OUT/"served", launch_browser=False) as handle:
     assert urlopen(handle.url).status==200
     print("Standalone viewer served successfully")
 table([{ "file":p.name,"bytes":p.stat().st_size} for p in bundle.iterdir()])
@@ -801,9 +803,9 @@ nb('07_visualise','03_comparative_geometry_review','Independent comparative geom
    'Compare multiple embedded scenes and preserve a readable static reference without changing physical model inputs.', [
 ('Display independent widgets', 'Each widget has its own controls and selection state. Changing one view must not change another or mutate the underlying immutable GeometrySpec.', '''
 from ipywidgets import HBox,Layout
-from epsm_core import preview_geometry
+from epsm_viewer import scene_widget, view_scene
 left=geometry(); right=left.updated(zoning=ZoningSpec(mode="perimeter_core"),roof=RoofSpec(shape="gable"))
-w1=left.widget(height=500); w2=right.widget(height=500)
+w1=scene_widget(left.scene(), height=500); w2=scene_widget(right.scene(), height=500)
 display(HBox([w1,w2],layout=Layout(width="100%")))
 assert w1.model_id!=w2.model_id
 preview(left,"Per-storey baseline",interactive=False)
@@ -814,11 +816,11 @@ bars({"left":len(w1.scene["objects"]),"right":len(w2.scene["objects"])},"objects
 table({"left_selection":w1.selected_surface,"right_selection":w2.selected_surface})
 assert left.zoning.mode=="per_storey"
 '''),
-('Exercise public preview aliases', 'GeometrySpec.view, BuildingSpec.view and preview_geometry retain standalone server behaviour. Notebook widgets are the inline interface; the following handles are closed promptly after HTTP checks.', '''
+('Separate scene generation from display', 'Core scene methods provide data; epsm_viewer owns standalone display. Notebook widgets are the inline interface; the following handles are closed promptly after HTTP checks.', '''
 from urllib.request import urlopen
-with left.view(OUT/"geometry",launch_browser=False) as handle:
+with view_scene(left.scene(), directory=OUT/"geometry", launch_browser=False) as handle:
     assert urlopen(handle.url).status==200
-with preview_geometry(right,OUT/"preview",launch_browser=False) as handle:
+with view_scene(right.scene(), directory=OUT/"preview", launch_browser=False) as handle:
     assert urlopen(handle.url).status==200
 ''')], lesson='Keep preview complexity bounded when inspecting many buildings. A representative gallery is more useful than loading a whole national stock into one WebGL scene.')
 nb('08_batch','01_district_context_and_parallel_runs','District context and bounded parallel runs',

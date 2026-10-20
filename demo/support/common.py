@@ -13,9 +13,7 @@ import pandas as pd
 from IPython.display import display
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
-from epsm_core import BuildingSpec, Footprint, GeometrySpec
-from epsm_core.inspection import geometry_scene
-from epsm_core.viewer import viewer_data
+from epsm_core import Footprint, GeometrySpec
 
 ROOT = Path(__file__).resolve().parents[2]
 WEATHER = Path(os.environ.get("EPSM_WEATHER_DIR", ROOT / "data/weather"))
@@ -95,18 +93,15 @@ def plans(shapes, title="Metric footprint diversity", figsize=None):
 
 def preview(value, title="Resolved geometry", interactive=True, figsize=(9, 5)):
     """Static resolved surface evidence plus an optional real embedded widget."""
-    if isinstance(value, BuildingSpec):
-        model, report = geometry_scene(value.geometry, facade=value.facade, context=value.context)
-    else:
-        model, report = geometry_scene(value)
-    objects = viewer_data(model, report)["objects"]
+    scene = value.scene()
+    objects = scene["objects"]
     fig = plt.figure(figsize=figsize)
     ax = fig.add_subplot(projection="3d")
     points = []
     for obj in objects:
         xyz = np.asarray(obj["vertices"])
         points.extend(xyz)
-        color = "#4c9ed9" if obj["kind"] == "window" else "#79a795" if obj["kind"] == "context" else "#dfc9a4"
+        color = "#4c9ed9" if obj["kind"] == "opening" else "#79a795" if obj["kind"] == "context" else "#dfc9a4"
         ax.add_collection3d(Poly3DCollection([xyz], facecolor=color, edgecolor="#425568", linewidth=.3, alpha=.45))
     xyz = np.asarray(points)
     if len(xyz):
@@ -116,9 +111,11 @@ def preview(value, title="Resolved geometry", interactive=True, figsize=(9, 5)):
     ax.set(title=title, xlabel="x [m]", ylabel="y [m]", zlabel="z [m]")
     plt.show(); plt.close(fig)
     if interactive:
-        widget = value.widget()
+        from epsm_viewer import scene_widget
+
+        widget = scene_widget(scene)
         # Display exactly once, including when preview() is the last expression.
-        # Use value.widget() directly when a reusable widget handle is needed.
+        # Use scene_widget(value.scene()) when a reusable handle is needed.
         display(widget)
 
 
