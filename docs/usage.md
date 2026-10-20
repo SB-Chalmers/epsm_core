@@ -72,11 +72,35 @@ python examples/building.py data/weather/SWE_VG_Gothenburg-Landvetter.AP.025260_
 epsm-core validate output/building.json
 epsm-core schema > output/building-schema.json
 epsm-core --energyplus /path/to/energyplus compile output/building.json output/model
-epsm-core view output/model/model.epJSON --headless
 epsm-core --energyplus /path/to/energyplus run output/building.json output/run
 ```
 
 Compile/run destinations must be empty. Use a new destination for another run. Validate checks the input contract; compile additionally checks the generated physical surfaces and EnergyPlus schema; run performs engine and result validation.
+
+To inspect the compiled surfaces, install the separate Viewer wheel in the same
+Python environment using the [viewer guide](viewer-migration.md#install-optional-display-tools).
+Read the compilation artifacts explicitly, export Core scene data, then write a
+static Viewer bundle:
+
+```python
+import json
+from pathlib import Path
+from epsm_core import scene_data
+from epsm_viewer import write_scene
+
+compiled = Path("output/model")
+model = json.loads((compiled / "model.epJSON").read_text())
+saved_report = json.loads((compiled / "compilation.json").read_text())
+report = json.loads(saved_report["report_json"])
+scene = scene_data(model, report)
+write_scene(scene, directory="output/model-viewer")
+```
+
+Serve the bundle locally and open `http://127.0.0.1:8000/`:
+
+```sh
+python -m http.server 8000 --bind 127.0.0.1 --directory output/model-viewer
+```
 
 The Python workflow is: construct known footprint/storeys, inspect facade IDs, specify aggregate window/glazing/shading assumptions, choose roof and zoning, add context, preview, then attach constructions/weather/operations in `BuildingSpec` and simulate. See [API examples](api.md) and [feature limits](geometry.md).
 
