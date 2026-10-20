@@ -31,4 +31,4 @@ Example::
     assert isinstance(__version__, str)
 """
 
-__version__ = "0.8.0"
+__version__ = "0.8.1"

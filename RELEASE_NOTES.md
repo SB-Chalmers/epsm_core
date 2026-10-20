@@ -1,3 +1,10 @@
+# Core 0.8.1 — RC context readiness
+
+RC readiness now accepts explicit context buildings for the ISO 13790 hourly
+horizon method implemented by RC 0.8.3. Facade overhangs, reveals and balconies
+remain unsupported by that adapter. Physical context, scene exports, EnergyPlus
+compilation and thermal input formats retain their existing contracts.
+
 # Core 0.8.0 — separate viewer ownership
 
 - Browser rendering, JavaScript assets, local preview hosting and optional

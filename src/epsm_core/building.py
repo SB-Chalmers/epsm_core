@@ -1123,8 +1123,8 @@ class Building:
                     unsupported.append("epsm_rc requires conditioned above-grade parts")
                 if self.geometry.basement_depth_m and not self.geometry.basement_conditioned:
                     unsupported.append("epsm_rc cannot aggregate an unconditioned basement")
-                if self.context.buildings:
-                    unsupported.append("epsm_rc does not model explicit context shading")
+                # Context buildings are consumed by RC's ISO 13790 hourly
+                # horizon approximation; facade shading details are separate.
                 if self.facade is not None and (self.facade.balconies
                         or self.facade.reveal_depth_m or self.facade.overhang.depth_m
                         or any(o.reveal_depth_m or (o.overhang and o.overhang.depth_m)
