@@ -147,6 +147,8 @@ __all__ = [
     "scene_schema",
     "geometry_scene_data",
     "CompilerSettings",
+    "output_capabilities",
+    "delivery_output_capabilities",
     "HourlyOutputRequest",
     "RoofSpec",
     "WindowLayoutSpec",
@@ -224,6 +226,7 @@ __all__ = [
 from .context import synthetic_context
 from .inspection import geometry_scene_data
 from .nonresidential import SvebyNonResidentialSpec
+from .outputs import delivery_output_capabilities, output_capabilities
 
 # Explicit area-weighted mixed-use operation (no implicit spatial allocation).
 from .programs import ProgramBlend as ProgramBlend
