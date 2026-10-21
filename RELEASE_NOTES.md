@@ -1,3 +1,13 @@
+# Core 0.8.2 — output discovery
+
+`output_capabilities` describes exact normalized signal names, resolutions,
+scopes, units and conditional delivery/PV availability without initializing an
+engine. Complete public Building resolution also supplies exact zone-temperature
+keys. Free-text additional EnergyPlus requests remain explicitly unverified.
+Shared delivery accounting has a public descriptor handoff for reduced engines.
+Existing annual EUI, peak and maximum-temperature scalars now retain unit labels;
+their numerical values and existing result formats are unchanged.
+
 # Core 0.8.1 — RC context readiness
 
 RC readiness accepts explicit context buildings when the caller declares
