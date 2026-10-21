@@ -1,4 +1,15 @@
-# epsm_core
+# EPSM Core
+
+<!-- EPSM introduction: Pocket CAD -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/brand/epsm_core-dark.png">
+  <img src="docs/assets/brand/epsm_core.png" width="64" height="64" alt="EPSM Core — physical building model">
+</picture>
+
+Create physical building models, inspect their geometry and materials, and run EnergyPlus simulations.
+
+[Explore the EPSM platform](https://github.com/SB-Chalmers/epsm/blob/main/docs/platform.md)
+<!-- /EPSM introduction -->
 
 Core 0.8.2 exports portable polygon scenes for the independent `epsm_viewer` package. Core owns physical geometry and scientific metadata; Viewer owns browser and notebook display. Shared snapshot preparation, physical cold-attic shells, basement controls and shared-wall ownership retain their existing behavior. Core consumes Data 0.6.0 definitions. See [viewer migration](docs/viewer-migration.md), [release notes](RELEASE_NOTES.md), [roof and basement support](docs/roofs-and-basements.md), [shared-wall assumptions](docs/party-walls.md) and [prepared geometry](docs/geometry-cache.md).
 
