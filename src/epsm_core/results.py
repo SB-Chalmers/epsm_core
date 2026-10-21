@@ -43,6 +43,7 @@ from epsm_core._logging import operation as logged_operation
 
 from .compiler import ENERGY_VARIABLES
 from .failures import GEOMETRY_INVARIANT_FAILURE, MISSING_EXPECTED_OUTPUT, ResultValidationError
+from .outputs import DEMAND_OUTPUTS
 from .weather import hourly_axis
 
 
@@ -209,7 +210,7 @@ def read_results(sql_path, spec, report, diagnostics):
     # 4. Convert Joules to kWh and independently reconcile annual totals for each demand signal.
     scalar = {}
     for name, output in zip(
-        ENERGY_VARIABLES, ("space_heating_demand", "cooling_demand", "dhw_load")
+        ENERGY_VARIABLES, DEMAND_OUTPUTS
     ):
         signals = [v for k, v in hourly.items() if k.startswith(name + "::")]
         if not signals:
@@ -226,12 +227,16 @@ def read_results(sql_path, spec, report, diagnostics):
         if output != "dhw_load":
             scalar["peak_hourly_average_" + output + "_kw"] = float(values.max())
         scalar[output + "_eui_kwh_m2"] = total / report.data["conditioned_floor_area_m2"]
+        units[output + "_eui_kwh_m2"] = "kWh/m2"
+        if output != "dhw_load":
+            units["peak_hourly_average_" + output + "_kw"] = "kW"
         hourly[output + "_kwh"] = values
         units[output + "_kwh"] = "kWh"
     scalar["ideal_thermal_load_kwh"] = scalar["space_heating_demand_kwh"] + scalar["dhw_load_kwh"]
     scalar["ideal_thermal_load_eui_kwh_m2"] = (
         scalar["ideal_thermal_load_kwh"] / report.data["conditioned_floor_area_m2"]
     )
+    units["ideal_thermal_load_eui_kwh_m2"] = "kWh/m2"
     hourly["ideal_thermal_load_kwh"] = hourly["space_heating_demand_kwh"] + hourly["dhw_load_kwh"]
     units["ideal_thermal_load_kwh"] = "kWh"
     # 5. Independently reconcile the engine's initialized geometry with the compiler.
@@ -300,6 +305,7 @@ def read_results(sql_path, spec, report, diagnostics):
         scalar["maximum_hourly_average_zone_temperature_c"] = float(
             max(v.max() for v in temperatures)
         )
+        units["maximum_hourly_average_zone_temperature_c"] = "C"
     for variable, output in (
         ("Zone Heating Setpoint Not Met Time", "heating_unmet_zone_hours"),
         ("Zone Cooling Setpoint Not Met Time", "cooling_unmet_zone_hours"),

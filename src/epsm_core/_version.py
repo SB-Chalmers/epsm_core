@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-10-20
+# Date modified: 2026-10-21
 # Changelog:
+#   2026-10-21 - Add public output capability discovery without engine startup.
 #   2026-10-20 - Prepare 0.8.0 for the separate Viewer display API.
 #   2026-09-06 - Document _version interfaces, examples, constraints and processing rationale.
 
@@ -31,4 +32,4 @@ Example::
     assert isinstance(__version__, str)
 """
 
-__version__ = "0.8.1"
+__version__ = "0.8.2"
