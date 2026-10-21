@@ -1,13 +1,13 @@
 """Output discovery follows owner contracts without starting EnergyPlus."""
 
-from importlib.resources import files
-
 import pytest
 
 from epsm_core import Building, Weather
 
 
-def test_public_output_catalogue_has_normalized_and_explicit_zone_signals(monkeypatch):
+def test_public_output_catalogue_has_normalized_and_explicit_zone_signals(
+    monkeypatch, synthetic_weather
+):
     import epsm_core
     from epsm_core import output_capabilities
     from epsm_core.specs import DeliverySpec
@@ -18,7 +18,7 @@ def test_public_output_catalogue_has_normalized_and_explicit_zone_signals(monkey
     monkeypatch.setattr(epsm_core.EnergyPlusCompiler, "__init__", forbidden)
     building = Building(preset="illustrative-reference")
     building.hvac = building.hvac.with_changes(delivery=DeliverySpec())
-    weather = Weather.from_epw(files("epsm_rc") / "data/epw/goteborg.epw")
+    weather = Weather.from_epw(synthetic_weather)
     catalogue = output_capabilities(building, weather=weather)
     outputs = {(row["name"], row["resolution"], row["level"]): row for row in catalogue["outputs"]}
     assert outputs["space_heating_demand_kwh", "hourly", "building"]["unit"] == "kWh"
