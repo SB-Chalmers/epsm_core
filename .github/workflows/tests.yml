@@ -1,24 +1,9 @@
-name: Core tests
-on:
-  pull_request:
-    branches: [dev, main]
-  push:
-    branches: [main]
-  workflow_dispatch:
-    inputs:
-      development_dependencies:
-        description: Check current Data main on Python 3.13 instead of release pins
-        type: boolean
-        default: false
-
+name: Release verification
 permissions:
   contents: read
-
-# A newer PR revision replaces its old checks. Release/manual runs stay independent.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.run_id }}
-  cancel-in-progress: true
-
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
   combination:
     runs-on: ubuntu-latest
@@ -26,30 +11,30 @@ jobs:
     outputs:
       matrix: ${{ steps.matrix.outputs.matrix }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          repository: SB-Chalmers/epsm
-          ssh-key: ${{ secrets.EPSM_REPO_DEPLOY_KEY }}
-          persist-credentials: false
-          ref: main
-          path: .ci/platform
-          sparse-checkout: |
-            /compatibility.json
-            /scripts/compatibility_matrix.py
-          sparse-checkout-cone-mode: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - id: matrix
-        env:
-          MATRIX_MODE: ${{ inputs.development_dependencies && 'main' || 'pinned' }}
-        run: |
-          echo "EPSM manifest: $(git -C .ci/platform rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
-          python .ci/platform/scripts/compatibility_matrix.py \
-            --manifest .ci/platform/compatibility.json --consumer epsm_core \
-            --packages epsm_data \
-            --manifest-revision "$(git -C .ci/platform rev-parse HEAD)" \
-            --mode "$MATRIX_MODE" >> "$GITHUB_OUTPUT"
+    - uses: actions/checkout@v4
+      with:
+        repository: SB-Chalmers/epsm
+        ssh-key: ${{ secrets.EPSM_REPO_DEPLOY_KEY }}
+        persist-credentials: false
+        ref: main
+        path: .ci/platform
+        sparse-checkout: |
+          /compatibility.json
+          /scripts/compatibility_matrix.py
+        sparse-checkout-cone-mode: false
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - id: matrix
+      env:
+        MATRIX_MODE: ${{ inputs.development_dependencies && 'main' || 'pinned' }}
+      run: |
+        echo "EPSM manifest: $(git -C .ci/platform rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
+        python .ci/platform/scripts/compatibility_matrix.py \
+          --manifest .ci/platform/compatibility.json --consumer epsm_core \
+          --packages epsm_data \
+          --manifest-revision "$(git -C .ci/platform rev-parse HEAD)" \
+          --mode "$MATRIX_MODE" >> "$GITHUB_OUTPUT"
   unit:
     name: unit (${{ matrix.python }}, ${{ matrix.mode }})
     needs: combination
@@ -58,82 +43,89 @@ jobs:
     strategy:
       matrix: ${{ fromJSON(needs.combination.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v4
-      - name: Check private prerelease dependency access
-        env:
-          EPSM_DATA_DEPLOY_KEY: ${{ secrets.EPSM_DATA_DEPLOY_KEY }}
-        run: |
-          if [ -z "$EPSM_DATA_DEPLOY_KEY" ]; then
-            echo "::error::Set EPSM_DATA_DEPLOY_KEY to a read-only deploy key for SB-Chalmers/epsm_data. The private dependency requires read access; tests have not run."
-            exit 1
-          fi
-      - uses: actions/checkout@v4
-        with:
-          repository: SB-Chalmers/epsm_data
-          ssh-key: ${{ secrets.EPSM_DATA_DEPLOY_KEY }}
-          persist-credentials: false
-          ref: ${{ matrix.epsm_data }}
-          path: .ci/epsm_data
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python }}
-          cache: pip
-          cache-dependency-path: |
-            pyproject.toml
-            .ci/epsm_data/pyproject.toml
-      - run: python -m pip install build .ci/epsm_data '.[dev,geometry]'
-      - name: Reuse required EnergyPlus 24.2
-        id: energyplus-cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ runner.temp }}/energyplus
-          key: energyplus-${{ runner.os }}-${{ runner.arch }}-ubuntu22.04-24.2.0-e7ecb2d53b
-      - name: Install required EnergyPlus 24.2
-        if: steps.energyplus-cache.outputs.cache-hit != 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh release download v24.2.0 --repo NatLabRockies/EnergyPlus --pattern 'EnergyPlus-24.2.0-e7ecb2d53b-Linux-Ubuntu22.04-x86_64.tar.gz' --dir "$RUNNER_TEMP"
-          mkdir -p "$RUNNER_TEMP/energyplus"
-          tar -xzf "$RUNNER_TEMP/EnergyPlus-24.2.0-e7ecb2d53b-Linux-Ubuntu22.04-x86_64.tar.gz" -C "$RUNNER_TEMP/energyplus" --strip-components=1
-      - name: Select required EnergyPlus 24.2
-        run: |
-          test -x "$RUNNER_TEMP/energyplus/energyplus"
-          echo "ENERGYPLUS_EXE=$RUNNER_TEMP/energyplus/energyplus" >> "$GITHUB_ENV"
-      - name: Record tested revisions
-        run: |
-          echo "EPSM compatibility manifest: ${{ matrix.manifest_revision }}"
-          git rev-parse HEAD
-          git -C .ci/epsm_data rev-parse HEAD
-          "$ENERGYPLUS_EXE" --version
-      - run: ruff check src/epsm_core examples
-      - name: Build and install release distributions
-        run: |
-          python -m build
-          python -m pip install --no-deps --force-reinstall dist/epsm_core-*.whl
-      - name: Run full installed Core suite with real engine
-        env:
-          EPSM_REQUIRE_ENERGYPLUS: '1'
-        run: pytest -o pythonpath= --junitxml=core-results.xml
-      - name: Check installed scene handoff without display dependencies
-        run: |
-          cd "$RUNNER_TEMP"
-          python - <<'PYTHON'
-          import importlib.util
-          import json
-          import sys
-          from epsm_core import Building, Footprint
-          building = Building.from_footprint(Footprint.rectangle(4, 3), storeys=1, storey_height_m=3)
-          assert json.loads(json.dumps(building.scene()))['schema'] == 'epsm.scene/1'
-          assert importlib.util.find_spec('epsm_core.viewer') is None
-          assert importlib.util.find_spec('epsm_core.notebook') is None
-          assert not any(name in sys.modules for name in ('epsm_viewer', 'anywidget', 'ipywidgets'))
-          PYTHON
-      - run: python -m pip check
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: core-${{ matrix.python }}-${{ matrix.mode }}
-          path: |
-            core-results.xml
-            dist/
+    - uses: actions/checkout@v4
+    - name: Check private prerelease dependency access
+      env:
+        EPSM_DATA_DEPLOY_KEY: ${{ secrets.EPSM_DATA_DEPLOY_KEY }}
+      run: |
+        if [ -z "$EPSM_DATA_DEPLOY_KEY" ]; then
+          echo "::error::Set EPSM_DATA_DEPLOY_KEY to a read-only deploy key for SB-Chalmers/epsm_data. The private dependency requires read access; tests have not run."
+          exit 1
+        fi
+    - uses: actions/checkout@v4
+      with:
+        repository: SB-Chalmers/epsm_data
+        ssh-key: ${{ secrets.EPSM_DATA_DEPLOY_KEY }}
+        persist-credentials: false
+        ref: ${{ matrix.epsm_data }}
+        path: .ci/epsm_data
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python }}
+        cache: pip
+        cache-dependency-path: |
+          pyproject.toml
+          .ci/epsm_data/pyproject.toml
+    - run: python -m pip install build .ci/epsm_data '.[dev,geometry]'
+    - name: Reuse required EnergyPlus 24.2
+      id: energyplus-cache
+      uses: actions/cache@v4
+      with:
+        path: ${{ runner.temp }}/energyplus
+        key: energyplus-${{ runner.os }}-${{ runner.arch }}-ubuntu22.04-24.2.0-e7ecb2d53b
+    - name: Install required EnergyPlus 24.2
+      if: steps.energyplus-cache.outputs.cache-hit != 'true'
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        gh release download v24.2.0 --repo NatLabRockies/EnergyPlus --pattern 'EnergyPlus-24.2.0-e7ecb2d53b-Linux-Ubuntu22.04-x86_64.tar.gz' --dir "$RUNNER_TEMP"
+        mkdir -p "$RUNNER_TEMP/energyplus"
+        tar -xzf "$RUNNER_TEMP/EnergyPlus-24.2.0-e7ecb2d53b-Linux-Ubuntu22.04-x86_64.tar.gz" -C "$RUNNER_TEMP/energyplus" --strip-components=1
+    - name: Select required EnergyPlus 24.2
+      run: |
+        test -x "$RUNNER_TEMP/energyplus/energyplus"
+        echo "ENERGYPLUS_EXE=$RUNNER_TEMP/energyplus/energyplus" >> "$GITHUB_ENV"
+    - name: Record tested revisions
+      run: |
+        echo "EPSM compatibility manifest: ${{ matrix.manifest_revision }}"
+        git rev-parse HEAD
+        git -C .ci/epsm_data rev-parse HEAD
+        "$ENERGYPLUS_EXE" --version
+    - run: ruff check src/epsm_core examples
+    - name: Build and install release distributions
+      run: |
+        python -m build
+        python -m pip install --no-deps --force-reinstall dist/epsm_core-*.whl
+    - name: Run full installed Core suite with real engine
+      env:
+        EPSM_REQUIRE_ENERGYPLUS: '1'
+      run: pytest -o pythonpath= --junitxml=core-results.xml
+    - name: Check installed scene handoff without display dependencies
+      run: |
+        cd "$RUNNER_TEMP"
+        python - <<'PYTHON'
+        import importlib.util
+        import json
+        import sys
+        from epsm_core import Building, Footprint
+        building = Building.from_footprint(Footprint.rectangle(4, 3), storeys=1, storey_height_m=3)
+        assert json.loads(json.dumps(building.scene()))['schema'] == 'epsm.scene/1'
+        assert importlib.util.find_spec('epsm_core.viewer') is None
+        assert importlib.util.find_spec('epsm_core.notebook') is None
+        assert not any(name in sys.modules for name in ('epsm_viewer', 'anywidget', 'ipywidgets'))
+        PYTHON
+    - run: python -m pip check
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: core-${{ matrix.python }}-${{ matrix.mode }}
+        path: |
+          core-results.xml
+          dist/
+'on':
+  workflow_dispatch:
+    inputs:
+      development_dependencies:
+        description: Check current Data main on Python 3.13 instead of release pins
+        type: boolean
+        default: false
