@@ -1,151 +1,46 @@
-# EPSM Core
+# epsm_core
 
-<!-- EPSM introduction: Pocket CAD -->
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/brand/epsm_core-dark.png">
-  <img src="docs/assets/brand/epsm_core.png" width="64" height="64" alt="EPSM Core — physical building model">
-</picture>
+[![CI](https://img.shields.io/badge/CI-GitHub_Actions-2088FF?logo=githubactions&logoColor=white)](https://github.com/SB-Chalmers/epsm_core/actions/workflows/ci.yml) [![Releases](https://img.shields.io/badge/releases-GitHub-181717?logo=github&logoColor=white)](https://github.com/SB-Chalmers/epsm_core/releases) [![Issues](https://img.shields.io/badge/issues-GitHub-181717?logo=github&logoColor=white)](https://github.com/SB-Chalmers/epsm_core/issues)
 
-Create physical building models, inspect their geometry and materials, and run EnergyPlus simulations.
+Create physical building models, inspect geometry and material quantities, and run
+EnergyPlus simulations. Core supplies the shared building model used across the
+[EPSM platform](https://github.com/SB-Chalmers/epsm).
 
-[Explore the EPSM platform](https://github.com/SB-Chalmers/epsm/blob/main/docs/platform.md)
-<!-- /EPSM introduction -->
+## Getting started
 
-Core 0.8.2 exports portable polygon scenes for the independent `epsm_viewer` package. Core owns physical geometry and scientific metadata; Viewer owns browser and notebook display. Shared snapshot preparation, physical cold-attic shells, basement controls and shared-wall ownership retain their existing behavior. Core consumes Data 0.6.0 definitions. See [viewer migration](docs/viewer-migration.md), [release notes](RELEASE_NOTES.md), [roof and basement support](docs/roofs-and-basements.md), [shared-wall assumptions](docs/party-walls.md) and [prepared geometry](docs/geometry-cache.md).
-
-`output_capabilities(building, weather=weather, settings=settings)` reports available
-normalized names, resolutions, scopes and units without starting EnergyPlus.
-Conditional delivery/PV fields and unverified additional native requests remain
-explicit. See [release notes](RELEASE_NOTES.md).
-
-A pre-1.0 building-energy modelling library for automated urban building energy modelling. The package version is **0.8.2**; content hashes distinguish simulation inputs and implementations.
-
-## Physical Building authoring
-
-The new `Building` API supports gradual authoring, shared `epsm_data` constructions,
-material quantities, independent renovation branches and immutable snapshots.
-The existing `BuildingSpec` and numerical APIs remain available during migration.
-
-```python
-from epsm_core import Building, Weather, run_building
-
-building = Building(preset="illustrative-reference")  # Explicit, named demonstration inputs.
-print(building)
-print(building.quantities().by_material())
-blank = Building.empty()  # Missing data stays missing.
-snapshot = building.snapshot()
-
-# Execution is explicit; weather is separate from the physical building.
-# weather = Weather.from_epw("local.epw")
-# result = run_building(building, weather=weather, directory="output/reference")
-```
-
-See [physical authoring and renovation](docs/physical-building.md) for targeted
-interventions, ownership, supported geometry and migration details. The public
-`epsm.Building` adds database conversion, engine selection and combined energy/LCA
-results while inheriting this same physical model.
-
-[Physical roofs and basements](docs/roofs-and-basements.md) describes the separate
-occupied ceiling, actual cold-attic shell, ground interfaces and explicitly
-authored zone controls passed to EnergyPlus and RC.
-
-Start with a metric footprint and storeys, choose procedural facade and zoning assumptions, add neighbouring buildings, and inspect the geometry before simulation. EPSM preserves concave outlines, courtyards and disconnected parts. Per-storey zoning is the default; perimeter/core zoning is available explicitly. Generated apartment layouts are experimental.
-
-![Workflow from known footprint and storeys through geometry inspection to a complete building specification and simulation.](docs/figures/workflow.svg)
-
-Geometry inspection is the first checkpoint; constructions, weather and operations complete the input before simulation. The [38 notebook lessons](demo/README.md) explain each API step with code, plots and guided documentation figures, from one building to diverse stock samples.
-
-Operational assumptions are explicit: choose `BuildingBuilder(building_use="residential")` to load the bundled, version-pinned Sveby 2.0 normal-use profile. `BuildingBuilder()` supplies no profile. Physical fabric, weather, leakage and installed systems remain explicit. See [bundled operational standards](docs/standards.md) for the exact values, non-Sveby completion defaults and compliance limitations.
-
-```python
-from epsm_core import Footprint, GeometrySpec, ZoningSpec, synthetic_context
-from epsm_viewer import view_scene  # Optional display package; install its built wheel.
-
-geometry = GeometrySpec.from_footprint(
-    Footprint.rectangle(30, 20), storeys=3, storey_height_m=3,
-    zoning=ZoningSpec(mode="perimeter_core", depth_m=4.5),
-)
-context = synthetic_context(geometry, preset="urban_lowrise_dense", seed=0)
-with view_scene(geometry.scene(context=context), directory="output/preview") as preview:
-    print(preview.url)
-    input("Press Enter to stop the preview. ")
-```
-
-Core's `geometry.scene()`, `BuildingSpec.scene()` and physical `Building.scene()`
-return portable scene dictionaries without opening a browser or requiring weather
-or EnergyPlus. Interactive display belongs to the separate `epsm_viewer` package.
-Install its built Python wheel alongside Core; notebook display additionally needs
-the viewer's `notebook` extra. The viewer is not bundled with Core or assumed to
-be published on a package index. See [viewer migration](docs/viewer-migration.md)
-for installation and the browser/notebook examples.
-
-Simulation uses a validated immutable `BuildingSpec`, a local EPW, and EnergyPlus 24.2. Python 3.11 or later is required.
+Requires Python 3.11+ and Git. Access to the EPSM dependency repositories is
+required for the source installation below.
 
 ```sh
-python -m pip install -e '.[dev,geometry]'
-python examples/building.py data/weather/SWE_VG_Gothenburg-Landvetter.AP.025260_TMYx.2004-2018.epw output/building.json
-epsm-core validate output/building.json
-epsm-core --energyplus /path/to/energyplus run output/building.json output/run
+git clone https://github.com/SB-Chalmers/epsm_core.git
+cd epsm_core
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install "epsm_data @ git+https://github.com/SB-Chalmers/epsm_data.git@main"
+python -m pip install -e .
 ```
-
-Read [usage](docs/usage.md), [bundled operational standards](docs/standards.md), the [geometry feature contract](docs/geometry.md), [API guide](docs/api.md), and [architecture and physics](docs/architecture.md).
-
-The package owns building inputs, geometry, compilation, execution and physical quantities.
-`epsm_data` owns shared construction graph classes, catalogue values and sourced operational
-assumptions. Core factories read those source records when explicitly called. `epsm_db`
-owns building evidence and ingestion; `epsm_workflows` owns execution and optimisation.
-`epsm_viewer` owns browser and notebook display of loaded scene data; Studio owns
-application adapters. Importing Core does not discover datasets or use the network.
-
-Maintain source in `src/`, tests in `tests/`, and executable examples in `examples/`. External inputs belong in ignored `data/`; generated artifacts belong in ignored `output/`. Historical evidence is kept separately in `ARCHIVE/`. Current tests and examples do not depend on archived studies.
-
-## Ground heat transfer
-
-New envelopes default to `FoundationSpec(method="kiva")`. Soil and footing assumptions remain configurable and reported. Explicit legacy `GroundTemperatureSpec` profiles retain prescribed-temperature behaviour. See [foundation settings and migration](docs/foundations.md).
-
-Versioned Sveby office and primary/secondary-school profiles, explicit calendars,
-zone operation, Atemp load areas and space-heat delivery accounting are documented
-in [building archetype operation](docs/archetype-operation.md). Source references
-and completion assumptions also live in the implementing scripts and resources.
-
-Mixed heated uses can use explicit area fractions with [ProgramBlend](docs/mixed-programmes.md); known spatial programmes retain separate zone assignments.
-
-## Migrating to 0.3.0
-
-`Building()` starts empty; use `preset="illustrative-reference"` only for teaching
-inputs. Author foundation or monthly ground boundaries, thermal-bridge uplift and
-load-reference area explicitly. Inspect `resolve(weather)` for immutable shared
-inputs and use explicit gain partitions where the consumer supports them.
-Core owns geometry and material quantities; engine reductions remain separate.
-This release distinguishes these changes from the earlier 0.2.0 implementation;
-recompute cached studies when their implementation identity changes.
-
-## Operation logging
-
-Library calls use Python's standard `logging` module and install no console or
-file output. Instrumented operations accept optional keyword-only `log_context`
-with small identifier mappings; nested events carry operation and parent IDs.
-INFO describes major stages; DEBUG exposes selections, conversions and caches.
-Logging context does not change physical models or scientific cache inputs.
-
-For an application using EPSM's coordinated logging setup:
 
 ```python
-from epsm import configure_logging, reset_logging
+from epsm_core import Building
 
-configure_logging(directory="outputs/example")  # INFO stderr, DEBUG JSONL
-# Run operations here.
-configure_logging(enabled=False)  # Stop console and file logging.
-reset_logging()  # Restore the host application's settings.
+building = Building(preset="illustrative-reference")
+print(building)
+print(building.quantities().by_material())
 ```
 
-EPSM is needed only for this combined configuration, not for ordinary library
-logging. Existing scripts can keep using `logging.basicConfig(level=logging.INFO)`.
+The preset contains illustrative teaching inputs. For a simulation, supply your
+own building assumptions, a local EPW and an EnergyPlus 24.2 installation.
+Interactive browser and notebook display uses the separate `epsm_viewer` package.
 
-The standalone command accepts `--log-level` before its subcommand, including `OFF`. Command results remain on stdout.
+## Documentation
 
-## Prepared geometry
+- [Detailed guide](docs/guide.md)
+- [Physical building authoring](docs/physical-building.md)
+- [Notebook lessons](demo/README.md)
+- [Usage and simulation](docs/usage.md)
+- [API reference](docs/api.md)
 
-Repeated conversions and compilation can use a caller-owned bounded
-[`GeometryCache`](docs/geometry-cache.md). Physical assignments remain fresh and
-each consumer receives detached working geometry.
+## License
+
+[MIT](LICENSE).
