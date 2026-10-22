@@ -5,6 +5,16 @@ building's natural exchange from a measured total air change, net of that buildi
 envelope infiltration and at least 0.05 ACH. Epsm_data's measured-use profile gives
 such a total. Other topologies are returned unchanged.
 
+`solve_element_insulation` derives a Data Element with an explicitly selected
+component/layer solved for a Core nominal U target. The Building convenience
+`assign_element_u_value` applies the operation atomically to selected physical
+elements. Actual materials, fractions, installed occurrence IDs and immutable
+history remain intact; physical material quantities follow the new thickness.
+Targets use the existing Core 0.17 m2 K/W reporting films. Unsupported unequal
+constituent depths, windows, invalid selections and infeasible bounds fail.
+These are additive APIs; saved formats, existing solver behavior and existing
+return types stay unchanged. No renovation intervention is inferred.
+
 # Core 0.9.1 — installing measure per occurrence (30 October 2026)
 
 Each renovation stage records which measure installed each new material
