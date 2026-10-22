@@ -809,6 +809,56 @@ class Building:
         self.elements = updated
         return self
 
+    def assign_element_u_value(self, target_u_w_m2k, *, component_name, layer_index,
+                               element_ids, min_thickness_m=0.001, max_thickness_m=2.0):
+        """Solve an explicit layer on selected physical elements, atomically.
+
+        Updates this draft and returns ``self``. ``element_ids`` is a nonempty
+        iterable of existing physical IDs. ``component_name`` and the zero-based
+        ``layer_index`` identify a layer in each target's actual construction.
+        Every target is solved and validated before any assignment is committed.
+        A missing construction or infeasible target leaves the Building unchanged.
+
+        The pure :func:`epsm_core.solve_element_insulation` defines target units,
+        thickness bounds and the existing Core nominal film policy (0.17 m2 K/W).
+        Material identities/fractions, installed component IDs, geometry and
+        unselected constructions stay unchanged; quantities follow the solved
+        physical layer depths. Role defaults in ``construction_set`` stay intact.
+
+        This offline operation authors a physical assumption. It does not create
+        a renovation stage or material flows. After an existing renovation, the
+        normal authoring-history requirement still applies to changed quantities.
+        Earlier snapshots and results remain immutable.
+        """
+        from .constructions import solve_element_insulation
+
+        if isinstance(element_ids, (str, bytes)) or element_ids is None:
+            raise ValueError("element_ids must contain explicit existing physical element IDs")
+        try:
+            identifiers = tuple(element_ids)
+        except TypeError as error:
+            raise ValueError("element_ids must be an iterable of physical element IDs") from error
+        if not identifiers or any(not isinstance(identifier, str) or not identifier
+                                  for identifier in identifiers):
+            raise ValueError("element_ids must contain explicit existing physical element IDs")
+        selected = set(identifiers)
+        if len(selected) != len(identifiers) or not selected <= {e.identifier for e in self.elements}:
+            raise ValueError("element_ids must identify distinct existing physical elements")
+        changes = {}
+        for element in self.elements:
+            if element.identifier not in selected:
+                continue
+            try:
+                construction = solve_element_insulation(
+                    element.construction, component_name, layer_index, target_u_w_m2k,
+                    min_thickness_m=min_thickness_m, max_thickness_m=max_thickness_m)
+            except ValueError as error:
+                raise ValueError(f"Physical element {element.identifier!r}: {error}") from error
+            changes[element.identifier] = element.with_changes(
+                construction=construction, component_ids=element.component_ids)
+        self.elements = tuple(changes.get(element.identifier, element) for element in self.elements)
+        return self
+
     def assign_inputs(self, *, construction_set=None, operation=None, hvac=None,
                       facade_properties=None, airflow_properties=None, thermal_bridge_uplift_fraction=None,
                       provenance=None, mode="replace"):
