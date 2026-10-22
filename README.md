@@ -1,10 +1,19 @@
-# epsm_core
+# EPSM Core
+
+<!-- EPSM introduction: Pocket CAD -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/welcome/epsm_core-dark.png">
+  <img src="docs/assets/welcome/epsm_core.png" width="160" height="160" alt="EPSM Core — Physical building geometry: the same open cell with its base active.">
+</picture>
+
+Start with a building. EPSM Core helps you author its physical geometry, inspect
+material quantities and record renovation states. It supplies the shared building
+model used across EPSM and runs EnergyPlus simulations when you are ready.
+
+**[Explore the EPSM platform →](https://github.com/SB-Chalmers/epsm/blob/main/docs/platform.md)**
+<!-- /EPSM introduction -->
 
 [![CI](https://img.shields.io/badge/CI-GitHub_Actions-2088FF?logo=githubactions&logoColor=white)](https://github.com/SB-Chalmers/epsm_core/actions/workflows/ci.yml) [![Releases](https://img.shields.io/badge/releases-GitHub-181717?logo=github&logoColor=white)](https://github.com/SB-Chalmers/epsm_core/releases) [![Issues](https://img.shields.io/badge/issues-GitHub-181717?logo=github&logoColor=white)](https://github.com/SB-Chalmers/epsm_core/issues)
-
-Create physical building models, inspect geometry and material quantities, and run
-EnergyPlus simulations. Core supplies the shared building model used across the
-[EPSM platform](https://github.com/SB-Chalmers/epsm).
 
 ## Getting started
 
@@ -44,3 +53,25 @@ Interactive browser and notebook display uses the separate `epsm_viewer` package
 ## License
 
 [MIT](LICENSE).
+
+## People and support
+
+Developed at Chalmers University of Technology as part of the EPSM research platform.
+
+**Funding**: Swedish Energy Agency (Project ID: P2024-04053)
+
+**Partners**:
+
+- Lindholmen Science Park AB
+- Sinom AB
+- Stiftelsen Chalmers Industriteknik
+
+**Team**:
+
+- **Lead Developer**: Sanjay Somanath
+- **Principal Investigator**: Alexander Hollberg
+- **Contributors**: Yinan Yu, Dag Wästberg
+
+<p align="center">
+  <img src="docs/assets/welcome/logos.png" width="100%" alt="Chalmers University of Technology, Chalmers Industriteknik, Sinom, Lindholmen Science Park and Swedish Energy Agency logos">
+</p>
