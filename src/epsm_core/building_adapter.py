@@ -81,7 +81,9 @@ def _envelope_for_building(building, *, convert=thermal_construction):
         weather_shell=construction(Role.ROOF, top),
         basement_wall=construction(Role.BASEMENT_WALL, wall),
         basement_ceiling=construction(Role.GROUND_FLOOR, ground),
-        thermal_bridge_uplift_fraction=building.thermal_bridge_uplift_fraction,
+        thermal_bridge_uplift_fraction=(building.thermal_bridge_uplift_fraction or 0)
+        if building.thermal_bridge_delta_u_w_m2k is not None else building.thermal_bridge_uplift_fraction,
+        thermal_bridge_delta_u_w_m2k=building.thermal_bridge_delta_u_w_m2k,
         foundation=building.foundation,
         ground_temperature=building.ground_temperature)
 

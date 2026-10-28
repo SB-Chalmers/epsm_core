@@ -230,7 +230,9 @@ def _resolved_input(spec, resolved, *, snapshot=None, physical=None, owners=None
         "boundaries": {"foundation": spec.envelope.foundation.model_dump(mode="json"),
                        "ground_temperature": spec.envelope.ground_temperature.model_dump(mode="json")
                                              if spec.envelope.ground_temperature is not None else None,
-                       "thermal_bridge_uplift_fraction": spec.envelope.thermal_bridge_uplift_fraction},
+                       "thermal_bridge_uplift_fraction": spec.envelope.thermal_bridge_uplift_fraction,
+                       **({"thermal_bridge_delta_u_w_m2k": spec.envelope.thermal_bridge_delta_u_w_m2k}
+                          if spec.envelope.thermal_bridge_delta_u_w_m2k is not None else {})},
         "operations": {
             "use": spec.use.model_dump(mode="json"), "airflow": spec.airflow.model_dump(mode="json"),
             "common_use": spec.common_use.model_dump(mode="json") if spec.common_use is not None else None,
