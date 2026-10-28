@@ -576,7 +576,7 @@ class Building:
                  operation=None, zone_uses=(), unconditioned_exchange=(),
                  context=None, provenance=None, foundation=None,
                  ground_temperature=None, thermal_bridge_uplift_fraction=None,
-                 load_reference_area_m2=None,
+                 thermal_bridge_delta_u_w_m2k=None, load_reference_area_m2=None,
                  load_reference_area_policy: Literal["conditioned_floor_area"] | None = None):
         if load_reference_area_m2 is not None and load_reference_area_policy is not None:
             raise ValueError("Choose either load_reference_area_m2 or load_reference_area_policy")
@@ -592,6 +592,7 @@ class Building:
             ("hvac", hvac), ("operation", operation), ("foundation", foundation),
             ("ground_temperature", ground_temperature),
             ("thermal_bridge_uplift_fraction", thermal_bridge_uplift_fraction),
+            ("thermal_bridge_delta_u_w_m2k", thermal_bridge_delta_u_w_m2k),
             ("load_reference_area_m2", load_reference_area_m2),
             ("load_reference_area_policy", load_reference_area_policy))
             if value is not None}
@@ -648,6 +649,7 @@ class Building:
         self.foundation = foundation
         self.ground_temperature = ground_temperature
         self.thermal_bridge_uplift_fraction = thermal_bridge_uplift_fraction
+        self.thermal_bridge_delta_u_w_m2k = thermal_bridge_delta_u_w_m2k
         self.load_reference_area_m2 = load_reference_area_m2
         self.load_reference_area_policy = load_reference_area_policy
         self.context = context if context is not None else ContextSpec()
@@ -692,10 +694,10 @@ class Building:
             value = HVACSystem(**value.to_dict())
         elif name == "identifier" and (not isinstance(value, str) or not value.strip()):
             raise ValueError("identifier must be a nonempty string")
-        elif name == "thermal_bridge_uplift_fraction" and value is not None:
+        elif name in ("thermal_bridge_uplift_fraction", "thermal_bridge_delta_u_w_m2k") and value is not None:
             value = TypeAdapter(Nonnegative).validate_python(value)
             if not math.isfinite(value):
-                raise ValueError("thermal_bridge_uplift_fraction must be finite")
+                raise ValueError(f"{name} must be finite")
         elif name == "load_reference_area_m2" and value is not None:
             value = TypeAdapter(Positive).validate_python(value)
             if not math.isfinite(value):
@@ -721,7 +723,7 @@ class Building:
         object.__setattr__(self, name, value)
         if name in {"geometry", "construction_set", "facade", "hvac", "operation",
                     "zone_uses", "unconditioned_exchange", "foundation", "ground_temperature", "thermal_bridge_uplift_fraction",
-                    "load_reference_area_m2", "load_reference_area_policy"} \
+                    "thermal_bridge_delta_u_w_m2k", "load_reference_area_m2", "load_reference_area_policy"} \
                 and hasattr(self, "provenance"):
             object.__setattr__(self, "provenance", ProvenanceSpec(records=tuple(
                 r for r in self.provenance.records
@@ -756,6 +758,7 @@ class Building:
                        facade=None, hvac=None, operation=None, zone_uses=(),
                        unconditioned_exchange=(), context=None, foundation=None,
                        ground_temperature=None, thermal_bridge_uplift_fraction=None,
+                       thermal_bridge_delta_u_w_m2k=None,
                        load_reference_area_m2=None, load_reference_area_policy=None,
                        **geometry_options):
         geometry = GeometrySpec.from_footprint(
@@ -768,6 +771,7 @@ class Building:
                          context=context, foundation=foundation,
                          ground_temperature=ground_temperature,
                          thermal_bridge_uplift_fraction=thermal_bridge_uplift_fraction,
+                         thermal_bridge_delta_u_w_m2k=thermal_bridge_delta_u_w_m2k,
                          load_reference_area_m2=load_reference_area_m2,
                          load_reference_area_policy=load_reference_area_policy)
 
@@ -811,7 +815,7 @@ class Building:
 
     def assign_inputs(self, *, construction_set=None, operation=None, hvac=None,
                       facade_properties=None, airflow_properties=None, thermal_bridge_uplift_fraction=None,
-                      provenance=None, mode="replace"):
+                      thermal_bridge_delta_u_w_m2k=None, provenance=None, mode="replace"):
         """Validate and commit resolved inputs together, updating this Building.
 
         Parameters
@@ -836,6 +840,10 @@ class Building:
             property sources; window identity and opening geometry are retained.
         thermal_bridge_uplift_fraction : float, optional
             Nonnegative finite uplift. Zero explicitly assigns no uplift.
+        thermal_bridge_delta_u_w_m2k : float, optional
+            TABULA's absolute surcharge on the whole envelope area, carried by the walls
+            and thermal top. Assigning it sets the uplift fraction to zero, and assigning
+            an uplift fraction clears it: a Building keeps one bridge representation.
         provenance : ProvenanceSpec or mapping, optional
             Source records for changed inputs. Existing records for retained
             fields survive; replacement drops stale records at changed paths.
@@ -867,6 +875,7 @@ class Building:
         supplied = {
             "operation": operation, "hvac": hvac,
             "thermal_bridge_uplift_fraction": thermal_bridge_uplift_fraction,
+            "thermal_bridge_delta_u_w_m2k": thermal_bridge_delta_u_w_m2k,
         }
         # The detached candidate validates all inputs, even those later retained.
         for name, value in supplied.items():
@@ -907,6 +916,14 @@ class Building:
                 (applied if getattr(self, name) is None else replaced).append(name)
                 updates[name] = getattr(candidate, name)
                 changed.add(name)
+        # A Building keeps one thermal-bridge representation; the newly assigned one wins.
+        bridges = ("thermal_bridge_uplift_fraction", "thermal_bridge_delta_u_w_m2k")
+        if all(name in updates for name in bridges):
+            raise ValueError("Supply only one thermal-bridge representation")
+        for name, other in (bridges, bridges[::-1]):
+            if name in updates and getattr(self, other) is not None:
+                updates[other] = None
+                changed.add(other)
         if properties is not None:
             if self.facade is None:
                 unmatched.append("facade_properties")
@@ -1115,7 +1132,7 @@ class Building:
                 if getattr(self, name) is None:
                     missing.append(name)
             missing.extend(self._ground_boundary_missing())
-            if self.thermal_bridge_uplift_fraction is None:
+            if self.thermal_bridge_uplift_fraction is None and self.thermal_bridge_delta_u_w_m2k is None:
                 missing.append("thermal_bridge_uplift_fraction")
             if self.load_reference_area_m2 is None and self.load_reference_area_policy is None:
                 missing.append("load_reference_area_m2 or load_reference_area_policy")
@@ -1228,6 +1245,8 @@ class Building:
             "ground_temperature": self.ground_temperature.model_dump(mode="json", exclude_unset=True)
             if self.ground_temperature else None,
             "thermal_bridge_uplift_fraction": self.thermal_bridge_uplift_fraction,
+            **({"thermal_bridge_delta_u_w_m2k": self.thermal_bridge_delta_u_w_m2k}
+               if self.thermal_bridge_delta_u_w_m2k is not None else {}),
             "load_reference_area_m2": self.load_reference_area_m2,
             "load_reference_area_policy": self.load_reference_area_policy,
             "context": self.context.model_dump(mode="json"),
@@ -1260,6 +1279,7 @@ class Building:
         result.foundation = data.get("foundation")
         result.ground_temperature = data.get("ground_temperature")
         result.thermal_bridge_uplift_fraction = data.get("thermal_bridge_uplift_fraction")
+        result.thermal_bridge_delta_u_w_m2k = data.get("thermal_bridge_delta_u_w_m2k")
         result.load_reference_area_m2 = data.get("load_reference_area_m2")
         result.load_reference_area_policy = data.get("load_reference_area_policy")
         result.context = data.get("context", {})

@@ -39,7 +39,7 @@ from __future__ import annotations
 
 from typing import Annotated, Literal
 
-from pydantic import Field, model_validator
+from pydantic import Field, model_serializer, model_validator
 
 from .base import Fraction, Nonnegative, Positive, Spec
 from .schedules import ScheduleSpec
@@ -439,6 +439,10 @@ class EnvelopeSpec(Spec):
     thermal_bridge_uplift_fraction : Nonnegative
         Nonnegative fractional U-value increase represented through equivalent
         conductivities. Nonnegative when supplied. Default: ``0``.
+    thermal_bridge_delta_u_w_m2k : Nonnegative | None
+        TABULA's absolute surcharge ``delta_U_ThermalBridging`` in W/(m² K) on the whole
+        envelope area, glazing included, carried by the wall and top assemblies (see
+        ``epsm_core.bridges``). Exclusive with a nonzero uplift fraction. Default: ``None``.
     foundation : FoundationSpec
         Ground heat-transfer method and assumptions. Default: Kiva.
     ground_temperature : GroundTemperatureSpec | None
@@ -494,6 +498,7 @@ class EnvelopeSpec(Spec):
     dwelling_partition: ConstructionSpec | None = None
     common_partition: ConstructionSpec | None = None
     thermal_bridge_uplift_fraction: Nonnegative = 0
+    thermal_bridge_delta_u_w_m2k: Nonnegative | None = None
     foundation: FoundationSpec = Field(default_factory=FoundationSpec)
     ground_temperature: GroundTemperatureSpec | None = None
 
@@ -505,6 +510,20 @@ class EnvelopeSpec(Spec):
             if values.get("ground_temperature") is not None and "foundation" not in values:
                 values["foundation"] = {"method": "prescribed_temperature"}
         return values
+
+    @model_serializer(mode="wrap")
+    def omit_unset_bridge_surcharge(self, handler):
+        """Serialize without an unset absolute surcharge, so existing input identities hold."""
+        data = handler(self)
+        if isinstance(data, dict) and data.get("thermal_bridge_delta_u_w_m2k", 0) is None:
+            del data["thermal_bridge_delta_u_w_m2k"]
+        return data
+
+    @model_validator(mode="after")
+    def validate_bridge_representation(self):
+        if self.thermal_bridge_delta_u_w_m2k is not None and self.thermal_bridge_uplift_fraction:
+            raise ValueError("Supply only one thermal-bridge representation")
+        return self
 
     @model_validator(mode="after")
     def validate_ground_boundary(self):
