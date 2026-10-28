@@ -26,6 +26,7 @@ class MaterialQuantity:
     count: float | None = None
     kind: str = "material"
     factor_refs: tuple[tuple[str, str], ...] = ()
+    length_m: float | None = None
 
     def __repr__(self):
         return bounded_summary(type(self).__name__, material=self.material_id,
@@ -45,7 +46,8 @@ class MaterialQuantity:
             "area_m2": self.area_m2,
             "volume_m3": self.volume_m3,
             "mass_kg": self.mass_kg,
-            "count": self.count, "kind": self.kind, "factor_refs": dict(self.factor_refs),
+            "count": self.count, "length_m": self.length_m, "kind": self.kind,
+            "factor_refs": dict(self.factor_refs),
             "material": self.material.to_dict() if self.material is not None else None,
         }
 
@@ -112,8 +114,12 @@ class MaterialFlows:
                 "retained": self.retained.to_dict()}
 
 
-def material_inventory(elements, equipment=()):
-    """Traverse physical assignments, counting only constituent material leaves."""
+def material_inventory(elements, equipment=(), installations=()):
+    """Traverse physical assignments, counting only constituent material leaves.
+
+    Installations are products outside the layered envelope, such as ductwork;
+    their quantity is reported in its own unit and mass is never inferred.
+    """
     from epsm_data.domain.element import WindowElement
 
     rows = []
@@ -158,5 +164,15 @@ def material_inventory(elements, equipment=()):
             item.occurrence_id, "equipment", None, None, None,
             material_name=item.description or item.product_id, role="equipment",
             count=item.count, kind="equipment", factor_refs=item.factor_refs,
+        ))
+    for item in installations:
+        rows.append(MaterialQuantity(
+            item.occurrence_id, item.product_id, "installation." + item.identifier,
+            item.occurrence_id, "installation",
+            item.quantity if item.unit == "m2" else None, None, item.mass_kg,
+            material_name=item.description, role="installation",
+            count=item.quantity if item.unit == "item" else None, kind="installation",
+            factor_refs=item.factor_refs,
+            length_m=item.quantity if item.unit == "m" else None,
         ))
     return MaterialInventory(rows)
