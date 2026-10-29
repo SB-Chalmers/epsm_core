@@ -24,20 +24,93 @@ jobs:
         path: .ci/platform
         ssh-key: ${{ secrets.EPSM_REPO_DEPLOY_KEY }}
         persist-credentials: false
-        sparse-checkout: /compatibility.json
+        sparse-checkout: |
+          /compatibility.json
+          /compatibility-candidate.json
         sparse-checkout-cone-mode: false
     - uses: actions/setup-python@v5
       with:
         python-version: '3.13'
-    - name: Read supported dependency revisions
+    - name: Select dependency revisions from EPSM main
       id: pins
+      env:
+        PLATFORM_PACKAGES: epsm_data
+      # Committed content only: this checkout's pyproject.toml and both records
+      # at one EPSM main SHA. No label, variable or input takes part.
       run: |
-        python - <<'PYTHON' >> "$GITHUB_OUTPUT"
+        python -m pip install --quiet packaging
+        PLATFORM_MANIFEST_SHA="$(git -C .ci/platform rev-parse HEAD)" python - <<'PYTHON'
         import json
+        import os
+        import re
+        import sys
+        import tomllib
         from pathlib import Path
-        packages = json.loads(Path('.ci/platform/compatibility.json').read_text())['packages']
-        for name in ['epsm_data']:
-            print(name + '=' + packages[name]['revision'])
+
+        from packaging.requirements import Requirement
+        from packaging.specifiers import SpecifierSet
+
+        needed = os.environ['PLATFORM_PACKAGES'].split()
+        platform = Path('.ci/platform')
+        sha40 = re.compile(r'[0-9a-f]{40}')
+        project = tomllib.loads(Path('pyproject.toml').read_text())['project']
+        bounds = {name: SpecifierSet() for name in needed}
+        for requirement in map(Requirement, project.get('dependencies', [])):
+            name = requirement.name.lower().replace('-', '_')
+            if name in bounds:
+                bounds[name] &= requirement.specifier
+
+        def cohort(label, filename):
+            path = platform / filename
+            if not path.exists():
+                return None, f'{label}: {filename} is absent from this EPSM main checkout'
+            manifest = json.loads(path.read_text())
+            if label == 'candidate' and manifest.get('kind') != 'candidate':
+                return None, f'{label}: {filename} is not a candidate record'
+            chosen = {}
+            for name in needed:
+                entry = manifest['packages'].get(name)
+                if entry is None:
+                    return None, f'{label}: no {name} entry'
+                if not sha40.fullmatch(str(entry.get('revision', ''))):
+                    return None, f'{label}: {name} revision is not an immutable SHA-40'
+                if not bounds[name].contains(entry['version'], prereleases=True):
+                    return None, f'{label}: {name} {entry["version"]} is outside the declared bound {name}{bounds[name]}'
+                chosen[name] = {'version': entry['version'], 'revision': entry['revision']}
+            return chosen, None
+
+        reasons = []
+        source, selected, reason = 'supported', *cohort('supported', 'compatibility.json')
+        if selected is None:
+            reasons.append(reason)
+            source, selected, reason = 'candidate', *cohort('candidate', 'compatibility-candidate.json')
+            if selected is None:
+                reasons.append(reason)
+                print('::error::Development checks cannot select a dependency cohort from EPSM main: '
+                      + '; '.join(reasons) + '. Publish a candidate record that satisfies this package\'s bounds on '
+                      'EPSM main, or keep the bounds within the supported combination. Do not retry unchanged.')
+                sys.exit(1)
+        receipt = {
+            'epsm_main': os.environ['PLATFORM_MANIFEST_SHA'],
+            'manifest': 'compatibility-candidate.json' if source == 'candidate' else 'compatibility.json',
+            'cohort': source,
+            'selected_because': reasons[0] if reasons else 'every supported pin satisfies the declared bounds',
+            'packages': {name: dict(selected[name], bound=str(bounds[name]) or 'any') for name in needed},
+        }
+        with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+            output.write(f'cohort={source}\n')
+            for name in needed:
+                output.write(f'{name}={selected[name]["revision"]}\n')
+        with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
+            summary.write('## Development dependency selection\n\n')
+            summary.write(f'- EPSM main checkout: `{receipt["epsm_main"]}`\n')
+            summary.write(f'- Manifest used: `{receipt["manifest"]}` ({source} cohort)\n')
+            summary.write(f'- Reason: {receipt["selected_because"]}\n\n')
+            summary.write('| Package | Declared bound | Version | Revision |\n| --- | --- | --- | --- |\n')
+            for name, entry in receipt['packages'].items():
+                summary.write(f'| {name} | `{entry["bound"]}` | {entry["version"]} | `{entry["revision"]}` |\n')
+            summary.write('\n```json\n' + json.dumps(receipt, indent=2) + '\n```\n')
+        print(json.dumps(receipt, indent=2))
         PYTHON
     - uses: actions/checkout@v4
       with:
@@ -48,6 +121,12 @@ jobs:
         persist-credentials: false
     - name: Install development prerequisites
       run: python -m pip install build .ci/epsm_data '.[dev,geometry]'
+    - name: Record tested revisions
+      run: |
+        echo "EPSM main $(git -C .ci/platform rev-parse HEAD): ${{ steps.pins.outputs.cohort }} cohort"
+        git rev-parse HEAD
+        git -C .ci/epsm_data rev-parse HEAD
+        python -m pip list --format=freeze | grep -i '^epsm'
     - name: Run offline development checks
       run: |
         python -m pytest -q -m "not energyplus"
