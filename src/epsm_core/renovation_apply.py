@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from uuid import uuid4
 
 from epsm_data.domain import ConstructionSet
-from epsm_data.operations import (
+from epsm_data.renovation import (
     AirtightnessOperation,
     ConstructionOperation,
     DHWOperation,

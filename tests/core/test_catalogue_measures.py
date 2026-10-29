@@ -1,5 +1,6 @@
 """Catalogue renovation candidates applied through Building.renovate with geometric quantities."""
 
+import json
 import math
 
 import pytest
@@ -219,7 +220,9 @@ def test_pv_is_sized_from_the_roof_and_dhw_use_is_reduced(library, renovations):
         flat.operation.dhw_kwh_m2_year * (1 - dhw.payload.fraction))
     fittings = reduced.installations[0]
     assert fittings.quantity == pytest.approx(flat.effective_load_reference_area_m2)
-    assert dict(fittings.factor_refs)["factor:A1A3"] == repr(0.2)
+    refs = dict(fittings.factor_refs)
+    assert refs["carbon_reference_id"] == "epsm-derived:dhw.low_flow_fitting_set"
+    assert json.loads(refs["carbon_reference"])["modules"]["A1A3"] == 0.2
 
 
 def test_every_payload_type_has_a_resolver_and_every_operation_an_applier(library, renovations):

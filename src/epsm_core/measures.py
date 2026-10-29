@@ -23,10 +23,11 @@ Examples
 
 from __future__ import annotations
 
+import json
 import logging
 from dataclasses import dataclass
 
-from epsm_data.contract import BOVERKET_REF, FACTOR_PREFIX, FACTOR_SOURCE
+from epsm_data.contract import BOVERKET_REF, CARBON_REFERENCE, CARBON_REFERENCE_ID
 from epsm_data.contract import QuantityDriver as Q
 from epsm_data.renovation import (
     Airtightness,
@@ -206,10 +207,12 @@ def resolve_candidate(building, candidate, *, element_ids=None, measure_id=None,
         if amount <= 0:
             continue
         refs = [(BOVERKET_REF, product.boverket_id)] if product.boverket_id else []
-        # Direct per-unit factors (for example from an EPD) travel with the occurrence.
-        refs += [(f"{FACTOR_PREFIX}{module}", repr(value)) for module, value in product.factors.items()]
-        if product.factors:
-            refs.append((FACTOR_SOURCE, product.factor_source))
+        reference = product.carbon_reference
+        if reference is not None:
+            # The full record travels with the occurrence, as for windows in inventory.
+            refs += [(CARBON_REFERENCE_ID, reference.identifier),
+                     (CARBON_REFERENCE, json.dumps(reference.to_dict(), sort_keys=True,
+                                                   separators=(",", ":")))]
         installations.append(Installation(
             f"{measure_id}.{product.product_id}", product.product_id, product.description,
             product.unit, amount,
@@ -264,6 +267,6 @@ def apply_candidates(building, *selections, companions=True):
 
 
 def _construction_key(construction):
-    from epsm_data.serialization import element_to_dict
+    from epsm_data.catalogue.serialization import element_to_dict
 
     return repr(element_to_dict(construction))
