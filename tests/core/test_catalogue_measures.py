@@ -81,7 +81,7 @@ def test_window_replacement_removes_units_but_upgrade_retains_them(library, reno
 
 def test_ventilation_quantities_follow_geometry_and_existing_system(library, renovations):
     candidate = renovations.get("upgrade_ventilation.ftx_080")
-    layout = candidate.layout
+    layout = candidate.payload.layout
     base = building(library)
     drivers = ventilation_drivers(base, layout, "S")
     floor = 30 * 12 * 5  # four storeys over a conditioned basement
@@ -128,7 +128,8 @@ def test_one_stage_cannot_renovate_an_element_twice(library, renovations):
                          renovations.get("upgrade_window.insulating_glass_inner_sash"))
     from dataclasses import replace
 
-    only_f = replace(renovations.get("upgrade_ventilation.ftx_080"), from_ventilation=("F",))
+    ftx = renovations.get("upgrade_ventilation.ftx_080")
+    only_f = replace(ftx, payload=replace(ftx.payload, from_ventilation=("F",)))
     with pytest.raises(ValueError, match="cannot replace S"):
         resolve_candidate(base, only_f)
 
@@ -149,10 +150,10 @@ def test_hosts_bring_scaled_sealing_and_sealing_never_stands_alone(library, reno
                     if i in {e.identifier for e in base.elements
                              if e.role in {Role.WINDOW, Role.EXT_WALL}})
     share = renovated / sum(outdoor.values())
-    drivers = dict(stage.quantities[-1].drivers)
-    assert drivers["envelope_share"] == pytest.approx(share)
+    effects = dict(stage.quantities[-1].effects)
+    assert effects["envelope_share"] == pytest.approx(share)
     assert child.hvac.airflow.envelope_infiltration_ach == pytest.approx(
-        before * (1 - sealing.infiltration_reduction * share))
+        before * (1 - sealing.payload.nominal_reduction * share))
     assert any(getattr(r, "epsm_event", "") == "renovation.sealing.default_applied"
                for r in caplog.records)
     assert len(stage.material_flows.installed) == len(
@@ -197,7 +198,7 @@ def test_pv_is_sized_from_the_roof_and_dhw_use_is_reduced(library, renovations):
 
     pv = renovations.get("install_pv.roof_south_15")
     flat = building(library)
-    drivers = pv_drivers(flat, pv.pv)
+    drivers = pv_drivers(flat, pv.payload)
     assert drivers["pv_area_m2"] == pytest.approx(0.8 * 360)
     assert drivers["pv_capacity_kwp"] == pytest.approx(0.8 * 360 * 0.13)
     child = apply_candidates(flat, pv)
@@ -210,12 +211,26 @@ def test_pv_is_sized_from_the_roof_and_dhw_use_is_reduced(library, renovations):
         Footprint.rectangle(30, 12), storeys=4, storey_height_m=2.8,
         roof=RoofSpec(shape="gable", pitch_deg=27, topology="cold_attic")))
     roof = sum(e.area_m2 for e in gable.elements if e.role == Role.ROOF)
-    assert pv_drivers(gable, pv.pv)["pv_area_m2"] == pytest.approx(0.3 * roof)
+    assert pv_drivers(gable, pv.payload)["pv_area_m2"] == pytest.approx(0.3 * roof)
 
     dhw = renovations.get("reduce_dhw.low_flow_fittings")
     reduced = apply_candidates(flat, dhw)
     assert reduced.operation.dhw_kwh_m2_year == pytest.approx(
-        flat.operation.dhw_kwh_m2_year * (1 - dhw.dhw_reduction))
+        flat.operation.dhw_kwh_m2_year * (1 - dhw.payload.fraction))
     fittings = reduced.installations[0]
     assert fittings.quantity == pytest.approx(flat.effective_load_reference_area_m2)
     assert dict(fittings.factor_refs)["factor:A1A3"] == repr(0.2)
+
+
+def test_every_payload_type_has_a_resolver_and_every_operation_an_applier(library, renovations):
+    from epsm_data import PAYLOADS
+
+    from epsm_core.measures import RESOLVERS
+    from epsm_core.renovation_apply import APPLIERS, ResolvedMeasure
+
+    assert set(RESOLVERS) == set(PAYLOADS.values())
+    with pytest.raises(TypeError, match="Cannot renovate"):
+        building(library).renovate(object())
+    with pytest.raises(TypeError, match="No applier"):
+        ResolvedMeasure("x", (object(),))
+    assert len(APPLIERS) == 5

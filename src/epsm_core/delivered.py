@@ -17,10 +17,11 @@ from dataclasses import dataclass, field
 from types import MappingProxyType
 
 import numpy as np
+from epsm_data.contract import Carrier, EndUse, boundary_name
 
-CARRIERS = {"district_heat": "district_heating", "electric_direct": "electricity",
-            "heat_pump": "electricity", "fuel": "fuel"}
-USES = ("space_heating", "fans", "dhw")
+# HeatingDeliverySpec names its carrier by delivery technology; purchases use Carrier.
+CARRIERS = {"district_heat": Carrier.DISTRICT_HEATING, "electric_direct": Carrier.ELECTRICITY,
+            "heat_pump": Carrier.ELECTRICITY, "fuel": Carrier.FUEL}
 
 
 @dataclass(frozen=True)
@@ -42,7 +43,7 @@ class DeliveredEnergy:
 
     def __post_init__(self):
         for name in ("purchased", "exported"):
-            series = {k: tuple(float(v) for v in values)
+            series = {Carrier(k).value: tuple(float(v) for v in values)
                       for k, values in dict(getattr(self, name)).items()}
             if any(not math.isfinite(v) or v < 0 for s in series.values() for v in s):
                 raise ValueError(f"{name} energy must be finite and nonnegative")
@@ -50,12 +51,7 @@ class DeliveredEnergy:
 
     @property
     def boundary(self):
-        uses = set(self.uses)
-        if uses == {"space_heating", "fans"}:
-            return "space_heating_and_fans"  # epsm_lca's default boundary
-        if uses == {"space_heating", "fans", "dhw"}:
-            return "space_heating_fans_and_dhw"
-        return "+".join(u for u in USES if u in uses)
+        return boundary_name(self.uses)
 
     @property
     def annual_purchased(self):
@@ -112,8 +108,10 @@ def delivered_energy(result, building, *, dhw_carrier=None, dhw_efficiency=1.0,
     purchased, uses, notes = {}, [], []
 
     def add(carrier, values):
-        if carrier not in set(CARRIERS.values()):
-            raise ValueError(f"Unknown carrier {carrier!r}")
+        try:
+            carrier = Carrier(carrier)
+        except ValueError:
+            raise ValueError(f"Unknown carrier {carrier!r}") from None
         purchased[carrier] = purchased.get(carrier, zero) + np.asarray(values, dtype=float)
 
     def require(name):
@@ -122,28 +120,28 @@ def delivered_energy(result, building, *, dhw_carrier=None, dhw_efficiency=1.0,
         return hourly[name]
 
     if delivery.fvp is not None:
-        add("electricity", require("fvp_electricity_kwh"))
+        add(Carrier.ELECTRICITY, require("fvp_electricity_kwh"))
         backup = np.asarray(require("backup_input_kwh"), dtype=float)
         if backup.sum() > 0:
             if fvp_backup_carrier is None:
                 raise ValueError("State fvp_backup_carrier: the heat pump's backup heat is used")
             add(fvp_backup_carrier, backup)
-        uses += ["space_heating", "dhw"]
+        uses += [EndUse.SPACE_HEATING, EndUse.DHW]
         notes.append("Exhaust-air heat pump supplies space heating and DHW; fan electricity "
                      "is not modelled with it.")
     elif delivery.heating is not None:
         add(CARRIERS[delivery.heating.carrier], require("space_heating_carrier_input_kwh"))
-        uses.append("space_heating")
+        uses.append(EndUse.SPACE_HEATING)
         if "ventilation_fan_electricity_kwh" in hourly:
-            add("electricity", hourly["ventilation_fan_electricity_kwh"])
-            uses.append("fans")
+            add(Carrier.ELECTRICITY, hourly["ventilation_fan_electricity_kwh"])
+            uses.append(EndUse.FANS)
         else:
             notes.append("No specific fan power is declared; fan electricity is outside the boundary.")
         if dhw_carrier is not None:
             if not dhw_efficiency > 0:
                 raise ValueError("dhw_efficiency must be positive")
             add(dhw_carrier, np.asarray(require("dhw_load_kwh"), dtype=float) / dhw_efficiency)
-            uses.append("dhw")
+            uses.append(EndUse.DHW)
         else:
             notes.append("No DHW carrier is stated; domestic hot water is outside the boundary.")
     else:
@@ -153,10 +151,10 @@ def delivered_energy(result, building, *, dhw_carrier=None, dhw_efficiency=1.0,
     exported = {}
     self_consumed = zero
     if generation.any():
-        electricity = purchased.get("electricity", zero)
+        electricity = purchased.get(Carrier.ELECTRICITY, zero)
         self_consumed = np.minimum(generation, electricity)
-        purchased["electricity"] = electricity - self_consumed
-        exported["electricity"] = generation - self_consumed
+        purchased[Carrier.ELECTRICITY] = electricity - self_consumed
+        exported[Carrier.ELECTRICITY] = generation - self_consumed
         notes.append("PV is used on site hour by hour up to the covered electricity use; "
                      "use outside the boundary is not offset.")
     return DeliveredEnergy(state, purchased, exported,

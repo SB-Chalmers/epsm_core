@@ -1,9 +1,10 @@
 """Apply epsm_data renovation candidates with quantities taken from building geometry.
 
-Data defines what a candidate installs; this module chooses the physical targets,
-derives every cost and product quantity driver from the building, and hands a
-resolved measure to :meth:`Building.renovate`, the single renovation path. No
-price or climate factor is read here.
+Data defines what a candidate installs as a typed payload; this module resolves
+each payload type with one registered resolver, which chooses physical targets
+and derives quantity drivers. The result is a ``ResolvedMeasure`` handed to
+:meth:`Building.renovate`, the single renovation path. No price or climate factor
+is read here.
 
 Examples
 --------
@@ -23,224 +24,114 @@ Examples
 from __future__ import annotations
 
 import logging
-import math
 from dataclasses import dataclass
 
-from epsm_data.operations import DHWOperation, PVOperation, SystemOperation
+from epsm_data.contract import BOVERKET_REF, FACTOR_PREFIX, FACTOR_SOURCE
+from epsm_data.contract import QuantityDriver as Q
+from epsm_data.renovation import (
+    Airtightness,
+    DHWReduction,
+    LayerAddition,
+    PVArray,
+    SystemSwap,
+    WindowSwap,
+)
 
 from .building import Building, Installation, MeasureQuantities
+from .renovation_apply import ResolvedMeasure
+from .takeoff import building_dimensions, envelope_drivers, pv_drivers, ventilation_drivers
+
+__all__ = ["RESOLVERS", "Resolution", "apply_candidates", "building_dimensions",
+           "pv_drivers", "resolve_candidate", "resolve_sealing", "ventilation_drivers"]
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
-class CatalogueMeasure:
-    """A renovation candidate resolved for one building; accepted by ``Building.renovate``."""
+class Resolution:
+    """What a payload resolver found: operations, targets and quantity drivers."""
 
-    measure_id: str
-    candidate_id: str
-    measure_type: str
     operations: tuple
-    target_element_ids: tuple[str, ...]
-    installations: tuple[Installation, ...]
-    quantities: MeasureQuantities
-    retains_existing: bool = False
-    requires_measure_ids: tuple[str, ...] = ()
-    incompatible_measure_ids: tuple[str, ...] = ()
+    targets: tuple[str, ...]
+    drivers: dict
+    effects: dict | None = None
 
 
-def _polygon_area(points):
-    return abs(sum(x0 * y1 - x1 * y0 for (x0, y0), (x1, y1)
-                   in zip(points, (*points[1:], points[0])))) / 2
+def _no_selectors(element_ids, candidate):
+    if element_ids:
+        raise ValueError(f"{candidate.candidate_id} does not target envelope elements")
 
 
-def building_dimensions(building):
-    """Return footprint area, storeys and height of each conditioned geometry part.
-
-    A conditioned basement is served like a storey: it adds one storey of mains
-    and extends the risers by the basement depth.
-    """
-    if building.geometry is None:
-        raise ValueError("Ventilation quantities require building geometry")
-    geometry = building.geometry
-    basement = geometry.basement_depth_m if geometry.basement_conditioned else 0.0
-    basement = basement or 0.0
-    parts = []
-    for part in building.geometry.parts:
-        if not part.conditioned:
-            continue
-        footprint = part.footprint
-        area = _polygon_area(footprint.exterior) - sum(_polygon_area(h) for h in footprint.holes)
-        elevations = part.storey_elevations_m
-        parts.append({"part_id": part.identifier, "footprint_m2": area,
-                      "storeys": len(elevations) - 1 + (1 if basement else 0),
-                      "height_m": elevations[-1] - elevations[0] + basement})
-    if not parts:
-        raise ValueError("Ventilation quantities require a conditioned geometry part")
-    return parts
-
-
-def ventilation_drivers(building, layout, existing):
-    """Derive airflow, terminal, riser, unit and duct quantities from geometry.
-
-    Risers serve ``riser_area_m2`` of footprint each and run the full part height;
-    each new duct network adds risers plus horizontal mains per storey, and each
-    new terminal adds one branch. Existing networks are retained, not replaced.
-    """
-    parts = building_dimensions(building)
-    floor_area = building.effective_load_reference_area_m2 or sum(
-        p["footprint_m2"] * p["storeys"] for p in parts)
-    airflow = layout.mechanical_vent_l_s_m2 * floor_area
-    systems = layout.new_duct_systems[existing]
-    terminals = layout.new_terminals[existing]
-    supply = math.ceil(floor_area / layout.supply_area_per_terminal_m2) if "supply" in terminals else 0
-    exhaust = math.ceil(floor_area / layout.exhaust_area_per_terminal_m2) if "exhaust" in terminals else 0
-    risers = sum(max(1, math.ceil(p["footprint_m2"] / layout.riser_area_m2)) for p in parts)
-    network = sum(max(1, math.ceil(p["footprint_m2"] / layout.riser_area_m2)) * p["height_m"]
-                  + p["storeys"] * p["footprint_m2"] * layout.main_duct_m_per_m2 for p in parts)
-    return {"floor_area_m2": floor_area, "airflow_l_s": airflow,
-            "ahu_count": float(math.ceil(airflow / layout.ahu_max_airflow_l_s)),
-            "riser_count": float(risers * systems),
-            "supply_terminal_count": float(supply), "exhaust_terminal_count": float(exhaust),
-            "duct_length_m": systems * network + (supply + exhaust) * layout.branch_length_m}
+def _envelope_targets(building, candidate, element_ids):
+    """Targets of an envelope payload: selected elements, or its default boundaries."""
+    payload = candidate.payload
+    selected = set(element_ids or ())
+    # By default only the thermal envelope is renovated: shared party walls and
+    # internal floors keep their construction. A layer addition may name other
+    # boundaries, such as the ceiling over an unheated basement.
+    boundaries = set(getattr(payload, "target_boundaries", ()) or ("Outdoors", "Ground"))
+    if ("Internal" in boundaries and candidate.role.value == "GROUND_FLOOR"
+            and (building.geometry is None or not building.geometry.basement_depth_m
+                 or building.geometry.basement_conditioned)):
+        raise ValueError(f"{candidate.candidate_id} needs an unheated basement below the ground floor")
+    elements = [e for e in building.elements if e.role == candidate.role
+                and (e.identifier in selected if selected else e.boundary in boundaries)]
+    if selected - {e.identifier for e in elements}:
+        raise ValueError(f"Selected elements are not {candidate.role.value} elements")
+    if not elements:
+        raise ValueError(f"The building has no {candidate.role.value} elements")
+    if any(e.construction is None for e in elements):
+        raise ValueError("Every target needs an assigned construction")
+    if len({_construction_key(e.construction) for e in elements}) != 1:
+        raise ValueError("Targets have different constructions; renovate them as separate selections")
+    return elements
 
 
-def pv_drivers(building, layout):
-    """Size a roof array: a share of the footprint on flat roofs, of the roof surface otherwise.
-
-    Pitched parts use their actual outdoor ``ROOF`` element area; parts without
-    such elements fall back to the footprint.
-    """
-    if building.geometry is None:
-        raise ValueError("PV sizing requires building geometry")
-    roofs = {}
-    for element in building.elements:
-        if element.role.value == "ROOF" and element.boundary == "Outdoors":
-            roofs[element.part_id] = roofs.get(element.part_id, 0.0) + element.area_m2
-    area = 0.0
-    for part in building.geometry.parts:
-        roof = part.roof or building.geometry.roof
-        footprint = (_polygon_area(part.footprint.exterior)
-                     - sum(_polygon_area(h) for h in part.footprint.holes))
-        if roof is None or roof.shape == "flat":
-            area += layout.flat_roof_share * footprint
-        else:
-            area += layout.pitched_roof_share * roofs.get(part.identifier, footprint)
-    return {"pv_area_m2": area, "pv_capacity_kwp": area * layout.module_w_m2 / 1000}
+def resolve_layers(building, candidate, element_ids, *, roof_topology=None, **_):
+    payload = candidate.payload
+    if (payload.roof_topologies and roof_topology is not None
+            and roof_topology not in payload.roof_topologies):
+        raise ValueError(f"{candidate.candidate_id} applies to {payload.roof_topologies} roofs")
+    elements = _envelope_targets(building, candidate, element_ids)
+    return Resolution(payload.operations_for(elements[0].construction),
+                      tuple(e.identifier for e in elements), envelope_drivers(elements))
 
 
-def resolve_candidate(building, candidate, *, element_ids=None, measure_id=None,
-                      roof_topology=None):
-    """Resolve one candidate's operations, quantity drivers and installed products.
-
-    Parameters
-    ----------
-    building : Building
-        State before the measure; quantities come from its geometry and elements.
-    candidate : epsm_data.RenovationCandidate
-        A candidate loaded with :meth:`RenovationCatalogue.load`.
-    element_ids : sequence of str, optional
-        Physical elements to renovate; every element of the candidate's role by default.
-    measure_id : str, optional
-        Identity in the renovation stage; the candidate ID by default.
-    roof_topology : str, optional
-        Checked against roof candidates that are restricted to a topology.
-    """
-    if not isinstance(building, Building):
-        raise TypeError("building must be an epsm_core Building")
-    if not candidate.kind.standalone:
-        raise ValueError(f"{candidate.candidate_id} cannot be applied by itself; apply one of "
-                         f"{', '.join(candidate.kind.hosts)} with apply_candidates")
-    drivers = {"building": 1.0}
-    if building.effective_load_reference_area_m2 is not None:
-        drivers["floor_area_m2"] = building.effective_load_reference_area_m2
-    if candidate.kind.action == "replace_hvac":
-        if element_ids:
-            raise ValueError("Ventilation candidates do not target envelope elements")
-        if building.hvac is None:
-            raise ValueError("Ventilation renovation requires an existing HVAC system")
-        existing = building.hvac.airflow.topology
-        if candidate.from_ventilation and existing not in candidate.from_ventilation:
-            raise ValueError(f"{candidate.candidate_id} cannot replace {existing} ventilation")
-        drivers |= ventilation_drivers(building, candidate.layout, existing)
-        operations = (SystemOperation("replace_hvac", candidate.system_template()),)
-        targets = ()
-    elif candidate.kind.action == "add_pv":
-        if element_ids:
-            raise ValueError("PV candidates are sized from the roof, not element selectors")
-        drivers |= pv_drivers(building, candidate.pv)
-        layout = candidate.pv
-        operations = (PVOperation("add_pv", drivers["pv_capacity_kwp"], layout.tilt_deg,
-                                  layout.azimuth_deg, layout.system_losses_pct),)
-        targets = ()
-    elif candidate.kind.action == "reduce_dhw":
-        if element_ids:
-            raise ValueError("DHW candidates do not target envelope elements")
-        if "floor_area_m2" not in drivers:
-            raise ValueError("DHW measures need a load reference floor area")
-        operations = (DHWOperation("reduce_dhw", candidate.dhw_reduction),)
-        targets = ()
-    else:
-        if (candidate.roof_topologies and roof_topology is not None
-                and roof_topology not in candidate.roof_topologies):
-            raise ValueError(f"{candidate.candidate_id} applies to {candidate.roof_topologies} roofs")
-        selected = set(element_ids or ())
-        # By default only the thermal envelope is renovated: shared party walls and
-        # internal floors of the same role keep their construction. A candidate may
-        # name other boundaries, such as the ceiling over an unheated basement.
-        boundaries = set(candidate.target_boundaries or ("Outdoors", "Ground"))
-        if ("Internal" in boundaries and candidate.role.value == "GROUND_FLOOR"
-                and (building.geometry is None or not building.geometry.basement_depth_m
-                     or building.geometry.basement_conditioned)):
-            raise ValueError(f"{candidate.candidate_id} needs an unheated basement below the ground floor")
-        elements = [e for e in building.elements if e.role == candidate.role
-                    and (e.identifier in selected if selected else e.boundary in boundaries)]
-        if selected - {e.identifier for e in elements}:
-            raise ValueError(f"Selected elements are not {candidate.role.value} elements")
-        if not elements:
-            raise ValueError(f"The building has no {candidate.role.value} elements")
-        if any(e.construction is None for e in elements):
-            raise ValueError("Every target needs an assigned construction")
-        constructions = {_construction_key(e.construction) for e in elements}
-        if len(constructions) != 1:
-            raise ValueError("Targets have different constructions; renovate them as separate selections")
-        operations = candidate.operations_for(elements[0].construction)
-        targets = tuple(e.identifier for e in elements)
-        area = sum(e.area_m2 for e in elements)
-        if candidate.role.value == "WINDOW":
-            drivers |= {"window_area_m2": area,
-                        "window_count": area / candidate.typical_window_area_m2}
-        else:
-            drivers["element_area_m2"] = area
-    measure_id = measure_id or candidate.candidate_id
-    installations = []
-    for product in candidate.products:
-        amount = drivers.get(product.driver, 0.0) * product.quantity_per_driver
-        if amount <= 0:
-            continue
-        refs = [("boverket_id", product.boverket_id)] if product.boverket_id else []
-        # Direct per-unit factors (for example from an EPD) travel with the occurrence.
-        refs += [(f"factor:{module}", repr(value)) for module, value in product.factors.items()]
-        if product.factors:
-            refs.append(("factor_source", product.factor_source))
-        installations.append(Installation(
-            f"{measure_id}.{product.product_id}", product.product_id, product.description,
-            product.unit, amount,
-            amount * product.mass_kg_per_unit if product.mass_kg_per_unit is not None else None,
-            tuple(refs), targets, candidate.candidate_id))
-    return CatalogueMeasure(
-        measure_id, candidate.candidate_id, candidate.measure_type, operations, targets,
-        tuple(installations),
-        MeasureQuantities(measure_id, candidate.candidate_id, candidate.measure_type, drivers),
-        candidate.retains_existing)
+def resolve_window(building, candidate, element_ids, **_):
+    elements = _envelope_targets(building, candidate, element_ids)
+    return Resolution(candidate.payload.operations_for(elements[0].construction),
+                      tuple(e.identifier for e in elements),
+                      envelope_drivers(elements, candidate.payload.typical_window_area_m2))
 
 
-def resolve_sealing(building, candidate, hosts):
-    """Resolve a dependent sealing candidate for the envelope its host measures renovate.
+def resolve_system(building, candidate, element_ids, **_):
+    _no_selectors(element_ids, candidate)
+    payload = candidate.payload
+    if building.hvac is None:
+        raise ValueError("Ventilation renovation requires an existing HVAC system")
+    existing = building.hvac.airflow.topology
+    if payload.from_ventilation and existing not in payload.from_ventilation:
+        raise ValueError(f"{candidate.candidate_id} cannot replace {existing} ventilation")
+    return Resolution((payload.operation(candidate.candidate_id, candidate.source_references),),
+                      (), ventilation_drivers(building, payload.layout, existing))
 
-    The nominal reduction is scaled by the renovated share of the outdoor envelope
-    area. Applying the catalogue default is logged, since it is an assumption.
-    """
+
+def resolve_pv(building, candidate, element_ids, **_):
+    _no_selectors(element_ids, candidate)
+    drivers = pv_drivers(building, candidate.payload)
+    return Resolution((candidate.payload.operation(drivers[Q.PV_CAPACITY_KWP]),), (), drivers)
+
+
+def resolve_dhw(building, candidate, element_ids, **_):
+    _no_selectors(element_ids, candidate)
+    if building.effective_load_reference_area_m2 is None:
+        raise ValueError("DHW measures need a load reference floor area")
+    return Resolution((candidate.payload.operation(),), (), {})
+
+
+def resolve_airtightness(building, candidate, element_ids, *, hosts=(), **_):
+    """Scale the nominal reduction by the outdoor envelope share its hosts renovated."""
+    _no_selectors(element_ids, candidate)
     if not hosts:
         raise ValueError(f"{candidate.candidate_id} cannot be applied by itself; apply one of "
                          f"{', '.join(candidate.kind.hosts)} in the same stage")
@@ -250,25 +141,91 @@ def resolve_sealing(building, candidate, hosts):
     if renovated <= 0 or envelope <= 0:
         raise ValueError(f"{candidate.candidate_id} needs host measures on the outdoor envelope")
     share = min(renovated / envelope, 1.0)
-    operation = candidate.airtightness_operation(share)
+    operation = candidate.payload.operation(share)
     logger.warning(
         "Default airtightness assumption applied: %s reduces infiltration by %.1f %% "
         "(nominal %.0f %% x renovated envelope share %.2f)",
         candidate.candidate_id, 100 * operation.fraction,
-        100 * candidate.infiltration_reduction, share,
+        100 * candidate.payload.nominal_reduction, share,
         extra={"epsm_event": "renovation.sealing.default_applied",
                "epsm_context": {"building_id": building.identifier},
                "epsm_details": {"candidate_id": candidate.candidate_id,
                                 "host_measure_ids": [h.measure_id for h in hosts],
-                                "nominal_reduction": candidate.infiltration_reduction,
+                                "nominal_reduction": candidate.payload.nominal_reduction,
                                 "envelope_share": share, "reduction": operation.fraction}})
-    drivers = {"building": 1.0, "renovated_envelope_area_m2": renovated,
-               "envelope_share": share, "infiltration_reduction": operation.fraction}
-    return CatalogueMeasure(
-        candidate.candidate_id, candidate.candidate_id, candidate.measure_type, (operation,),
-        (), (), MeasureQuantities(candidate.candidate_id, candidate.candidate_id,
-                                  candidate.measure_type, drivers),
+    return Resolution((operation,), (), {}, {
+        "renovated_envelope_area_m2": renovated, "envelope_share": share,
+        "infiltration_reduction": operation.fraction})
+
+
+RESOLVERS = {
+    LayerAddition: resolve_layers,
+    WindowSwap: resolve_window,
+    SystemSwap: resolve_system,
+    PVArray: resolve_pv,
+    DHWReduction: resolve_dhw,
+    Airtightness: resolve_airtightness,
+}
+
+
+def resolve_candidate(building, candidate, *, element_ids=None, measure_id=None,
+                      roof_topology=None, hosts=()):
+    """Resolve one candidate into a measure ``Building.renovate`` applies.
+
+    Parameters
+    ----------
+    building : Building
+        State before the measure; quantities come from its geometry and elements.
+    candidate : epsm_data.RenovationCandidate
+        A candidate loaded with :meth:`RenovationCatalogue.load`.
+    element_ids : sequence of str, optional
+        Physical elements to renovate; the payload's default targets otherwise.
+    measure_id : str, optional
+        Identity in the renovation stage; the candidate ID by default.
+    roof_topology : str, optional
+        Checked against layer additions restricted to a roof topology.
+    hosts : sequence of ResolvedMeasure, optional
+        Host measures in the same stage; only dependent candidates use them.
+    """
+    if not isinstance(building, Building):
+        raise TypeError("building must be an epsm_core Building")
+    if not candidate.kind.standalone and not hosts:
+        raise ValueError(f"{candidate.candidate_id} cannot be applied by itself; apply one of "
+                         f"{', '.join(candidate.kind.hosts)} with apply_candidates")
+    resolver = RESOLVERS.get(type(candidate.payload))
+    if resolver is None:
+        raise TypeError(f"No resolver for {type(candidate.payload).__name__}")
+    found = resolver(building, candidate, element_ids, roof_topology=roof_topology, hosts=hosts)
+    drivers = {Q.BUILDING: 1.0, **found.drivers}
+    if building.effective_load_reference_area_m2 is not None:
+        drivers.setdefault(Q.FLOOR_AREA_M2, building.effective_load_reference_area_m2)
+    measure_id = measure_id or candidate.candidate_id
+    installations = []
+    for product in candidate.products:
+        amount = drivers.get(product.driver, 0.0) * product.quantity_per_driver
+        if amount <= 0:
+            continue
+        refs = [(BOVERKET_REF, product.boverket_id)] if product.boverket_id else []
+        # Direct per-unit factors (for example from an EPD) travel with the occurrence.
+        refs += [(f"{FACTOR_PREFIX}{module}", repr(value)) for module, value in product.factors.items()]
+        if product.factors:
+            refs.append((FACTOR_SOURCE, product.factor_source))
+        installations.append(Installation(
+            f"{measure_id}.{product.product_id}", product.product_id, product.description,
+            product.unit, amount,
+            amount * product.mass_kg_per_unit if product.mass_kg_per_unit is not None else None,
+            tuple(refs), found.targets, candidate.candidate_id))
+    return ResolvedMeasure(
+        measure_id, found.operations, found.targets, tuple(installations),
+        MeasureQuantities(measure_id, candidate.candidate_id, candidate.measure_type, drivers,
+                          found.effects or {}),
+        getattr(candidate.payload, "retains_existing", False),
         requires_measure_ids=tuple(h.measure_id for h in hosts))
+
+
+def resolve_sealing(building, candidate, hosts):
+    """Resolve a dependent candidate for the envelope its host measures renovate."""
+    return resolve_candidate(building, candidate, hosts=tuple(hosts))
 
 
 def apply_candidates(building, *selections, companions=True):
@@ -289,9 +246,10 @@ def apply_candidates(building, *selections, companions=True):
             dependents[candidate.candidate_id] = candidate
             continue
         measure = resolve_candidate(building, candidate, element_ids=element_ids)
+        kind = candidate.measure_type
         overlap = claimed.intersection(measure.target_element_ids)
         if overlap or (not measure.target_element_ids
-                       and any(m.measure_type == measure.measure_type for m in measures)):
+                       and any(m.quantities.measure_type == kind for m in measures)):
             raise ValueError(f"{measure.measure_id} renovates elements already in this stage")
         claimed.update(measure.target_element_ids)
         measures.append(measure)
@@ -300,7 +258,7 @@ def apply_candidates(building, *selections, companions=True):
             hosted.setdefault(companion.candidate_id, []).append(measure)
     for candidate_id, candidate in dependents.items():
         hosts = hosted.get(candidate_id) or [
-            m for m in measures if m.measure_type in candidate.kind.hosts]
+            m for m in measures if m.quantities.measure_type in candidate.kind.hosts]
         measures.append(resolve_sealing(building, candidate, hosts))
     return building.renovate(*measures)
 

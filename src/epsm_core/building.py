@@ -196,23 +196,39 @@ class Installation:
 
 @dataclass(frozen=True)
 class MeasureQuantities:
-    """Geometric quantity drivers resolved for one catalogue measure in a stage."""
+    """Quantities resolved for one catalogue measure in a stage.
+
+    ``drivers`` are epsm_data ``QuantityDriver`` values that cost rates and
+    products use. ``effects`` record how a measure was scaled (for example the
+    renovated envelope share behind a sealing reduction); nothing is priced on them.
+    """
 
     measure_id: str
     candidate_id: str
     measure_type: str
     drivers: tuple[tuple[str, float], ...]
+    effects: tuple[tuple[str, float], ...] = ()
 
     def __post_init__(self):
-        items = self.drivers.items() if hasattr(self.drivers, "items") else self.drivers
-        values = tuple((str(k), float(v)) for k, v in items)
-        if any(not math.isfinite(v) or v < 0 for _, v in values):
-            raise ValueError("Quantity drivers must be finite and nonnegative")
-        object.__setattr__(self, "drivers", values)
+        from epsm_data.contract import QuantityDriver
+
+        for name in ("drivers", "effects"):
+            value = getattr(self, name)
+            items = value.items() if hasattr(value, "items") else value
+            values = tuple((str(k), float(v)) for k, v in items)
+            if any(not math.isfinite(v) for _, v in values):
+                raise ValueError(f"Quantity {name} must be finite")
+            object.__setattr__(self, name, values)
+        unknown = {k for k, _ in self.drivers} - {d.value for d in QuantityDriver}
+        if unknown:
+            raise ValueError(f"Unknown quantity drivers: {sorted(unknown)}")
+        if any(v < 0 for _, v in self.drivers):
+            raise ValueError("Quantity drivers must be nonnegative")
 
     def to_dict(self):
         return {"measure_id": self.measure_id, "candidate_id": self.candidate_id,
-                "measure_type": self.measure_type, "drivers": dict(self.drivers)}
+                "measure_type": self.measure_type, "drivers": dict(self.drivers),
+                "effects": dict(self.effects)}
 
     @classmethod
     def from_dict(cls, data):
@@ -1555,25 +1571,22 @@ class Building:
     def renovate(self, *measures):
         """Apply a transactional ordered stage and return an independent same-type child.
 
-        Explicit replacements create new occurrences even for identical products,
-        unless the measure ``retains_existing`` the replaced unit (a window upgrade).
-        Unchanged component IDs survive additions/removals and movement in the stack.
-        A measure's ``installations`` are added to the building and its resolved
-        ``quantities`` are kept on the stage for costing.
+        Measures are ``ResolvedMeasure`` records, Data ``RenovationMeasure`` records
+        or bare Data operations; each operation type has one applier in
+        ``renovation_apply.APPLIERS``. Explicit replacements create new occurrences
+        even for identical products, unless the measure ``retains_existing`` the
+        replaced unit (a window upgrade). Unchanged component IDs survive
+        additions/removals and movement in the stack. A measure's ``installations``
+        are added to the building and its ``quantities`` are kept on the stage.
         """
-        from epsm_data.operations import (
-            AirtightnessOperation,
-            ConstructionOperation,
-            DHWOperation,
-            PVOperation,
-            SystemOperation,
-        )
-
-        from .specs.physics import PVSpec
+        from .renovation_apply import APPLIERS, ResolvedMeasure
 
         if not measures:
             raise ValueError("renovate requires at least one measure")
-        selected_ids = [m.measure_id for m in measures if hasattr(m, "measure_id")]
+        # Bare operations are labelled by their action and are not unique measures.
+        named = [type(m) not in APPLIERS for m in measures]
+        measures = tuple(ResolvedMeasure.of(m) for m in measures)
+        selected_ids = [m.measure_id for m, is_named in zip(measures, named) if is_named]
         if len(set(selected_ids)) != len(selected_ids):
             raise ValueError("A renovation bundle cannot repeat a measure ID")
         previous_ids = {identifier for stage in self.stages for identifier in stage.measure_ids}
@@ -1584,102 +1597,27 @@ class Building:
         available = set(previous_ids)
         all_ids = previous_ids | set(selected_ids)
         for measure in measures:
-            if set(getattr(measure, "incompatible_measure_ids", ())).intersection(all_ids):
+            if set(measure.incompatible_measure_ids).intersection(all_ids):
                 raise ValueError("Incompatible renovation measures selected")
-            required = set(getattr(measure, "requires_measure_ids", ()))
+            required = set(measure.requires_measure_ids)
             if not required <= available:
                 raise ValueError("Renovation prerequisites must occur earlier: "
                                  + ", ".join(sorted(required - available)))
-            if hasattr(measure, "measure_id"):
-                available.add(measure.measure_id)
+            available.add(measure.measure_id)
         before = self.snapshot()
         old_inventory = {q.occurrence_id: q for q in self.quantities()}
         child = self.copy()
-        identifiers = []
         for measure in measures:
-            operations = (measure,) if isinstance(
-                measure, (ConstructionOperation, SystemOperation, AirtightnessOperation,
-                          PVOperation, DHWOperation)) \
-                else getattr(measure, "operations", ())
-            if not operations:
-                raise ValueError("Renovation measure has no resolved physical operations")
-            identifiers.append(getattr(measure, "measure_id", getattr(measure, "action", "measure")))
-            selected = set(getattr(measure, "target_element_ids", ()))
+            selected = set(measure.target_element_ids)
             if selected and not selected <= {e.identifier for e in child.elements}:
                 raise ValueError("Renovation targets contain unknown physical elements")
             affected = set()
-            for operation in operations:
-                if isinstance(operation, SystemOperation):
-                    if selected:
-                        raise ValueError("HVAC replacement does not accept envelope-element selectors")
-                    child.hvac = HVACSystem.from_template(operation.template, previous=child.hvac)
-                    continue
-                if isinstance(operation, AirtightnessOperation):
-                    if selected:
-                        raise ValueError("Infiltration reduction does not accept element selectors")
-                    if child.hvac is None:
-                        raise ValueError("Infiltration reduction requires an airflow specification")
-                    airflow = child.hvac.airflow
-                    remaining = 1 - operation.fraction
-                    child.hvac = child.hvac.with_changes(airflow=airflow.model_copy(update={
-                        "envelope_infiltration_ach": airflow.envelope_infiltration_ach * remaining,
-                        "envelope_infiltration_l_s_m2": None
-                        if airflow.envelope_infiltration_l_s_m2 is None
-                        else airflow.envelope_infiltration_l_s_m2 * remaining}))
-                    continue
-                if isinstance(operation, PVOperation):
-                    if selected or child.hvac is None:
-                        raise ValueError("PV installation needs an HVAC system and no element selectors")
-                    pv = PVSpec(dc_capacity_kw=operation.dc_capacity_kw, tilt_deg=operation.tilt_deg,
-                                azimuth_deg=operation.azimuth_deg,
-                                system_losses_pct=operation.system_losses_pct)
-                    renewables = child.hvac.renewables
-                    child.hvac = child.hvac.with_changes(renewables=renewables.model_copy(
-                        update={"pv_systems": (*renewables.pv_systems, pv)}))
-                    continue
-                if isinstance(operation, DHWOperation):
-                    if selected or child.operation is None:
-                        raise ValueError("DHW reduction needs an operation profile and no element selectors")
-                    remaining = 1 - operation.fraction
-                    child.operation = child.operation.with_changes(
-                        dhw_kwh_m2_year=child.operation.dhw_kwh_m2_year * remaining)
-                    # Zone-specific use overrides carry their own hot-water demand.
-                    child.zone_uses = tuple(
-                        zone.updated(use=zone.use.updated(
-                            dhw_kwh_m2_year=zone.use.dhw_kwh_m2_year * remaining))
-                        if zone.use is not None else zone for zone in child.zone_uses)
-                    continue
-                targets = [e for e in child.elements if e.role == operation.role
-                           and (not selected or e.identifier in selected)]
-                if not targets:
-                    raise ValueError(f"No physical targets for {operation.role.value}")
-                changed = {}
-                for element in targets:
-                    if element.construction is None:
-                        raise ValueError(f"Target {element.identifier} has no construction")
-                    resolved = operation.apply(ConstructionSet(
-                        elements={element.role: element.construction})).elements[element.role]
-                    ids = list(element.component_ids)
-                    if operation.action == "replace_element":
-                        if not getattr(measure, "retains_existing", False):
-                            ids = []
-                    elif operation.action == "add_component":
-                        ids.insert(operation.position, str(uuid4()))
-                    else:
-                        index = next(i for i, c in enumerate(element.construction.components)
-                                     if c.name == operation.target_component)
-                        if operation.action == "remove_component":
-                            ids.pop(index)
-                        else:
-                            ids[index] = str(uuid4())
-                    changed[element.identifier] = element.with_changes(
-                        construction=resolved, component_ids=tuple(ids))
-                    affected.add(element.identifier)
-                child._elements = tuple(changed.get(e.identifier, e) for e in child.elements)
+            for operation in measure.operations:
+                affected |= APPLIERS[type(operation)](child, operation, measure, selected)
             if selected and affected != selected:
                 raise ValueError("Some selected physical elements were not affected by the measure")
             child._installations = _validated_installations(
-                (*child.installations, *getattr(measure, "installations", ())))
+                (*child.installations, *measure.installations))
         new_inventory = {q.occurrence_id: q for q in child.quantities()}
         from .inventory import MaterialInventory
 
@@ -1689,11 +1627,11 @@ class Building:
             MaterialInventory(q for key, q in old_inventory.items() if key not in new_inventory),
             MaterialInventory(q for key, q in new_inventory.items() if key in old_inventory))
         incompatible = tuple(sorted({identifier for measure in measures
-                                     for identifier in getattr(measure, "incompatible_measure_ids", ())}))
-        quantities = tuple(measure.quantities for measure in measures
-                           if isinstance(getattr(measure, "quantities", None), MeasureQuantities))
-        stage = RenovationStage(stage_id, order, before, child.snapshot(), tuple(identifiers), flows,
-                                incompatible, quantities)
+                                     for identifier in measure.incompatible_measure_ids}))
+        quantities = tuple(m.quantities for m in measures if m.quantities is not None)
+        stage = RenovationStage(stage_id, order, before, child.snapshot(),
+                                tuple(m.measure_id for m in measures), flows, incompatible,
+                                quantities)
         child._stages = (*self.stages, stage)
         child._material_flows = (*self.material_flows, flows)
         child._parent_snapshot_id = before.sha256
