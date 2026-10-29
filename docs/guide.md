@@ -2,14 +2,14 @@
 
 Run commands from the repository root unless stated otherwise.
 
-Core 0.8.2 exports portable polygon scenes for the independent `epsm_viewer` package. Core owns physical geometry and scientific metadata; Viewer owns browser and notebook display. Shared snapshot preparation, physical cold-attic shells, basement controls and shared-wall ownership retain their existing behavior. Core consumes Data 0.6.0 definitions. See [viewer migration](../docs/viewer-migration.md), [release notes](../RELEASE_NOTES.md), [roof and basement support](../docs/roofs-and-basements.md), [shared-wall assumptions](../docs/party-walls.md) and [prepared geometry](../docs/geometry-cache.md).
+Core exports portable polygon scenes for the independent `epsm_viewer` package. Core owns physical geometry and scientific metadata; Viewer owns browser and notebook display. Shared snapshot preparation, physical cold-attic shells, basement controls and shared-wall ownership retain their existing behavior. Core 0.9.0 consumes Data 0.7.0 definitions, applies its renovation candidates and carries its thermal-bridge surcharge. See [viewer migration](../docs/viewer-migration.md), [release notes](../RELEASE_NOTES.md), [roof and basement support](../docs/roofs-and-basements.md), [shared-wall assumptions](../docs/party-walls.md) and [prepared geometry](../docs/geometry-cache.md).
 
 `output_capabilities(building, weather=weather, settings=settings)` reports available
 normalized names, resolutions, scopes and units without starting EnergyPlus.
 Conditional delivery/PV fields and unverified additional native requests remain
 explicit. See [release notes](../RELEASE_NOTES.md).
 
-A pre-1.0 building-energy modelling library for automated urban building energy modelling. The package version is **0.8.2**; content hashes distinguish simulation inputs and implementations.
+A pre-1.0 building-energy modelling library for automated urban building energy modelling. The package version is **0.9.0**; content hashes distinguish simulation inputs and implementations.
 
 ## Physical Building authoring
 

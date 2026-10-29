@@ -1,4 +1,4 @@
-# Unreleased — catalogue renovation
+# Core 0.9.0 — catalogue renovation and thermal-bridge surcharge (29 October 2026)
 
 `epsm_core.measures.apply_candidates` applies epsm_data renovation candidates
 through `Building.renovate`, the single renovation path. Each payload type has
@@ -10,6 +10,12 @@ added after window or wall measures with a logged default reduction.
 and exported energy per carrier, netting PV hour by hour. Physical boundaries
 select their construction by source role (compact roof, soil slab). Requires the
 epsm_data renovation catalogue and `epsm_data.contract`.
+
+`EnvelopeSpec` and `Building` carry `thermal_bridge_delta_u_w_m2k`, TABULA's absolute
+thermal-bridge surcharge. `epsm_core.bridges.thermal_bridge_uplifts` turns it, or the
+existing uplift fraction, into one uplift per bridged role, and the EnergyPlus compiler
+applies those uplifts; a spec rejects both representations at once. RC 0.11.0 reads the
+same helper. Requires Data 0.7.0.
 
 # Core 0.8.2 — output discovery
 
