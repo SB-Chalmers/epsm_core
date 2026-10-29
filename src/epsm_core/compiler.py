@@ -57,8 +57,8 @@ from shapely.geometry import Polygon
 from epsm_core._logging import operation as logged_operation
 
 from ._version import __version__ as COMPILER_VERSION
-from .constructions import bridge_equivalent, internal_mass_halves, surface_construction_reversed
 from .bridges import thermal_bridge_uplifts
+from .constructions import bridge_equivalent, internal_mass_halves, surface_construction_reversed
 from .context import (
     emittable_context_surfaces,
     mirror_suppression_eligibility,
