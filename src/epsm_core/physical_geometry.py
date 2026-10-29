@@ -85,6 +85,35 @@ def physical_geometry_mismatches(geometry, facade, elements):
     return tuple(sorted(issues))
 
 
+def construction_source_role(geometry, element, constructions):
+    """Select a declared assembly for one physical boundary without conflating shells.
+
+    ``TOP_FLOOR`` remains the released physical top-boundary role. A compact
+    roof may use an authored ``ROOF`` when no explicit top assembly is supplied.
+    A cold-attic ceiling must have its own ``TOP_FLOOR``; its ``ROOF`` is the
+    separate weather shell and is never a ceiling fallback.
+    """
+    role = element.role
+    if role == Role.TOP_FLOOR and role not in constructions and Role.ROOF in constructions:
+        part = next(part for part in geometry.parts if part.identifier == element.part_id)
+        if (part.roof or geometry.roof).topology == "compact":
+            return Role.ROOF
+    return role
+
+
+def physical_construction(geometry, element, constructions):
+    """Resolve the source role, retaining layers and shared source definitions."""
+    source_role = construction_source_role(geometry, element, constructions)
+    construction = constructions.get(source_role)
+    if construction is not None and source_role != element.role:
+        construction = construction.with_changes(
+            application=element.role,
+            components=tuple(component.with_changes(application=element.role)
+                             for component in construction.components),
+        )
+    return construction
+
+
 def physical_elements(geometry, facade, construction_set):
     from .building import BuildingElement
     from .facades import window_rectangles
@@ -93,8 +122,9 @@ def physical_elements(geometry, facade, construction_set):
     rows = []
 
     def add(identifier, role, area, **metadata):
-        # No guessed assignment between unlike roles. Missing is visible in readiness.
-        rows.append(BuildingElement(identifier, role, area, constructions.get(role), **metadata))
+        element = BuildingElement(identifier, role, area, **metadata)
+        rows.append(element.with_changes(
+            construction=physical_construction(geometry, element, constructions)))
 
     for part in geometry.parts:
         area = part.footprint.area_m2
@@ -105,7 +135,10 @@ def physical_elements(geometry, facade, construction_set):
             add(f"{part.identifier}.ground_floor", Role.GROUND_FLOOR, area,
                 part_id=part.identifier, elevation_m=0, boundary="Internal")
         else:
-            add(f"{part.identifier}.ground_floor", Role.GROUND_FLOOR, area,
+            # An explicit soil slab remains the soil boundary even when there is
+            # no basement. GROUND_FLOOR may instead be a suspended cellar ceiling.
+            bottom_role = Role.BASEMENT_FLOOR if Role.BASEMENT_FLOOR in constructions else Role.GROUND_FLOOR
+            add(f"{part.identifier}.ground_floor", bottom_role, area,
                 part_id=part.identifier, elevation_m=0)
         for elevation in part.storey_elevations_m[1:-1]:
             add(f"{part.identifier}.floor.{elevation:g}", Role.INTERMEDIATE_FLOOR,

@@ -935,23 +935,63 @@ class Building:
                 changed.update("facade." + name for name in properties)
         construction_targets = set()
         if construction_set is not None:
+            from .physical_geometry import construction_source_role, physical_construction
+
             incoming = candidate.construction_set
             existing = self.construction_set.elements if self.construction_set else {}
+            generated = {element.identifier: element for element in candidate.elements}
+            targets = []
+            for element in self.elements:
+                selected = generated.get(element.identifier, element)
+                # The explicit BASEMENT_FLOOR role selects soil independently of
+                # basement presence. Preserve an already installed assignment in
+                # fill_missing mode; replace may adopt the incoming soil role.
+                if (selected.role != element.role
+                        and {selected.role, element.role} <= {ElementRole.GROUND_FLOOR, ElementRole.BASEMENT_FLOOR}
+                        and (selected.role == ElementRole.BASEMENT_FLOOR
+                             and ElementRole.BASEMENT_FLOOR in incoming.elements
+                             or selected.role == ElementRole.GROUND_FLOOR
+                             and ElementRole.GROUND_FLOOR in incoming.elements
+                             and not self.geometry.basement_depth_m)
+                        and not (mode == "fill_missing" and element.construction is not None)):
+                    element = element.with_changes(role=selected.role, construction=None)
+                source_role = construction_source_role(self.geometry, element, incoming.elements)
+                targets.append((element, source_role))
             values = dict(existing)
             for role, construction in incoming.elements.items():
-                if not any(element.role == role for element in self.elements):
+                if not any(source_role == role for _, source_role in targets):
                     unmatched.append("construction:" + role.value)
                 elif mode == "replace" or role not in values:
                     values[role] = construction
                     changed.add("construction_set.elements." + role.value)
+            for element, source_role in targets:
+                if (source_role != element.role and source_role in incoming.elements
+                        and (mode == "replace" or element.construction is None)
+                        and element.role in values):
+                    # Do not retain an older TOP_FLOOR that would take priority
+                    # over the newly assigned compact ROOF on regeneration.
+                    del values[element.role]
+                    changed.add("construction_set.elements." + element.role.value)
+            if (not self.geometry.basement_depth_m
+                    and ElementRole.GROUND_FLOOR in incoming.elements
+                    and ElementRole.BASEMENT_FLOOR not in incoming.elements
+                    and any(element.role == ElementRole.GROUND_FLOOR
+                            and element.identifier.endswith(".ground_floor")
+                            and (mode == "replace" or element.construction is None)
+                            for element, _ in targets)
+                    and ElementRole.BASEMENT_FLOOR in values):
+                # An explicit at-grade GROUND_FLOOR replacement also replaces
+                # the old soil-role default, so regeneration keeps this choice.
+                del values[ElementRole.BASEMENT_FLOOR]
+                changed.add("construction_set.elements." + ElementRole.BASEMENT_FLOOR.value)
             if values != dict(existing):
                 # A mixed default set is a new authored composition, not the
                 # incoming catalogue snapshot with another snapshot's identity.
                 updates["construction_set"] = ConstructionSet(elements=values)
             elements = []
-            for element in self.elements:
+            for element, source_role in targets:
                 path = "construction:" + element.identifier
-                if element.role not in incoming.elements:
+                if source_role not in incoming.elements:
                     retained.append(path)
                     elements.append(element)
                 elif mode == "fill_missing" and element.construction is not None:
@@ -960,7 +1000,7 @@ class Building:
                 else:
                     (applied if element.construction is None else replaced).append(path)
                     elements.append(element.with_changes(
-                        construction=incoming.elements[element.role]))
+                        construction=physical_construction(self.geometry, element, incoming.elements)))
                     path = "elements." + element.identifier + ".construction"
                     changed.add(path)
                     construction_targets.add(path)
