@@ -57,6 +57,7 @@ from shapely.geometry import Polygon
 from epsm_core._logging import operation as logged_operation
 
 from ._version import __version__ as COMPILER_VERSION
+from .bridges import thermal_bridge_uplifts
 from .constructions import bridge_equivalent, internal_mass_halves, surface_construction_reversed
 from .context import (
     emittable_context_surfaces,
@@ -809,13 +810,9 @@ class EnergyPlusCompiler:
             labels = (f"physical_mass_{index}_a", f"physical_mass_{index}_b")
             assemblies.update(zip(labels, internal_mass_halves(assembly)))
             mass_override_names[name] = labels
+        uplifts = thermal_bridge_uplifts(spec, resolved=resolved)
         for role, nominal in assemblies.items():
-            uplift = (
-                spec.envelope.thermal_bridge_uplift_fraction
-                if override_base_roles.get(role, role) in (
-                    "wall", "top", "ground", "basement_wall", "basement_ceiling")
-                else 0
-            )
+            uplift = uplifts.get(override_base_roles.get(role, role), 0)
             applied = bridge_equivalent(nominal, uplift)
             construction_report[role] = dict(
                 nominal=nominal.model_dump(mode="json"),

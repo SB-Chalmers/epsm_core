@@ -148,6 +148,93 @@ class Equipment:
     __str__ = __repr__
 
 
+@dataclass(frozen=True)
+class Installation:
+    """One installed product outside the layered envelope, such as ductwork or glazing.
+
+    ``quantity`` is in ``unit`` (item, m or m2). Mass is stated, never inferred;
+    ``host_element_ids`` name the physical elements the product is fitted to.
+    """
+
+    identifier: str
+    product_id: str
+    description: str
+    unit: str
+    quantity: float
+    mass_kg: float | None = None
+    factor_refs: tuple[tuple[str, str], ...] = ()
+    host_element_ids: tuple[str, ...] = ()
+    candidate_id: str | None = None
+    occurrence_id: str = field(default_factory=lambda: str(uuid4()))
+
+    def __post_init__(self):
+        if not self.identifier or not self.product_id or not self.occurrence_id:
+            raise ValueError("Installations require identities")
+        if self.unit not in {"item", "m", "m2"}:
+            raise ValueError("Installation unit must be item, m or m2")
+        if not math.isfinite(self.quantity) or self.quantity <= 0:
+            raise ValueError("Installation quantity must be finite and positive")
+        if self.mass_kg is not None and (not math.isfinite(self.mass_kg) or self.mass_kg < 0):
+            raise ValueError("Installation mass must be finite and nonnegative")
+        refs = self.factor_refs.items() if hasattr(self.factor_refs, "items") else self.factor_refs
+        object.__setattr__(self, "factor_refs", tuple((str(k), str(v)) for k, v in refs))
+        object.__setattr__(self, "host_element_ids", tuple(self.host_element_ids))
+
+    def to_dict(self):
+        return {"identifier": self.identifier, "product_id": self.product_id,
+                "description": self.description, "unit": self.unit, "quantity": self.quantity,
+                "mass_kg": self.mass_kg, "factor_refs": dict(self.factor_refs),
+                "host_element_ids": list(self.host_element_ids),
+                "candidate_id": self.candidate_id, "occurrence_id": self.occurrence_id}
+
+    def __repr__(self):
+        return bounded_summary(type(self).__name__, identifier=self.identifier,
+                               product=self.product_id, quantity=self.quantity, unit=self.unit)
+
+    __str__ = __repr__
+
+
+@dataclass(frozen=True)
+class MeasureQuantities:
+    """Quantities resolved for one catalogue measure in a stage.
+
+    ``drivers`` are epsm_data ``QuantityDriver`` values that cost rates and
+    products use. ``effects`` record how a measure was scaled (for example the
+    renovated envelope share behind a sealing reduction); nothing is priced on them.
+    """
+
+    measure_id: str
+    candidate_id: str
+    measure_type: str
+    drivers: tuple[tuple[str, float], ...]
+    effects: tuple[tuple[str, float], ...] = ()
+
+    def __post_init__(self):
+        from epsm_data.contract import QuantityDriver
+
+        for name in ("drivers", "effects"):
+            value = getattr(self, name)
+            items = value.items() if hasattr(value, "items") else value
+            values = tuple((str(k), float(v)) for k, v in items)
+            if any(not math.isfinite(v) for _, v in values):
+                raise ValueError(f"Quantity {name} must be finite")
+            object.__setattr__(self, name, values)
+        unknown = {k for k, _ in self.drivers} - {d.value for d in QuantityDriver}
+        if unknown:
+            raise ValueError(f"Unknown quantity drivers: {sorted(unknown)}")
+        if any(v < 0 for _, v in self.drivers):
+            raise ValueError("Quantity drivers must be nonnegative")
+
+    def to_dict(self):
+        return {"measure_id": self.measure_id, "candidate_id": self.candidate_id,
+                "measure_type": self.measure_type, "drivers": dict(self.drivers),
+                "effects": dict(self.effects)}
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(**data)
+
+
 @dataclass(frozen=True, repr=False)
 class HVACTemplateResolution:
     """Validated loaded template inputs and explicit unresolved system requirements.
@@ -409,6 +496,15 @@ class BuildingElement:
         return cls(**values)
 
 
+def _validated_installations(values):
+    values = tuple(values)
+    if any(not isinstance(value, Installation) for value in values):
+        raise TypeError("installations must contain Installation records")
+    if len({value.occurrence_id for value in values}) != len(values):
+        raise ValueError("Installation occurrences must be unique")
+    return values
+
+
 def _validated_elements(values):
     """Check the physical collection; its receiving operation owns any copying."""
     values = tuple(values)
@@ -457,7 +553,8 @@ class BuildingSnapshot:
     def from_dict(cls, data):
         if data.get("schema") not in {
                 "epsm.building/1", "epsm.building/2", "epsm.building/3", "epsm.building/4",
-                "epsm.building/5", "epsm.building/6", "epsm.building/7", "epsm.building/8"}:
+                "epsm.building/5", "epsm.building/6", "epsm.building/7", "epsm.building/8",
+                "epsm.building/9"}:
             raise ValueError("Unsupported Building snapshot schema")
         return cls(_json(data))
 
@@ -505,6 +602,7 @@ class RenovationStage:
     measure_ids: tuple[str, ...]
     material_flows: MaterialFlows
     incompatible_measure_ids: tuple[str, ...] = ()
+    quantities: tuple[MeasureQuantities, ...] = ()
 
     def __repr__(self):
         return bounded_summary(type(self).__name__, stage_id=self.stage_id,
@@ -576,11 +674,12 @@ class Building:
                  operation=None, zone_uses=(), unconditioned_exchange=(),
                  context=None, provenance=None, foundation=None,
                  ground_temperature=None, thermal_bridge_uplift_fraction=None,
-                 load_reference_area_m2=None,
+                 thermal_bridge_delta_u_w_m2k=None, load_reference_area_m2=None,
                  load_reference_area_policy: Literal["conditioned_floor_area"] | None = None):
         if load_reference_area_m2 is not None and load_reference_area_policy is not None:
             raise ValueError("Choose either load_reference_area_m2 or load_reference_area_policy")
         self._elements = ()
+        self._installations = ()
         self._stages = ()
         self._authoring_links = ()
         self._material_flows = ()
@@ -592,6 +691,7 @@ class Building:
             ("hvac", hvac), ("operation", operation), ("foundation", foundation),
             ("ground_temperature", ground_temperature),
             ("thermal_bridge_uplift_fraction", thermal_bridge_uplift_fraction),
+            ("thermal_bridge_delta_u_w_m2k", thermal_bridge_delta_u_w_m2k),
             ("load_reference_area_m2", load_reference_area_m2),
             ("load_reference_area_policy", load_reference_area_policy))
             if value is not None}
@@ -648,6 +748,7 @@ class Building:
         self.foundation = foundation
         self.ground_temperature = ground_temperature
         self.thermal_bridge_uplift_fraction = thermal_bridge_uplift_fraction
+        self.thermal_bridge_delta_u_w_m2k = thermal_bridge_delta_u_w_m2k
         self.load_reference_area_m2 = load_reference_area_m2
         self.load_reference_area_policy = load_reference_area_policy
         self.context = context if context is not None else ContextSpec()
@@ -692,10 +793,10 @@ class Building:
             value = HVACSystem(**value.to_dict())
         elif name == "identifier" and (not isinstance(value, str) or not value.strip()):
             raise ValueError("identifier must be a nonempty string")
-        elif name == "thermal_bridge_uplift_fraction" and value is not None:
+        elif name in ("thermal_bridge_uplift_fraction", "thermal_bridge_delta_u_w_m2k") and value is not None:
             value = TypeAdapter(Nonnegative).validate_python(value)
             if not math.isfinite(value):
-                raise ValueError("thermal_bridge_uplift_fraction must be finite")
+                raise ValueError(f"{name} must be finite")
         elif name == "load_reference_area_m2" and value is not None:
             value = TypeAdapter(Positive).validate_python(value)
             if not math.isfinite(value):
@@ -721,7 +822,7 @@ class Building:
         object.__setattr__(self, name, value)
         if name in {"geometry", "construction_set", "facade", "hvac", "operation",
                     "zone_uses", "unconditioned_exchange", "foundation", "ground_temperature", "thermal_bridge_uplift_fraction",
-                    "load_reference_area_m2", "load_reference_area_policy"} \
+                    "thermal_bridge_delta_u_w_m2k", "load_reference_area_m2", "load_reference_area_policy"} \
                 and hasattr(self, "provenance"):
             object.__setattr__(self, "provenance", ProvenanceSpec(records=tuple(
                 r for r in self.provenance.records
@@ -756,6 +857,7 @@ class Building:
                        facade=None, hvac=None, operation=None, zone_uses=(),
                        unconditioned_exchange=(), context=None, foundation=None,
                        ground_temperature=None, thermal_bridge_uplift_fraction=None,
+                       thermal_bridge_delta_u_w_m2k=None,
                        load_reference_area_m2=None, load_reference_area_policy=None,
                        **geometry_options):
         geometry = GeometrySpec.from_footprint(
@@ -768,6 +870,7 @@ class Building:
                          context=context, foundation=foundation,
                          ground_temperature=ground_temperature,
                          thermal_bridge_uplift_fraction=thermal_bridge_uplift_fraction,
+                         thermal_bridge_delta_u_w_m2k=thermal_bridge_delta_u_w_m2k,
                          load_reference_area_m2=load_reference_area_m2,
                          load_reference_area_policy=load_reference_area_policy)
 
@@ -798,6 +901,11 @@ class Building:
         self._elements = tuple(BuildingElement.from_dict(value.to_dict())
                                for value in _validated_elements(values))
 
+    @property
+    def installations(self):
+        """Products installed outside the layered envelope, retained in snapshots."""
+        return self._installations
+
     def assign_construction(self, construction, *, element_ids=None):
         """Assign a resolved construction independently to selected physical elements."""
         selected = set(element_ids or [e.identifier for e in self.elements
@@ -811,7 +919,7 @@ class Building:
 
     def assign_inputs(self, *, construction_set=None, operation=None, hvac=None,
                       facade_properties=None, airflow_properties=None, thermal_bridge_uplift_fraction=None,
-                      provenance=None, mode="replace"):
+                      thermal_bridge_delta_u_w_m2k=None, provenance=None, mode="replace"):
         """Validate and commit resolved inputs together, updating this Building.
 
         Parameters
@@ -836,6 +944,10 @@ class Building:
             property sources; window identity and opening geometry are retained.
         thermal_bridge_uplift_fraction : float, optional
             Nonnegative finite uplift. Zero explicitly assigns no uplift.
+        thermal_bridge_delta_u_w_m2k : float, optional
+            TABULA's absolute surcharge on the whole envelope area, carried by the walls
+            and thermal top. Assigning it sets the uplift fraction to zero, and assigning
+            an uplift fraction clears it: a Building keeps one bridge representation.
         provenance : ProvenanceSpec or mapping, optional
             Source records for changed inputs. Existing records for retained
             fields survive; replacement drops stale records at changed paths.
@@ -867,6 +979,7 @@ class Building:
         supplied = {
             "operation": operation, "hvac": hvac,
             "thermal_bridge_uplift_fraction": thermal_bridge_uplift_fraction,
+            "thermal_bridge_delta_u_w_m2k": thermal_bridge_delta_u_w_m2k,
         }
         # The detached candidate validates all inputs, even those later retained.
         for name, value in supplied.items():
@@ -907,6 +1020,14 @@ class Building:
                 (applied if getattr(self, name) is None else replaced).append(name)
                 updates[name] = getattr(candidate, name)
                 changed.add(name)
+        # A Building keeps one thermal-bridge representation; the newly assigned one wins.
+        bridges = ("thermal_bridge_uplift_fraction", "thermal_bridge_delta_u_w_m2k")
+        if all(name in updates for name in bridges):
+            raise ValueError("Supply only one thermal-bridge representation")
+        for name, other in (bridges, bridges[::-1]):
+            if name in updates and getattr(self, other) is not None:
+                updates[other] = None
+                changed.add(other)
         if properties is not None:
             if self.facade is None:
                 unmatched.append("facade_properties")
@@ -918,23 +1039,63 @@ class Building:
                 changed.update("facade." + name for name in properties)
         construction_targets = set()
         if construction_set is not None:
+            from .physical_geometry import construction_source_role, physical_construction
+
             incoming = candidate.construction_set
             existing = self.construction_set.elements if self.construction_set else {}
+            generated = {element.identifier: element for element in candidate.elements}
+            targets = []
+            for element in self.elements:
+                selected = generated.get(element.identifier, element)
+                # The explicit BASEMENT_FLOOR role selects soil independently of
+                # basement presence. Preserve an already installed assignment in
+                # fill_missing mode; replace may adopt the incoming soil role.
+                if (selected.role != element.role
+                        and {selected.role, element.role} <= {ElementRole.GROUND_FLOOR, ElementRole.BASEMENT_FLOOR}
+                        and (selected.role == ElementRole.BASEMENT_FLOOR
+                             and ElementRole.BASEMENT_FLOOR in incoming.elements
+                             or selected.role == ElementRole.GROUND_FLOOR
+                             and ElementRole.GROUND_FLOOR in incoming.elements
+                             and not self.geometry.basement_depth_m)
+                        and not (mode == "fill_missing" and element.construction is not None)):
+                    element = element.with_changes(role=selected.role, construction=None)
+                source_role = construction_source_role(self.geometry, element, incoming.elements)
+                targets.append((element, source_role))
             values = dict(existing)
             for role, construction in incoming.elements.items():
-                if not any(element.role == role for element in self.elements):
+                if not any(source_role == role for _, source_role in targets):
                     unmatched.append("construction:" + role.value)
                 elif mode == "replace" or role not in values:
                     values[role] = construction
                     changed.add("construction_set.elements." + role.value)
+            for element, source_role in targets:
+                if (source_role != element.role and source_role in incoming.elements
+                        and (mode == "replace" or element.construction is None)
+                        and element.role in values):
+                    # Do not retain an older TOP_FLOOR that would take priority
+                    # over the newly assigned compact ROOF on regeneration.
+                    del values[element.role]
+                    changed.add("construction_set.elements." + element.role.value)
+            if (not self.geometry.basement_depth_m
+                    and ElementRole.GROUND_FLOOR in incoming.elements
+                    and ElementRole.BASEMENT_FLOOR not in incoming.elements
+                    and any(element.role == ElementRole.GROUND_FLOOR
+                            and element.identifier.endswith(".ground_floor")
+                            and (mode == "replace" or element.construction is None)
+                            for element, _ in targets)
+                    and ElementRole.BASEMENT_FLOOR in values):
+                # An explicit at-grade GROUND_FLOOR replacement also replaces
+                # the old soil-role default, so regeneration keeps this choice.
+                del values[ElementRole.BASEMENT_FLOOR]
+                changed.add("construction_set.elements." + ElementRole.BASEMENT_FLOOR.value)
             if values != dict(existing):
                 # A mixed default set is a new authored composition, not the
                 # incoming catalogue snapshot with another snapshot's identity.
                 updates["construction_set"] = ConstructionSet(elements=values)
             elements = []
-            for element in self.elements:
+            for element, source_role in targets:
                 path = "construction:" + element.identifier
-                if element.role not in incoming.elements:
+                if source_role not in incoming.elements:
                     retained.append(path)
                     elements.append(element)
                 elif mode == "fill_missing" and element.construction is not None:
@@ -943,7 +1104,7 @@ class Building:
                 else:
                     (applied if element.construction is None else replaced).append(path)
                     elements.append(element.with_changes(
-                        construction=incoming.elements[element.role]))
+                        construction=physical_construction(self.geometry, element, incoming.elements)))
                     path = "elements." + element.identifier + ".construction"
                     changed.add(path)
                     construction_targets.add(path)
@@ -1115,7 +1276,7 @@ class Building:
                 if getattr(self, name) is None:
                     missing.append(name)
             missing.extend(self._ground_boundary_missing())
-            if self.thermal_bridge_uplift_fraction is None:
+            if self.thermal_bridge_uplift_fraction is None and self.thermal_bridge_delta_u_w_m2k is None:
                 missing.append("thermal_bridge_uplift_fraction")
             if self.load_reference_area_m2 is None and self.load_reference_area_policy is None:
                 missing.append("load_reference_area_m2 or load_reference_area_policy")
@@ -1207,10 +1368,11 @@ class Building:
 
     def quantities(self):
         self.readiness("quantities").require()
-        return material_inventory(self.elements, self.hvac.equipment if self.hvac else ())
+        return material_inventory(self.elements, self.hvac.equipment if self.hvac else (),
+                                  self.installations)
 
     def _snapshot_data(self):
-        return {
+        data = {
             "schema": "epsm.building/8", "identifier": self.identifier, "preset": self.preset,
             "preset_revision": self.preset_revision,
             "provenance": self.provenance.model_dump(mode="json"),
@@ -1228,11 +1390,18 @@ class Building:
             "ground_temperature": self.ground_temperature.model_dump(mode="json", exclude_unset=True)
             if self.ground_temperature else None,
             "thermal_bridge_uplift_fraction": self.thermal_bridge_uplift_fraction,
+            **({"thermal_bridge_delta_u_w_m2k": self.thermal_bridge_delta_u_w_m2k}
+               if self.thermal_bridge_delta_u_w_m2k is not None else {}),
             "load_reference_area_m2": self.load_reference_area_m2,
             "load_reference_area_policy": self.load_reference_area_policy,
             "context": self.context.model_dump(mode="json"),
             "elements": [e.to_dict() for e in self.elements],
         }
+        if self.installations:
+            # Schema 9 only adds installations; schema-8 snapshots keep their hashes.
+            data["schema"] = "epsm.building/9"
+            data["installations"] = [item.to_dict() for item in self.installations]
+        return data
 
     def snapshot(self):
         """Capture state without rewriting an untouched historical snapshot."""
@@ -1260,6 +1429,7 @@ class Building:
         result.foundation = data.get("foundation")
         result.ground_temperature = data.get("ground_temperature")
         result.thermal_bridge_uplift_fraction = data.get("thermal_bridge_uplift_fraction")
+        result.thermal_bridge_delta_u_w_m2k = data.get("thermal_bridge_delta_u_w_m2k")
         result.load_reference_area_m2 = data.get("load_reference_area_m2")
         result.load_reference_area_policy = data.get("load_reference_area_policy")
         result.context = data.get("context", {})
@@ -1267,6 +1437,8 @@ class Building:
         # The public setter's defensive serialize/copy pass would decode them
         # all again; only its collection-level uniqueness rule remains here.
         result._elements = _validated_elements(BuildingElement.from_dict(e) for e in data["elements"])
+        result._installations = _validated_installations(
+            Installation(**item) for item in data.get("installations", ()))
         object.__setattr__(result, "_restoring_snapshot", False)
         object.__setattr__(result, "preset", data.get("preset"))
         object.__setattr__(result, "preset_revision", data.get("preset_revision"))
@@ -1336,7 +1508,8 @@ class Building:
             {"stage_id": stage.stage_id, "order": stage.order,
              "before": stage.before.to_dict(), "after": stage.after.to_dict(),
              "measure_ids": list(stage.measure_ids),
-             "incompatible_measure_ids": list(stage.incompatible_measure_ids)}
+             "incompatible_measure_ids": list(stage.incompatible_measure_ids),
+             "quantities": [q.to_dict() for q in stage.quantities]}
             for stage in self.stages]}
 
     def restore_lineage(self, data):
@@ -1361,7 +1534,9 @@ class Building:
                 MaterialInventory(q for key, q in new.items() if key in old))
             stages.append(RenovationStage(item["stage_id"], order, before, after,
                                          tuple(item["measure_ids"]), flow,
-                                         tuple(item.get("incompatible_measure_ids", ()))))
+                                         tuple(item.get("incompatible_measure_ids", ())),
+                                         tuple(MeasureQuantities.from_dict(q)
+                                               for q in item.get("quantities", ()))))
         parent = data.get("parent_snapshot_id")
         if stages and parent != stages[-1].before.sha256:
             raise ValueError("Parent snapshot does not match the final transition")
@@ -1396,14 +1571,22 @@ class Building:
     def renovate(self, *measures):
         """Apply a transactional ordered stage and return an independent same-type child.
 
-        Explicit replacements create new occurrences even for identical products.
-        Unchanged component IDs survive additions/removals and movement in the stack.
+        Measures are ``ResolvedMeasure`` records, Data ``RenovationMeasure`` records
+        or bare Data operations; each operation type has one applier in
+        ``renovation_apply.APPLIERS``. Explicit replacements create new occurrences
+        even for identical products, unless the measure ``retains_existing`` the
+        replaced unit (a window upgrade). Unchanged component IDs survive
+        additions/removals and movement in the stack. A measure's ``installations``
+        are added to the building and its ``quantities`` are kept on the stage.
         """
-        from epsm_data.operations import ConstructionOperation, SystemOperation
+        from .renovation_apply import APPLIERS, ResolvedMeasure
 
         if not measures:
             raise ValueError("renovate requires at least one measure")
-        selected_ids = [m.measure_id for m in measures if hasattr(m, "measure_id")]
+        # Bare operations are labelled by their action and are not unique measures.
+        named = [type(m) not in APPLIERS for m in measures]
+        measures = tuple(ResolvedMeasure.of(m) for m in measures)
+        selected_ids = [m.measure_id for m, is_named in zip(measures, named) if is_named]
         if len(set(selected_ids)) != len(selected_ids):
             raise ValueError("A renovation bundle cannot repeat a measure ID")
         previous_ids = {identifier for stage in self.stages for identifier in stage.measure_ids}
@@ -1414,62 +1597,27 @@ class Building:
         available = set(previous_ids)
         all_ids = previous_ids | set(selected_ids)
         for measure in measures:
-            if set(getattr(measure, "incompatible_measure_ids", ())).intersection(all_ids):
+            if set(measure.incompatible_measure_ids).intersection(all_ids):
                 raise ValueError("Incompatible renovation measures selected")
-            required = set(getattr(measure, "requires_measure_ids", ()))
+            required = set(measure.requires_measure_ids)
             if not required <= available:
                 raise ValueError("Renovation prerequisites must occur earlier: "
                                  + ", ".join(sorted(required - available)))
-            if hasattr(measure, "measure_id"):
-                available.add(measure.measure_id)
+            available.add(measure.measure_id)
         before = self.snapshot()
         old_inventory = {q.occurrence_id: q for q in self.quantities()}
         child = self.copy()
-        identifiers = []
         for measure in measures:
-            operations = (measure,) if isinstance(measure, (ConstructionOperation, SystemOperation)) \
-                else getattr(measure, "operations", ())
-            if not operations:
-                raise ValueError("Renovation measure has no resolved physical operations")
-            identifiers.append(getattr(measure, "measure_id", getattr(measure, "action", "measure")))
-            selected = set(getattr(measure, "target_element_ids", ()))
+            selected = set(measure.target_element_ids)
             if selected and not selected <= {e.identifier for e in child.elements}:
                 raise ValueError("Renovation targets contain unknown physical elements")
             affected = set()
-            for operation in operations:
-                if isinstance(operation, SystemOperation):
-                    if selected:
-                        raise ValueError("HVAC replacement does not accept envelope-element selectors")
-                    child.hvac = HVACSystem.from_template(operation.template, previous=child.hvac)
-                    continue
-                targets = [e for e in child.elements if e.role == operation.role
-                           and (not selected or e.identifier in selected)]
-                if not targets:
-                    raise ValueError(f"No physical targets for {operation.role.value}")
-                changed = {}
-                for element in targets:
-                    if element.construction is None:
-                        raise ValueError(f"Target {element.identifier} has no construction")
-                    resolved = operation.apply(ConstructionSet(
-                        elements={element.role: element.construction})).elements[element.role]
-                    ids = list(element.component_ids)
-                    if operation.action == "replace_element":
-                        ids = []
-                    elif operation.action == "add_component":
-                        ids.insert(operation.position, str(uuid4()))
-                    else:
-                        index = next(i for i, c in enumerate(element.construction.components)
-                                     if c.name == operation.target_component)
-                        if operation.action == "remove_component":
-                            ids.pop(index)
-                        else:
-                            ids[index] = str(uuid4())
-                    changed[element.identifier] = element.with_changes(
-                        construction=resolved, component_ids=tuple(ids))
-                    affected.add(element.identifier)
-                child._elements = tuple(changed.get(e.identifier, e) for e in child.elements)
+            for operation in measure.operations:
+                affected |= APPLIERS[type(operation)](child, operation, measure, selected)
             if selected and affected != selected:
                 raise ValueError("Some selected physical elements were not affected by the measure")
+            child._installations = _validated_installations(
+                (*child.installations, *measure.installations))
         new_inventory = {q.occurrence_id: q for q in child.quantities()}
         from .inventory import MaterialInventory
 
@@ -1479,9 +1627,11 @@ class Building:
             MaterialInventory(q for key, q in old_inventory.items() if key not in new_inventory),
             MaterialInventory(q for key, q in new_inventory.items() if key in old_inventory))
         incompatible = tuple(sorted({identifier for measure in measures
-                                     for identifier in getattr(measure, "incompatible_measure_ids", ())}))
-        stage = RenovationStage(stage_id, order, before, child.snapshot(), tuple(identifiers), flows,
-                                incompatible)
+                                     for identifier in measure.incompatible_measure_ids}))
+        quantities = tuple(m.quantities for m in measures if m.quantities is not None)
+        stage = RenovationStage(stage_id, order, before, child.snapshot(),
+                                tuple(m.measure_id for m in measures), flows, incompatible,
+                                quantities)
         child._stages = (*self.stages, stage)
         child._material_flows = (*self.material_flows, flows)
         child._parent_snapshot_id = before.sha256
