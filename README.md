@@ -1,4 +1,15 @@
-# epsm_core
+# EPSM Core
+
+<!-- EPSM introduction: Pocket CAD -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/brand/epsm_core-dark.png">
+  <img src="docs/assets/brand/epsm_core.png" width="64" height="64" alt="EPSM Core — physical building model">
+</picture>
+
+Create physical building models, inspect their geometry and materials, and run EnergyPlus simulations.
+
+[Explore the EPSM platform](https://github.com/SB-Chalmers/epsm/blob/main/docs/platform.md)
+<!-- /EPSM introduction -->
 
 Core 0.7.1 prepares physical snapshots once for shared simulation inputs and supports per-call schedule reuse. Physical cold-attic shells, basement controls and shared-wall ownership retain their existing behavior. It consumes Data 0.6.0 definitions. See [roof and basement support](docs/roofs-and-basements.md), [shared-wall assumptions](docs/party-walls.md), [release notes](RELEASE_NOTES.md) and [prepared geometry](docs/geometry-cache.md).
 

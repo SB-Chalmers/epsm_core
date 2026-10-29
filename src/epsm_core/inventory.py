@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 
 from ._representation import bounded_summary
@@ -121,12 +122,20 @@ def material_inventory(elements, equipment=()):
         if construction is None:
             raise ValueError(f"Element {element.identifier!r} has no construction")
         if isinstance(construction, WindowElement):
+            refs = {}
+            if construction.boverket_id is not None:
+                refs["boverket_id"] = str(construction.boverket_id)
+            reference = construction.carbon_reference
+            if reference is not None:
+                refs["carbon_reference_id"] = reference.identifier
+                refs["carbon_reference"] = json.dumps(
+                    reference.to_dict(), sort_keys=True, separators=(",", ":")
+                )
             rows.append(MaterialQuantity(
                 element.component_ids[0], construction.name, element.identifier,
                 element.component_ids[0], "window", element.area_m2, None, None,
                 material_name=construction.name, role=element.role.value, kind="window",
-                factor_refs=(("boverket_id", str(construction.boverket_id)),)
-                if construction.boverket_id is not None else (),
+                factor_refs=tuple(refs.items()),
             ))
             continue
         for component, component_id in zip(construction.components, element.component_ids):

@@ -368,6 +368,19 @@ def test_weather_fingerprint_detects_mutation(synthetic_weather, tmp_path):
         weather.validate()
 
 
+def test_rc_readiness_accepts_context_for_hourly_horizon_method():
+    from epsm_core.specs import ContextBuilding, ContextSpec
+
+    building = Building(preset="illustrative-reference")
+    building.context = ContextSpec(buildings=(ContextBuilding(
+        identifier="neighbour", height_m=15,
+        footprints=(Footprint(exterior=((-5, -20), (25, -20), (25, -10), (-5, -10))),),
+    ),))
+    before = building.snapshot().sha256
+    assert building.readiness(engine="epsm_rc").ready
+    assert building.snapshot().sha256 == before
+
+
 def test_rc_readiness_reports_facade_override_shading():
     from epsm_core import FacadeOverride, OverhangSpec
 

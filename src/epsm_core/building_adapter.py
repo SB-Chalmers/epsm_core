@@ -10,6 +10,7 @@ from types import SimpleNamespace
 
 from epsm_data.domain import Element
 from epsm_data.domain.enums import BuildingElement as Role
+from epsm_data.thermal.boundary_conditions import get_boundary_resistances
 
 from epsm_core._logging import operation as logged_operation
 
@@ -50,7 +51,8 @@ def thermal_construction(element):
                 visible_absorptance=mean("visible_absorptance"),
                 roughness=layer.materials[0].material.roughness.value,
             )))
-    return ConstructionSpec(layers=tuple(layers))
+    rsi, rse = get_boundary_resistances(element.application)
+    return ConstructionSpec(layers=tuple(layers), surface_resistance_m2k_w=rsi + rse)
 
 
 def _glazing(window):
@@ -74,7 +76,12 @@ def _envelope_for_building(building, *, convert=thermal_construction):
 
     wall = construction(Role.EXT_WALL)
     top = construction(Role.TOP_FLOOR)
-    ground = construction(Role.BASEMENT_FLOOR, construction(Role.GROUND_FLOOR))
+    soil_suffix = ".basement_floor" if building.geometry.basement_depth_m else ".ground_floor"
+    soil = next((element.construction for element in building.elements
+                 if element.identifier.endswith(soil_suffix)), None)
+    if soil is None:
+        raise ValueError("No construction for the physical soil-contact floor")
+    ground = convert(soil)
     intermediate = construction(Role.INTERMEDIATE_FLOOR, ground)
     return EnvelopeSpec(wall=wall, top=top, ground=ground,
         intermediate_floor=intermediate,

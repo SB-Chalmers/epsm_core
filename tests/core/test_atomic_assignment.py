@@ -34,7 +34,7 @@ def test_replace_changes_only_supplied_roles_and_preserves_openings_and_context(
     report = building.assign_inputs(construction_set=selected,
         operation=building.operation.with_changes(equipment_gain_w_m2=8))
     assert isinstance(report, InputAssignmentReport)
-    assert report.unmatched == ("construction:ROOF",)
+    assert report.unmatched == ()
     assert "operation" in report.replaced
     assert report.applied == ()
     after = building.snapshot().to_dict()
@@ -43,8 +43,9 @@ def test_replace_changes_only_supplied_roles_and_preserves_openings_and_context(
     for old, new in zip(before["elements"], after["elements"]):
         for key in ("identifier", "role", "area_m2", "part_id", "facade_id", "storey"):
             assert old[key] == new[key]
-        if old["role"] != Role.WINDOW.value:
+        if old["role"] not in {Role.WINDOW.value, Role.TOP_FLOOR.value}:
             assert old == new
+    assert next(e for e in building.elements if e.identifier == "main.top").construction == top
     assert all(e.construction.u_value == 0.9 for e in building.elements if e.role == Role.WINDOW)
     assert building.operation.equipment_gain_w_m2 == 8
     spec = building.to_spec(synthetic_weather)
@@ -126,7 +127,7 @@ def test_incomplete_building_stays_incomplete_without_inventing_openings_or_syst
     assert not any(e.role == Role.WINDOW for e in building.elements)
 
 
-def test_geometry_first_basement_does_not_relabel_roles_or_guess_a_ground_recipe():
+def test_geometry_first_basement_accepts_explicit_soil_role_without_filling_ceiling():
     building = Building.from_footprint(Footprint.rectangle(10, 8), storeys=1,
                                       storey_height_m=3, basement_depth_m=2)
     before = tuple((e.identifier, e.role, e.area_m2) for e in building.elements)
@@ -135,9 +136,12 @@ def test_geometry_first_basement_does_not_relabel_roles_or_guess_a_ground_recipe
         components=tuple(c.with_changes(application=Role.BASEMENT_FLOOR) for c in ground.components))
     report = building.assign_inputs(construction_set=ConstructionSet(
         elements={Role.BASEMENT_FLOOR: basement}))
-    assert report.unmatched == ("construction:BASEMENT_FLOOR",)
-    assert tuple((e.identifier, e.role, e.area_m2) for e in building.elements) == before
-    assert all(e.construction is None for e in building.elements)
+    assert report.unmatched == ()
+    assert tuple((e.identifier, e.area_m2) for e in building.elements) == tuple(
+        (identifier, area) for identifier, _, area in before)
+    bottom = next(e for e in building.elements if e.identifier == "main.basement_floor")
+    assert bottom.role == Role.BASEMENT_FLOOR and bottom.construction == basement
+    assert all(e.construction is None for e in building.elements if e is not bottom)
 
 
 def test_provenance_replaces_only_applied_fields_and_snapshots_remain_independent():

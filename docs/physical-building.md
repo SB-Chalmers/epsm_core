@@ -484,3 +484,28 @@ boundary-aware inventory. Format 8 additionally retains authored `zone_uses` and
 cold-attic shells now have physical owners; attached unconditioned parts,
 apartments, touching pitched parts and pitched-attic contacts above the eave
 retain their stated limitations. See [contact assumptions](party-walls.md).
+
+### Explicit roof and soil construction roles
+
+The physical horizontal top keeps its `TOP_FLOOR` role. For compact roofs only,
+when a supplied construction set has `ROOF` and no `TOP_FLOOR`, Core assigns the
+`ROOF` assembly to that top boundary with matching physical application roles.
+The original source definition and material stack remain unchanged. An explicit
+`TOP_FLOOR` takes precedence. A cold-attic ceiling requires its own `TOP_FLOOR`;
+`ROOF` belongs to the distinct exterior weather shell and is never a ceiling
+fallback.
+
+When a construction set supplies a distinct `BASEMENT_FLOOR`, that assembly owns
+the soil-contact slab, including an at-grade model with no basement. With a
+basement, `GROUND_FLOOR` retains the separate basement ceiling. Sets containing
+only `GROUND_FLOOR` keep the existing fallback. Explicit replacement can adopt
+the supplied soil role without changing physical extent; `fill_missing` retains
+an already installed soil assignment. The thermal adapter reads the physical
+soil owner rather than substituting the ceiling assembly.
+
+Construction layers supplied to Core retain their outside-to-inside contract.
+For a horizontal floor facing the upper room, this means lower-side lining to
+upper-side finish. Core does not reverse every `INTERMEDIATE_FLOOR` based on its
+role. A catalogue authored in upper-to-lower order must normalize that declared
+source order before supplying the construction; reciprocal compiler faces then
+place the appropriate finish on each room side.
