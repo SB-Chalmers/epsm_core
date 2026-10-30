@@ -224,7 +224,7 @@ def solve_element_insulation(
         the surface-film resistance ``thermal_construction`` reports for the
         element's role (boundary films by role, including for internal constructions). It is not a ground heat-transfer
         result or a thermal-bridge-adjusted U-value. Data's role-specific
-        ``Element.u_value`` can therefore report a different value.
+        ``Element.u_value`` uses the same films and reports the same value.
     min_thickness_m, max_thickness_m : float
         Positive, finite bounds on the solved full layer depth, in metres.
 

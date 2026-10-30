@@ -81,8 +81,7 @@ print(building.quantities().by_material())
 The target is Core's nominal reporting U-value in W/(m2 K), using the
 role-specific surface-film resistance `thermal_construction` reports. This is not a
 ground heat-transfer result or a thermal-bridge-adjusted value. Data's
-`Element.u_value` uses role-specific films and can report a different value for
-internal constructions. Thickness bounds are positive, finite metres and include
+`Element.u_value` uses the same role-specific films, so both report one value. Thickness bounds are positive, finite metres and include
 both endpoints. Unsupported selections and nonfinite values fail explicitly.
 
 The operation retains names, material properties/identities, area fractions and
