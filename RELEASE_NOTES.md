@@ -1,4 +1,4 @@
-# Core (unreleased)
+# Core 0.9.1 — installing measure per occurrence (30 October 2026)
 
 Each renovation stage records which measure installed each new material
 occurrence (`RenovationStage.installed_by`, `installing_measure`). Lineage saves
