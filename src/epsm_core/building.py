@@ -603,10 +603,15 @@ class RenovationStage:
     material_flows: MaterialFlows
     incompatible_measure_ids: tuple[str, ...] = ()
     quantities: tuple[MeasureQuantities, ...] = ()
+    installed_by: tuple[tuple[str, str], ...] = ()
 
     def __repr__(self):
         return bounded_summary(type(self).__name__, stage_id=self.stage_id,
                                order=self.order, measures=len(self.measure_ids))
+
+    def installing_measure(self, occurrence_id):
+        """Measure ID that installed an occurrence in this stage, or None if unknown."""
+        return dict(self.installed_by).get(occurrence_id)
 
     __str__ = __repr__
 
@@ -1509,7 +1514,8 @@ class Building:
              "before": stage.before.to_dict(), "after": stage.after.to_dict(),
              "measure_ids": list(stage.measure_ids),
              "incompatible_measure_ids": list(stage.incompatible_measure_ids),
-             "quantities": [q.to_dict() for q in stage.quantities]}
+             "quantities": [q.to_dict() for q in stage.quantities],
+             "installed_by": dict(stage.installed_by)}
             for stage in self.stages]}
 
     def restore_lineage(self, data):
@@ -1532,11 +1538,17 @@ class Building:
                 MaterialInventory(q for key, q in new.items() if key not in old),
                 MaterialInventory(q for key, q in old.items() if key not in new),
                 MaterialInventory(q for key, q in new.items() if key in old))
+            installed_by = dict(item.get("installed_by", {}))
+            if (not set(installed_by) <= {q.occurrence_id for q in flow.installed}
+                    or not set(installed_by.values()) <= set(item["measure_ids"])):
+                raise ValueError("Installing measures must name installed occurrences "
+                                 "and measures of their stage")
             stages.append(RenovationStage(item["stage_id"], order, before, after,
                                          tuple(item["measure_ids"]), flow,
                                          tuple(item.get("incompatible_measure_ids", ())),
                                          tuple(MeasureQuantities.from_dict(q)
-                                               for q in item.get("quantities", ()))))
+                                               for q in item.get("quantities", ())),
+                                         tuple(sorted(installed_by.items()))))
         parent = data.get("parent_snapshot_id")
         if stages and parent != stages[-1].before.sha256:
             raise ValueError("Parent snapshot does not match the final transition")
@@ -1607,6 +1619,9 @@ class Building:
         before = self.snapshot()
         old_inventory = {q.occurrence_id: q for q in self.quantities()}
         child = self.copy()
+        # Occurrences each measure creates, in order; a later measure of the same
+        # stage may remove them again, so only surviving installations are kept.
+        installed_by, seen = {}, set(old_inventory)
         for measure in measures:
             selected = set(measure.target_element_ids)
             if selected and not selected <= {e.identifier for e in child.elements}:
@@ -1618,6 +1633,9 @@ class Building:
                 raise ValueError("Some selected physical elements were not affected by the measure")
             child._installations = _validated_installations(
                 (*child.installations, *measure.installations))
+            current = {q.occurrence_id for q in child.quantities()}
+            installed_by.update((key, measure.measure_id) for key in current - seen)
+            seen |= current
         new_inventory = {q.occurrence_id: q for q in child.quantities()}
         from .inventory import MaterialInventory
 
@@ -1629,9 +1647,11 @@ class Building:
         incompatible = tuple(sorted({identifier for measure in measures
                                      for identifier in measure.incompatible_measure_ids}))
         quantities = tuple(m.quantities for m in measures if m.quantities is not None)
+        installed_by = tuple(sorted((key, measure_id) for key, measure_id in installed_by.items()
+                                    if key in new_inventory and key not in old_inventory))
         stage = RenovationStage(stage_id, order, before, child.snapshot(),
                                 tuple(m.measure_id for m in measures), flows, incompatible,
-                                quantities)
+                                quantities, installed_by)
         child._stages = (*self.stages, stage)
         child._material_flows = (*self.material_flows, flows)
         child._parent_snapshot_id = before.sha256

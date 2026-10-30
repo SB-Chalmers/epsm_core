@@ -39,6 +39,8 @@ def test_default_and_legacy_roundtrips(building):
 @pytest.mark.parametrize("zoning", ["whole_building", "per_storey", "perimeter_core", "apartments"])
 @pytest.mark.parametrize("basement", ["none", "heated", "unheated"])
 def test_ground_geometry_and_exterior_perimeter(building, energyplus, zoning, basement):
+    if zoning == "apartments":
+        pytest.importorskip("py_straight_skeleton")
     geometry = building.geometry.updated(
         zoning=ZoningSpec(mode=zoning, apartments=ApartmentLayoutSpec(max_candidates=1000))
         if zoning == "apartments"
@@ -79,6 +81,7 @@ def test_ground_geometry_and_exterior_perimeter(building, energyplus, zoning, ba
 
 @pytest.mark.parametrize("angle", [0, 45, 90])
 def test_apartment_perimeter_is_rotation_invariant(building, energyplus, angle):
+    pytest.importorskip("py_straight_skeleton")
     b = building.updated(
         geometry=building.geometry.updated(
             orientation_deg=angle,

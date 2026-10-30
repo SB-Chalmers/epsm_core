@@ -155,6 +155,8 @@ def test_facade_compilation_and_quantities(building, energyplus):
 @pytest.mark.parametrize("shape", ["mono_pitch", "gable", "hip"])
 @pytest.mark.parametrize("courtyard", [False, True])
 def test_pitched_roofs(building, energyplus, shape, courtyard):
+    if shape == "hip":
+        pytest.importorskip("py_straight_skeleton")
     b = residential_building(building)
     part = b.geometry.parts[0]
     if courtyard:
@@ -220,6 +222,7 @@ def test_unknown_facade_and_storey_overrides_fail_at_input_validation(building, 
 
 
 def test_apartment_layout(building, energyplus):
+    pytest.importorskip("py_straight_skeleton")
     b = residential_building(building)
     b = b.updated(
         envelope=b.envelope.updated(
@@ -244,6 +247,7 @@ def test_apartment_layout(building, energyplus):
 
 @pytest.mark.parametrize("height,orientation", [(2.8, 0), (3, 0), (3, 45), (3, 90)])
 def test_apartment_windows_loads_and_fallback(building, energyplus, height, orientation):
+    pytest.importorskip("py_straight_skeleton")
     b = residential_building(building)
     b = b.updated(
         facade=b.facade.updated(default_wwr=0.3, reveal_depth_m=0),
