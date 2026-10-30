@@ -254,6 +254,7 @@ def test_exact_zone_override_wins_over_zone_kind(building, energyplus):
 
 
 def test_common_use_override_emits_its_own_gain_partition_policy(building, energyplus):
+    pytest.importorskip("py_straight_skeleton")
     residential = building.updated(
         use=building.use.updated(occupancy_category="residential"),
         facade=building.facade.updated(
