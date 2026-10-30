@@ -221,8 +221,8 @@ def solve_element_insulation(
         This is not the possibly nonconsecutive ``LayerSlot.position`` value.
     target_u_w_m2k : float
         Positive, finite Core nominal reporting U-value in W/(m2 K). This uses
-        the existing ``thermal_construction`` film resistance of 0.17 m2 K/W,
-        including for internal constructions. It is not a ground heat-transfer
+        the surface-film resistance ``thermal_construction`` reports for the
+        element's role (boundary films by role, including for internal constructions). It is not a ground heat-transfer
         result or a thermal-bridge-adjusted U-value. Data's role-specific
         ``Element.u_value`` can therefore report a different value.
     min_thickness_m, max_thickness_m : float

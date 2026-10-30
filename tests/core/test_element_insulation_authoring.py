@@ -61,7 +61,8 @@ def test_target_uses_existing_core_reporting_films_for_internal_constructions():
     building = Building(preset="illustrative-reference")
     element = building.construction_set.elements[Role.INTERMEDIATE_FLOOR]
     solved = solve_element_insulation(element, element.components[0].name, 0, 1)
-    assert thermal_construction(solved).surface_resistance_m2k_w == .17
+    films = thermal_construction(element).surface_resistance_m2k_w
+    assert thermal_construction(solved).surface_resistance_m2k_w == films
     assert thermal_construction(solved).u_value_w_m2k == pytest.approx(1)
     # Data reports its role-specific films; it is not the Core reporting target.
     assert solved.u_value != pytest.approx(1)

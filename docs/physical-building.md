@@ -78,8 +78,8 @@ assert abs(thermal_construction(changed.construction).u_value_w_m2k - 0.20) < 1e
 print(building.quantities().by_material())
 ```
 
-The target is Core's nominal reporting U-value in W/(m2 K), using the existing
-`thermal_construction` surface-film resistance of 0.17 m2 K/W. This is not a
+The target is Core's nominal reporting U-value in W/(m2 K), using the
+role-specific surface-film resistance `thermal_construction` reports. This is not a
 ground heat-transfer result or a thermal-bridge-adjusted value. Data's
 `Element.u_value` uses role-specific films and can report a different value for
 internal constructions. Thickness bounds are positive, finite metres and include

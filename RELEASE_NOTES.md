@@ -10,7 +10,7 @@ component/layer solved for a Core nominal U target. The Building convenience
 `assign_element_u_value` applies the operation atomically to selected physical
 elements. Actual materials, fractions, installed occurrence IDs and immutable
 history remain intact; physical material quantities follow the new thickness.
-Targets use the existing Core 0.17 m2 K/W reporting films. Unsupported unequal
+Targets use the role-specific films ``thermal_construction`` reports. Unsupported unequal
 constituent depths, windows, invalid selections and infeasible bounds fail.
 These are additive APIs; saved formats, existing solver behavior and existing
 return types stay unchanged. No renovation intervention is inferred.

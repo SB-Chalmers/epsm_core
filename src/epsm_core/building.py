@@ -933,7 +933,7 @@ class Building:
         A missing construction or infeasible target leaves the Building unchanged.
 
         The pure :func:`epsm_core.solve_element_insulation` defines target units,
-        thickness bounds and the existing Core nominal film policy (0.17 m2 K/W).
+        thickness bounds and the role films ``thermal_construction`` reports.
         Material identities/fractions, installed component IDs, geometry and
         unselected constructions stay unchanged; quantities follow the solved
         physical layer depths. Role defaults in ``construction_set`` stay intact.
