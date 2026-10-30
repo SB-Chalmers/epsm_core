@@ -1,3 +1,9 @@
+# Core (unreleased)
+
+Each renovation stage records which measure installed each new material
+occurrence (`RenovationStage.installed_by`, `installing_measure`). Lineage saves
+and restores it, so LCA can replace renovation work when its service life ends.
+
 # Core 0.9.0 — catalogue renovation and thermal-bridge surcharge (29 October 2026)
 
 `epsm_core.measures.apply_candidates` applies epsm_data renovation candidates

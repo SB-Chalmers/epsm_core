@@ -237,3 +237,28 @@ def test_every_payload_type_has_a_resolver_and_every_operation_an_applier(librar
     with pytest.raises(TypeError, match="No applier"):
         ResolvedMeasure("x", (object(),))
     assert len(APPLIERS) == 5
+
+
+def test_each_installed_occurrence_records_its_measure(library, renovations):
+    base = building(library, ventilation="F")
+    child = apply_candidates(base, renovations.get("insulate_wall.stone_wool_200"),
+                             renovations.get("replace_window.u_0_90"),
+                             renovations.get("upgrade_ventilation.ftx_080"))
+    stage = child.stages[0]
+    by = dict(stage.installed_by)
+    assert set(by) == {q.occurrence_id for q in stage.material_flows.installed}
+    roles = {q.role for q in stage.material_flows.installed
+             if by[q.occurrence_id] == "insulate_wall.stone_wool_200"}
+    assert roles == {Role.EXT_WALL.value}
+    windows = {by[q.occurrence_id] for q in stage.material_flows.installed if q.kind == "window"}
+    assert windows == {"replace_window.u_0_90"}
+    assert any(by[q.occurrence_id] == "upgrade_ventilation.ftx_080"
+               for q in stage.material_flows.installed)
+    assert stage.installing_measure("missing") is None
+    restored = BuildingSnapshot.from_dict(child.snapshot().to_dict()).to_building()
+    restored.restore_lineage(json.loads(json.dumps(child.lineage_to_dict())))
+    assert restored.stages[0].installed_by == stage.installed_by
+    broken = child.lineage_to_dict()
+    broken["stages"][0]["installed_by"] = {"unknown": "insulate_wall.stone_wool_200"}
+    with pytest.raises(ValueError, match="Installing measures"):
+        BuildingSnapshot.from_dict(child.snapshot().to_dict()).to_building().restore_lineage(broken)
