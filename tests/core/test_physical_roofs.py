@@ -31,6 +31,8 @@ def model(roof, **geometry_changes):
 
 @pytest.mark.parametrize("shape", ["flat", "gable", "mono_pitch", "hip"])
 def test_cold_attic_has_actual_shell_and_separate_ceiling(shape, synthetic_weather):
+    if shape == "hip":
+        pytest.importorskip("py_straight_skeleton")
     roof = RoofSpec(
         shape=shape,
         topology="cold_attic",
@@ -141,6 +143,8 @@ def test_roof_materials_and_areas_do_not_depend_on_virtual_zones():
     ],
 )
 def test_concave_and_courtyard_shells_keep_physical_owners(footprint, shape, synthetic_weather):
+    if shape == "hip":
+        pytest.importorskip("py_straight_skeleton")
     building = Building(
         preset="illustrative-reference",
         geometry=GeometrySpec.from_footprint(
@@ -262,6 +266,8 @@ def test_pitched_roof_preserves_main_shared_wall_and_no_windows(synthetic_weathe
 @pytest.mark.energyplus
 @pytest.mark.parametrize("shape", ["gable", "hip"])
 def test_physical_pitched_roof_runs_real_energyplus(shape, synthetic_weather, energyplus, tmp_path):
+    if shape == "hip":
+        pytest.importorskip("py_straight_skeleton")
     from epsm_core import run_building
 
     building = model(RoofSpec(shape=shape))
