@@ -42,6 +42,61 @@ geometry or facade configuration to change thermal areas; construction-only
 overrides remain supported. Explicit zero-window facade overrides are preserved
 when assigning per-window thermal properties.
 
+### Authoring an opaque U-value through actual layer thickness
+
+`solve_element_insulation(element, component_name, layer_index, target_u_w_m2k)`
+returns a new Data `Element` using the existing Core resistance solver. Choose
+the exact component name and a zero-based index in its ordered layer tuple;
+Core does not guess which material is insulation. All constituents must span the
+full depth of their layer. Unequal-depth arrangements and whole-window U-values
+are outside this operation.
+
+`building.assign_element_u_value(...)` applies the same operation to explicit
+physical element IDs. It updates the draft and returns the Building. Every
+target is solved before committing, so an infeasible target leaves all elements
+unchanged. This is a physical authoring assumption, not a renovation intervention.
+Use a declared renovation measure when material additions/removals are intended.
+
+```python
+from epsm_core import Building, thermal_construction
+from epsm_data.domain.enums import BuildingElement as Role
+
+building = Building(preset="illustrative-reference")
+walls = [element for element in building.elements if element.role == Role.EXT_WALL]
+component_name = walls[0].construction.components[0].name
+building.assign_element_u_value(
+    0.20,
+    component_name=component_name,
+    layer_index=0,
+    element_ids=tuple(element.identifier for element in walls),
+    min_thickness_m=0.001,
+    max_thickness_m=1.0,
+)
+changed = next(element for element in building.elements
+               if element.identifier == walls[0].identifier)
+assert abs(thermal_construction(changed.construction).u_value_w_m2k - 0.20) < 1e-9
+print(building.quantities().by_material())
+```
+
+The target is Core's nominal reporting U-value in W/(m2 K), using the
+role-specific surface-film resistance `thermal_construction` reports. This is not a
+ground heat-transfer result or a thermal-bridge-adjusted value. Data's
+`Element.u_value` uses the same role-specific films, so both report one value. Thickness bounds are positive, finite metres and include
+both endpoints. Unsupported selections and nonfinite values fail explicitly.
+
+The operation retains names, material properties/identities, area fractions and
+installed component occurrence IDs. It changes the selected layer depth and all
+its constituent depths together, preserving the composite composition. Physical
+quantities therefore use the actual resulting material volumes and masses;
+equivalent thermal materials are never installed. Other physical elements,
+geometry and ConstructionSet role defaults stay intact. Snapshots still use
+`epsm.building/8`; existing snapshots, APIs and the nominal `solve_insulation`
+operation are unchanged. No file, catalogue, engine or network access occurs.
+
+After an existing renovation, changed quantities remain visible through the
+normal `material_history_requirements`; this authoring operation never fabricates
+a renovation date, installed material flow or assessment factor.
+
 ### Assigning resolved inputs together
 
 `building.assign_inputs(...)` updates the draft atomically and returns an

@@ -57,6 +57,7 @@ from .building import (
 )
 from .building_adapter import run_building, thermal_construction
 from .compiler import CompilationReport, EnergyPlusCompiler
+from .constructions import solve_element_insulation
 from .dhw import DHWProfileSpec
 from .district import DistrictPlan
 from .gains import InternalGainSeries, resolve_internal_gains
@@ -140,6 +141,7 @@ __all__ = [
     "Weather",
     "Equipment",
     "run_building", "thermal_construction", "preflight_energyplus",
+    "solve_element_insulation",
     "DHWProfileSpec",
     "GenericOtherProgramme",
     "SvebyNonResidentialSpec",
