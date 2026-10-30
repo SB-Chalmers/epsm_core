@@ -9,7 +9,7 @@ normalized names, resolutions, scopes and units without starting EnergyPlus.
 Conditional delivery/PV fields and unverified additional native requests remain
 explicit. See [release notes](../RELEASE_NOTES.md).
 
-A pre-1.0 building-energy modelling library for automated urban building energy modelling. The package version is **0.9.0**; content hashes distinguish simulation inputs and implementations.
+A pre-1.0 building-energy modelling library for automated urban building energy modelling. The package version is **0.9.1**; content hashes distinguish simulation inputs and implementations.
 
 ## Physical Building authoring
 
