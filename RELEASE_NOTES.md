@@ -1,3 +1,10 @@
+# Unreleased
+
+`natural_exchange_for_total` and `with_self_draught_total` set a self-draught
+building's natural exchange from a measured total air change, net of that building's
+envelope infiltration and at least 0.05 ACH. Epsm_data's measured-use profile gives
+such a total. Other topologies are returned unchanged.
+
 # Core 0.9.1 — installing measure per occurrence (30 October 2026)
 
 Each renovation stage records which measure installed each new material

@@ -78,6 +78,7 @@ from .renovation import (
 from .resolved import ResolvedBuildingInput, resolve_building
 from .results import SimulationResult
 from .runner import EnergyPlusRunner, SimulationError
+from .self_draught import natural_exchange_for_total, with_self_draught_total
 from .specs import (
     AirflowSpec,
     ApartmentLayoutSpec,
@@ -133,6 +134,7 @@ __all__ = [
     "AuthoringLink", "Building", "BuildingElement", "BuildingSnapshot", "HVACSystem", "OperationProfile",
     "Readiness", "InputAssignmentReport", "HVACTemplateResolution",
     "ResolvedOperatingProfile", "resolve_operating_profile",
+    "natural_exchange_for_total", "with_self_draught_total",
     "ResolvedBuildingInput",
     "resolve_building", "RenovationStage", "MaterialFlows", "MaterialInventory", "MaterialQuantity",
     "Weather",
