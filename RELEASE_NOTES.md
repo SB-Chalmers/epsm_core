@@ -1,4 +1,4 @@
-# Unreleased
+# Core 0.10.0 — element U-value authoring and measured self-draught (31 October 2026)
 
 `natural_exchange_for_total` and `with_self_draught_total` set a self-draught
 building's natural exchange from a measured total air change, net of that building's
