@@ -1,3 +1,16 @@
+# Core 0.10.2 — faster snapshots and surface checks (13 November 2026)
+
+Results are unchanged. Capturing, resolving and checking a Building costs less:
+each distinct construction is encoded once per building instead of once per
+element (snapshots, resolved inputs and the `elements` setter), a snapshot is
+serialised once, hourly gains are converted in one call, and the planar-polygon
+checks in `surface_checks.properties` avoid NumPy's general `roll`, `cross` and
+`delete` on small arrays, with window checks reusing their parent surface's
+result. With RC 0.12.2, one `simulate_building` call on a five-storey building
+with a neighbour and overhangs takes about 18% less CPU time; hourly results,
+totals and diagnostics are byte-identical. Only content hashes of the installed
+sources (and run identities that include them) change.
+
 # Core 0.10.1 — RC overhang readiness (13 November 2026)
 
 RC readiness accepts facade overhangs, both facade-wide and per override, when

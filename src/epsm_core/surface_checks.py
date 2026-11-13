@@ -98,6 +98,32 @@ def vertices(obj):
     )
 
 
+def _next(rows):
+    """np.roll(rows, -1, axis=0) for the small arrays of one polygon."""
+    return np.concatenate((rows[1:], rows[:1]))
+
+
+def _previous(rows):
+    """np.roll(rows, 1, axis=0) for the small arrays of one polygon."""
+    return np.concatenate((rows[-1:], rows[:-1]))
+
+
+def _project(v, drop):
+    """The two coordinates left after dropping one axis, as np.delete(v, drop, axis=1)."""
+    return v[:, ((1, 2), (0, 2), (0, 1))[drop]]
+
+
+def _cross(a, b):
+    """np.cross of (N, 3) arrays, bit for bit, without its general axis handling."""
+    ax, ay, az = a[:, 0], a[:, 1], a[:, 2]
+    bx, by, bz = b[:, 0], b[:, 1], b[:, 2]
+    out = np.empty(a.shape)
+    out[:, 0] = ay * bz - az * by
+    out[:, 1] = az * bx - ax * bz
+    out[:, 2] = ax * by - ay * bx
+    return out
+
+
 def properties(v):
     """Validate a planar polygon and compute its area and unit normal.
 
@@ -141,19 +167,19 @@ def properties(v):
     v = np.asarray(v, dtype=float)
     if v.ndim != 2 or v.shape[1] != 3 or len(v) < 3 or not np.isfinite(v).all():
         raise ValueError("Nonfinite or zero-area surface")
-    edges = np.roll(v, -1, axis=0) - v
+    edges = _next(v) - v
     lengths = np.linalg.norm(edges, axis=1)
     if np.any(lengths < MIN_EDGE_M):
         raise ValueError(
             f"Near-coincident consecutive surface vertices; minimum edge {MIN_EDGE_M} m"
         )
     if np.any(
-        np.linalg.norm(np.cross(edges, np.roll(edges, 1, axis=0)), axis=1)
-        <= 1e-10 * lengths * np.roll(lengths, 1)
+        np.linalg.norm(_cross(edges, _previous(edges)), axis=1)
+        <= 1e-10 * lengths * _previous(lengths)
     ):
         raise ValueError("Collinear surface vertex contributes no boundary")
     local = v - v[0]
-    normal = np.sum(np.cross(local, np.roll(local, -1, axis=0)), axis=0) / 2
+    normal = np.sum(_cross(local, _next(local)), axis=0) / 2
     area = np.linalg.norm(normal)
     if not np.isfinite(v).all() or area <= 1e-8:
         raise ValueError("Nonfinite or zero-area surface")
@@ -161,7 +187,7 @@ def properties(v):
     if np.max(np.abs((v - v[0]) @ normal)) > 1e-6:
         raise ValueError("Nonplanar surface")
     drop = int(np.argmax(abs(normal)))
-    p = Polygon(np.delete(v, drop, axis=1))
+    p = Polygon(_project(v, drop))
     if not p.is_valid:
         raise ValueError("Self-intersecting surface")
     return float(area), normal, drop
@@ -240,13 +266,13 @@ def validate_surfaces(model, zones):
     # 1. Validate closed zones, reciprocal faces, construction order and openings.
     surfaces = model.get("BuildingSurface:Detailed", {})
     by_zone = defaultdict(list)
-    signatures = {}
+    signatures, checked = {}, {}
     volumes, area_vectors = defaultdict(float), defaultdict(lambda: np.zeros(3))
     for name, obj in surfaces.items():
         if obj["zone_name"] not in zones:
             raise ValueError(f"Surface has unknown zone: {name}")
         v = vertices(obj)
-        area, normal, drop = properties(v)
+        area, normal, drop = checked[name] = properties(v)
         signature = (obj["zone_name"], tuple(sorted(map(tuple, v))))
         if signature in signatures:
             raise ValueError(f"Duplicate thermal surfaces: {signatures[signature]} and {name}")
@@ -381,17 +407,17 @@ def validate_surfaces(model, zones):
         if not parent:
             raise ValueError(f"Window missing parent: {name}")
         v, w = vertices(parent), vertices(obj)
-        _, normal, drop = properties(v)
+        _, normal, drop = checked[obj["building_surface_name"]]  # checked with the surfaces above
         _, window_normal, _ = properties(w)
         if np.dot(normal, window_normal) < 1 - 1e-8:
             raise ValueError(f"Window normal differs from parent surface: {name}")
         # Same sub-micrometre tolerance as boundary noding: clipped panes are
         # lifted from a common facade frame and may differ by nanometres.
         if np.max(abs((w - v[0]) @ normal)) > 1e-6 or not Polygon(
-            np.delete(v, drop, axis=1)
-        ).buffer(1e-7).covers(Polygon(np.delete(w, drop, axis=1))):
+            _project(v, drop)
+        ).buffer(1e-7).covers(Polygon(_project(w, drop))):
             raise ValueError(f"Window outside parent surface: {name}")
-        p = Polygon(np.delete(w, drop, axis=1))
+        p = Polygon(_project(w, drop))
         if any(p.intersection(q).area > 1e-8 for q in openings[obj["building_surface_name"]]):
             raise ValueError(f"Overlapping windows: {name}")
         openings[obj["building_surface_name"]].append(p)
