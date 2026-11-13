@@ -417,8 +417,58 @@ def test_rc_readiness_reports_facade_override_shading():
     selected = wall(building)
     building.facade = building.facade.updated(overrides=(FacadeOverride(
         facade_id=selected.facade_id, overhang=OverhangSpec(depth_m=1)),))
-    assert not building.readiness(engine="epsm_rc")
+    assert not building.readiness(engine="epsm_rc", rc_overhang_shading=False)
+    assert building.readiness(engine="epsm_rc", rc_overhang_shading=True)
     assert building.readiness(engine="energyplus")
+
+
+@pytest.mark.parametrize("release,accepted", [
+    ("0.12.0", False), ("0.13.0", True), ("0.13.0+local", True),
+    ("1.0.0", True), ("0.13.0rc1", False), ("unknown", False), (None, False),
+])
+def test_rc_overhang_readiness_defaults_to_installed_adapter_capability(
+        monkeypatch, release, accepted):
+    import importlib.metadata
+
+    from epsm_core import OverhangSpec
+
+    building = Building(preset="illustrative-reference")
+    building.facade = building.facade.updated(overhang=OverhangSpec(depth_m=0.6))
+
+    def installed(name):
+        assert name == "epsm_rc"
+        if release is None:
+            raise importlib.metadata.PackageNotFoundError(name)
+        return release
+
+    monkeypatch.setattr(importlib.metadata, "version", installed)
+    assert building.readiness(engine="epsm_rc").ready is accepted
+    assert building.readiness(engine="epsm_rc", rc_overhang_shading=True).ready
+    assert not building.readiness(engine="epsm_rc", rc_overhang_shading=False).ready
+    # The capability belongs to RC; EnergyPlus models overhangs as shade surfaces.
+    assert building.readiness(engine="energyplus").ready
+
+
+@pytest.mark.parametrize("detail", ["reveal", "balcony", "override_reveal"])
+def test_rc_overhang_capability_does_not_admit_reveals_or_balconies(detail):
+    from epsm_core import FacadeOverride, OverhangSpec
+
+    building = Building(preset="illustrative-reference")
+    selected = wall(building)
+    facade = building.facade.updated(overhang=OverhangSpec(depth_m=0.6))
+    if detail == "reveal":
+        facade = facade.updated(reveal_depth_m=0.2)
+    elif detail == "balcony":
+        from epsm_core.specs import BalconySpec
+
+        facade = facade.updated(balconies=(
+            BalconySpec(facade_id=selected.facade_id, width_m=2, depth_m=1),))
+    else:
+        facade = facade.updated(overrides=(FacadeOverride(
+            facade_id=selected.facade_id, reveal_depth_m=0.2),))
+    building.facade = facade
+    report = building.readiness(engine="epsm_rc", rc_overhang_shading=True)
+    assert "epsm_rc does not model explicit facade shading geometry" in report.unsupported
 
 
 def test_thermal_bridge_preserves_zero_window_overrides(synthetic_weather):
