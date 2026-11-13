@@ -1,9 +1,9 @@
-# Unreleased — RC overhang readiness
+# Core 0.10.1 — RC overhang readiness (13 November 2026)
 
 RC readiness accepts facade overhangs, both facade-wide and per override, when
-the caller declares `rc_overhang_shading=True`, for adapters such as RC 0.13.0
+the caller declares `rc_overhang_shading=True`, for adapters such as RC 0.12.1
 that implement the ISO 13790 Annex G.5.4.3 hourly overhang method. By default,
-an installed stable RC release >=0.13.0 declares that support. Missing, older or
+an installed stable RC release >=0.12.1 declares that support. Missing, older or
 unrecognized RC releases keep the rejection. The capability applies only to
 `engine="epsm_rc"`. Reveals and balconies stay unsupported for RC, even with
 overhangs present, and EnergyPlus readiness is unchanged.
