@@ -21,7 +21,7 @@ from pathlib import Path
 from types import MappingProxyType
 from typing import Mapping, NamedTuple
 
-from .building import Building, BuildingSnapshot
+from .building import Building, BuildingSnapshot, _element_records
 from .constructions import surface_construction_reversed
 from .pipeline import GeometryCache, resolve_geometry
 from .specs import BuildingSpec, ClimateSpec
@@ -30,10 +30,12 @@ from .zone_inputs import resolve_zone_operations
 
 
 def _freeze(value):
-    if isinstance(value, dict):
+    """Read-only view of parsed JSON, whose containers are plain dicts and lists."""
+    kind = type(value)
+    if kind is dict:
         return MappingProxyType({key: _freeze(item) for key, item in value.items()})
-    if isinstance(value, list):
-        return tuple(_freeze(item) for item in value)
+    if kind is list:
+        return tuple(map(_freeze, value))
     return value
 
 
@@ -226,7 +228,7 @@ def _resolved_input(spec, resolved, *, snapshot=None, physical=None, owners=None
         "surfaces": surfaces, "openings": openings, "zones": zones,
         "internal_mass": internal_mass, "shading": resolved.shading,
         "facades": resolved.facades,
-        "physical_elements": [element.to_dict() for element in physical.elements] if physical is not None else [],
+        "physical_elements": _element_records(physical.elements) if physical is not None else [],
         "boundaries": {"foundation": spec.envelope.foundation.model_dump(mode="json"),
                        "ground_temperature": spec.envelope.ground_temperature.model_dump(mode="json")
                                              if spec.envelope.ground_temperature is not None else None,

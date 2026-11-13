@@ -483,8 +483,12 @@ class BuildingElement:
     __str__ = __repr__
 
     def to_dict(self):
+        return self._record(_encode_element(self.construction))
+
+    def _record(self, construction):
+        """to_dict() with the construction already encoded."""
         return {"identifier": self.identifier, "role": self.role.value,
-                "area_m2": self.area_m2, "construction": _encode_element(self.construction),
+                "area_m2": self.area_m2, "construction": construction,
                 "part_id": self.part_id, "facade_id": self.facade_id,
                 "storey": self.storey, "elevation_m": self.elevation_m,
                 "component_ids": list(self.component_ids), "boundary": self.boundary}
@@ -494,6 +498,35 @@ class BuildingElement:
         values = dict(data)
         values["construction"] = _decode_element(values.get("construction"))
         return cls(**values)
+
+
+def _element_records(elements):
+    """to_dict() of every element, encoding each distinct construction once.
+
+    A building has many elements and few constructions, and encoding a layered
+    construction dominates to_dict(). Records of equal constructions share one
+    encoded mapping, so the result is for serialising or decoding, not editing.
+    """
+    encoded = {}
+    records = []
+    for element in elements:
+        construction = element.construction
+        if construction not in encoded:
+            encoded[construction] = _encode_element(construction)
+        records.append(element._record(encoded[construction]))
+    return records
+
+
+def _copied_elements(elements):
+    """Detached copies, as BuildingElement.from_dict(element.to_dict()) gives one by one."""
+    decoded = {}
+    copies = []
+    for record in _element_records(elements):
+        construction = record["construction"]
+        if id(construction) not in decoded:
+            decoded[id(construction)] = _decode_element(construction)
+        copies.append(BuildingElement(**{**record, "construction": decoded[id(construction)]}))
+    return tuple(copies)
 
 
 def _validated_installations(values):
@@ -903,8 +936,7 @@ class Building:
 
     @elements.setter
     def elements(self, values):
-        self._elements = tuple(BuildingElement.from_dict(value.to_dict())
-                               for value in _validated_elements(values))
+        self._elements = _copied_elements(_validated_elements(values))
 
     @property
     def installations(self):
@@ -1454,7 +1486,7 @@ class Building:
             "load_reference_area_m2": self.load_reference_area_m2,
             "load_reference_area_policy": self.load_reference_area_policy,
             "context": self.context.model_dump(mode="json"),
-            "elements": [e.to_dict() for e in self.elements],
+            "elements": _element_records(self.elements),
         }
         if self.installations:
             # Schema 9 only adds installations; schema-8 snapshots keep their hashes.
@@ -1464,14 +1496,14 @@ class Building:
 
     def snapshot(self):
         """Capture state without rewriting an untouched historical snapshot."""
-        data = self._snapshot_data()
-        if getattr(self, "_origin_state", None) == _json(data):
+        text = _json(self._snapshot_data())  # always a current schema; serialised once
+        if getattr(self, "_origin_state", None) == text:
             return self._origin_snapshot
-        return BuildingSnapshot.from_dict(data)
+        return BuildingSnapshot(text)
 
     @classmethod
     def from_dict(cls, data):
-        BuildingSnapshot.from_dict(data)
+        origin = BuildingSnapshot.from_dict(data)  # checks the schema; kept as the origin below
         result = cls.empty(identifier=data["identifier"])
         # Stored elements own their historical physical identity. Loading the
         # validated fields must not invoke a newer thermal-geometry algorithm
@@ -1502,7 +1534,7 @@ class Building:
         object.__setattr__(result, "preset", data.get("preset"))
         object.__setattr__(result, "preset_revision", data.get("preset_revision"))
         result.provenance = data.get("provenance", {})
-        result._origin_snapshot = BuildingSnapshot.from_dict(data)
+        result._origin_snapshot = origin
         result._origin_state = _json(result._snapshot_data())
         return result
 
