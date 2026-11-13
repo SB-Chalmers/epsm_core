@@ -423,8 +423,8 @@ def test_rc_readiness_reports_facade_override_shading():
 
 
 @pytest.mark.parametrize("release,accepted", [
-    ("0.12.0", False), ("0.13.0", True), ("0.13.0+local", True),
-    ("1.0.0", True), ("0.13.0rc1", False), ("unknown", False), (None, False),
+    ("0.12.0", False), ("0.12.1", True), ("0.12.1+local", True),
+    ("0.13.0", True), ("0.12.1rc1", False), ("unknown", False), (None, False),
 ])
 def test_rc_overhang_readiness_defaults_to_installed_adapter_capability(
         monkeypatch, release, accepted):

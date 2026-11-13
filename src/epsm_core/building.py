@@ -1304,7 +1304,7 @@ class Building:
         retain the rejection that prevents silently ignored neighbours.
 
         Overhangs follow the same rule with ``rc_overhang_shading``: by default an
-        installed stable RC release >=0.13.0 declares it. Both apply only when
+        installed stable RC release >=0.12.1 declares it. Both apply only when
         ``engine="epsm_rc"``. Reveals and balconies stay unsupported for RC.
         """
         if engine not in {None, "energyplus", "epsm_rc"}:
@@ -1357,14 +1357,14 @@ class Building:
                     unsupported.append("epsm_rc does not model explicit context shading")
                 facade = self.facade
                 if facade is not None:
-                    # Reveals and balconies have no RC method; overhangs do from RC 0.13.0.
+                    # Reveals and balconies have no RC method; overhangs do from RC 0.12.1.
                     unmodelled = bool(facade.balconies or facade.reveal_depth_m
                                       or any(o.reveal_depth_m for o in facade.overrides))
                     overhangs = bool(facade.overhang.depth_m
                                      or any(o.overhang and o.overhang.depth_m
                                             for o in facade.overrides))
                     if overhangs and not unmodelled and rc_overhang_shading is None:
-                        rc_overhang_shading = _installed_rc_at_least((0, 13, 0))
+                        rc_overhang_shading = _installed_rc_at_least((0, 12, 1))
                     if unmodelled or (overhangs and not rc_overhang_shading):
                         unsupported.append(
                             "epsm_rc does not model explicit facade shading geometry")
