@@ -494,6 +494,10 @@ gaps; the pre-existing complete geometry/numerical APIs remain available. Therma
 reduction currently requires equal parallel path depths and at most ten emitted
 layers per assembly. RC additionally validates its supported thermal domains,
 buffer reduction, schedules and shading assumptions before calculation.
+`readiness(engine="epsm_rc")` accepts cold attics and conditioned basements, which
+RC 0.12 models as zones of one network under its default ISO 52016-1 model, and
+rejects unconditioned basements and attached unconditioned parts, which RC does
+not model.
 Layered window recipes remain available for material inventory; the current
 thermal bridge requires whole-window U-value, SHGC and visible transmittance
 through `WindowElement`, and readiness reports layered windows as unsupported.
