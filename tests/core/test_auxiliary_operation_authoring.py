@@ -69,6 +69,26 @@ def test_auxiliary_controls_reach_core_spec_and_resolved_domains(synthetic_weath
     assert sum(zone["load_reference_area_m2"] for zone in resolved.zones.values() if zone["conditioned"]) == 320
 
 
+
+@pytest.mark.parametrize("conditioned", [True, False])
+def test_rc_readiness_accepts_cold_attic_and_only_a_conditioned_basement(conditioned):
+    """RC 0.12 models a cold attic and a conditioned basement as zones.
+
+    An unconditioned basement remains outside RC's supported domains, so Core keeps
+    rejecting it rather than handing RC a building it would refuse.
+    """
+    from epsm_core import Footprint, GeometrySpec, RoofSpec
+
+    building = Building(preset="illustrative-reference", geometry=GeometrySpec.from_footprint(
+        Footprint.rectangle(10, 8), storeys=3, storey_height_m=3, basement_depth_m=2.5,
+        basement_conditioned=conditioned, roof=RoofSpec(shape="gable")))
+    building.unconditioned_exchange = (UnconditionedExchangeSpec(zone_kind="attic",
+        outdoor_air_ach=.5, source="declared attic programme"),)
+    readiness = building.readiness(engine="epsm_rc")
+    assert readiness.ready is conditioned
+    assert ("epsm_rc cannot aggregate an unconditioned basement" in readiness.unsupported) \
+        is not conditioned
+
 def test_historical_snapshot_restores_stored_inventory_before_geometry_regeneration(monkeypatch):
     from epsm_core import BuildingSnapshot, physical_geometry
 

@@ -57,6 +57,7 @@ from .building import (
 )
 from .building_adapter import run_building, thermal_construction
 from .compiler import CompilationReport, EnergyPlusCompiler
+from .constructions import solve_element_insulation
 from .dhw import DHWProfileSpec
 from .district import DistrictPlan
 from .gains import InternalGainSeries, resolve_internal_gains
@@ -78,6 +79,7 @@ from .renovation import (
 from .resolved import ResolvedBuildingInput, resolve_building
 from .results import SimulationResult
 from .runner import EnergyPlusRunner, SimulationError
+from .self_draught import natural_exchange_for_total, with_self_draught_total
 from .specs import (
     AirflowSpec,
     ApartmentLayoutSpec,
@@ -133,11 +135,13 @@ __all__ = [
     "AuthoringLink", "Building", "BuildingElement", "BuildingSnapshot", "HVACSystem", "OperationProfile",
     "Readiness", "InputAssignmentReport", "HVACTemplateResolution",
     "ResolvedOperatingProfile", "resolve_operating_profile",
+    "natural_exchange_for_total", "with_self_draught_total",
     "ResolvedBuildingInput",
     "resolve_building", "RenovationStage", "MaterialFlows", "MaterialInventory", "MaterialQuantity",
     "Weather",
     "Equipment",
     "run_building", "thermal_construction", "preflight_energyplus",
+    "solve_element_insulation",
     "DHWProfileSpec",
     "GenericOtherProgramme",
     "SvebyNonResidentialSpec",

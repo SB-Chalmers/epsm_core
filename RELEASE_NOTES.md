@@ -1,3 +1,25 @@
+# Core 0.10.0 — element U-value authoring and measured self-draught (31 October 2026)
+
+`natural_exchange_for_total` and `with_self_draught_total` set a self-draught
+building's natural exchange from a measured total air change, net of that building's
+envelope infiltration and at least 0.05 ACH. Epsm_data's measured-use profile gives
+such a total. Other topologies are returned unchanged.
+
+`solve_element_insulation` derives a Data Element with an explicitly selected
+component/layer solved for a Core nominal U target. The Building convenience
+`assign_element_u_value` applies the operation atomically to selected physical
+elements. Actual materials, fractions, installed occurrence IDs and immutable
+history remain intact; physical material quantities follow the new thickness.
+Targets use the role-specific films ``thermal_construction`` reports. Unsupported unequal
+constituent depths, windows, invalid selections and infeasible bounds fail.
+These are additive APIs; saved formats, existing solver behavior and existing
+return types stay unchanged. No renovation intervention is inferred.
+
+Tested with RC 0.12.0 (ISO 52016-1 default, named settings) without changes: Core
+passes no RC settings and its RC readiness gate already matches RC 0.12, which
+models cold attics and conditioned basements and still rejects unconditioned
+basements. A readiness test now pins that gate.
+
 # Core 0.9.1 — installing measure per occurrence (30 October 2026)
 
 Each renovation stage records which measure installed each new material

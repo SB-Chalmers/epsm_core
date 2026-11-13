@@ -42,6 +42,10 @@ The preset contains illustrative teaching inputs. For a simulation, supply your
 own building assumptions, a local EPW and an EnergyPlus 24.2 installation.
 Interactive browser and notebook display uses the separate `epsm_viewer` package.
 
+For material-backed U-value assumptions, use the explicit
+[`solve_element_insulation` / `Building.assign_element_u_value` operations](docs/physical-building.md#authoring-an-opaque-u-value-through-actual-layer-thickness).
+They solve a selected layer depth without replacing its actual materials.
+
 ## Documentation
 
 - [Detailed guide](docs/guide.md)

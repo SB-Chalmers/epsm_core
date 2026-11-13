@@ -23,6 +23,7 @@ The package version is `0.8.0`. Simulation identity combines input content, recu
 | `preflight_energyplus` | Read-only EnergyPlus geometry readiness for a `BuildingSpec` |
 | `resolve_building` | Resolve an existing complete `BuildingSpec` without engine or weather-file I/O |
 | `quantity_takeoff` | Physical material/equipment quantities, excluding virtual zoning and context |
+| `solve_element_insulation` / `Building.assign_element_u_value` | Solve an explicit opaque layer thickness while retaining actual materials and installed identities; see [physical U-value authoring](physical-building.md#authoring-an-opaque-u-value-through-actual-layer-thickness) |
 | `GeometrySpec.scene` / `BuildingSpec.scene` / `Building.scene` | Portable scene data; no display, files or server |
 | `scene_data` | Convert an already loaded epJSON model and reports into scene data |
 | `geometry_scene_data` | Export a supplied geometry, facade and context without complete energy inputs |

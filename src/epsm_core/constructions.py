@@ -9,8 +9,9 @@
 # Research Area of Sustainable Built Environments
 # Chalmers University of Technology, Gothenburg
 # Date created: 2026-09-06 (documentation-header creation; not original file creation)
-# Date modified: 2026-09-06
+# Date modified: 2026-10-22
 # Changelog:
+#   2026-10-22 - Solve selected physical layer depths while retaining actual materials.
 #   2026-09-06 - Document constructions interfaces, examples, constraints and processing rationale.
 
 """Pure physical construction helpers; no material registry or network access.
@@ -48,6 +49,11 @@ Example::
         < 1e-9
     )
 """
+
+from math import isfinite
+
+from epsm_data.domain import Element
+from epsm_data.domain.enums import BuildingElement as ElementRole
 
 from .specs import ConstructionSpec
 
@@ -190,6 +196,96 @@ def solve_insulation(
     layers = list(assembly.layers)
     layers[layer_index] = layer.updated(thickness_m=thickness)
     return assembly.updated(layers=tuple(layers))
+
+
+def solve_element_insulation(
+    element: Element,
+    component_name: str,
+    layer_index: int,
+    target_u_w_m2k: float,
+    *,
+    min_thickness_m: float = 0.001,
+    max_thickness_m: float = 2.0,
+) -> Element:
+    """Return a physical construction with one layer solved for a nominal U target.
+
+    Parameters
+    ----------
+    element : epsm_data.Element
+        Complete opaque physical construction. All parallel material constituents
+        must span their layer's full depth, as required by ``thermal_construction``.
+    component_name : str
+        Exact component name within the construction; no material is inferred.
+    layer_index : int
+        Zero-based index in the selected component's ordered ``layers`` tuple.
+        This is not the possibly nonconsecutive ``LayerSlot.position`` value.
+    target_u_w_m2k : float
+        Positive, finite Core nominal reporting U-value in W/(m2 K). This uses
+        the surface-film resistance ``thermal_construction`` reports for the
+        element's role (boundary films by role, including for internal constructions). It is not a ground heat-transfer
+        result or a thermal-bridge-adjusted U-value. Data's role-specific
+        ``Element.u_value`` uses the same films and reports the same value.
+    min_thickness_m, max_thickness_m : float
+        Positive, finite bounds on the solved full layer depth, in metres.
+
+    Returns
+    -------
+    epsm_data.Element
+        Validated independent graph replacements along the changed path. Names,
+        material identities/properties, area fractions, slot positions and all
+        other layers are retained. Every constituent of the selected layer gets
+        the solved depth, so physical quantities reflect its actual composition.
+
+    Raises
+    ------
+    ValueError
+        Invalid selection, unsupported thermal arrangement, nonfinite input or
+        an unattainable target within the explicit thickness bounds.
+
+    Notes
+    -----
+    This pure, offline authoring operation never edits the supplied construction,
+    selects a catalogue definition or invents renovation material flows. Use a
+    declared renovation measure for an intervention on an existing building.
+    The existing nominal ``solve_insulation`` owns the resistance calculation;
+    Data's validated ``with_changes`` operations own physical graph replacement.
+    """
+    from .building_adapter import thermal_construction
+
+    if not isinstance(element, Element) or element.application == ElementRole.WINDOW:
+        raise ValueError("Opaque insulation solving requires a non-window layered Element")
+    for name, value in (("target_u_w_m2k", target_u_w_m2k),
+                        ("min_thickness_m", min_thickness_m),
+                        ("max_thickness_m", max_thickness_m)):
+        if (isinstance(value, bool) or not isinstance(value, (int, float))
+                or not isfinite(value) or value <= 0):
+            raise ValueError(f"{name} must be finite and positive")
+    if min_thickness_m > max_thickness_m:
+        raise ValueError("Insulation thickness bounds require min_thickness_m <= max_thickness_m")
+    if not isinstance(component_name, str) or not component_name:
+        raise ValueError("component_name must identify an existing component")
+    component_index = next((i for i, c in enumerate(element.components)
+                            if c.name == component_name), None)
+    if component_index is None:
+        raise ValueError(f"No component named {component_name!r} in construction {element.name!r}")
+    component = element.components[component_index]
+    if (isinstance(layer_index, bool) or not isinstance(layer_index, int)
+            or not 0 <= layer_index < len(component.layers)):
+        raise ValueError("layer_index must be a zero-based index within the selected component")
+
+    assembly = thermal_construction(element)
+    nominal_index = sum(len(c.layers) for c in element.components[:component_index]) + layer_index
+    solved = solve_insulation(assembly, nominal_index, target_u_w_m2k,
+                             min_thickness_m=min_thickness_m, max_thickness_m=max_thickness_m)
+    thickness = solved.layers[nominal_index].thickness_m
+    slot = component.layers[layer_index]
+    layer = slot.layer.with_changes(thickness=thickness, materials=tuple(
+        share.with_changes(thickness=thickness) for share in slot.layer.materials))
+    layers = list(component.layers)
+    layers[layer_index] = slot.with_changes(layer=layer)
+    components = list(element.components)
+    components[component_index] = component.with_changes(layers=tuple(layers))
+    return element.with_changes(components=tuple(components))
 
 
 def bridge_equivalent(assembly: ConstructionSpec, uplift: float):
