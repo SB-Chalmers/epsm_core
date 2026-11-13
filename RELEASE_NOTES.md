@@ -15,6 +15,11 @@ constituent depths, windows, invalid selections and infeasible bounds fail.
 These are additive APIs; saved formats, existing solver behavior and existing
 return types stay unchanged. No renovation intervention is inferred.
 
+Tested with RC 0.12.0 (ISO 52016-1 default, named settings) without changes: Core
+passes no RC settings and its RC readiness gate already matches RC 0.12, which
+models cold attics and conditioned basements and still rejects unconditioned
+basements. A readiness test now pins that gate.
+
 # Core 0.9.1 — installing measure per occurrence (30 October 2026)
 
 Each renovation stage records which measure installed each new material
