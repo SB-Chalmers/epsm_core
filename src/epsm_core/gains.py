@@ -73,7 +73,8 @@ def resolve_internal_gains(
     radiant = (sensible * config.people_fraction_radiant + equipment * channels["radiant"]
                + lights * (config.lighting_fraction_radiant + config.lighting_fraction_visible))
     latent = equipment * channels["latent"] + people - sensible - unresolved
-    return InternalGainSeries(*(tuple(float(value) for value in values) for values in (
+    # tolist() gives the same Python floats as float(value) per hour, in one C call.
+    return InternalGainSeries(*(tuple(np.asarray(values, dtype=float).tolist()) for values in (
         convective, radiant, latent, equipment * channels["lost"],
         lights * config.lighting_return_air_fraction, unresolved,
     )))
