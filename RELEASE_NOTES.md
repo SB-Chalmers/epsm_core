@@ -1,3 +1,13 @@
+# Core 0.10.1 — RC overhang readiness (13 November 2026)
+
+RC readiness accepts facade overhangs, both facade-wide and per override, when
+the caller declares `rc_overhang_shading=True`, for adapters such as RC 0.12.1
+that implement the ISO 13790 Annex G.5.4.3 hourly overhang method. By default,
+an installed stable RC release >=0.12.1 declares that support. Missing, older or
+unrecognized RC releases keep the rejection. The capability applies only to
+`engine="epsm_rc"`. Reveals and balconies stay unsupported for RC, even with
+overhangs present, and EnergyPlus readiness is unchanged.
+
 # Core 0.10.0 — element U-value authoring and measured self-draught (31 October 2026)
 
 `natural_exchange_for_total` and `with_self_draught_total` set a self-draught
