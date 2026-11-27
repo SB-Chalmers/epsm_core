@@ -351,6 +351,10 @@ class EnergyPlusRunner:
             )
             if returncode:
                 diagnostics.update(accepted=False, process_returncode=returncode)
+            else:
+                from .warning_review import review_attic_view_factors
+
+                review_attic_view_factors(diagnostics)
             return diagnostics, compiled_model
 
         diagnostics, compiled_model = diagnose(directory, report, result.returncode)

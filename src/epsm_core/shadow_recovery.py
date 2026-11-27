@@ -35,6 +35,10 @@ from .failures import SHADOW_COMPLEXITY_LIMIT
 POLICY = "context-shadow-simplification-1"
 TOLERANCES_M = (1.0, 2.0)
 MAX_EXCHANGED_AREA_FRACTION = 0.10
+# Last candidate: drop neighbours that rise less than this angle above the horizon seen
+# from the nearest point of the target footprint. They can shade only when the sun is
+# lower than this, when beam irradiance is small.
+MIN_OBSTRUCTION_ANGLE_DEG = 5.0
 
 
 def simplify_shadow_context(spec, tolerance_m):
@@ -119,15 +123,80 @@ def simplify_shadow_context(spec, tolerance_m):
             other_p.boundary
         ).equals(q.boundary.intersection(other_q.boundary))
 
-    for i, (p, q) in enumerate(zip(sources, candidates)):
-        if not preserved(p, q, target, target) or any(
-            not preserved(p, q, sources[j], candidates[j]) for j in range(i)
-        ):
-            audit.update(disposition="skipped", reason="contact changed or overlap introduced")
-            return None, audit
+    # Keep a simplified footprint only when it preserves contact with the target and with
+    # every footprint already kept; otherwise retain that footprint exactly. One unsafe
+    # neighbour no longer discards the whole candidate scene.
+    reverted = 0
+    stable = False
+    while not stable:  # a revert can change a pair already checked, so repeat until none
+        stable = True
+        for i, p in enumerate(sources):
+            q = candidates[i]
+            if p.equals(q):
+                continue
+            if not preserved(p, q, target, target) or any(
+                not preserved(p, q, sources[j], candidates[j]) for j in range(len(sources)) if j != i
+            ):
+                candidates[i] = p
+                footprints[i].update(
+                    changed=False,
+                    disposition="retained_contact",
+                    prepared_exterior=list(p.exterior.coords),
+                    prepared_area_m2=p.area,
+                    symmetric_difference_area_fraction=0.0,
+                    boundary_displacement_m=0.0,
+                )
+                reverted += 1
+                stable = False
+    if not any(f["changed"] for f in footprints):
+        audit.update(disposition="skipped", reason="contact changed or overlap introduced", reverted_footprints=reverted)
+        return None, audit
+    # Rebuild context buildings from the accepted per-footprint candidates.
+    k = 0
+    rebuilt = []
+    for building in spec.context.buildings:
+        prepared = []
+        for footprint in building.footprints:
+            prepared.append(footprint.updated(exterior=tuple(candidates[k].exterior.coords)))
+            k += 1
+        rebuilt.append(building.updated(footprints=tuple(prepared)))
+    buildings = rebuilt
+    audit.update(reverted_footprints=reverted)
     audit["disposition"] = "candidate"
     generation = dict(spec.context.generation, shadow_recovery=audit)
     context = spec.context.updated(buildings=tuple(buildings), generation=generation)
+    return spec.updated(context=context), audit
+
+
+def prune_low_obstructions(spec, min_angle_deg=MIN_OBSTRUCTION_ANGLE_DEG):
+    """Candidate without neighbours below ``min_angle_deg`` obstruction angle, and audit.
+
+    The angle is ``atan(height / distance)`` from the nearest point of the target
+    footprint to the neighbour's nearest footprint. Kept neighbours are unchanged.
+    """
+    import math
+
+    target = unary_union([f.polygon for f in spec.geometry.footprints])
+    kept, dropped = [], []
+    for building in spec.context.buildings:
+        distance = min(f.polygon.distance(target) for f in building.footprints)
+        angle = math.degrees(math.atan2(building.height_m, max(distance, 1e-6)))
+        (kept if angle >= min_angle_deg else dropped).append((building, round(angle, 3)))
+    audit = dict(
+        policy=POLICY,
+        method="obstruction_angle",
+        min_angle_deg=min_angle_deg,
+        radius_m=spec.context.generation.get("radius_m"),
+        kept_count=len(kept),
+        dropped_count=len(dropped),
+        dropped=[dict(identifier=b.identifier, angle_deg=a) for b, a in dropped],
+    )
+    if not dropped:
+        audit.update(disposition="skipped", reason="no neighbour below the obstruction angle")
+        return None, audit
+    audit["disposition"] = "candidate"
+    generation = dict(spec.context.generation, shadow_recovery=audit)
+    context = spec.context.updated(buildings=tuple(b for b, _ in kept), generation=generation)
     return spec.updated(context=context), audit
 
 
@@ -196,7 +265,7 @@ def _promote_attempt(attempt, directory, manifest, output=None):
 
 
 def run_with_context_shadow_recovery(run_once, spec, directory, **options):
-    """Run the original scene, then at most two independently validated candidates.
+    """Run the original scene, then at most three independently validated candidates.
 
     Parameters
     ----------
@@ -234,8 +303,14 @@ def run_with_context_shadow_recovery(run_once, spec, directory, **options):
     )
     attempts = [("original", spec, None)]
     last_error = last_directory = None
-    for name in ("original", "context-1m", "context-2m"):
-        if name != "original":
+    for name in ("original", "context-1m", "context-2m", "context-angle-5"):
+        if name == "context-angle-5":
+            candidate, audit = prune_low_obstructions(spec)
+            if candidate is None:
+                manifest["attempts"].append(dict(name=name, **audit))
+                continue
+            attempts.append((name, candidate, audit))
+        elif name != "original":
             tolerance = TOLERANCES_M[0 if name == "context-1m" else 1]
             candidate, audit = simplify_shadow_context(spec, tolerance)
             if candidate is None:

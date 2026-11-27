@@ -42,6 +42,11 @@ class ResultValidationError(ValidationFailure):
 
 def engine_failure_code(diagnostics):
     categories = {m["category"] for m in diagnostics.get("messages", []) if not m["approved"]}
+    returncode = diagnostics.get("process_returncode") or 0
+    if returncode < 0:
+        # The engine was stopped by a signal (for example an out-of-memory kill), so the
+        # model did not fail on its own; report the environment, not a numerical fault.
+        return EXTERNAL_ENVIRONMENT_FAILURE
     if "shadow_overlap_limit" in categories:
         return SHADOW_COMPLEXITY_LIMIT
     if "missing_output" in categories:
