@@ -77,10 +77,11 @@ def test_pending_is_not_approved_until_outputs_validate(tmp_path, text):
 @pytest.mark.parametrize(
     "text",
     [
-        range_text(6),
+        range_text(21),
         range_text(caller="CorrectZoneHumRat"),
-        wet_text(final=2.0),
-        wet_text(count=2),
+        wet_text(final=5.0),  # above the 3.2 C dry bulb: not a physical wet bulb
+        wet_text(final=-12.5),  # more than 15 K below the dry bulb
+        wet_text(count=4),
         " ** Warning ** HVAC solver not converged\n",
         range_text() + " ** Warning ** Very small surface area\n",
         range_text() + " ** Severe ** Invalid model\n",
@@ -170,3 +171,41 @@ def test_runner_validates_outputs_before_accepting_reviewed_warning(
             diagnostics = __import__("json").loads((directory / "diagnostics.json").read_text())
             assert not diagnostics["accepted"] and not diagnostics["warning_review_pending"]
             assert diagnostics["failure"] == "result_validation"
+
+
+def test_signal_killed_engine_is_an_environment_failure():
+    from epsm_core.failures import EXTERNAL_ENVIRONMENT_FAILURE
+
+    assert engine_failure_code({"messages": [], "process_returncode": -9}) == EXTERNAL_ENVIRONMENT_FAILURE
+
+
+def _vf(zone, tol, ideal, value):
+    return {
+        "category": "incomplete_view_factors",
+        "approved": False,
+        "severity": "warning",
+        "occurrence_count": 1,
+        "summary": "FixViewFactors: View factors not complete.",
+        "original_text": (
+            f' ** Warning ** FixViewFactors: View factors not complete. Check for bad surface descriptions or unenclosed zone="{zone}".\n'
+            f" **   ~~~   ** Enforced reciprocity has tolerance (ideal is 0)=[{tol}], Row Sum (ideal is {ideal})=[{value}].\n"
+        ),
+    }
+
+
+@pytest.mark.parametrize(
+    "message, approved",
+    [
+        (_vf("PART_0_ATTIC_1_SPACE", 7.65e-3, 62, 62.01), True),
+        (_vf("PART_0_ATTIC_1_SPACE", 3.0e-2, 62, 62.01), False),  # tolerance above 0.02
+        (_vf("PART_0_ATTIC_1_SPACE", 7.65e-3, 62, 63.0), False),  # row sum 1.6 % off
+        (_vf("PART_0_MAIN_0_SPACE", 7.65e-3, 62, 62.01), False),  # conditioned zone
+    ],
+)
+def test_attic_view_factor_review(message, approved):
+    from epsm_core.warning_review import review_attic_view_factors
+
+    d = {"messages": [message], "accepted": False, "invalid_view_factor_count": 1}
+    assert review_attic_view_factors(d) is approved
+    assert d["accepted"] is approved
+    assert (d["invalid_view_factor_count"] == 0) is approved

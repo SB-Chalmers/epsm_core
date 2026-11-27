@@ -1,3 +1,31 @@
+# Core 0.10.3 — fewer rejected runs in dense and complex stock (27 November 2026)
+
+Runs that are accepted today give the same results. These changes act only on runs that
+Core used to reject; each one records what it did in the run's diagnostics.
+
+- **Shadow capacity.** The opt-in context-shadow retry (`recover_context_shadows=True`)
+  now keeps each simplified neighbour that preserves contact and leaves the rest exact,
+  instead of skipping the whole candidate. If simplified scenes still exceed the
+  PolygonClipping capacity, a last candidate drops neighbours that rise less than 5°
+  above the horizon from the target (`prune_low_obstructions`). On 20 accepted
+  buildings with 40–97 neighbours this changed annual heating demand by 0.00 to
+  −0.09 %. (#91)
+- **Closed attics with approximate view factors.** EnergyPlus's incomplete-view-factor
+  warning is accepted for an unconditioned generated attic when the reciprocity
+  tolerance is at most 0.02 and the row sum is within 0.5 % of ideal
+  (`attic-view-factor-reciprocity-1`). Other zones, larger tolerances and open shells
+  are still rejected. (#93)
+- **Psychrometric review, version 2.** Up to 20 wet-bulb temperature excursions (was 5)
+  and 3 near-freezing iteration-limit events (was 1) per annual run. The resultant now
+  has to be a physical wet bulb for the input (at most the dry bulb, within 15 K)
+  instead of within 0.5 °C of zero. Two rejected runs rerun at 12 and 20 timesteps per
+  hour kept their warnings and changed annual heating by under 0.03 %. (#94)
+- **Signal kills.** An EnergyPlus process stopped by a signal (for example an
+  out-of-memory kill) is now an `EXTERNAL_ENVIRONMENT_FAILURE`, not a numerical
+  failure. (#95)
+- Anonymised failing cases and a reproduction script are in
+  `tests/core/fixtures/failures/`.
+
 # Core 0.10.2 — faster snapshots and surface checks (13 November 2026)
 
 Results are unchanged. Capturing, resolving and checking a Building costs less:

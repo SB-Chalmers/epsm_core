@@ -96,8 +96,13 @@ def test_new_overlap_declines_candidate_scene(building):
         context=source.context.updated(buildings=(*source.context.buildings, blocker))
     )
     candidate, audit = simplify_shadow_context(source, 2.0)
-    assert candidate is None
-    assert audit["reason"] == "contact changed or overlap introduced"
+    # The unsafe footprint keeps its exact outline; other footprints may still simplify.
+    kept = [x for x in audit["footprints"] if x["source_exterior"] == item["source_exterior"]]
+    assert kept and all(x["disposition"] == "retained_contact" for x in kept)
+    assert audit["reverted_footprints"] >= 1
+    if candidate is not None:
+        footprints = [f.polygon for b in candidate.context.buildings for f in b.footprints]
+        assert not any(p.intersection(tiny).area > 1e-8 for p in footprints if not p.equals(tiny))
 
 
 def fake_runner(monkeypatch, outcomes):
@@ -164,7 +169,7 @@ def test_default_is_strict_and_does_not_retry(monkeypatch, building, tmp_path):
 
 
 @pytest.mark.parametrize(
-    "outcomes", [["mixed"], ["shadow", "mixed"], ["shadow", "shadow", "shadow"]]
+    "outcomes", [["mixed"], ["shadow", "mixed"], ["shadow", "shadow", "shadow", "shadow"]]
 )
 def test_mixed_or_exhausted_failure_never_gets_success_marker(
     monkeypatch, building, tmp_path, outcomes
@@ -200,5 +205,18 @@ def test_empty_context_stops_after_original_shadow_failure(monkeypatch, building
         runner.run(building, tmp_path, recover_context_shadows=True)
     assert len(calls) == 1
     manifest = json.loads((tmp_path / "shadow-recovery.json").read_text())
-    assert [a.get("disposition") for a in manifest["attempts"][1:]] == ["skipped", "skipped"]
+    assert [a.get("disposition") for a in manifest["attempts"][1:]] == ["skipped", "skipped", "skipped"]
     assert not manifest["approximation_used"]
+
+
+def test_low_obstructions_are_dropped_and_audited(building):
+    from epsm_core.shadow_recovery import MIN_OBSTRUCTION_ANGLE_DEG, prune_low_obstructions
+
+    source = scene(building)
+    candidate, audit = prune_low_obstructions(source)
+    assert audit["min_angle_deg"] == MIN_OBSTRUCTION_ANGLE_DEG
+    assert audit["kept_count"] + audit["dropped_count"] == len(source.context.buildings)
+    if candidate is not None:
+        assert all(d["angle_deg"] < MIN_OBSTRUCTION_ANGLE_DEG for d in audit["dropped"])
+        assert len(candidate.context.buildings) == audit["kept_count"]
+        assert candidate.geometry == source.geometry
